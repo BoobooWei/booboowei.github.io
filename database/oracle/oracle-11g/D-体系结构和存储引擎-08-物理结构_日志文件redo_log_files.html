@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>日志文件 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/D-%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-08-%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84_%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6redo_log_files.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/database/oracle/oracle-11g/D-%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-08-%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84_%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6redo_log_files">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2019-12-02 - BoobooWei     日志文件 redolog 文件分类 联机重做日志文件 存档的重做日志文件   对 redolog 的管理 笔记      redolog 文件分类联机重做日志文件Managing the Redo Log 每个Oracle数据库都有一组两个或多个联机重做日志文件。这些联机重做日志文件，以及重做日志文件的存档副本，统称为数据库的重做日志。一个重">
+<meta property="og:type" content="website">
+<meta property="og:title" content="日志文件">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/D-%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-08-%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84_%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6redo_log_files">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2019-12-02 - BoobooWei     日志文件 redolog 文件分类 联机重做日志文件 存档的重做日志文件   对 redolog 的管理 笔记      redolog 文件分类联机重做日志文件Managing the Redo Log 每个Oracle数据库都有一组两个或多个联机重做日志文件。这些联机重做日志文件，以及重做日志文件的存档副本，统称为数据库的重做日志。一个重">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:49.897Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:49.897Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">日志文件</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/database/oracle/oracle-11g/D-体系结构和存储引擎-08-物理结构_日志文件redo_log_files.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <blockquote>
+<p>2019-12-02 - BoobooWei</p>
+</blockquote>
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#日志文件">日志文件</a><ul>
+<li><a href="#redolog-文件分类"><code>redolog</code> 文件分类</a><ul>
+<li><a href="#联机重做日志文件">联机重做日志文件</a></li>
+<li><a href="#存档的重做日志文件">存档的重做日志文件</a></li>
+</ul>
+</li>
+<li><a href="#对-redolog-的管理">对 <code>redolog</code> 的管理</a></li>
+<li><a href="#笔记">笔记</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h2 id="redolog-文件分类" class="article-heading"><a href="#redolog-文件分类" class="headerlink" title="redolog 文件分类"></a><code>redolog</code> 文件分类<a class="article-anchor" href="#redolog-文件分类" aria-hidden="true"></a></h2><h3 id="联机重做日志文件" class="article-heading"><a href="#联机重做日志文件" class="headerlink" title="联机重做日志文件"></a>联机重做日志文件<a class="article-anchor" href="#联机重做日志文件" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-the-redo-log.html#GUID-BC1F1762-0BB1-4218-B7AF-6160C395AAE4">Managing the Redo Log</a></p>
+<p>每个Oracle数据库都有一组两个或多个联机<strong>重做日志文件</strong>。这些联机重做日志文件，以及重做日志文件的存档副本，统称为数据库的重做日志。一个<a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/glossary.htm#CHDIHFBC"><strong>重做日志</strong></a>由重做条目（也称为<strong>重做记录</strong>），其记录的所有数据更改作出。如果发生故障导致修改后的数据无法永久写入数据文件，则可以从重做日志中获取更改，因此永远不会丢失工作。</p>
+<p>为了防止涉及重做日志本身的故障，Oracle数据库允许您创建<strong>多路复用的重做日志，</strong>以便可以在不同的磁盘上维护两个或<strong>多个重做日志</strong>副本。</p>
+<h3 id="存档的重做日志文件" class="article-heading"><a href="#存档的重做日志文件" class="headerlink" title="存档的重做日志文件"></a>存档的重做日志文件<a class="article-anchor" href="#存档的重做日志文件" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-archived-redo-log-files.html#GUID-5EE4AC49-E1B2-41A2-BEE7-AA951EAAB2F3">Managing Archived Redo Log Files</a></p>
+<p>归档的重做日志文件是数据库生成的在线重做日志文件的脱机副本。当数据库处于<code>ARCHIVELOG</code>模式时，Oracle数据库会自动归档重做日志文件。Oracle建议您启用联机重做日志的自动存档。</p>
+<h2 id="对-redolog-的管理" class="article-heading"><a href="#对-redolog-的管理" class="headerlink" title="对 redolog 的管理"></a>对 <code>redolog</code> 的管理<a class="article-anchor" href="#对-redolog-的管理" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th>管理内容</th>
+<th>SQL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看日志的工作工作状态</td>
+<td>select * from v$log;</td>
+</tr>
+<tr>
+<td>查看日志的物理信息</td>
+<td>select * from v$logfile;</td>
+</tr>
+<tr>
+<td>查看日志切换的历史</td>
+<td>select SEQUENCE#,to_char(FIRST_TIME,’yyyy-mm-dd hh24:mi:ss’) from v$log_history;</td>
+</tr>
+<tr>
+<td>监控日志切换频率：(成员大小、组的数量、切换频率，决定数据库性能)</td>
+<td>select to_char(first_time,’yyyymmddhh24’),count(*) from v$log_history group by to_char(first_time,’yyyymmddhh24’);</td>
+</tr>
+<tr>
+<td>改变成员尺寸：添加新的组同时指定新的成员大小</td>
+<td>alter database add logfile group 3 ‘/home/oracle/db01/redo03.log’ size 100m;<br>alter database add logfile group 4 ‘/home/oracle/db01/redo04.log’ size 100m;</td>
+</tr>
+<tr>
+<td>删除日志组</td>
+<td>alter database drop logfile group 1;</td>
+</tr>
+<tr>
+<td>手工切换日志</td>
+<td>alter system switch logfile;</td>
+</tr>
+<tr>
+<td>手工产生检查点</td>
+<td>alter system checkpoint;</td>
+</tr>
+<tr>
+<td>在组下增加成员</td>
+<td>alter database add logfile member <br>‘/home/oracle/redo01b.log’ to group 1,<br>‘/home/oracle/redo02b.log’ to group 2,<br>‘/home/oracle/redo03b.log’ to group 3;</td>
+</tr>
+<tr>
+<td>移动日志文件</td>
+<td>shutdown immediate<br>startup mount<br>!mv /home/oracle/redo01b.log /home/oracle/db01/redo01b.log<br>!mv /home/oracle/redo02b.log /home/oracle/db01/redo02b.log<br>!mv /home/oracle/redo03b.log /home/oracle/db01/redo03b.log<br>alter database rename file ‘/home/oracle/redo01b.log’ to ‘/home/oracle/db01/redo01b.log’;<br>alter database rename file ‘/home/oracle/redo02b.log’ to ‘/home/oracle/db01/redo02b.log’;<br>alter database rename file ‘/home/oracle/redo03b.log’ to ‘/home/oracle/db01/redo03b.log’;</td>
+</tr>
+<tr>
+<td><strong>归档模式</strong></td>
+<td>每次联机日志切换时，当前组都会被备份下来，生成归档文件！</td>
+</tr>
+<tr>
+<td>查看数据库是否为归档模式</td>
+<td>show parameter DB_RECOVERY_FILE_DEST</td>
+</tr>
+<tr>
+<td>将数据库转换为归档模式</td>
+<td>shutdown immediate<br>startup mount<br>alter database archivelog;<br>alter database open;<br>archive log list</td>
+</tr>
+<tr>
+<td>查看存档位置</td>
+<td>show parameter DB_RECOVERY_FILE_DEST</td>
+</tr>
+<tr>
+<td>查看已经归档的日志文件</td>
+<td>select sequence#,name from v$archived_log;</td>
+</tr>
+<tr>
+<td>修改存档位置</td>
+<td>mkdir -p /home/oracle/arc_cctv_dest1/<br>alter system set log_archive_dest_1=’location=/home/oracle/arc_cctv_dest1/‘;<br>alter system switch logfile;<br>select sequence#,name from v$archived_log;</td>
+</tr>
+</tbody></table>
+<p>练习</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; column member format a30</span><br><span class="line">SQL&gt; select * from v$logfile;</span><br><span class="line"></span><br><span class="line">    GROUP<span class="comment"># STATUS  TYPE    MEMBER			  IS_	  CON_ID</span></span><br><span class="line"><span class="comment">---------- ------- ------- ------------------------------ --- ----------</span></span><br><span class="line">	 3	   ONLINE  /u01/app/oracle/oradata/booboo NO	       0</span><br><span class="line">			   /redo03.log</span><br><span class="line"></span><br><span class="line">	 2	   ONLINE  /u01/app/oracle/oradata/booboo NO	       0</span><br><span class="line">			   /redo02.log</span><br><span class="line"></span><br><span class="line">	 1	   ONLINE  /u01/app/oracle/oradata/booboo NO	       0</span><br><span class="line">			   /redo01.log</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SQL&gt; show parameter DB_RECOVERY_FILE_DEST;</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 VALUE</span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">db_recovery_file_dest		     string</span><br><span class="line">db_recovery_file_dest_size	     big integer 0</span><br><span class="line"></span><br><span class="line">SQL&gt; archive log list;</span><br><span class="line">Database log mode	       No Archive Mode</span><br><span class="line">Automatic archival	       Disabled</span><br><span class="line">Archive destination	       /u01/app/oracle/product/12.2.0/db_1/dbs/arch</span><br><span class="line">Oldest online log sequence     4</span><br><span class="line">Current log sequence	       6</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>您必须在以<code>NOARCHIVELOG</code>或<code>ARCHIVELOG</code>模式运行数据库之间进行选择。</p>
+<p>是否启用已归档的重做日志文件组的归档取决于数据库上运行的应用程序的可用性和可靠性要求。如果在发生磁盘故障时无法承受丢失数据库中任何数据的风险，请使用<code>ARCHIVELOG</code>模式。填充的重做日志文件的存档可能需要您执行额外的管理操作。</p>
+<ul>
+<li><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-archived-redo-log-files.html#GUID-21A9A3AC-1D90-4848-B3BB-3A9E797547F8">在NOARCHIVELOG模式下</a><br>运行数据库在<code>NOARCHIVELOG</code>模式下运行数据库时，将禁用重做日志的归档。</p>
+</li>
+<li><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-archived-redo-log-files.html#GUID-36F3335E-A28B-47BA-82C2-E17B4C8A453A">在ARCHIVELOG模式下</a><br>运行数据库在<code>ARCHIVELOG</code>模式下运行数据库时，将启用重做日志的归档。</p>
+</li>
+<li><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-archived-redo-log-files.html#GUID-21A9A3AC-1D90-4848-B3BB-3A9E797547F8">Running a Database in NOARCHIVELOG Mode</a><br>When you run your database in <code>NOARCHIVELOG</code> mode, you disable the archiving of the redo log.</p>
+</li>
+<li><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-archived-redo-log-files.html#GUID-36F3335E-A28B-47BA-82C2-E17B4C8A453A">Running a Database in ARCHIVELOG Mode</a><br>When you run a database in <code>ARCHIVELOG</code> mode, you enable the archiving of the redo log.</p>
+</li>
+</ul>
+<h2 id="笔记" class="article-heading"><a href="#笔记" class="headerlink" title="笔记"></a>笔记<a class="article-anchor" href="#笔记" aria-hidden="true"></a></h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">管理日志文件:</span><br><span class="line">记录所有数据块的变化</span><br><span class="line">用来做恢复</span><br><span class="line">以组为单位工作</span><br><span class="line">数据库正常工作至少需要2组日志</span><br><span class="line">每组下可以拥有多个成员</span><br><span class="line">组之间是切换运行</span><br><span class="line">同一组下的成员之间是镜像关系</span><br><span class="line">成员的信息记录在控制文件</span><br><span class="line"></span><br><span class="line">查看日志的工作工作状态：</span><br><span class="line">select * from v<span class="variable">$log</span>;</span><br><span class="line">查看日志的物理信息</span><br><span class="line">select * from v<span class="variable">$logfile</span>;</span><br><span class="line">查看日志切换的历史</span><br><span class="line">select SEQUENCE<span class="comment">#,to_char(FIRST_TIME,&#x27;yyyy-mm-dd hh24:mi:ss&#x27;) from v$log_history;</span></span><br><span class="line">监控日志切换频率：(成员大小、组的数量、切换频率，决定数据库性能)</span><br><span class="line">select to_char(first_time,<span class="string">&#x27;yyyymmddhh24&#x27;</span>),count(*) from v<span class="variable">$log_history</span> group by to_char(first_time,<span class="string">&#x27;yyyymmddhh24&#x27;</span>);</span><br><span class="line">改变成员尺寸：添加新的组同时指定新的成员大小</span><br><span class="line">alter database add logfile group 3 <span class="string">&#x27;/home/oracle/db01/redo03.log&#x27;</span> size 100m;</span><br><span class="line">alter database add logfile group 4 <span class="string">&#x27;/home/oracle/db01/redo04.log&#x27;</span> size 100m;</span><br><span class="line">删除日志组：</span><br><span class="line">alter database drop logfile group 1;</span><br><span class="line">手工切换日志：</span><br><span class="line">alter system switch logfile;</span><br><span class="line">手工产生检查点：</span><br><span class="line">alter system checkpoint;</span><br><span class="line">在组下增加成员：</span><br><span class="line">alter database add logfile member</span><br><span class="line"><span class="string">&#x27;/home/oracle/redo01b.log&#x27;</span> to group 1,</span><br><span class="line"><span class="string">&#x27;/home/oracle/redo02b.log&#x27;</span> to group 2,</span><br><span class="line"><span class="string">&#x27;/home/oracle/redo03b.log&#x27;</span> to group 3;</span><br><span class="line">移动日志文件：</span><br><span class="line">shutdown immediate</span><br><span class="line">startup mount</span><br><span class="line">!mv /home/oracle/redo01b.log /home/oracle/db01/redo01b.log</span><br><span class="line">!mv /home/oracle/redo02b.log /home/oracle/db01/redo02b.log</span><br><span class="line">!mv /home/oracle/redo03b.log /home/oracle/db01/redo03b.log</span><br><span class="line">alter database rename file <span class="string">&#x27;/home/oracle/redo01b.log&#x27;</span> to <span class="string">&#x27;/home/oracle/db01/redo01b.log&#x27;</span>;</span><br><span class="line">alter database rename file <span class="string">&#x27;/home/oracle/redo02b.log&#x27;</span> to <span class="string">&#x27;/home/oracle/db01/redo02b.log&#x27;</span>;</span><br><span class="line">alter database rename file <span class="string">&#x27;/home/oracle/redo03b.log&#x27;</span> to <span class="string">&#x27;/home/oracle/db01/redo03b.log&#x27;</span>;</span><br><span class="line"></span><br><span class="line">归档模式：</span><br><span class="line">每次联机日志切换时，当前组都会被备份下来，生成归档文件！</span><br><span class="line">查看数据库是否为归档模式</span><br><span class="line">archive <span class="built_in">log</span> list</span><br><span class="line">将数据库转换为归档模式</span><br><span class="line">shutdown immediate</span><br><span class="line">startup mount</span><br><span class="line">alter database archivelog;</span><br><span class="line">alter database open;</span><br><span class="line">archive <span class="built_in">log</span> list</span><br><span class="line"></span><br><span class="line">查看存档位置：</span><br><span class="line">show parameter DB_RECOVERY_FILE_DEST</span><br><span class="line">查看已经归档的日志文件：</span><br><span class="line">select sequence<span class="comment">#,name from v$archived_log;</span></span><br><span class="line"></span><br><span class="line">修改存档位置：</span><br><span class="line">mkdir -p /home/oracle/arc_cctv_dest1/</span><br><span class="line">alter system <span class="built_in">set</span> log_archive_dest_1=<span class="string">&#x27;location=/home/oracle/arc_cctv_dest1/&#x27;</span>;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">select sequence<span class="comment">#,name from v$archived_log;</span></span><br></pre></td></tr></table></figure>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:49.897Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/database/oracle/oracle-11g/D-%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-08-%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84_%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6redo_log_files.html';
+  var disqus_title = "日志文件";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#redolog-%E6%96%87%E4%BB%B6%E5%88%86%E7%B1%BB"><span class="toc-text">redolog 文件分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%94%E6%9C%BA%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6"><span class="toc-text">联机重做日志文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E6%A1%A3%E7%9A%84%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6"><span class="toc-text">存档的重做日志文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9-redolog-%E7%9A%84%E7%AE%A1%E7%90%86"><span class="toc-text">对 redolog 的管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%94%E8%AE%B0"><span class="toc-text">笔记</span></a></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>SQL语句-查询语句-组函数 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-03-%E7%BB%84%E5%87%BD%E6%95%B0.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-03-%E7%BB%84%E5%87%BD%E6%95%B0">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="SQL语句-查询语句-组函数 组函数语法 应用实例 1. 雇员中最大工资，最小工资，工资总和，平均工资。 2. 每个部门的工资总和和平均值 3. 部门工资总和的最大值为多少 4. 部门工资总和最多的部门名称和工资总和 5. 工资总和超过9000的部门 6. 雇员中工资相同的员工分别是谁，工资为所少？ 7. 相同的工资有几个？ 8. 每一年参加工作的雇员的数量   课后练习      组函数语">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SQL语句-查询语句-组函数">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-03-%E7%BB%84%E5%87%BD%E6%95%B0">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="SQL语句-查询语句-组函数 组函数语法 应用实例 1. 雇员中最大工资，最小工资，工资总和，平均工资。 2. 每个部门的工资总和和平均值 3. 部门工资总和的最大值为多少 4. 部门工资总和最多的部门名称和工资总和 5. 工资总和超过9000的部门 6. 雇员中工资相同的员工分别是谁，工资为所少？ 7. 相同的工资有几个？ 8. 每一年参加工作的雇员的数量   课后练习      组函数语">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:49.890Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:49.890Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">SQL语句-查询语句-组函数</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/database/oracle/oracle-11g/B-SQL语句-03-组函数.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#sql语句-查询语句-组函数">SQL语句-查询语句-组函数</a><ul>
+<li><a href="#组函数语法">组函数语法</a></li>
+<li><a href="#应用实例">应用实例</a><ul>
+<li><a href="#1-雇员中最大工资最小工资工资总和平均工资">1. 雇员中最大工资，最小工资，工资总和，平均工资。</a></li>
+<li><a href="#2-每个部门的工资总和和平均值">2. 每个部门的工资总和和平均值</a></li>
+<li><a href="#3-部门工资总和的最大值为多少">3. 部门工资总和的最大值为多少</a></li>
+<li><a href="#4-部门工资总和最多的部门名称和工资总和">4. 部门工资总和最多的部门名称和工资总和</a></li>
+<li><a href="#5-工资总和超过9000的部门">5. 工资总和超过9000的部门</a></li>
+<li><a href="#6-雇员中工资相同的员工分别是谁工资为所少">6. 雇员中工资相同的员工分别是谁，工资为所少？</a></li>
+<li><a href="#7-相同的工资有几个">7. 相同的工资有几个？</a></li>
+<li><a href="#8-每一年参加工作的雇员的数量">8. 每一年参加工作的雇员的数量</a></li>
+</ul>
+</li>
+<li><a href="#课后练习">课后练习</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h2 id="组函数语法" class="article-heading"><a href="#组函数语法" class="headerlink" title="组函数语法"></a>组函数语法<a class="article-anchor" href="#组函数语法" aria-hidden="true"></a></h2><blockquote>
+<p>对多行进行的计算</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">组函数类型</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">avg()</td>
+<td align="left">平均</td>
+</tr>
+<tr>
+<td align="left">count()</td>
+<td align="left">统计</td>
+</tr>
+<tr>
+<td align="left">max()</td>
+<td align="left">最大值</td>
+</tr>
+<tr>
+<td align="left">min()</td>
+<td align="left">最小值</td>
+</tr>
+<tr>
+<td align="left">stddev</td>
+<td align="left">估算标准偏差</td>
+</tr>
+<tr>
+<td align="left">sum</td>
+<td align="left">求和</td>
+</tr>
+<tr>
+<td align="left">variance</td>
+<td align="left">方差</td>
+</tr>
+</tbody></table>
+<ul>
+<li>group by 字句进行分组</li>
+<li>having 字句聚合函数过滤</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>序列</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>rownum()</code></td>
+<td>1 2 3 4 5</td>
+</tr>
+<tr>
+<td><code>rank() over (partition by order by)</code></td>
+<td>1 2 2 4 5</td>
+</tr>
+<tr>
+<td><code>dense_rank() over (partition by order by)</code></td>
+<td>1 2 2 3 4</td>
+</tr>
+</tbody></table>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">rank</span>() <span class="keyword">over</span> (<span class="keyword">partition</span> <span class="keyword">by</span> deptno <span class="keyword">order</span> <span class="keyword">by</span> sal <span class="keyword">desc</span>) <span class="keyword">ord</span> <span class="keyword">from</span> emp;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>partition by 给结果集分组</li>
+<li>order by 给结果集排序</li>
+<li>rank() 在每个分组内部进行排名</li>
+</ul>
+<h2 id="应用实例" class="article-heading"><a href="#应用实例" class="headerlink" title="应用实例"></a>应用实例<a class="article-anchor" href="#应用实例" aria-hidden="true"></a></h2><h3 id="1-雇员中最大工资，最小工资，工资总和，平均工资。" class="article-heading"><a href="#1-雇员中最大工资，最小工资，工资总和，平均工资。" class="headerlink" title="1. 雇员中最大工资，最小工资，工资总和，平均工资。"></a>1. 雇员中最大工资，最小工资，工资总和，平均工资。<a class="article-anchor" href="#1-雇员中最大工资，最小工资，工资总和，平均工资。" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select min(sal),max(sal),sum(sal),avg(sal) from emp;</span><br><span class="line"></span><br><span class="line">  MIN(SAL)   MAX(SAL)	SUM(SAL)   AVG(SAL)</span><br><span class="line"><span class="comment">---------- ---------- ---------- ----------</span></span><br><span class="line">       800	 5000	   29025 2073.21429</span><br></pre></td></tr></table></figure>
+<h3 id="2-每个部门的工资总和和平均值" class="article-heading"><a href="#2-每个部门的工资总和和平均值" class="headerlink" title="2. 每个部门的工资总和和平均值"></a>2. 每个部门的工资总和和平均值<a class="article-anchor" href="#2-每个部门的工资总和和平均值" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select deptno,to_char(avg(sal),&#x27;L99999.99&#x27;) avg_sal,to_char(sum(sal),&#x27;L99999.99&#x27;) sum_sal from emp group by deptno;</span><br><span class="line"></span><br><span class="line">    DEPTNO AVG_SAL	       SUM_SAL</span><br><span class="line"><span class="comment">---------- ------------------- -------------------</span></span><br><span class="line">	30	      $1566.67		  $9400.00</span><br><span class="line">	20	      $2175.00		 $10875.00</span><br><span class="line">	10	      $2916.67		  $8750.00</span><br></pre></td></tr></table></figure>
+<h3 id="3-部门工资总和的最大值为多少" class="article-heading"><a href="#3-部门工资总和的最大值为多少" class="headerlink" title="3. 部门工资总和的最大值为多少"></a>3. 部门工资总和的最大值为多少<a class="article-anchor" href="#3-部门工资总和的最大值为多少" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select max(sum(sal)) from emp group by deptno;</span><br><span class="line"></span><br><span class="line">MAX(SUM(SAL))</span><br><span class="line"><span class="comment">-------------</span></span><br><span class="line">	10875</span><br></pre></td></tr></table></figure>
+<h3 id="4-部门工资总和最多的部门名称和工资总和" class="article-heading"><a href="#4-部门工资总和最多的部门名称和工资总和" class="headerlink" title="4. 部门工资总和最多的部门名称和工资总和"></a>4. 部门工资总和最多的部门名称和工资总和<a class="article-anchor" href="#4-部门工资总和最多的部门名称和工资总和" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select deptno,sum_sal from (select deptno,sum(sal) sum_sal from emp group by deptno order by sum_sal desc ) where rownum &lt; 2;</span><br><span class="line"></span><br><span class="line">    DEPTNO    SUM_SAL</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">	20	10875</span><br></pre></td></tr></table></figure>
+<h3 id="5-工资总和超过9000的部门" class="article-heading"><a href="#5-工资总和超过9000的部门" class="headerlink" title="5. 工资总和超过9000的部门"></a>5. 工资总和超过9000的部门<a class="article-anchor" href="#5-工资总和超过9000的部门" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select deptno,sum(sal) sum_sal from emp group by deptno having sum_sal &gt; 9000;</span><br><span class="line"><span class="keyword">select</span> deptno,<span class="keyword">sum</span>(sal) sum_sal <span class="keyword">from</span> emp <span class="keyword">group</span> <span class="keyword">by</span> deptno <span class="keyword">having</span> sum_sal &gt; <span class="number">9000</span></span><br><span class="line">                                                               *</span><br><span class="line"><span class="keyword">ERROR</span> <span class="keyword">at</span> line <span class="number">1</span>:</span><br><span class="line">ORA<span class="number">-00904</span>: <span class="string">&quot;SUM_SAL&quot;</span>: invalid identifier</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span>&gt; <span class="keyword">select</span> deptno,<span class="keyword">sum</span>(sal) sum_sal <span class="keyword">from</span> emp <span class="keyword">group</span> <span class="keyword">by</span> deptno <span class="keyword">having</span> <span class="keyword">sum</span>(sal) &gt; <span class="number">9000</span>;</span><br><span class="line"></span><br><span class="line">    DEPTNO    SUM_SAL</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">	30	 9400</span><br><span class="line">	20	10875</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>注意having字句后面不可以使用别名。</li>
+<li>where字句不可以过滤组函数运算后的结果。</li>
+</ul>
+<h3 id="6-雇员中工资相同的员工分别是谁，工资为所少？" class="article-heading"><a href="#6-雇员中工资相同的员工分别是谁，工资为所少？" class="headerlink" title="6. 雇员中工资相同的员工分别是谁，工资为所少？"></a>6. 雇员中工资相同的员工分别是谁，工资为所少？<a class="article-anchor" href="#6-雇员中工资相同的员工分别是谁，工资为所少？" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select e1.ename,e2.ename,e1.sal from emp e1,emp e2 where e1.sal=e2.sal and e1.ename != e2.ename;</span><br><span class="line"></span><br><span class="line">ENAME	   ENAME	     SAL</span><br><span class="line"><span class="comment">---------- ---------- ----------</span></span><br><span class="line">MARTIN	   WARD 	    1250</span><br><span class="line">WARD	   MARTIN	    1250</span><br><span class="line">FORD	   SCOTT	    3000</span><br><span class="line">SCOTT	   FORD 	    3000</span><br></pre></td></tr></table></figure>
+<h3 id="7-相同的工资有几个？" class="article-heading"><a href="#7-相同的工资有几个？" class="headerlink" title="7. 相同的工资有几个？"></a>7. 相同的工资有几个？<a class="article-anchor" href="#7-相同的工资有几个？" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select sal,count(sal) from emp group by sal;</span><br><span class="line"></span><br><span class="line">       SAL COUNT(SAL)</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">      2450	    1</span><br><span class="line">      5000	    1</span><br><span class="line">      1300	    1</span><br><span class="line">      1250	    2</span><br><span class="line">      2850	    1</span><br><span class="line">      2975	    1</span><br><span class="line">      1100	    1</span><br><span class="line">      3000	    2</span><br><span class="line">       800	    1</span><br><span class="line">      1600	    1</span><br><span class="line">      1500	    1</span><br><span class="line"></span><br><span class="line">       SAL COUNT(SAL)</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">       950	    1</span><br><span class="line"></span><br><span class="line">12 rows selected.</span><br><span class="line"></span><br><span class="line">SQL&gt; select sal,count(sal) from emp group by sal having count(sal)&gt;1;</span><br><span class="line"></span><br><span class="line">       SAL COUNT(SAL)</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">      1250	    2</span><br><span class="line">      3000	    2</span><br><span class="line"></span><br><span class="line">SQL&gt; select sal from emp group by sal having count(sal)&gt;1;</span><br><span class="line"></span><br><span class="line">       SAL</span><br><span class="line"><span class="comment">----------</span></span><br><span class="line">      1250</span><br><span class="line">      3000</span><br><span class="line"></span><br><span class="line">SQL&gt; select ename,sal from emp where sal in (select sal from emp group by sal having count(sal)&gt;1);</span><br><span class="line"></span><br><span class="line">ENAME		  SAL</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">WARD		 1250</span><br><span class="line">MARTIN		 1250</span><br><span class="line">SCOTT		 3000</span><br><span class="line">FORD		 3000</span><br></pre></td></tr></table></figure>
+<h3 id="8-每一年参加工作的雇员的数量" class="article-heading"><a href="#8-每一年参加工作的雇员的数量" class="headerlink" title="8. 每一年参加工作的雇员的数量"></a>8. 每一年参加工作的雇员的数量<a class="article-anchor" href="#8-每一年参加工作的雇员的数量" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select count(to_char(hiredate,&#x27;yyyy&#x27;)) enum, to_char(hiredate,&#x27;yyyy&#x27;) year from emp group by to_char(hiredate,&#x27;yyyy&#x27;);</span><br><span class="line"></span><br><span class="line">      ENUM YEAR</span><br><span class="line"><span class="comment">---------- ----</span></span><br><span class="line">	 2 1987</span><br><span class="line">	 1 1980</span><br><span class="line">	 1 1982</span><br><span class="line">	10 1981</span><br><span class="line"></span><br><span class="line">SQL&gt; select sum(case when to_char(hiredate,&#x27;yy&#x27;)=&#x27;81&#x27; then 1 else 0 end) &quot;81&quot;,sum(decode(to_char(hiredate,&#x27;yy&#x27;),82,1,0)) &quot;82&quot;,sum(decode(to_char(hiredate,&#x27;yy&#x27;),80,1,0)) &quot;80&quot;,sum(decode(to_char(hiredate,&#x27;yy&#x27;),87,1,0)) &quot;87&quot; from emp;</span><br><span class="line"></span><br><span class="line">	81	   82	      80	 87</span><br><span class="line"><span class="comment">---------- ---------- ---------- ----------</span></span><br><span class="line">	10	    1	       1	  2</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="课后练习" class="article-heading"><a href="#课后练习" class="headerlink" title="课后练习"></a>课后练习<a class="article-anchor" href="#课后练习" aria-hidden="true"></a></h2><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">max</span>(sal),<span class="keyword">min</span>(sal),<span class="keyword">sum</span>(sal),<span class="keyword">avg</span>(sal) <span class="keyword">from</span> emp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> emp;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> emp <span class="keyword">where</span> deptno=<span class="number">30</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(deptno) <span class="keyword">from</span> emp;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> deptno) <span class="keyword">from</span> emp;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(comm) <span class="keyword">from</span> emp;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">avg</span>(comm) <span class="keyword">from</span> emp;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">avg</span>(nvl(comm,<span class="number">0</span>)) <span class="keyword">from</span> emp;</span><br><span class="line"><span class="keyword">select</span> deptno,<span class="keyword">sum</span>(sal) <span class="keyword">from</span> emp <span class="keyword">group</span> <span class="keyword">by</span> deptno;</span><br><span class="line"><span class="keyword">select</span> deptno,job,<span class="keyword">sum</span>(sal) <span class="keyword">from</span> emp <span class="keyword">group</span> <span class="keyword">by</span> deptno,job;</span><br><span class="line"><span class="keyword">select</span> deptno,<span class="keyword">sum</span>(sal) <span class="keyword">from</span> emp <span class="keyword">having</span> <span class="keyword">sum</span>(sal)&gt;<span class="number">9000</span> <span class="keyword">group</span> <span class="keyword">by</span> deptno;</span><br><span class="line"><span class="comment">--------------------------------</span></span><br><span class="line">10部门的最大工资</span><br><span class="line"><span class="comment">--------------------------------</span></span><br><span class="line">查找重复的工资</span><br><span class="line"><span class="comment">--------------------------------</span></span><br><span class="line">80年 81年 82年 87年都有多少新员工</span><br><span class="line"></span><br><span class="line">1980  1981  1982  1987</span><br><span class="line"><span class="comment">----  ----  ----  ----</span></span><br><span class="line">   1    10     1     2</span><br><span class="line"><span class="comment">--------------------------------</span></span><br></pre></td></tr></table></figure>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:49.890Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-03-%E7%BB%84%E5%87%BD%E6%95%B0.html';
+  var disqus_title = "SQL语句-查询语句-组函数";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%84%E5%87%BD%E6%95%B0%E8%AF%AD%E6%B3%95"><span class="toc-text">组函数语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%AE%9E%E4%BE%8B"><span class="toc-text">应用实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%9B%87%E5%91%98%E4%B8%AD%E6%9C%80%E5%A4%A7%E5%B7%A5%E8%B5%84%EF%BC%8C%E6%9C%80%E5%B0%8F%E5%B7%A5%E8%B5%84%EF%BC%8C%E5%B7%A5%E8%B5%84%E6%80%BB%E5%92%8C%EF%BC%8C%E5%B9%B3%E5%9D%87%E5%B7%A5%E8%B5%84%E3%80%82"><span class="toc-text">1. 雇员中最大工资，最小工资，工资总和，平均工资。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%AF%8F%E4%B8%AA%E9%83%A8%E9%97%A8%E7%9A%84%E5%B7%A5%E8%B5%84%E6%80%BB%E5%92%8C%E5%92%8C%E5%B9%B3%E5%9D%87%E5%80%BC"><span class="toc-text">2. 每个部门的工资总和和平均值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%83%A8%E9%97%A8%E5%B7%A5%E8%B5%84%E6%80%BB%E5%92%8C%E7%9A%84%E6%9C%80%E5%A4%A7%E5%80%BC%E4%B8%BA%E5%A4%9A%E5%B0%91"><span class="toc-text">3. 部门工资总和的最大值为多少</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%83%A8%E9%97%A8%E5%B7%A5%E8%B5%84%E6%80%BB%E5%92%8C%E6%9C%80%E5%A4%9A%E7%9A%84%E9%83%A8%E9%97%A8%E5%90%8D%E7%A7%B0%E5%92%8C%E5%B7%A5%E8%B5%84%E6%80%BB%E5%92%8C"><span class="toc-text">4. 部门工资总和最多的部门名称和工资总和</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%B7%A5%E8%B5%84%E6%80%BB%E5%92%8C%E8%B6%85%E8%BF%879000%E7%9A%84%E9%83%A8%E9%97%A8"><span class="toc-text">5. 工资总和超过9000的部门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E9%9B%87%E5%91%98%E4%B8%AD%E5%B7%A5%E8%B5%84%E7%9B%B8%E5%90%8C%E7%9A%84%E5%91%98%E5%B7%A5%E5%88%86%E5%88%AB%E6%98%AF%E8%B0%81%EF%BC%8C%E5%B7%A5%E8%B5%84%E4%B8%BA%E6%89%80%E5%B0%91%EF%BC%9F"><span class="toc-text">6. 雇员中工资相同的员工分别是谁，工资为所少？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E7%9B%B8%E5%90%8C%E7%9A%84%E5%B7%A5%E8%B5%84%E6%9C%89%E5%87%A0%E4%B8%AA%EF%BC%9F"><span class="toc-text">7. 相同的工资有几个？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E6%AF%8F%E4%B8%80%E5%B9%B4%E5%8F%82%E5%8A%A0%E5%B7%A5%E4%BD%9C%E7%9A%84%E9%9B%87%E5%91%98%E7%9A%84%E6%95%B0%E9%87%8F"><span class="toc-text">8. 每一年参加工作的雇员的数量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BE%E5%90%8E%E7%BB%83%E4%B9%A0"><span class="toc-text">课后练习</span></a></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

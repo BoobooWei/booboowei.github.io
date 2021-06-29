@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>DBA的日常工作 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/F-DBA%E7%9A%84%E6%97%A5%E5%B8%B8%E5%B7%A5%E4%BD%9C-06-tuning.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/database/oracle/oracle-11g/F-DBA%E7%9A%84%E6%97%A5%E5%B8%B8%E5%B7%A5%E4%BD%9C-06-tuning">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="优化全表扫面：1.查看表的碎片情况set serverout ondeclare  V_UNFORMATTED_BLOCKS NUMBER;  V_UNFORMATTED_BYTES NUMBER;	  V_FS1_BLOCKS NUMBER;		  V_FS1_BYTES NUMBER;		  V_FS2_BLOCKS NUMBER;		  V_FS2_BYTES NUMBER;		  V_FS">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DBA的日常工作">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/F-DBA%E7%9A%84%E6%97%A5%E5%B8%B8%E5%B7%A5%E4%BD%9C-06-tuning">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="优化全表扫面：1.查看表的碎片情况set serverout ondeclare  V_UNFORMATTED_BLOCKS NUMBER;  V_UNFORMATTED_BYTES NUMBER;	  V_FS1_BLOCKS NUMBER;		  V_FS1_BYTES NUMBER;		  V_FS2_BLOCKS NUMBER;		  V_FS2_BYTES NUMBER;		  V_FS">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:49.912Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:49.912Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">DBA的日常工作</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/database/oracle/oracle-11g/F-DBA的日常工作-06-tuning.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">优化全表扫面：</span><br><span class="line">1.查看表的碎片情况</span><br><span class="line"><span class="built_in">set</span> serverout on</span><br><span class="line"><span class="built_in">declare</span></span><br><span class="line">  V_UNFORMATTED_BLOCKS NUMBER;</span><br><span class="line">  V_UNFORMATTED_BYTES NUMBER;	</span><br><span class="line">  V_FS1_BLOCKS NUMBER;		</span><br><span class="line">  V_FS1_BYTES NUMBER;		</span><br><span class="line">  V_FS2_BLOCKS NUMBER;		</span><br><span class="line">  V_FS2_BYTES NUMBER;		</span><br><span class="line">  V_FS3_BLOCKS NUMBER;		</span><br><span class="line">  V_FS3_BYTES NUMBER;		</span><br><span class="line">  V_FS4_BLOCKS NUMBER;		</span><br><span class="line">  V_FS4_BYTES NUMBER;		</span><br><span class="line">  V_FULL_BLOCKS NUMBER;		</span><br><span class="line">  V_FULL_BYTES NUMBER;		</span><br><span class="line">begin</span><br><span class="line">dbms_space.SPACE_USAGE(</span><br><span class="line"><span class="string">&#x27;SCOTT&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;OB1&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;TABLE&#x27;</span>,</span><br><span class="line">V_UNFORMATTED_BLOCKS,</span><br><span class="line">V_UNFORMATTED_BYTES,</span><br><span class="line">V_FS1_BLOCKS,</span><br><span class="line">V_FS1_BYTES,</span><br><span class="line">V_FS2_BLOCKS,</span><br><span class="line">V_FS2_BYTES,		</span><br><span class="line">V_FS3_BLOCKS,		</span><br><span class="line">V_FS3_BYTES,		</span><br><span class="line">V_FS4_BLOCKS,		</span><br><span class="line">V_FS4_BYTES,		</span><br><span class="line">V_FULL_BLOCKS,		</span><br><span class="line">V_FULL_BYTES</span><br><span class="line">);</span><br><span class="line">  DBMS_OUTPUT.PUT_LINE(<span class="string">&#x27;UNFORMATTED_BLOCKS: &#x27;</span>||V_UNFORMATTED_BLOCKS);</span><br><span class="line">  DBMS_OUTPUT.PUT_LINE(<span class="string">&#x27;FULL_BLOCKS: &#x27;</span>||V_FULL_BLOCKS);</span><br><span class="line">  DBMS_OUTPUT.PUT_LINE(<span class="string">&#x27;0 to 25% free space: &#x27;</span>||V_FS1_BLOCKS);</span><br><span class="line">  DBMS_OUTPUT.PUT_LINE(<span class="string">&#x27;25 to 50% free space: &#x27;</span>||V_FS2_BLOCKS);</span><br><span class="line">  DBMS_OUTPUT.PUT_LINE(<span class="string">&#x27;50 to 75% free space: &#x27;</span>||V_FS3_BLOCKS);</span><br><span class="line">  DBMS_OUTPUT.PUT_LINE(<span class="string">&#x27;75 to 100% free space: &#x27;</span>||V_FS4_BLOCKS);</span><br><span class="line">end;</span><br><span class="line">/</span><br><span class="line"></span><br><span class="line">消除碎片的两种方式</span><br><span class="line">SQL&gt; alter table ob1 move; </span><br><span class="line"></span><br><span class="line">shrink操作会使用pctfree里面的空间，迁移的可能性更大</span><br><span class="line">alter table t05 <span class="built_in">enable</span> row movement;</span><br><span class="line">alter table t05 shrink space; </span><br><span class="line"></span><br><span class="line">2.增加IO吞吐量</span><br><span class="line">oracle 10g 之前控制IO吞吐量的参数：db_file_multiblock_read_count </span><br><span class="line"></span><br><span class="line">从oracle 11g之后控制IO吞吐量的参数：_db_file_optimizer_read_count</span><br><span class="line">SQL&gt; <span class="built_in">set</span> autot trace exp</span><br><span class="line">SQL&gt; select * from v<span class="variable">$parameter</span>;</span><br><span class="line"></span><br><span class="line">Execution Plan</span><br><span class="line">--------------------------------------</span><br><span class="line">Plan <span class="built_in">hash</span> value: 1128103955</span><br><span class="line"></span><br><span class="line">--------------------------------------</span><br><span class="line">| Id  | Operation	  | Name     |</span><br><span class="line">--------------------------------------</span><br><span class="line">|   0 | SELECT STATEMENT  |	     |</span><br><span class="line">|*  1 |  HASH JOIN	  |	     |</span><br><span class="line">|*  2 |   FIXED TABLE FULL| X<span class="variable">$KSPPI</span>  |</span><br><span class="line">|   3 |   FIXED TABLE FULL| X<span class="variable">$KSPPCV</span> |</span><br><span class="line"></span><br><span class="line">SQL&gt; select indx,ksppinm,KSPPDESC from x<span class="variable">$ksppi</span> <span class="built_in">where</span> ksppinm like <span class="string">&#x27;%db_file%&#x27;</span>;</span><br><span class="line"></span><br><span class="line">INDX KSPPINM</span><br><span class="line">---- ------------------------------------</span><br><span class="line"> 272 _db_file_direct_io_count</span><br><span class="line"> 817 db_file_name_convert</span><br><span class="line">1153 db_files</span><br><span class="line">1154 db_file_multiblock_read_count</span><br><span class="line">1155 _db_file_exec_read_count</span><br><span class="line">1156 _db_file_optimizer_read_count</span><br><span class="line">1157 _db_file_noncontig_mblock_read_count</span><br><span class="line">1178 _db_file_format_io_buffers</span><br><span class="line"></span><br><span class="line">SQL&gt; select KSPPSTDVL from X<span class="variable">$KSPPCV</span> <span class="built_in">where</span> indx=1156;</span><br><span class="line">SQL&gt; alter session <span class="built_in">set</span> <span class="string">&quot;_db_file_optimizer_read_count&quot;</span>=128;</span><br><span class="line"></span><br><span class="line">3.使用并性查询：同时霸占多颗cpu完成一个查询</span><br><span class="line">select /*+parallel(ob1 8) sdkjfhkljsdklsdfjg*/ * from ob1;</span><br><span class="line"><span class="comment">############################################################</span></span><br><span class="line">分散IO：</span><br><span class="line">1.将表中数据分散到表空间下的不同数据文件</span><br><span class="line">2.使用分区表</span><br><span class="line"></span><br><span class="line">范围分区：</span><br><span class="line">create table t01 </span><br><span class="line">(id int,</span><br><span class="line">name varchar2(20),</span><br><span class="line">hire_date date)</span><br><span class="line">partition by range (hire_date)</span><br><span class="line">(partition p01 values less than (to_date(<span class="string">&#x27;2016-02-01&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>)) tablespace tbs1,</span><br><span class="line">partition p02 values less than (to_date(<span class="string">&#x27;2016-03-01&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>)) tablespace tbs2</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">select partition_name,tablespace_name from user_tab_partitions <span class="built_in">where</span> table_name=<span class="string">&#x27;T01&#x27;</span>;</span><br><span class="line"></span><br><span class="line">insert into t01 values (1,<span class="string">&#x27;Tom&#x27;</span>,to_date(<span class="string">&#x27;2016-01-05&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>));</span><br><span class="line">insert into t01 values (2,<span class="string">&#x27;Jerry&#x27;</span>,to_date(<span class="string">&#x27;2016-02-03&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>));</span><br><span class="line"></span><br><span class="line">将记事本中的数据装载到数据库：</span><br><span class="line">1.准备装载数据需要的控制文件</span><br><span class="line">vi /home/oracle/1.ctl</span><br><span class="line">-----------------------------------------------------------------------------</span><br><span class="line">LOAD DATA</span><br><span class="line">INFILE <span class="string">&#x27;/home/oracle/1.txt&#x27;</span></span><br><span class="line">APPEND INTO TABLE t01</span><br><span class="line">FIELDS TERMINATED BY <span class="string">&#x27;,&#x27;</span> </span><br><span class="line">OPTIONALLY ENCLOSED BY <span class="string">&#x27;&quot;&#x27;</span></span><br><span class="line">(id,name,hire_date date <span class="string">&#x27;yyyy-mm-dd&#x27;</span>)</span><br><span class="line">-----------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">2.准备包含数据的记事本文件</span><br><span class="line">vi /home/oracle/1.txt</span><br><span class="line">--------------------------</span><br><span class="line">3,ALvin,2016-01-12</span><br><span class="line">4,Stella,2016-02-15</span><br><span class="line">5,SMITH,2016-02-17</span><br><span class="line">6,ALLEN,2016-02-20</span><br><span class="line">7,WARD,2016-02-22</span><br><span class="line">8,JONES,1981-04-02</span><br><span class="line">9,MARTIN,1981-09-28</span><br><span class="line">10,BLAKE,1981-05-01</span><br><span class="line">11,CLARK,1981-06-09</span><br><span class="line">12,SCOTT,1987-04-19</span><br><span class="line">13,KING,1981-11-17</span><br><span class="line">14,TURNER,1981-09-08</span><br><span class="line">15,ADAMS,1987-05-23</span><br><span class="line">16,JAMES,1981-12-03</span><br><span class="line">17,FORD,1981-12-03</span><br><span class="line">18,MILLER,2016-01-23</span><br><span class="line">--------------------------</span><br><span class="line"></span><br><span class="line">3.调用sql loader进行数据装载</span><br><span class="line">sqlldr scott/tiger control=/home/oracle/1.ctl bad=/home/oracle/bad.txt <span class="built_in">log</span>=/home/oracle/sqlldr.log</span><br><span class="line"></span><br><span class="line">增加表分区：</span><br><span class="line">insert into t01 values (19,<span class="string">&#x27;alice&#x27;</span>,to_date(<span class="string">&#x27;2016-03-05&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>));</span><br><span class="line">alter table t01 add partition p03 values less than (to_date(<span class="string">&#x27;2016-04-01&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>));</span><br><span class="line"></span><br><span class="line">移动表分区：</span><br><span class="line">SQL&gt; alter table t01 move partition p03 tablespace tbs3;</span><br><span class="line"></span><br><span class="line">跨分区update数据：</span><br><span class="line">SQL&gt; update t01 <span class="built_in">set</span> HIRE_DATE=to_date(<span class="string">&#x27;2016-03-15&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>) <span class="built_in">where</span> id=8;</span><br><span class="line">SQL&gt; alter table t01 <span class="built_in">enable</span> row movement;</span><br><span class="line"></span><br><span class="line">分区表与索引：</span><br><span class="line">本地分区索引：存储子句继承表分区的存储子句</span><br><span class="line">create index i_t01_date on t01 (hire_date) <span class="built_in">local</span>;</span><br><span class="line">select partition_name,tablespace_name from user_ind_partitions <span class="built_in">where</span> index_name=<span class="string">&#x27;I_T01_DATE&#x27;</span>;</span><br><span class="line"></span><br><span class="line">在分区表建立全局索引：</span><br><span class="line">create index i_t01_name on t01 (name);</span><br><span class="line"></span><br><span class="line">在分区表建立全局索引：</span><br><span class="line">create index i_t01_id on t01 (id) global partition by range (id)</span><br><span class="line">(partition i01 values less than (11),</span><br><span class="line">partition i02 values less than (21),</span><br><span class="line">partition idef values less than (maxvalue));</span><br><span class="line"></span><br><span class="line">符合列范围分区:</span><br><span class="line">create table t02 </span><br><span class="line">(id int,</span><br><span class="line">name varchar2(20),</span><br><span class="line">hire_date date)</span><br><span class="line">partition by range (id,hire_date)</span><br><span class="line">(partition p01 values less than (1000,to_date(<span class="string">&#x27;2016-02-01&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>)) tablespace tbs1,</span><br><span class="line">partition p02 values less than (2000,to_date(<span class="string">&#x27;2016-03-01&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>)) tablespace tbs2</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">insert into t02 values (900,<span class="string">&#x27;alice&#x27;</span>,to_date(<span class="string">&#x27;2016-02-08&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>));</span><br><span class="line">insert into t02 values (1000,<span class="string">&#x27;alice&#x27;</span>,to_date(<span class="string">&#x27;2016-01-05&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>));</span><br><span class="line">insert into t02 values (1000,<span class="string">&#x27;alice&#x27;</span>,to_date(<span class="string">&#x27;2016-02-05&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>));</span><br><span class="line">insert into t02 values (1500,<span class="string">&#x27;alice&#x27;</span>,to_date(<span class="string">&#x27;2016-01-09&#x27;</span>,<span class="string">&#x27;yyyy-mm-dd&#x27;</span>));</span><br><span class="line"></span><br><span class="line">列表分区：</span><br><span class="line">create table t03</span><br><span class="line">(code varchar2(4),</span><br><span class="line">city varchar2(20),</span><br><span class="line">region varchar2(20))</span><br><span class="line">partition by list (code)</span><br><span class="line">(partition p010 values (<span class="string">&#x27;010&#x27;</span>) tablespace tbs1,</span><br><span class="line">partition p021 values (<span class="string">&#x27;021&#x27;</span>) tablespace tbs2);</span><br><span class="line"></span><br><span class="line">散列分区：PARTITIONS的数量最好是2的n次幂</span><br><span class="line">CREATE TABLE hash01 PARTITION BY HASH (empno) PARTITIONS 4 </span><br><span class="line">STORE IN (tbs1, tbs2, tbs3, tbs4)</span><br><span class="line">as select * from e01;</span><br><span class="line"></span><br><span class="line">select partition_name from user_tab_partitions <span class="built_in">where</span> table_name=<span class="string">&#x27;HASH01&#x27;</span>;</span><br><span class="line">select count(*) from hash01 partition (SYS_P61);</span><br><span class="line"></span><br><span class="line">复合分区：</span><br><span class="line">create table p05 (deptno number,ename varchar2(10),grade varchar2(2))</span><br><span class="line">partition by range (deptno) </span><br><span class="line">subpartition by <span class="built_in">hash</span> (ename)</span><br><span class="line">subpartitions 8 store <span class="keyword">in</span> (tbs1,tbs3,tbs5,tbs7)</span><br><span class="line">(partition p1 values less than (1000),</span><br><span class="line">partition p2 values less than (2000) store <span class="keyword">in</span> (tbs2,tbs4,tbs6,tbs8),</span><br><span class="line">partition p3 values less than (3000)</span><br><span class="line">(subpartition p3_1 tablespace users,</span><br><span class="line">subpartition p3_2 tablespace system));</span><br><span class="line"></span><br><span class="line">select partition_name,tablespace_name from user_tab_subpartitions <span class="built_in">where</span> table_name=<span class="string">&#x27;P05&#x27;</span>;</span><br><span class="line"></span><br><span class="line">联机重定义：</span><br><span class="line">创建中间表</span><br><span class="line">create table tmp </span><br><span class="line">(empno number(4),</span><br><span class="line">ename varchar2(10),</span><br><span class="line">job varchar2(10),</span><br><span class="line">mgr number(4),</span><br><span class="line">hiredate date,</span><br><span class="line">sal number(7,2),</span><br><span class="line">comm number(7,2),</span><br><span class="line">deptno number(2))</span><br><span class="line">partition by range (deptno)</span><br><span class="line">(partition p10 values less than (20) tablespace tbs1,</span><br><span class="line">partition p20 values less than (30) tablespace tbs2,</span><br><span class="line">partition p30 values less than (40) tablespace tbs3</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">conn / as sysdba</span><br><span class="line">begin</span><br><span class="line">DBMS_REDEFINITION.START_REDEF_TABLE (</span><br><span class="line"><span class="string">&#x27;SCOTT&#x27;</span>,<span class="string">&#x27;EMP&#x27;</span>,<span class="string">&#x27;TMP&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;empno empno,</span></span><br><span class="line"><span class="string">ename ename,</span></span><br><span class="line"><span class="string">job job,</span></span><br><span class="line"><span class="string">MGR MGR,</span></span><br><span class="line"><span class="string">hiredate hiredate,</span></span><br><span class="line"><span class="string">sal sal,</span></span><br><span class="line"><span class="string">comm comm,</span></span><br><span class="line"><span class="string">deptno deptno&#x27;</span>);</span><br><span class="line">end;</span><br><span class="line">/</span><br><span class="line"></span><br><span class="line">begin</span><br><span class="line">DBMS_REDEFINITION.SYNC_INTERIM_TABLE (<span class="string">&#x27;SCOTT&#x27;</span>,<span class="string">&#x27;EMP&#x27;</span>,<span class="string">&#x27;TMP&#x27;</span>);</span><br><span class="line">end;</span><br><span class="line">/</span><br><span class="line"></span><br><span class="line">begin</span><br><span class="line">DBMS_REDEFINITION.FINISH_REDEF_TABLE (<span class="string">&#x27;SCOTT&#x27;</span>,<span class="string">&#x27;EMP&#x27;</span>,<span class="string">&#x27;TMP&#x27;</span>);</span><br><span class="line">end;</span><br><span class="line">/</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:49.912Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/database/oracle/oracle-11g/F-DBA%E7%9A%84%E6%97%A5%E5%B8%B8%E5%B7%A5%E4%BD%9C-06-tuning.html';
+  var disqus_title = "DBA的日常工作";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

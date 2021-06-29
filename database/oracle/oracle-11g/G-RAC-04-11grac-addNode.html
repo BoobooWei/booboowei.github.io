@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>RAC | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/G-RAC-04-11grac-addNode.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/database/oracle/oracle-11g/G-RAC-04-11grac-addNode">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="第三节点添加集群环境dns:172.25.5.11；域名:johnny.comnode1:(172.25.5.12 rac1)  (192.168.48.10 rac1-priv)  (172.25.5.20 rac1-vip)node2:(172.25.5.13 rac2)  (192.168.48.11 rac1-priv)  (172.25.5.21 rac2-vip)node3:(172.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RAC">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/G-RAC-04-11grac-addNode">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="第三节点添加集群环境dns:172.25.5.11；域名:johnny.comnode1:(172.25.5.12 rac1)  (192.168.48.10 rac1-priv)  (172.25.5.20 rac1-vip)node2:(172.25.5.13 rac2)  (192.168.48.11 rac1-priv)  (172.25.5.21 rac2-vip)node3:(172.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:49.915Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:49.915Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">RAC</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/database/oracle/oracle-11g/G-RAC-04-11grac-addNode.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">第三节点添加</span><br><span class="line">集群环境</span><br><span class="line">dns:172.25.5.11；域名:johnny.com</span><br><span class="line">node1:(172.25.5.12 rac1)  (192.168.48.10 rac1-priv)  (172.25.5.20 rac1-vip)</span><br><span class="line">node2:(172.25.5.13 rac2)  (192.168.48.11 rac1-priv)  (172.25.5.21 rac2-vip)</span><br><span class="line">node3:(172.25.5.10 rac3)  (192.168.48.12 rac1-priv)  (172.25.5.22 rac3-vip)</span><br><span class="line"></span><br><span class="line">修改系统内核参数</span><br><span class="line">vi /etc/sysctl.conf</span><br><span class="line">------------------------------------------</span><br><span class="line">kernel.shmmax = 4294967296</span><br><span class="line">kernel.shmmni = 4096</span><br><span class="line">kernel.shmall = 2097152</span><br><span class="line">kernel.sem = 250 32000 100 128</span><br><span class="line">fs.file-max = 6815744</span><br><span class="line">fs.aio-max-nr = 1048576</span><br><span class="line">net.ipv4.ip_local_port_range = 9000 65500</span><br><span class="line">net.core.rmem_default = 262144</span><br><span class="line">net.core.rmem_max = 4194304</span><br><span class="line">net.core.wmem_default = 262144</span><br><span class="line">net.core.wmem_max = 1048586</span><br><span class="line"></span><br><span class="line">shell限制</span><br><span class="line">vi /etc/security/limits.conf</span><br><span class="line">------------------------------------------</span><br><span class="line"><span class="comment">#Oracle configure  shell parameters</span></span><br><span class="line">oracle soft nofile 65536</span><br><span class="line">oracle hard nofile 65536</span><br><span class="line">oracle soft nproc 16384</span><br><span class="line">oracle hard nproc 16384</span><br><span class="line"><span class="comment">#grid configure  shell parameters</span></span><br><span class="line">grid soft nofile 65536</span><br><span class="line">grid hard nofile 65536</span><br><span class="line">grid soft nproc 16384</span><br><span class="line">grid hard nproc 16384</span><br><span class="line"></span><br><span class="line">node3修改网络配置：添加公网：172.25.5.10；心跳：192.168.48.12</span><br><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-eth1</span><br><span class="line">`````````````````````````````</span><br><span class="line">DEVICE=eth1</span><br><span class="line">BOOTPROTO=none</span><br><span class="line">ONBOOT=yes</span><br><span class="line">IPADDR=192.168.48.12</span><br><span class="line">HWADDR=52:54:00:01:05:0a</span><br><span class="line">TYPE=Ethernet</span><br><span class="line"></span><br><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-eth0</span><br><span class="line">``````````````````````````</span><br><span class="line">DEVICE=eth0</span><br><span class="line">BOOTPROTO=none</span><br><span class="line">ONBOOT=yes</span><br><span class="line">NETMASK=255.255.255.0</span><br><span class="line">IPADDR=172.25.5.10</span><br><span class="line">HWADDR=52:54:00:00:05:0a</span><br><span class="line">GATEWAY=172.25.5.254</span><br><span class="line">TYPE=Ethernet</span><br><span class="line"></span><br><span class="line">网络重启动</span><br><span class="line">service network restart</span><br><span class="line"></span><br><span class="line">host文件:</span><br><span class="line">node1：</span><br><span class="line">vi /etc/hosts</span><br><span class="line">`````````````````````</span><br><span class="line">172.25.5.12 rac1.johnny.com rac1</span><br><span class="line">172.25.5.13 rac2.johnny.com rac2</span><br><span class="line">172.25.5.10 rac3.johnny.com rac3</span><br><span class="line">172.25.5.20 rac1-vip.johnny.com rac1-vip</span><br><span class="line">172.25.5.21 rac2-vip.johnny.com rac2-vip</span><br><span class="line">172.25.5.22 rac3-vip.johnny.com rac3-vip</span><br><span class="line">192.168.48.10 rac1-priv.johnny.com rac1-priv</span><br><span class="line">192.168.48.11 rac2-priv.johnny.com rac2-priv</span><br><span class="line">192.168.48.12 rac3-priv.johnny.com rac3-priv</span><br><span class="line"></span><br><span class="line">node2：</span><br><span class="line">vi /etc/hosts</span><br><span class="line">`````````````````````</span><br><span class="line">172.25.5.12 rac1.johnny.com rac1</span><br><span class="line">172.25.5.13 rac2.johnny.com rac2</span><br><span class="line">172.25.5.10 rac3.johnny.com rac3</span><br><span class="line">172.25.5.20 rac1-vip.johnny.com rac1-vip</span><br><span class="line">172.25.5.21 rac2-vip.johnny.com rac2-vip</span><br><span class="line">172.25.5.22 rac3-vip.johnny.com rac3-vip</span><br><span class="line">192.168.48.10 rac1-priv.johnny.com rac1-priv</span><br><span class="line">192.168.48.11 rac2-priv.johnny.com rac2-priv</span><br><span class="line">192.168.48.12 rac3-priv.johnny.com rac3-priv</span><br><span class="line"></span><br><span class="line">node3：</span><br><span class="line">vi /etc/hosts</span><br><span class="line">`````````````````````</span><br><span class="line">172.25.5.12 rac1.johnny.com rac1</span><br><span class="line">172.25.5.13 rac2.johnny.com rac2</span><br><span class="line">172.25.5.10 rac3.johnny.com rac3</span><br><span class="line">172.25.5.20 rac1-vip.johnny.com rac1-vip</span><br><span class="line">172.25.5.21 rac2-vip.johnny.com rac2-vip</span><br><span class="line">172.25.5.22 rac3-vip.johnny.com rac3-vip</span><br><span class="line">192.168.48.10 rac1-priv.johnny.com rac1-priv</span><br><span class="line">192.168.48.11 rac2-priv.johnny.com rac2-priv</span><br><span class="line">192.168.48.12 rac3-priv.johnny.com rac3-priv</span><br><span class="line"></span><br><span class="line">dns服务器</span><br><span class="line"></span><br><span class="line">vi /etc/hosts</span><br><span class="line">`````````````````````</span><br><span class="line">172.25.5.12 rac1.johnny.com rac1</span><br><span class="line">172.25.5.13 rac2.johnny.com rac2</span><br><span class="line">172.25.5.10 rac3.johnny.com rac3</span><br><span class="line">172.25.5.20 rac1-vip.johnny.com rac1-vip</span><br><span class="line">172.25.5.21 rac2-vip.johnny.com rac2-vip</span><br><span class="line">172.25.5.22 rac3-vip.johnny.com rac3-vip</span><br><span class="line">192.168.48.10 rac1-priv.johnny.com rac1-priv</span><br><span class="line">192.168.48.11 rac2-priv.johnny.com rac2-priv</span><br><span class="line">192.168.48.12 rac3-priv.johnny.com rac3-priv</span><br><span class="line"></span><br><span class="line">修改主机名hostname</span><br><span class="line">命令修改</span><br><span class="line">hostname rac3.johnny.com</span><br><span class="line">配置文件修改</span><br><span class="line">vi /etc/sysconfig/network</span><br><span class="line">````````````````````````</span><br><span class="line">HOSTNAME=rac3.johnny.com</span><br><span class="line"></span><br><span class="line">vi /etc/resolv.conf</span><br><span class="line">search johnny.com</span><br><span class="line">nameserver 172.25.5.11</span><br><span class="line"></span><br><span class="line">添加dns</span><br><span class="line">解析</span><br><span class="line">vi /var/named/chroot/var/named/johnny.com.zone</span><br><span class="line">``````````````````````````````````````````````````````````````````````````````````````````````````````````</span><br><span class="line"><span class="variable">$TTL</span>    86400</span><br><span class="line">@               IN SOA  dns.johnny.com.      root.johnny.com. (</span><br><span class="line">                                        42              ; serial (d. adams)</span><br><span class="line">                                        3H              ; refresh</span><br><span class="line">                                        15M             ; retry</span><br><span class="line">                                        1W              ; expiry</span><br><span class="line">                                        1D )            ; minimum</span><br><span class="line">@       IN      NS      dns.oracle.com.</span><br><span class="line">rac1    IN      A       172.25.5.12</span><br><span class="line">rac2    IN      A       172.25.5.13</span><br><span class="line">rac3    IN      A       172.25.5.10</span><br><span class="line">scan    IN      A       172.25.5.195</span><br><span class="line">scan    IN      A       172.25.5.196</span><br><span class="line">scan    IN      A       172.25.5.197</span><br><span class="line">反响解析</span><br><span class="line">vi /var/named/chroot/var/named/5.25.172.local</span><br><span class="line">````````````````````````````````````````````````````````````````````````````````````````````````````````</span><br><span class="line"><span class="variable">$TTL</span>    86400</span><br><span class="line">@       IN      SOA     dns.johnny.com. root.johnny.com.  (</span><br><span class="line">                                      1997022700 ; Serial</span><br><span class="line">                                      28800      ; Refresh</span><br><span class="line">                                      14400      ; Retry</span><br><span class="line">                                      3600000    ; Expire</span><br><span class="line">                                      86400 )    ; Minimum</span><br><span class="line">@        IN      NS      dns.johnny.com.</span><br><span class="line">10      IN      PTR     rac3.johnny.com</span><br><span class="line">12      IN      PTR     rac1.johnny.com</span><br><span class="line">13      IN      PTR     rac2.johnny.com</span><br><span class="line">195     IN      PTR     scan.johnny.com</span><br><span class="line">196     IN      PTR     scan.johnny.com</span><br><span class="line">197     IN      PTR     scan.johnny.com</span><br><span class="line"></span><br><span class="line">重启动</span><br><span class="line">service named restart</span><br><span class="line"></span><br><span class="line">共享磁盘</span><br><span class="line">搜索iscsi：</span><br><span class="line">iscsiadm -m discovery -t sendtargets -p 172.25.5.14 -l</span><br><span class="line">添加udev</span><br><span class="line">vi /etc/udev/rules.d/60-raw.rules</span><br><span class="line">～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～</span><br><span class="line">ACTION==<span class="string">&quot;add&quot;</span>, KERNEL==<span class="string">&quot;sda1&quot;</span>, RUN+=<span class="string">&quot;/bin/raw /dev/raw/raw1 %N&quot;</span></span><br><span class="line">ACTION==<span class="string">&quot;add&quot;</span>, KERNEL==<span class="string">&quot;sda2&quot;</span>, RUN+=<span class="string">&quot;/bin/raw /dev/raw/raw2 %N&quot;</span></span><br><span class="line">ACTION==<span class="string">&quot;add&quot;</span>, KERNEL==<span class="string">&quot;sda3&quot;</span>, RUN+=<span class="string">&quot;/bin/raw /dev/raw/raw3 %N&quot;</span></span><br><span class="line">ACTION==<span class="string">&quot;add&quot;</span>, KERNEL==<span class="string">&quot;sda5&quot;</span>, RUN+=<span class="string">&quot;/bin/raw /dev/raw/raw4 %N&quot;</span></span><br><span class="line">ACTION==<span class="string">&quot;add&quot;</span>, KERNEL==<span class="string">&quot;sda6&quot;</span>, RUN+=<span class="string">&quot;/bin/raw /dev/raw/raw5 %N&quot;</span></span><br><span class="line">KERNEL==<span class="string">&quot;raw1&quot;</span>, MODE=<span class="string">&quot;0660&quot;</span>, GROUP=<span class="string">&quot;asmadmin&quot;</span>, OWNER=<span class="string">&quot;grid&quot;</span></span><br><span class="line">KERNEL==<span class="string">&quot;raw2&quot;</span>, MODE=<span class="string">&quot;0660&quot;</span>, GROUP=<span class="string">&quot;asmadmin&quot;</span>, OWNER=<span class="string">&quot;grid&quot;</span></span><br><span class="line">KERNEL==<span class="string">&quot;raw3&quot;</span>, MODE=<span class="string">&quot;0660&quot;</span>, GROUP=<span class="string">&quot;asmadmin&quot;</span>, OWNER=<span class="string">&quot;grid&quot;</span></span><br><span class="line">KERNEL==<span class="string">&quot;raw4&quot;</span>, MODE=<span class="string">&quot;0660&quot;</span>, GROUP=<span class="string">&quot;asmadmin&quot;</span>, OWNER=<span class="string">&quot;grid&quot;</span></span><br><span class="line">KERNEL==<span class="string">&quot;raw5&quot;</span>, MODE=<span class="string">&quot;0660&quot;</span>, GROUP=<span class="string">&quot;asmadmin&quot;</span>, OWNER=<span class="string">&quot;grid&quot;</span></span><br><span class="line">启动udev</span><br><span class="line">start_udev</span><br><span class="line">检验裸设备是否成功加载</span><br><span class="line">raw -qa</span><br><span class="line">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span><br><span class="line">[root@rac3 tmp]<span class="comment"># raw -qa</span></span><br><span class="line">/dev/raw/raw1:	bound to major 8, minor 1</span><br><span class="line">/dev/raw/raw2:	bound to major 8, minor 2</span><br><span class="line">/dev/raw/raw3:	bound to major 8, minor 3</span><br><span class="line">/dev/raw/raw4:	bound to major 8, minor 5</span><br><span class="line">/dev/raw/raw5:	bound to major 8, minor 6</span><br><span class="line">清理oracle虚拟机环境建立node3</span><br><span class="line">su - root(oracle虚拟机)</span><br><span class="line">rm -rf /etc/ora*</span><br><span class="line">rm -rf /u01/*</span><br><span class="line">rm -rf /usr/<span class="built_in">local</span>/bin/*</span><br><span class="line"></span><br><span class="line">userdel -r oracle</span><br><span class="line"></span><br><span class="line">groupdel dba</span><br><span class="line">groupdel asmdba</span><br><span class="line">groupdel asmadmin</span><br><span class="line">groupdel oinstall</span><br><span class="line">groupdel oracle</span><br><span class="line"></span><br><span class="line">添加组</span><br><span class="line">groupadd -g 501 oinstall</span><br><span class="line">groupadd -g 502 dba</span><br><span class="line">groupadd -g 503 oper</span><br><span class="line">groupadd -g 504 asmadmin</span><br><span class="line">groupadd -g 505 asmdba</span><br><span class="line">groupadd -g 506 asmoper</span><br><span class="line"></span><br><span class="line">添加用户</span><br><span class="line">useradd -u 501 -g oinstall -G dba,oper,asmdba oracle</span><br><span class="line">useradd -u 502 -g oinstall -G asmadmin,asmdba,asmoper grid</span><br><span class="line"></span><br><span class="line">修改用户口令</span><br><span class="line">passwd oracle </span><br><span class="line">--&gt; oracle</span><br><span class="line">passwd grid   </span><br><span class="line">--&gt; grid</span><br><span class="line"></span><br><span class="line">修改/u01权限</span><br><span class="line">mkdir -p /u01/grid</span><br><span class="line">chown -R grid:oinstall /u01/</span><br><span class="line"></span><br><span class="line">mkdir /u01/app/oracle</span><br><span class="line">chown -R oracle:oinstall /u01/app/</span><br><span class="line">chmod -R 775 /u01/</span><br><span class="line">*如果grid与orcle安装在同一文件系统下面，如上，在进行权限修改的时候要注意顺序，先进行/u01赋权，再进行/u01/db赋权，否则会被覆盖。</span><br><span class="line"></span><br><span class="line">修改用户环境变量</span><br><span class="line">su - grid</span><br><span class="line">vi .bashrc</span><br><span class="line">`````````````````````````````</span><br><span class="line"><span class="built_in">export</span> ORACLE_BASE=/u01/app/oracle</span><br><span class="line"><span class="built_in">export</span> ORACLE_HOME=/u01/grid</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$ORACLE_HOME</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> ORACLE_OWNER=oracle</span><br><span class="line"><span class="built_in">export</span> ORACLE_SID=+ASM3 <span class="comment">#rac2节点为 export ORACLE_SID=+ASM2</span></span><br><span class="line"><span class="built_in">export</span> ORACLE_TERM=vt100</span><br><span class="line"><span class="built_in">export</span> THREADS_FLAG=native</span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$ORACLE_HOME</span>/lib:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$ORACLE_HOME</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> LANG=en_US</span><br><span class="line"><span class="built_in">alias</span> sqlplus=<span class="string">&#x27;rlwrap sqlplus&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> lsnrctl=<span class="string">&#x27;rlwrap lsnrctl&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> asmcmd=<span class="string">&#x27;rlwrap asmcmd&#x27;</span></span><br><span class="line"></span><br><span class="line">su - oracle</span><br><span class="line">vi .bashrc</span><br><span class="line">`````````````````````````````````````````</span><br><span class="line"><span class="built_in">export</span> ORACLE_BASE=/u01/app/oracle</span><br><span class="line"><span class="built_in">export</span> ORACLE_HOME=<span class="variable">$ORACLE_BASE</span>/product/11.2.0/db_1</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$ORACLE_HOME</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> ORACLE_OWNER=oracle</span><br><span class="line"><span class="built_in">export</span> ORACLE_SID=johnny3 </span><br><span class="line"><span class="built_in">export</span> ORACLE_TERM=vt100</span><br><span class="line"><span class="built_in">export</span> THREADS_FLAG=native</span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$ORACLE_HOME</span>/lib:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$ORACLE_HOME</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> EDITOR=vi</span><br><span class="line"><span class="built_in">export</span> SQLPATH=/home/oracle</span><br><span class="line"><span class="built_in">export</span> LANG=en_US</span><br><span class="line"><span class="built_in">alias</span> sqlplus=<span class="string">&#x27;rlwrap sqlplus&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> lsnrctl=<span class="string">&#x27;rlwrap lsnrctl&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> rman=<span class="string">&#x27;rlwrap rman&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dgmgrl=<span class="string">&#x27;rlwrap dgmgrl&#x27;</span></span><br><span class="line">建立信任关系</span><br><span class="line">su - oracle</span><br><span class="line">node1:172.25.5.10</span><br><span class="line">su - oracle</span><br><span class="line">ssh-keygen -t rsa</span><br><span class="line">ssh-keygen -t dsa</span><br><span class="line"><span class="built_in">cd</span> .ssh</span><br><span class="line">cat *.pub &gt; authorized_keys</span><br><span class="line"></span><br><span class="line">su - oracle</span><br><span class="line">node2:172.25.5.12</span><br><span class="line">scp authorized_keys oracle@172.25.5.10:/home/oracle/.ssh/keys_dbs</span><br><span class="line"></span><br><span class="line">su - oracle</span><br><span class="line">node3:172.25.5.10</span><br><span class="line">cat keys_dbs &gt;&gt; authorized_keys</span><br><span class="line">scp authorized_keys oracle@172.25.5.13:/home/oracle/.ssh/</span><br><span class="line">scp authorized_keys oracle@172.25.5.12:/home/oracle/.ssh/</span><br><span class="line"></span><br><span class="line">node1、node2、node3都检测下</span><br><span class="line">ssh rac1 date</span><br><span class="line">ssh rac3 date</span><br><span class="line">ssh rac2 date</span><br><span class="line">ssh rac1-priv date</span><br><span class="line">ssh rac2-priv date</span><br><span class="line">ssh rac3-priv date</span><br><span class="line"></span><br><span class="line">做好以上准备工作可以进行初步检测</span><br><span class="line">在node1</span><br><span class="line">su - grid</span><br><span class="line"><span class="built_in">cd</span> /tmp/grid(自己的grid解压包下)</span><br><span class="line">./runcluvfy.sh stage -pre crsinst -n rac1,rac2 -fixup -verbose</span><br><span class="line"></span><br><span class="line">node3安装软件</span><br><span class="line">rpm cvuqdisk-1.0.9-1.rpm  -ivh</span><br><span class="line"></span><br><span class="line">node3执行脚本</span><br><span class="line">/tmp/CVU_11.2.0.4.0_grid/runfixup.sh</span><br><span class="line"></span><br><span class="line">怎么检测针对15000</span><br><span class="line">dns需要修改named.zone</span><br><span class="line">zone <span class="string">&quot;.&quot;</span> IN &#123;</span><br><span class="line">        <span class="built_in">type</span> hint;</span><br><span class="line">//	file <span class="string">&quot;named.ca&quot;</span>;</span><br><span class="line">        file <span class="string">&quot;/dev/null&quot;</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">每个节点vi /etc/resolv.conf添加</span><br><span class="line">options rotate</span><br><span class="line">options timeout:2</span><br><span class="line">options attempts:5</span><br><span class="line"></span><br><span class="line">所有准备工作做完后可以进行node3添加</span><br><span class="line">检测硬件信息</span><br><span class="line">node1</span><br><span class="line">su - oracle</span><br><span class="line">cluvfy stage -post hwos -n rac3 -verbose</span><br><span class="line">基本可以忽略（教室虚拟机）</span><br><span class="line">内核参数</span><br><span class="line">node1</span><br><span class="line">cluvfy stage -pre nodeadd -n rac3 -verbose</span><br><span class="line">基本可以忽略（教室虚拟机）</span><br><span class="line">软件包信息</span><br><span class="line">node1</span><br><span class="line">cluvfy comp peer -refnode rac2 -n rac3 -orainv oinstall -osdba oinstall-verbose</span><br><span class="line">基本可以忽略（教室虚拟机）</span><br><span class="line"></span><br><span class="line">执行数据备份(本人未测试)</span><br><span class="line">/app/grid/bin/ocrconfig -manualbackup</span><br><span class="line">/app/grid/bin/ocrdump /tmp/ocrdump_ocr.bak</span><br><span class="line"></span><br><span class="line">Grid 层面添加新节点</span><br><span class="line">node1 </span><br><span class="line">su - grid</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$ORACLE_HOME</span>/oui/bin</span><br><span class="line">忽略pre-checks（建议先不要设置，在检查一遍在进行设置）</span><br><span class="line"><span class="built_in">export</span> IGNORE_PREADDNODE_CHECKS=Y</span><br><span class="line"></span><br><span class="line">./addNode.sh <span class="string">&quot;CLUSTER_NEW_NODES=&#123;rac3&#125;&quot;</span> <span class="string">&quot;CLUSTER_NEW_VIRTUAL_HOSTNAMES=&#123;rac3-vip&#125;&quot;</span></span><br><span class="line">最后需要按照提示执行脚本</span><br><span class="line"></span><br><span class="line">oracle软件添加</span><br><span class="line">node1</span><br><span class="line">su - oracle</span><br><span class="line">./addNode.sh <span class="string">&quot;CLUSTER_NEW_NODES=&#123;rac3&#125;&quot;</span></span><br><span class="line">最后执行脚本</span><br><span class="line"></span><br><span class="line">dbca层面添加数据库配置</span><br><span class="line">dbca -silent -addInstance -nodeList rac3 -gdbName johnny -instanceName johnny3 -sysDBAUserName sys -sysDBAPassword uplooking</span><br><span class="line"></span><br><span class="line">大功告成功后可以进行测试</span><br><span class="line">sqlplus / as sysdba</span><br><span class="line">SQL&gt; select INST_ID,status from gv<span class="variable">$instance</span>;</span><br><span class="line"></span><br><span class="line">   INST_ID STATUS</span><br><span class="line">---------- ------------</span><br><span class="line">	 1 OPEN</span><br><span class="line">	 3 OPEN</span><br><span class="line">	 2 OPEN</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:49.915Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/database/oracle/oracle-11g/G-RAC-04-11grac-addNode.html';
+  var disqus_title = "RAC";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

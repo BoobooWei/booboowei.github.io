@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>SQL语句-查询语句-多表连接 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-02-%E5%A4%9A%E8%A1%A8%E8%BF%9E%E6%8E%A5.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-02-%E5%A4%9A%E8%A1%A8%E8%BF%9E%E6%8E%A5">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="SQL语句-查询语句-多表连接 熟悉每一张表的结构 原理 案例 1. SMITH工作在哪里？ 2. 10号部门的员工都工作在哪些城市？ 3. 销售部门都有哪些员工，分别工作在哪些城市？ 4. 有所的员工姓名和对应的工作城市 5. 每个城市和对应的员工姓名，虽然波士顿没有员工，但是公司是有波士顿分部的，波士顿也要统计出来。 6. 每个城市工作的员工有几个？ 7. 每一个员工的工资等级是多少 8">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SQL语句-查询语句-多表连接">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-02-%E5%A4%9A%E8%A1%A8%E8%BF%9E%E6%8E%A5">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="SQL语句-查询语句-多表连接 熟悉每一张表的结构 原理 案例 1. SMITH工作在哪里？ 2. 10号部门的员工都工作在哪些城市？ 3. 销售部门都有哪些员工，分别工作在哪些城市？ 4. 有所的员工姓名和对应的工作城市 5. 每个城市和对应的员工姓名，虽然波士顿没有员工，但是公司是有波士顿分部的，波士顿也要统计出来。 6. 每个城市工作的员工有几个？ 7. 每一个员工的工资等级是多少 8">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:49.890Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:49.890Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">SQL语句-查询语句-多表连接</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/database/oracle/oracle-11g/B-SQL语句-02-多表连接.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#sql语句-查询语句-多表连接">SQL语句-查询语句-多表连接</a><ul>
+<li><a href="#熟悉每一张表的结构">熟悉每一张表的结构</a></li>
+<li><a href="#原理">原理</a></li>
+<li><a href="#案例">案例</a><ul>
+<li><a href="#1-smith工作在哪里">1. SMITH工作在哪里？</a></li>
+<li><a href="#2-10号部门的员工都工作在哪些城市">2. 10号部门的员工都工作在哪些城市？</a></li>
+<li><a href="#3-销售部门都有哪些员工分别工作在哪些城市">3. 销售部门都有哪些员工，分别工作在哪些城市？</a></li>
+<li><a href="#4-有所的员工姓名和对应的工作城市">4. 有所的员工姓名和对应的工作城市</a></li>
+<li><a href="#5-每个城市和对应的员工姓名虽然波士顿没有员工但是公司是有波士顿分部的波士顿也要统计出来">5. 每个城市和对应的员工姓名，虽然波士顿没有员工，但是公司是有波士顿分部的，波士顿也要统计出来。</a></li>
+<li><a href="#6-每个城市工作的员工有几个">6. 每个城市工作的员工有几个？</a></li>
+<li><a href="#7-每一个员工的工资等级是多少">7. 每一个员工的工资等级是多少</a></li>
+<li><a href="#8-每一个员工的直属领导者是谁">8. 每一个员工的直属领导者是谁？</a></li>
+</ul>
+</li>
+<li><a href="#国标连接语法">国标连接语法</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h2 id="熟悉每一张表的结构" class="article-heading"><a href="#熟悉每一张表的结构" class="headerlink" title="熟悉每一张表的结构"></a>熟悉每一张表的结构<a class="article-anchor" href="#熟悉每一张表的结构" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th align="left">emp</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">EMPNO</td>
+<td align="left">雇员编号</td>
+</tr>
+<tr>
+<td align="left">ENAME</td>
+<td align="left">雇员名字</td>
+</tr>
+<tr>
+<td align="left">JOB</td>
+<td align="left">职位</td>
+</tr>
+<tr>
+<td align="left">MGR</td>
+<td align="left">上级编号</td>
+</tr>
+<tr>
+<td align="left">HIREDATE</td>
+<td align="left">雇佣时间</td>
+</tr>
+<tr>
+<td align="left">SAL</td>
+<td align="left">工资</td>
+</tr>
+<tr>
+<td align="left">COMM</td>
+<td align="left">奖金</td>
+</tr>
+<tr>
+<td align="left">DEPTNO</td>
+<td align="left">部门编号</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="left">dept</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">DEPTNO</td>
+<td align="left">部门编号</td>
+</tr>
+<tr>
+<td align="left">DNAME</td>
+<td align="left">部门名称</td>
+</tr>
+<tr>
+<td align="left">LOC</td>
+<td align="left">位置</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="left">bonus</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ENAME</td>
+<td align="left">雇员名字</td>
+</tr>
+<tr>
+<td align="left">JOB</td>
+<td align="left">职位</td>
+</tr>
+<tr>
+<td align="left">SAL</td>
+<td align="left">工资</td>
+</tr>
+<tr>
+<td align="left">COMM</td>
+<td align="left">奖金</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="left">salgrade</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">GRADE</td>
+<td align="left">等级</td>
+</tr>
+<tr>
+<td align="left">LOSAL</td>
+<td align="left">最低薪资</td>
+</tr>
+<tr>
+<td align="left">HISAL</td>
+<td align="left">最高薪资</td>
+</tr>
+</tbody></table>
+<h2 id="原理" class="article-heading"><a href="#原理" class="headerlink" title="原理"></a>原理<a class="article-anchor" href="#原理" aria-hidden="true"></a></h2><ol>
+<li><code>N</code>张表相连，需要<code>N-1</code>个条件</li>
+<li>多表连接，在oracle内部是两两相连</li>
+<li>内连接 <code>from a,b where a.id=b.id</code> 为</li>
+<li>右连接 <code>from a right join b on a.id=b.id</code> 等效于 <code>from a,b where a.id(+)=b.id</code></li>
+<li>左连接 <code>from a left join b on a.id=b.id</code> 等小于 <code>from a,b where a.id=b.id(+)</code></li>
+<li><code>count(*)</code> 会统计为null的行;count(列名)则不统计null的行</li>
+<li>不等连接 <code>from a,b where a.id between b.cc and b.dd</code></li>
+<li>自连接 <code>from a t1,b t2 whee t1.id=t2.idd</code></li>
+<li>笛卡尔连接 <code>from a,b</code></li>
+</ol>
+<h2 id="案例" class="article-heading"><a href="#案例" class="headerlink" title="案例"></a>案例<a class="article-anchor" href="#案例" aria-hidden="true"></a></h2><h3 id="1-SMITH工作在哪里？" class="article-heading"><a href="#1-SMITH工作在哪里？" class="headerlink" title="1. SMITH工作在哪里？"></a>1. SMITH工作在哪里？<a class="article-anchor" href="#1-SMITH工作在哪里？" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select ename,loc from emp,dept where emp.deptno=dept.deptno and lower(ename)=&#x27;smith&#x27;;</span><br><span class="line"></span><br><span class="line">ENAME	   LOC</span><br><span class="line"><span class="comment">---------- -------------</span></span><br><span class="line">SMITH	   DALLAS</span><br></pre></td></tr></table></figure>
+<h3 id="2-10号部门的员工都工作在哪些城市？" class="article-heading"><a href="#2-10号部门的员工都工作在哪些城市？" class="headerlink" title="2. 10号部门的员工都工作在哪些城市？"></a>2. 10号部门的员工都工作在哪些城市？<a class="article-anchor" href="#2-10号部门的员工都工作在哪些城市？" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select ename,loc from emp,dept where emp.deptno=dept.deptno and emp.deptno=10;</span><br><span class="line"></span><br><span class="line">ENAME	   LOC</span><br><span class="line"><span class="comment">---------- -------------</span></span><br><span class="line">CLARK	   NEW YORK</span><br><span class="line">KING	   NEW YORK</span><br><span class="line">MILLER	   NEW YORK</span><br></pre></td></tr></table></figure>
+<h3 id="3-销售部门都有哪些员工，分别工作在哪些城市？" class="article-heading"><a href="#3-销售部门都有哪些员工，分别工作在哪些城市？" class="headerlink" title="3. 销售部门都有哪些员工，分别工作在哪些城市？"></a>3. 销售部门都有哪些员工，分别工作在哪些城市？<a class="article-anchor" href="#3-销售部门都有哪些员工，分别工作在哪些城市？" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select ename,dname,loc from emp,dept where emp.deptno=dept.deptno and lower(dept.dname)=&#x27;sales&#x27;;</span><br><span class="line">ENAME	   DNAME	  LOC</span><br><span class="line"><span class="comment">---------- -------------- -------------</span></span><br><span class="line">WARD	   SALES	  CHICAGO</span><br><span class="line">TURNER	   SALES	  CHICAGO</span><br><span class="line">ALLEN	   SALES	  CHICAGO</span><br><span class="line">JAMES	   SALES	  CHICAGO</span><br><span class="line">BLAKE	   SALES	  CHICAGO</span><br><span class="line">MARTIN	   SALES	  CHICAGO</span><br></pre></td></tr></table></figure>
+<h3 id="4-有所的员工姓名和对应的工作城市" class="article-heading"><a href="#4-有所的员工姓名和对应的工作城市" class="headerlink" title="4. 有所的员工姓名和对应的工作城市"></a>4. 有所的员工姓名和对应的工作城市<a class="article-anchor" href="#4-有所的员工姓名和对应的工作城市" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select ename,loc from emp,dept where emp.deptno=dept.deptno;</span><br><span class="line"></span><br><span class="line">ENAME	   LOC</span><br><span class="line"><span class="comment">---------- -------------</span></span><br><span class="line">CLARK	   NEW YORK</span><br><span class="line">KING	   NEW YORK</span><br><span class="line">MILLER	   NEW YORK</span><br><span class="line">JONES	   DALLAS</span><br><span class="line">FORD	   DALLAS</span><br><span class="line">ADAMS	   DALLAS</span><br><span class="line">SMITH	   DALLAS</span><br><span class="line">SCOTT	   DALLAS</span><br><span class="line">WARD	   CHICAGO</span><br><span class="line">TURNER	   CHICAGO</span><br><span class="line">ALLEN	   CHICAGO</span><br><span class="line">JAMES	   CHICAGO</span><br><span class="line">BLAKE	   CHICAGO</span><br><span class="line">MARTIN	   CHICAGO</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-每个城市和对应的员工姓名，虽然波士顿没有员工，但是公司是有波士顿分部的，波士顿也要统计出来。" class="article-heading"><a href="#5-每个城市和对应的员工姓名，虽然波士顿没有员工，但是公司是有波士顿分部的，波士顿也要统计出来。" class="headerlink" title="5. 每个城市和对应的员工姓名，虽然波士顿没有员工，但是公司是有波士顿分部的，波士顿也要统计出来。"></a>5. 每个城市和对应的员工姓名，虽然波士顿没有员工，但是公司是有波士顿分部的，波士顿也要统计出来。<a class="article-anchor" href="#5-每个城市和对应的员工姓名，虽然波士顿没有员工，但是公司是有波士顿分部的，波士顿也要统计出来。" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select ename,loc from emp,dept where emp.deptno(+)=dept.deptno;</span><br><span class="line"></span><br><span class="line">ENAME	   LOC</span><br><span class="line"><span class="comment">---------- -------------</span></span><br><span class="line">CLARK	   NEW YORK</span><br><span class="line">KING	   NEW YORK</span><br><span class="line">MILLER	   NEW YORK</span><br><span class="line">JONES	   DALLAS</span><br><span class="line">FORD	   DALLAS</span><br><span class="line">ADAMS	   DALLAS</span><br><span class="line">SMITH	   DALLAS</span><br><span class="line">SCOTT	   DALLAS</span><br><span class="line">WARD	   CHICAGO</span><br><span class="line">TURNER	   CHICAGO</span><br><span class="line">ALLEN	   CHICAGO</span><br><span class="line">JAMES	   CHICAGO</span><br><span class="line">BLAKE	   CHICAGO</span><br><span class="line">MARTIN	   CHICAGO</span><br><span class="line">	   BOSTON</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"></span><br><span class="line">SQL&gt; select ename,loc from emp right join dept on emp.deptno=dept.deptno;</span><br><span class="line"></span><br><span class="line">ENAME	   LOC</span><br><span class="line"><span class="comment">---------- -------------</span></span><br><span class="line">CLARK	   NEW YORK</span><br><span class="line">KING	   NEW YORK</span><br><span class="line">MILLER	   NEW YORK</span><br><span class="line">JONES	   DALLAS</span><br><span class="line">FORD	   DALLAS</span><br><span class="line">ADAMS	   DALLAS</span><br><span class="line">SMITH	   DALLAS</span><br><span class="line">SCOTT	   DALLAS</span><br><span class="line">WARD	   CHICAGO</span><br><span class="line">TURNER	   CHICAGO</span><br><span class="line">ALLEN	   CHICAGO</span><br><span class="line">JAMES	   CHICAGO</span><br><span class="line">BLAKE	   CHICAGO</span><br><span class="line">MARTIN	   CHICAGO</span><br><span class="line">	   BOSTON</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="6-每个城市工作的员工有几个？" class="article-heading"><a href="#6-每个城市工作的员工有几个？" class="headerlink" title="6. 每个城市工作的员工有几个？"></a>6. 每个城市工作的员工有几个？<a class="article-anchor" href="#6-每个城市工作的员工有几个？" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select loc,count(*) from emp,dept where emp.deptno=dept.deptno group by loc;</span><br><span class="line"></span><br><span class="line">LOC		COUNT(*)</span><br><span class="line"><span class="comment">------------- ----------</span></span><br><span class="line">NEW YORK	       3</span><br><span class="line">CHICAGO 	       6</span><br><span class="line">DALLAS		       5</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>以上结果不够准确，因为波士顿还有分部，要加上波士顿</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select count(ename),loc from emp right join dept on emp.deptno=dept.deptno group by loc;</span><br><span class="line"></span><br><span class="line">COUNT(ENAME) LOC</span><br><span class="line"><span class="comment">------------ -------------</span></span><br><span class="line">	   3 NEW YORK</span><br><span class="line">	   6 CHICAGO</span><br><span class="line">	   0 BOSTON</span><br><span class="line">	   5 DALLAS</span><br><span class="line"></span><br><span class="line">SQL&gt; select count(*),loc from emp right join dept on emp.deptno=dept.deptno group by loc;</span><br><span class="line"></span><br><span class="line">  COUNT(*) LOC</span><br><span class="line"><span class="comment">---------- -------------</span></span><br><span class="line">	 3 NEW YORK</span><br><span class="line">	 6 CHICAGO</span><br><span class="line">	 1 BOSTON</span><br><span class="line">	 5 DALLAS</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>以上统计中，必须使用count(列名)，count(*)将null值也统计进去了。</p>
+<h3 id="7-每一个员工的工资等级是多少" class="article-heading"><a href="#7-每一个员工的工资等级是多少" class="headerlink" title="7. 每一个员工的工资等级是多少"></a>7. 每一个员工的工资等级是多少<a class="article-anchor" href="#7-每一个员工的工资等级是多少" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select ename,grade from emp,salgrade where sal &gt; losal and sal &lt; hisal;</span><br><span class="line"></span><br><span class="line">ENAME		GRADE</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">SMITH		    1</span><br><span class="line">JAMES		    1</span><br><span class="line">ADAMS		    1</span><br><span class="line">WARD		    2</span><br><span class="line">MARTIN		    2</span><br><span class="line">MILLER		    2</span><br><span class="line">TURNER		    3</span><br><span class="line">ALLEN		    3</span><br><span class="line">CLARK		    4</span><br><span class="line">BLAKE		    4</span><br><span class="line">JONES		    4</span><br><span class="line">KING		    5</span><br><span class="line"></span><br><span class="line">12 rows selected.</span><br><span class="line"></span><br><span class="line">SQL&gt; select ename,grade from emp,salgrade where sal between losal and  hisal;</span><br><span class="line"></span><br><span class="line">ENAME		GRADE</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">SMITH		    1</span><br><span class="line">JAMES		    1</span><br><span class="line">ADAMS		    1</span><br><span class="line">WARD		    2</span><br><span class="line">MARTIN		    2</span><br><span class="line">MILLER		    2</span><br><span class="line">TURNER		    3</span><br><span class="line">ALLEN		    3</span><br><span class="line">CLARK		    4</span><br><span class="line">BLAKE		    4</span><br><span class="line">JONES		    4</span><br><span class="line">SCOTT		    4</span><br><span class="line">FORD		    4</span><br><span class="line">KING		    5</span><br><span class="line"></span><br><span class="line">14 rows selected.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>oralce 不等连接</p>
+<h3 id="8-每一个员工的直属领导者是谁？" class="article-heading"><a href="#8-每一个员工的直属领导者是谁？" class="headerlink" title="8. 每一个员工的直属领导者是谁？"></a>8. 每一个员工的直属领导者是谁？<a class="article-anchor" href="#8-每一个员工的直属领导者是谁？" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; select a.ename ename,b.ename manager from emp a,emp  b where a.mgr=b.empno;</span><br><span class="line"></span><br><span class="line">ENAME	   MANAGER</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">FORD	   JONES</span><br><span class="line">SCOTT	   JONES</span><br><span class="line">TURNER	   BLAKE</span><br><span class="line">ALLEN	   BLAKE</span><br><span class="line">WARD	   BLAKE</span><br><span class="line">JAMES	   BLAKE</span><br><span class="line">MARTIN	   BLAKE</span><br><span class="line">MILLER	   CLARK</span><br><span class="line">ADAMS	   SCOTT</span><br><span class="line">BLAKE	   KING</span><br><span class="line">JONES	   KING</span><br><span class="line">CLARK	   KING</span><br><span class="line">SMITH	   FORD</span><br><span class="line"></span><br><span class="line">13 rows selected.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>自连接</p>
+<h2 id="国标连接语法" class="article-heading"><a href="#国标连接语法" class="headerlink" title="国标连接语法"></a>国标连接语法<a class="article-anchor" href="#国标连接语法" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th align="left">国标</th>
+<th align="left">语法</th>
+<th align="left">oracle</th>
+<th align="left">语法</th>
+<th align="left">备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">交叉连接</td>
+<td align="left"><code>select ename,loc from emp cross join dept;</code></td>
+<td align="left">笛卡尔连接</td>
+<td align="left"><code>select ename,loc from emp,dept;</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">自然连接-有同名列</td>
+<td align="left"><code>select ename,loc from emp natural join dept;</code></td>
+<td align="left">等值连接</td>
+<td align="left"><code>select ename,loc from emp,dept where emp.deptno=dept.deptno</code></td>
+<td align="left">自然连接的前提条件是必须拥有同名的列</td>
+</tr>
+<tr>
+<td align="left">自然连接-多个同名列</td>
+<td align="left"><code>select ename,loc from emp join dept using (col1);</code></td>
+<td align="left">等值连接</td>
+<td align="left"><code>select ename,loc from emp,dept where emp.deptno=dept.deptno</code></td>
+<td align="left">;若两张表有多个同名列则需要用using(col)修正；</td>
+</tr>
+<tr>
+<td align="left">自然连接-无同名列</td>
+<td align="left"><code>select ename,loc from emp join dept on (emp.col1=dept.col2);</code></td>
+<td align="left">等值连接</td>
+<td align="left"><code>select ename,loc from emp,dept where emp.col1=dept.col2</code></td>
+<td align="left">若两张表没有同名的列则用on(a.co1=b.co2);</td>
+</tr>
+<tr>
+<td align="left">右外连接</td>
+<td align="left"><code>select ename,loc from emp right outer join dept using (deptno);</code></td>
+<td align="left">右连接</td>
+<td align="left"><code>select ename,loc from emp,dept where emp.deptno(+)=dept.deptno;</code></td>
+<td align="left">以右表为准</td>
+</tr>
+<tr>
+<td align="left">左外连接</td>
+<td align="left"><code>select ename,loc from emp left outer join dept using (deptno);</code></td>
+<td align="left">左连接</td>
+<td align="left"><code>select ename,loc from emp,dept where emp.deptno=dept.deptno(+);</code></td>
+<td align="left">以左表为准</td>
+</tr>
+<tr>
+<td align="left">全外连接</td>
+<td align="left"><code>select ename,loc from emp full outer join dept using (deptno);</code></td>
+<td align="left">比较复杂</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>推荐使用国标，功能全，oracle书写简单</p>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:49.890Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-02-%E5%A4%9A%E8%A1%A8%E8%BF%9E%E6%8E%A5.html';
+  var disqus_title = "SQL语句-查询语句-多表连接";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%86%9F%E6%82%89%E6%AF%8F%E4%B8%80%E5%BC%A0%E8%A1%A8%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-text">熟悉每一张表的结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B"><span class="toc-text">案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-SMITH%E5%B7%A5%E4%BD%9C%E5%9C%A8%E5%93%AA%E9%87%8C%EF%BC%9F"><span class="toc-text">1. SMITH工作在哪里？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-10%E5%8F%B7%E9%83%A8%E9%97%A8%E7%9A%84%E5%91%98%E5%B7%A5%E9%83%BD%E5%B7%A5%E4%BD%9C%E5%9C%A8%E5%93%AA%E4%BA%9B%E5%9F%8E%E5%B8%82%EF%BC%9F"><span class="toc-text">2. 10号部门的员工都工作在哪些城市？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%94%80%E5%94%AE%E9%83%A8%E9%97%A8%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E5%91%98%E5%B7%A5%EF%BC%8C%E5%88%86%E5%88%AB%E5%B7%A5%E4%BD%9C%E5%9C%A8%E5%93%AA%E4%BA%9B%E5%9F%8E%E5%B8%82%EF%BC%9F"><span class="toc-text">3. 销售部门都有哪些员工，分别工作在哪些城市？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%9C%89%E6%89%80%E7%9A%84%E5%91%98%E5%B7%A5%E5%A7%93%E5%90%8D%E5%92%8C%E5%AF%B9%E5%BA%94%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9F%8E%E5%B8%82"><span class="toc-text">4. 有所的员工姓名和对应的工作城市</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%AF%8F%E4%B8%AA%E5%9F%8E%E5%B8%82%E5%92%8C%E5%AF%B9%E5%BA%94%E7%9A%84%E5%91%98%E5%B7%A5%E5%A7%93%E5%90%8D%EF%BC%8C%E8%99%BD%E7%84%B6%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%B2%A1%E6%9C%89%E5%91%98%E5%B7%A5%EF%BC%8C%E4%BD%86%E6%98%AF%E5%85%AC%E5%8F%B8%E6%98%AF%E6%9C%89%E6%B3%A2%E5%A3%AB%E9%A1%BF%E5%88%86%E9%83%A8%E7%9A%84%EF%BC%8C%E6%B3%A2%E5%A3%AB%E9%A1%BF%E4%B9%9F%E8%A6%81%E7%BB%9F%E8%AE%A1%E5%87%BA%E6%9D%A5%E3%80%82"><span class="toc-text">5. 每个城市和对应的员工姓名，虽然波士顿没有员工，但是公司是有波士顿分部的，波士顿也要统计出来。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%AF%8F%E4%B8%AA%E5%9F%8E%E5%B8%82%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%91%98%E5%B7%A5%E6%9C%89%E5%87%A0%E4%B8%AA%EF%BC%9F"><span class="toc-text">6. 每个城市工作的员工有几个？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E6%AF%8F%E4%B8%80%E4%B8%AA%E5%91%98%E5%B7%A5%E7%9A%84%E5%B7%A5%E8%B5%84%E7%AD%89%E7%BA%A7%E6%98%AF%E5%A4%9A%E5%B0%91"><span class="toc-text">7. 每一个员工的工资等级是多少</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E6%AF%8F%E4%B8%80%E4%B8%AA%E5%91%98%E5%B7%A5%E7%9A%84%E7%9B%B4%E5%B1%9E%E9%A2%86%E5%AF%BC%E8%80%85%E6%98%AF%E8%B0%81%EF%BC%9F"><span class="toc-text">8. 每一个员工的直属领导者是谁？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BD%E6%A0%87%E8%BF%9E%E6%8E%A5%E8%AF%AD%E6%B3%95"><span class="toc-text">国标连接语法</span></a></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

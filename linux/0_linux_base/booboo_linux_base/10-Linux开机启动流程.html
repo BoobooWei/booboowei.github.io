@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Linux 开机启动流程 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/10-Linux%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/linux/0_linux_base/booboo_linux_base/10-Linux%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="启动流程概览 加载 BIOS 的硬件信息并自我测试 , 依据设定取得第一个可开机的装置 ; 读取并执行第一个开机装置内 MBR 的 boot Loader ( grub, spfdisk 等程序 ); 依据 boot loader 的设定加载 Kernel Kernel 会开始侦测硬件并加载驱动程序 ; 在硬件驱动成功后 ,Kernel 会主动呼叫 init 程序 init 会取得 run-lev">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Linux 开机启动流程">
+<meta property="og:url" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/10-Linux%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="启动流程概览 加载 BIOS 的硬件信息并自我测试 , 依据设定取得第一个可开机的装置 ; 读取并执行第一个开机装置内 MBR 的 boot Loader ( grub, spfdisk 等程序 ); 依据 boot loader 的设定加载 Kernel Kernel 会开始侦测硬件并加载驱动程序 ; 在硬件驱动成功后 ,Kernel 会主动呼叫 init 程序 init 会取得 run-lev">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/33.png">
+<meta property="og:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/34.png">
+<meta property="og:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/35.png">
+<meta property="og:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/36.png">
+<meta property="og:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/37.png">
+<meta property="og:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/38.png">
+<meta property="og:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/39.png">
+<meta property="og:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/40.png">
+<meta property="og:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/41.png">
+<meta property="og:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/42.png">
+<meta property="og:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/43.png">
+<meta property="article:published_time" content="2020-12-04T00:52:50.301Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.301Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/pic/33.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Linux 开机启动流程</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/linux/0_linux_base/booboo_linux_base/10-Linux开机启动流程.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <h2 id="启动流程概览" class="article-heading"><a href="#启动流程概览" class="headerlink" title="启动流程概览"></a>启动流程概览<a class="article-anchor" href="#启动流程概览" aria-hidden="true"></a></h2><ol>
+<li>加载 BIOS 的硬件信息并自我测试 , 依据设定取得第一个可开机的装置 ;</li>
+<li>读取并执行第一个开机装置内 MBR 的 boot Loader ( grub, spfdisk 等程序 );</li>
+<li>依据 boot loader 的设定加载 Kernel</li>
+<li>Kernel 会开始侦测硬件并加载驱动程序 ;</li>
+<li>在硬件驱动成功后 ,Kernel 会主动呼叫 init 程序</li>
+<li>init 会取得 run-level 信息 ;</li>
+<li>init 执行 /etc/rc.d/rc.sysinit 档案来准备软件执行的作业环境 ( 如网络、时区等 );</li>
+<li>init 执行 run-level 的各个服务的启动 (script 方式 );</li>
+<li>init 执行 /etc/rc.d/rc.local 档案 ;</li>
+<li>init 执行终端仿真程序 mingetty 来启动 login 程序 ,</li>
+<li>最后等待用户登入</li>
+</ol>
+<h2 id="详细讲解" class="article-heading"><a href="#详细讲解" class="headerlink" title="详细讲解"></a>详细讲解<a class="article-anchor" href="#详细讲解" aria-hidden="true"></a></h2><h3 id="开机软件-——-BIOS、Grub" class="article-heading"><a href="#开机软件-——-BIOS、Grub" class="headerlink" title="开机软件 —— BIOS、Grub"></a>开机软件 —— BIOS、Grub<a class="article-anchor" href="#开机软件-——-BIOS、Grub" aria-hidden="true"></a></h3><p><img src="pic/33.png" alt="33"></p>
+<h4 id="名词解释" class="article-heading"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释<a class="article-anchor" href="#名词解释" aria-hidden="true"></a></h4><ol>
+<li>BIOS 一个写入到主板上的一个软件程序,在开机的时候,计算机系统会主动执行第一个程序</li>
+<li>HD 硬盘</li>
+<li>MBR 主要启动记录区(Master Boot Record)该硬盘里的第一个扇区 512 bytes</li>
+<li>boot loader 开机管理程序,可读取核心文件并执行 446 bytes</li>
+<li>DPT 磁盘分割表(disk partition table)记录整颗硬盘分割状态 64 bytes</li>
+<li>55AA 2 bytes</li>
+</ol>
+<h4 id="流程解释" class="article-heading"><a href="#流程解释" class="headerlink" title="流程解释"></a>流程解释<a class="article-anchor" href="#流程解释" aria-hidden="true"></a></h4><ul>
+<li>通电后,服务器主版上的一个软件 BIOS 启动,他的任务就是找到带有开机程序的设备,此处以硬盘为例, BIOS 的任务结束;</li>
+<li>该硬盘上的第一个扇区中有一个开机管理程序, rhel6 上为 grub1 , rhel7 上为 grub2 ,版本不同;</li>
+<li>接下去就是 grub 在工作了。</li>
+</ul>
+<h4 id="BIOS" class="article-heading"><a href="#BIOS" class="headerlink" title="BIOS"></a>BIOS<a class="article-anchor" href="#BIOS" aria-hidden="true"></a></h4><p><em>开机时按下 pause break 暂停中断,可以看到 bios 的大概信息:</em></p>
+<p><img src="pic/34.png" alt="34"></p>
+<p>AMIBIOS(C)2006 American Megatrends, Inc.</p>
+<p>基本输入输出系统的版本为 AMIBIOS ,为美国趋势科技</p>
+<p>2006 年生产</p>
+<p>HP System BIOS – 033 (09/01/2011)</p>
+<p>惠普系统的基本输入输出系统,支持到 2011/01/09 的硬件</p>
+<p>Processor 1 Initiallized at 2.26 GHz with 8 MB cache</p>
+<p>处理器 cpu 一个,频率为 2.26GHz , 8M 缓冲</p>
+<p>16384MB Total Memory Detected</p>
+<p>16G 内存</p>
+<p>Asset Tag : 0111049</p>
+<p>资产编号为 0111049</p>
+<p>BMC Firmware Version 04.04(Jul/01/2009)</p>
+<p>BMC SDR Version : 2.18.1.17</p>
+<p>basebiard management controller 底板管理控制器的缩写,时一个在 IPMI 结构下提供智能管理的控制器</p>
+<p>IPMI 时智能平台管理界面,即与 intel 结构的企业系统中所使用外围设备采用的一种工业标准。</p>
+<p>USB Device(s) : 1 Keyboard , 1 Mouse</p>
+<p>usb 设备有一个鼠标一个键盘,此处可以查看是否有人恶意用 usb 设备要攻击服务器</p>
+<p>Auto-Detecting AHCI PORT 1 .. IDE Hard Disk 自动检测</p>
+<p><em>开机按下 F10 ,进入 BIOS 管理界面</em></p>
+<p><img src="pic/35.png" alt="35"></p>
+<p><img src="pic/36.png" alt="36"></p>
+<p><em>IPMI</em></p>
+<p>HP 服务器远程管理平台</p>
+<p><img src="pic/37.png" alt="37"></p>
+<p><img src="pic/38.png" alt="38"></p>
+<h3 id="开机文档-——-menu-lst、grub-conf" class="article-heading"><a href="#开机文档-——-menu-lst、grub-conf" class="headerlink" title="开机文档 —— menu.lst、grub.conf"></a>开机文档 —— menu.lst、grub.conf<a class="article-anchor" href="#开机文档-——-menu-lst、grub-conf" aria-hidden="true"></a></h3><h4 id="Grub-配置文档" class="article-heading"><a href="#Grub-配置文档" class="headerlink" title="Grub 配置文档"></a>Grub 配置文档<a class="article-anchor" href="#Grub-配置文档" aria-hidden="true"></a></h4><ul>
+<li>menu.lst</li>
+<li>grub.conf</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@rhel6 grub]# ll /boot/grub/</span><br><span class="line">total 274</span><br><span class="line">-rw-r--r--. 1 root root 63 Jul 2 2015 device.map</span><br><span class="line">-rw-r--r--. 1 root root 13380 Jul 2 2015 e2fs_stage1_5</span><br><span class="line">-rw-r--r--. 1 root root 12620 Jul 2 2015 fat_stage1_5</span><br><span class="line">-rw-r--r--. 1 root root 11748 Jul 2 2015 ffs_stage1_5</span><br><span class="line">-rw-------. 1 root root 796 Jul 2 2015 grub.conf</span><br><span class="line">-rw-r--r--. 1 root root 11756 Jul 2 2015 iso9660_stage1_5</span><br><span class="line">-rw-r--r--. 1 root root 13268 Jul 2 2015 jfs_stage1_5</span><br><span class="line">lrwxrwxrwx. 1 root root 11 Jul 2 2015 menu.lst -&gt; ./grub.conf</span><br><span class="line">-rw-r--r--. 1 root root 11956 Jul 2 2015 minix_stage1_5</span><br><span class="line">-rw-r--r--. 1 root root 14412 Jul 2 2015 reiserfs_stage1_5</span><br><span class="line">-rw-r--r--. 1 root root 1341 May 7 2010 splash.xpm.gz</span><br><span class="line">-rw-r--r--. 1 root root 512 Jul 2 2015 stage1</span><br><span class="line">-rw-r--r--. 1 root root 126100 Jul 2 2015 stage2</span><br><span class="line">-rw-r--r--. 1 root root 12024 Jul 2 2015 ufs2_stage1_5</span><br><span class="line">-rw-r--r--. 1 root root 11364 Jul 2 2015 vstafs_stage1_5</span><br><span class="line">-rw-r--r--. 1 root root 13964 Jul 2 2015 xfs_stage1_5</span><br><span class="line">[root@rhel6 grub]# vim grub.conf</span><br><span class="line">default=0		===&gt;默认菜单</span><br><span class="line">timeout=5		===&gt;启动菜单超时5秒进入默认启动内核</span><br><span class="line">splashimage=(hd0,0)/grub/splash.xpm.gz	===&gt;菜单的背景图片位置</span><br><span class="line">hiddenmenu		===&gt;默认不看启动菜单</span><br><span class="line">title Red Hat Enterprise Linux (2.6.32-431.el6.x86_64)</span><br><span class="line">开机启动的系统名称(可以更改对其他没有影响),指定启动硬盘位置在第一个硬盘的第一个分区</span><br><span class="line">root (hd0,0)</span><br><span class="line">指定核心文件的名称及位置 /boot/ ,指定语言等等</span><br><span class="line">kernel /vmlinuz-2.6.32-431.el6.x86_64 ro root=/dev/mapper/vg_rhel6-LogVol01 rd_NO_LUKS</span><br><span class="line">LANG=en_US.UTF-8 rd_NO_MD SYSFONT=latarcyrheb-sun16 KEYBOARDTYPE=pc</span><br><span class="line">KEYTABLE=us rd_LVM_LV=vg_rhel6/LogVol01 rd_NO_DM rhgb quiet</span><br><span class="line">指定核心加载的模块文件 /boot/</span><br><span class="line">initrd /initramfs-2.6.32-431.el6.x86_64.img</span><br></pre></td></tr></table></figure>
+<h4 id="流程解释-1" class="article-heading"><a href="#流程解释-1" class="headerlink" title="流程解释"></a>流程解释<a class="article-anchor" href="#流程解释-1" aria-hidden="true"></a></h4><ul>
+<li>grub 软件的任务就是找到核心文件,并加载该文件</li>
+<li>内核的第一任务就是驱动硬件</li>
+<li>内核第二任务就是呼叫 init 程序,接下来就交给 init 了</li>
+</ul>
+<h3 id="init-程序" class="article-heading"><a href="#init-程序" class="headerlink" title="init 程序"></a>init 程序<a class="article-anchor" href="#init-程序" aria-hidden="true"></a></h3><h4 id="流程解释-2" class="article-heading"><a href="#流程解释-2" class="headerlink" title="流程解释"></a>流程解释<a class="article-anchor" href="#流程解释-2" aria-hidden="true"></a></h4><ul>
+<li>init 程序挂接 /etc 和 /lib 所在的目录分区</li>
+<li>执行 /etc/inittab 文件,取得 run-level 信息,判断是否开启终端、网络等</li>
+<li>执行 /etc/rc.d/rc.sysinit 初始化环境 ( 如网络、时区等 )</li>
+<li>执行 run-level 的各个服务的启动 (script 方式 );</li>
+<li>执行 /etc/rc.d/rc.local 档案</li>
+<li>执行终端仿真程序 mingetty 来启动 login 程序,最后等待用户登入</li>
+</ul>
+<h4 id="init-执行的相关文件" class="article-heading"><a href="#init-执行的相关文件" class="headerlink" title="init 执行的相关文件"></a>init 执行的相关文件<a class="article-anchor" href="#init-执行的相关文件" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@rhel6 ~]# cat /etc/inittab</span><br><span class="line"><span class="meta">#</span><span class="bash"> Default runlevel. The runlevels used are:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 0 - halt (Do NOT <span class="built_in">set</span> initdefault to this)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1 - Single user mode</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2 - Multiuser, without NFS (The same as 3, <span class="keyword">if</span> you <span class="keyword">do</span> not have networking)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3 - Full multiuser mode</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 4 - unused</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 5 - X11</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 6 - reboot (Do NOT <span class="built_in">set</span> initdefault to this)</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="bash">id:5:initdefault:		===&gt;默认启动等级(run-level)为5(中间的数字为启动等级)</span></span><br><span class="line">[root@rhel6 etc]# ll /etc/rc.d	===&gt;根据默认启动等级，来读取相应的rc0-6.d目录中的文件</span><br><span class="line">total 60</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jul 2 2015 init.d</span><br><span class="line">-rwxr-xr-x. 1 root root 2617 Oct 10 2013 rc</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jul 2 2015 rc0.d</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jul 2 2015 rc1.d</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jul 2 2015 rc2.d</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jul 2 2015 rc3.d</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jul 2 2015 rc4.d</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jul 2 2015 rc5.d</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jul 2 2015 rc6.d</span><br><span class="line">-rwxr-xr-x. 1 root root 220 Oct 10 2013 rc.local</span><br><span class="line">-rwxr-xr-x. 1 root root 19432 Oct 10 2013 rc.sysinit</span><br></pre></td></tr></table></figure>
+<p>文件夹里都是软连接，软链接链接到/etc/rc.d/init.d目录下的文件，目录下都是服务的启动脚本，目录和etc/init.d下的内容一样，因为有个软连接在etc下面rcX.d下的文件K开头表示服务要关闭的，S开头的表示系统启动时要开启的，（例如rc0.d下，几乎都是K打头的），在5里后面的数字标示优先级，数字小优先级高，在6里这些数字无用，因为是并行的，没有依赖关系。</p>
+<p>无论是3还是5的runlevel，最后都会读到S99local文件，链接到/etc/rc.d/rc.local文件</p>
+<p>文件说明：这个脚本在所有脚本执行完之后执行，开机过程汇总最后读到的一个文件，这个文件是开机自定义启动脚本，把自己想要执行的命令写进来。系统启动命令也会完成。</p>
+<p>备注:以上分析均为 rhel6 操作系统, rhel7 启动改为 systemd 模式,相关文件在 <code>/usr/lib/systemd/system/*</code></p>
+<h3 id="run-level-启动等级" class="article-heading"><a href="#run-level-启动等级" class="headerlink" title="run-level(启动等级)"></a>run-level(启动等级)<a class="article-anchor" href="#run-level-启动等级" aria-hidden="true"></a></h3><p>Runlevel 0 是让init关闭所有进程并终止系统。</p>
+<p>Runlevel 1 是用来将系统转到单用户模式，单用户模式只能有系统管理员进入，在该模式下处理那些在有登录用户的情况下不能进行更改的文件。</p>
+<p>Runlevel 2 是允许系统进入多用户的模式，但并不支持文件共享，这种模式很少应用。</p>
+<p>Runlevel 3 是最常用的运行模式，主要用来提供真正的多用户模式，也是多数服务器的缺省模式。</p>
+<p>Runlevel 4 一般不被系统使用，用户可以设计自己的系统状态并将其应用到runlevel 4阶段，尽管很少使用，但使用该系统可以实现一些特定的登录请求。</p>
+<p>Runlevel 5 是将系统初始化为专用的X Window终端。对功能强大的Linux系统来说，这并不是好的选择，但用户如果需要这样，也可以通过在runlevel启动来实现该方案。</p>
+<p>Runlevel 6 是关闭所有运行的进程并重新启动系统。</p>
+<h2 id="相关的命令" class="article-heading"><a href="#相关的命令" class="headerlink" title="相关的命令"></a>相关的命令<a class="article-anchor" href="#相关的命令" aria-hidden="true"></a></h2><p>rhel6</p>
+<p>chkconfig –list    ===&gt;查看不同等级中各项服务的启动情况(开机启动项)</p>
+<p>chkconfig 服务名 on    ===&gt;开启某个服务开机自启动，off代表关闭</p>
+<p>chkconfig –level 35 服务名 off    ===&gt;在启动等级为3和5的时候该服务不开机启动</p>
+<p>rhel7</p>
+<p>开机自启的服务通过systemctl enable命令来实现</p>
+<p>Systemctl enable httpd    ===&gt;自启动httpd服务，关闭使用disable。</p>
+<p>systemctl get-default        ===&gt;查看当前默认启动级别(启动级别的说明查看/etc/inittab)</p>
+<p>systemctl set-default multi-user.target    ===&gt;设置默认启动级别为3(7的的启动级别名称有所变化)</p>
+<h2 id="实验" class="article-heading"><a href="#实验" class="headerlink" title="实验"></a>实验<a class="article-anchor" href="#实验" aria-hidden="true"></a></h2><h3 id="rhel6-单用户模式修改密码" class="article-heading"><a href="#rhel6-单用户模式修改密码" class="headerlink" title="rhel6 单用户模式修改密码"></a>rhel6 单用户模式修改密码<a class="article-anchor" href="#rhel6-单用户模式修改密码" aria-hidden="true"></a></h3><ul>
+<li>1&gt; 进入到数及时界面时,按上下键进入以下界面,选择 kernel 一行,按下 e 进行编辑</li>
+<li>2&gt; 在最后追加 “空格”和1 或者 “空格” single 后,按下 esc</li>
+<li>3&gt; 再按下 b ,启动后,进入单人模式后,输入 passwd 进行密码修改,修改完成后, reboot 即可。</li>
+</ul>
+<p><img src="pic/39.png" alt="39"></p>
+<p><img src="pic/40.png" alt="40"></p>
+<p><img src="pic/41.png" alt="41"></p>
+<h3 id="rhel7-单用户模式修改密码" class="article-heading"><a href="#rhel7-单用户模式修改密码" class="headerlink" title="rhel7 单用户模式修改密码"></a>rhel7 单用户模式修改密码<a class="article-anchor" href="#rhel7-单用户模式修改密码" aria-hidden="true"></a></h3><ul>
+<li>1&gt; 进入如下界面后按 e 进入编辑模式</li>
+<li>2&gt; 找到 linux16 开始的那一行,删除没用的,在最后追加 rd.break ,然后按 Ctrl+x 重启即可进入单人模式</li>
+<li>3&gt; 进入单用户模式后,用 mount 命令查看一下,会发现根目录时只读模式,因此需要重新挂载为读写模式</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mount -o remount,rw /sysroot</span><br><span class="line">chroot /sysroot		===&gt;提高权限</span><br><span class="line">passwd				===&gt;修改密码的命令</span><br><span class="line">touch /.autorelabel ===&gt;autorelabel 自动重新标记, selinux</span><br><span class="line">exit</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+<p><img src="pic/42.png" alt="42"></p>
+<p><img src="pic/43.png" alt="43"></p>
+<p>###rhel6 GRUB菜单加密</p>
+<p>grub-md5-crypt</p>
+<p>输入密码，生成一串MD5值，这个就是grub密码，复制好这段内容，粘贴到配置文件中</p>
+<p>vim /boot/grub/grub.conf   </p>
+<p>title那一行的上面加上“password redhat”这样做是明文密码，不安全，所以也可写为“password –-md5 xxxxxxxxx”</p>
+<p>这一行要放在title的上面</p>
+<p>放在title的下面是系统启动需要密码才可以启动</p>
+<h3 id="rhel7-GRUB2菜单加密" class="article-heading"><a href="#rhel7-GRUB2菜单加密" class="headerlink" title="rhel7 GRUB2菜单加密"></a>rhel7 GRUB2菜单加密<a class="article-anchor" href="#rhel7-GRUB2菜单加密" aria-hidden="true"></a></h3><p>vim /etc/grub.d/40_custom</p>
+<p>set superusers=”root”        ===&gt;设置超级用户的名称，注意：名称任意可以不用是系统中存在的用户</p>
+<p>password root redhat            ===&gt;设置用户名和密码，注意：该密码为明文，如果需要密文需要生成密文密码</p>
+<p>保存退出</p>
+<p>grub2-mkconfig -o /boot/grub2/grub.cfg        ===&gt;使用该命令来重新生成grub.cfg文件来使配置生效</p>
+<p>grub2-mkpasswd-pbkdf2    ===&gt;该命令为生成加密密码</p>
+<p>password_pbkdf2         ===&gt;如果使用加密的密文需要定义密码的加密方式，后面同上跟上用户名和加密后的密码</p>
+<h2 id="Linux-开机启动流程课后作业" class="article-heading"><a href="#Linux-开机启动流程课后作业" class="headerlink" title="Linux 开机启动流程课后作业"></a>Linux 开机启动流程课后作业<a class="article-anchor" href="#Linux-开机启动流程课后作业" aria-hidden="true"></a></h2><ol>
+<li>名词解释</li>
+</ol>
+<p>BIOS</p>
+<p>MBR</p>
+<p>boot loader</p>
+<p>grub</p>
+<p>DPT</p>
+<p>55AA</p>
+<ol start="2">
+<li>请自己描述 linux 开机启动的流程,并画出流程图。</li>
+<li>linux 破解 root 密码</li>
+</ol>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.301Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/10-Linux%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.html';
+  var disqus_title = "Linux 开机启动流程";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%A6%82%E8%A7%88"><span class="toc-text">启动流程概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3"><span class="toc-text">详细讲解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E6%9C%BA%E8%BD%AF%E4%BB%B6-%E2%80%94%E2%80%94-BIOS%E3%80%81Grub"><span class="toc-text">开机软件 —— BIOS、Grub</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A"><span class="toc-text">名词解释</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E8%A7%A3%E9%87%8A"><span class="toc-text">流程解释</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BIOS"><span class="toc-text">BIOS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E6%9C%BA%E6%96%87%E6%A1%A3-%E2%80%94%E2%80%94-menu-lst%E3%80%81grub-conf"><span class="toc-text">开机文档 —— menu.lst、grub.conf</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Grub-%E9%85%8D%E7%BD%AE%E6%96%87%E6%A1%A3"><span class="toc-text">Grub 配置文档</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E8%A7%A3%E9%87%8A-1"><span class="toc-text">流程解释</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#init-%E7%A8%8B%E5%BA%8F"><span class="toc-text">init 程序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E8%A7%A3%E9%87%8A-2"><span class="toc-text">流程解释</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#init-%E6%89%A7%E8%A1%8C%E7%9A%84%E7%9B%B8%E5%85%B3%E6%96%87%E4%BB%B6"><span class="toc-text">init 执行的相关文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#run-level-%E5%90%AF%E5%8A%A8%E7%AD%89%E7%BA%A7"><span class="toc-text">run-level(启动等级)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="toc-text">相关的命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C"><span class="toc-text">实验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rhel6-%E5%8D%95%E7%94%A8%E6%88%B7%E6%A8%A1%E5%BC%8F%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81"><span class="toc-text">rhel6 单用户模式修改密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rhel7-%E5%8D%95%E7%94%A8%E6%88%B7%E6%A8%A1%E5%BC%8F%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81"><span class="toc-text">rhel7 单用户模式修改密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rhel7-GRUB2%E8%8F%9C%E5%8D%95%E5%8A%A0%E5%AF%86"><span class="toc-text">rhel7 GRUB2菜单加密</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux-%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%AF%BE%E5%90%8E%E4%BD%9C%E4%B8%9A"><span class="toc-text">Linux 开机启动流程课后作业</span></a></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

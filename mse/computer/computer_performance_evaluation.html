@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>计算机系统概述 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/mse/computer/computer_performance_evaluation.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/mse/computer/computer_performance_evaluation">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="概述计算、实验和理论已成为科学研究的三大方法   利用计算机实验，再现、预测和发现客观世界运动规律和演化特性的全过程     无损伤：模拟真实实验无法进行的事情(海啸、地震、核爆、气候等) 全过程全时空分析：充分了解和细致认识研究对象 低成本、短周期、反复细致地进行   成功的程序员关心其所写的程序性能如何    上世纪60~70年代，计算机性能受制于内存容量。程序员尽可能少地用内存提高程序执行速">
+<meta property="og:type" content="website">
+<meta property="og:title" content="计算机系统概述">
+<meta property="og:url" content="http://www.toberoot.com/mse/computer/computer_performance_evaluation">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="概述计算、实验和理论已成为科学研究的三大方法   利用计算机实验，再现、预测和发现客观世界运动规律和演化特性的全过程     无损伤：模拟真实实验无法进行的事情(海啸、地震、核爆、气候等) 全过程全时空分析：充分了解和细致认识研究对象 低成本、短周期、反复细致地进行   成功的程序员关心其所写的程序性能如何    上世纪60~70年代，计算机性能受制于内存容量。程序员尽可能少地用内存提高程序执行速">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/2.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/3.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/4.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/5.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/6.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/7.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/8.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/9.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/10.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/11.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/12.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/13.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/14.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/15.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/16.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/17.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/18.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/19.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/20.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/21.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/22.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/23.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/24.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/25.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/26.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/27.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/28.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/29.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/30.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/31.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/32.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/34.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/35.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/36.bmp">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/37.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/38.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/39.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/40.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/41.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/42.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic/43.jpg">
+<meta property="article:published_time" content="2020-12-04T00:52:50.598Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.598Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/mse/computer/pic/2.bmp">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">计算机系统概述</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/mse/computer/computer_performance_evaluation.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <h2 id="概述" class="article-heading"><a href="#概述" class="headerlink" title="概述"></a>概述<a class="article-anchor" href="#概述" aria-hidden="true"></a></h2><blockquote class="note warn"><p>计算、实验和理论已成为科学研究的三大方法</p>
+</blockquote>
+
+<blockquote class="note info"><p>利用计算机实验，再现、预测和发现客观世界运动规律和演化特性的全过程</p>
+</blockquote>
+
+
+<ol>
+<li>无损伤：模拟真实实验无法进行的事情(海啸、地震、核爆、气候等)</li>
+<li>全过程全时空分析：充分了解和细致认识研究对象</li>
+<li>低成本、短周期、反复细致地进行</li>
+</ol>
+<blockquote class="note info"><ul>
+<li>成功的程序员关心其所写的程序性能如何</li>
+</ul>
+</blockquote>
+
+<p>上世纪60~70年代，计算机性能受制于内存容量。程序员尽可能少地用内存提高程序执行速度<br><img src="/mse/computer/pic/2.bmp" alt="Smiley face" width="600"></p>
+<p>现代，程序员需要理解的是<strong>存储的层次化</strong>特性和<strong>处理器的并行化</strong>特点</p>
+<blockquote class="note warn"><strong class="note-title">决定程序性能的主要因素</strong><ul>
+<li>程序中使用的算法——涉及数据结构、算法设计</li>
+<li>创建程序并翻译成机器指令的软件——涉及编译原理</li>
+<li>计算机各部件执行效率——涉及计算机原理、操作系统</li>
+</ul>
+</blockquote>
+
+<img src="/mse/computer/pic/3.bmp" alt="Smiley face" width="140" height="200">
+<img src="/mse/computer/pic/4.bmp" alt="Smiley face" width="140" height="200">
+<img src="/mse/computer/pic/5.bmp" alt="Smiley face" width="140" height="200">
+<img src="/mse/computer/pic/6.bmp" alt="Smiley face" width="140" height="200">
+<img src="/mse/computer/pic/7.bmp" alt="Smiley face" width="140" height="200">
+
+
+<h3 id="如何理解程序性能" class="article-heading"><a href="#如何理解程序性能" class="headerlink" title="如何理解程序性能"></a>如何理解程序性能<a class="article-anchor" href="#如何理解程序性能" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th>软硬件部件</th>
+<th>如何影响性能</th>
+<th>讨论的章节</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>算法(Algorithm)</td>
+<td>决定源程序语句数量及执行I/O操作数量</td>
+<td>参考相关资料</td>
+</tr>
+<tr>
+<td>程序语言、编译器(Compiler)和体系结构(Architecture)</td>
+<td>决定每一条源程序语句所对应的机器指令</td>
+<td>第2章</td>
+</tr>
+<tr>
+<td>处理器(Processor)、存储器系统(Memory System)</td>
+<td>决定指令的执行速度</td>
+<td>第3、4、5章</td>
+</tr>
+<tr>
+<td>I/O系统(硬件和操作系统)</td>
+<td>决定I/O操作的执行速度</td>
+<td>第6章</td>
+</tr>
+</tbody></table>
+<h2 id="计算机的工作过程" class="article-heading"><a href="#计算机的工作过程" class="headerlink" title="计算机的工作过程"></a>计算机的工作过程<a class="article-anchor" href="#计算机的工作过程" aria-hidden="true"></a></h2><p>你看到/编写的是程序，程序的表象之下是什么？</p>
+<div class="media">
+  <img src="/mse/computer/pic/8.bmp" class="mr-3" alt="Smiley face" width="140" height="200">|
+</div>
+
+<blockquote class="note info"><strong class="note-title">Below Your Program</strong><p>“在巴黎，我对当地人讲法语，他们只是瞪着我看；我从来没能让这些白痴理解他们自己的语言”<br>    ——马克.吐温，《The Innocents Abroad(异国奇遇)》，1869</p>
+</blockquote>
+
+<p>我们对计算机讲什么语言，可以让计算机理解呢？</p>
+<p><strong>简单的软硬件层次化结构</strong></p>
+<img src="/mse/computer/pic/9.bmp" alt="Smiley face" width="140">
+
+<ol>
+<li>隐藏低层层次的实现细节，简化各层次上用户的使用</li>
+<li>每一层次都为上一层隐藏了自己的技术细节——“抽象”</li>
+</ol>
+<blockquote class="note info"><strong class="note-title">系统软件: 提供公共服务程序</strong></blockquote>
+
+<table>
+<thead>
+<tr>
+<th><strong>系统软件</strong></th>
+<th><strong>提供公共服务程序</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>操作系统</td>
+<td>用户程序和硬件的接口，提供计算机资源管理<br>功能：处理基本的输入输出操作、分配存储空间、为多个程序同时使用计算机提供支持</td>
+</tr>
+<tr>
+<td>编译器</td>
+<td>将高级语言语句翻译成汇编语言语句的程序</td>
+</tr>
+<tr>
+<td>汇编器</td>
+<td>汇编语言是一台计算机指令系统的符号化表示<br>汇编器将汇编语言中的符号指令翻译成计算机能够识别的二进制指令</td>
+</tr>
+</tbody></table>
+<h3 id="计算机的层次结构" class="article-heading"><a href="#计算机的层次结构" class="headerlink" title="计算机的层次结构"></a>计算机的层次结构<a class="article-anchor" href="#计算机的层次结构" aria-hidden="true"></a></h3><p>Computer Hierarchy</p>
+<img src="/mse/computer/pic/10.jpg" alt="计算机的层次结构">
+
+<ul>
+<li>计算机系统层次结构中，指令系统是软/硬件的交界面</li>
+<li>不同用户工作在不同层次，看到的计算机是不一样的</li>
+</ul>
+<img src="/mse/computer/pic/11.jpg" alt="计算机的层次结构">
+
+
+
+<h3 id="从程序到电子信号" class="article-heading"><a href="#从程序到电子信号" class="headerlink" title="从程序到电子信号"></a>从程序到电子信号<a class="article-anchor" href="#从程序到电子信号" aria-hidden="true"></a></h3><blockquote class="note info"><strong class="note-title">分析：如何使用计算机求解一个问题？</strong><p>例：计算整数18和40的和</p>
+<ul>
+<li>需要将我们对该问题的求解要求通过输入设备告诉计算机；</li>
+<li>计算机调用相应的运算部件对问题进行求解；</li>
+<li>并将最后的计算机结果从输出设备输出</li>
+</ul>
+</blockquote>
+
+<img src="/mse/computer/pic/12.jpg" alt="计算机的层次结构">
+
+<p>（1）高级语言转换成汇编语言</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"># 问题的高级语言描述</span><br><span class="line"># 例的C语言描述 </span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">int</span> c;</span><br><span class="line">c = <span class="number">18</span> + <span class="number">40</span>;</span><br><span class="line"><span class="built_in">printf</span>(“result is : %d\n”, c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当执行这个程序时，计算机内部发生了什么&amp;为什么？</p>
+<img src="/mse/computer/pic/13.jpg" alt="从程序到电⼦子信号">
+
+<p>（2）汇编语言转换为机器语言</p>
+<img src="/mse/computer/pic/14.jpg" alt="从程序到电⼦子信号">
+
+<img src="/mse/computer/pic/15.jpg" alt="从程序到电⼦子信号">
+
+<blockquote class="note warn"><strong class="note-title">计算机内部工作过程</strong><p>计算机内部工作过程:逐条执行加载到内存中的二进制机器指令流的过程。</p>
+<p>一条指令的执行过程可简单地分为两个操作阶段：</p>
+<ol>
+<li>取指阶段，CPU从内存中读取指令，程序计数器保存要被取出的下一条指令的地址，除非遇到跳转指令等情况，否则，PC一般都是在每次取指后加上一个增<br>量（当前指令的字节数）；</li>
+<li>执行阶段，对取出的指令先译码，解释指令的功能，然后执行译码好的指令，这期间可能会读写存储器或端口来获取操作数或者存放结果。</li>
+</ol>
+<p>程序的执行过程就是<strong>周期性</strong>和<strong>重复性</strong>地进行<strong>取指令</strong>和<strong>执行指令</strong>两个操作。</p>
+</blockquote>
+
+<img src="/mse/computer/pic/16.jpg" alt="从程序到电⼦子信号">
+<img src="/mse/computer/pic/17.jpg" alt="从程序到电⼦子信号">
+<img src="/mse/computer/pic/18.jpg" alt="从程序到电⼦子信号">
+<img src="/mse/computer/pic/19.jpg" alt="从程序到电⼦子信号">
+<img src="/mse/computer/pic/20.jpg" alt="从程序到电⼦子信号">
+<img src="/mse/computer/pic/21.jpg" alt="从程序到电⼦子信号">
+<img src="/mse/computer/pic/22.jpg" alt="从程序到电⼦子信号">
+
+<h2 id="打开计算机的机箱" class="article-heading"><a href="#打开计算机的机箱" class="headerlink" title="打开计算机的机箱"></a>打开计算机的机箱<a class="article-anchor" href="#打开计算机的机箱" aria-hidden="true"></a></h2><p>Under the Covers</p>
+<blockquote class="note info"><strong class="note-title">电⼦子数字计算机ENIAC, 1946</strong><table>
+<thead>
+<tr>
+<th>机器</th>
+<th>器件</th>
+<th>加法运算速度</th>
+<th>程序指令</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ENIAC</td>
+<td>电子管</td>
+<td>5000次/秒</td>
+<td>硬件互连(连接线)编制程序</td>
+<td>专用（生产火炮射表）</td>
+</tr>
+</tbody></table>
+</blockquote>
+
+<img src="/mse/computer/pic/23.bmp" alt="Smiley face" width="200" height="150">
+<img src="/mse/computer/pic/24.bmp" alt="Smiley face" width="200" height="150">
+<img src="/mse/computer/pic/25.bmp" alt="Smiley face" width="200" height="150">
+
+<ul>
+<li>ENIAC的主要缺点之一：利用开关和连接线来设置程序指令，程序设计麻烦，低效</li>
+<li>ENIAC设计者的思考：将程序指令存储在机器中，由它控制机器的操作？</li>
+</ul>
+<h3 id="存储程序思想" class="article-heading"><a href="#存储程序思想" class="headerlink" title="存储程序思想"></a>存储程序思想<a class="article-anchor" href="#存储程序思想" aria-hidden="true"></a></h3><p><strong>关键思想：存储程序</strong></p>
+<p>存储程序原理: 冯·诺依曼第一次书面提出了存储程序原理和存储程序数字计算机</p>
+<blockquote class="note warn"><strong class="note-title">存储程序原理</strong><p>将事先设计好，用以描述计算机解题过程的<br><strong>程序如同数据一样</strong>，采用<strong>二进制形式存储</strong>在机器中，<br>计算机在工作时<em>自动*</em>高速地从机器中<strong>逐条取出指令加以执行</strong>。</p>
+</blockquote>
+
+<p>计算机与计算器在存储程序方面的不同？</p>
+<ul>
+<li>操作指令与数据被存放在存储器中</li>
+<li>控制器自动取指令和数据，控制计算的执行</li>
+</ul>
+<h3 id="冯诺依曼框架" class="article-heading"><a href="#冯诺依曼框架" class="headerlink" title="冯诺依曼框架"></a>冯诺依曼框架<a class="article-anchor" href="#冯诺依曼框架" aria-hidden="true"></a></h3><p>冯.诺依曼计算机框架</p>
+<img src="/mse/computer/pic/26.jpg" alt="冯诺依曼框架">
+
+<p>现代计算机的组成框图</p>
+<img src="/mse/computer/pic/27.jpg" alt="现代计算机的组成框图">
+
+<p>非冯.诺依曼模型</p>
+<ol>
+<li>神经网络:利用人脑模型思想作为计算范式</li>
+<li>基因算法：利用生物学和DNA演化思想开发算法</li>
+<li>量子计算：采用量子力学的奇妙思想解决计算问题</li>
+</ol>
+<img src="/mse/computer/pic/28.jpg" alt="非冯.诺依曼模型">
+
+
+<h3 id="硬件组成" class="article-heading"><a href="#硬件组成" class="headerlink" title="硬件组成"></a>硬件组成<a class="article-anchor" href="#硬件组成" aria-hidden="true"></a></h3><img src="/mse/computer/pic/29.jpg" alt="非冯.诺依曼模型">
+
+<img src="/mse/computer/pic/30.jpg" alt="非冯.诺依曼模型">
+
+<blockquote class="note info"><strong class="note-title">功能部件1——处理器 (CPU - Central Processing Unit)</strong><p>功能：执行程序(Execute programs)<br>组成：Control Unit + Data path<br>    * Control Unit(控制单元): 对指令进行译码，产生控制信号<br>    * Datapath (数据通路): 完成指令的执行<br>核心：ALU(Arithmetic Logic Unit)+Register(寄存器)<br>    * ALU用来执行算术、逻辑运算<br>    * 寄存器用来存储临时的数据或控制信息，例如：PC、IR等</p>
+</blockquote>
+<img src="/mse/computer/pic/31.bmp" alt="cpu">
+
+<blockquote class="note info"><strong class="note-title">功能部件2——存储器</strong><p>功能：存储程序和数据<br>组成(层次化结构 Hierarchies)<br>内存(Primary memory)： Cache + Main memory (MM)</p>
+<ul>
+<li>Cache(高速缓存)：存放最近使用的数据和指令</li>
+<li>主存(Main Memory)： 存放被启动的程序中的部分数据和指令<br>外存(Storage)：磁盘、固态盘、光盘、磁带<br>磁盘(Magnetic disk)/固态盘：存放系统中所有软件和文档<br>光盘(Optical disk)、磁带(Tape)：脱机存档</li>
+</ul>
+</blockquote>
+<img src="/mse/computer/pic/32.bmp" alt="存储器" width="200" height="150">
+
+<blockquote class="note info"><strong class="note-title">功能部件3——输入/输出Input/Output (I/O)</strong><p>功能: 各种信息的输入/输出<br>组成: I/O Controller + I/O Device</p>
+<ul>
+<li>I/O Controller(I/O控制器): 控制外设工作，完成主机和外设之间的通信</li>
+<li>I/O device (I/O设备) : 输入/输出信息，包括：Keyboard、 Printer、 Display ， etcv</li>
+</ul>
+</blockquote>
+<img src="/mse/computer/pic/34.jpg" alt="i/o">
+
+<blockquote class="note info"><strong class="note-title">总线</strong><p>用于各功能部件之间的连接</p>
+</blockquote>
+
+<p>计算机系统总线结构图<br><img src="/mse/computer/pic/35.bmp" alt="总线"></p>
+<p>常见PC总线图<br><img src="/mse/computer/pic/36.bmp" alt="总线"></p>
+<p>解剖计算机</p>
+<img src="/mse/computer/pic/37.jpg" alt>
+
+<blockquote class="note info"><strong class="note-title">思考：一个典型程序的转换处理过程</strong><img src="/mse/computer/pic/38.jpg" alt></blockquote>
+
+
+<h2 id="计算机性能评价" class="article-heading"><a href="#计算机性能评价" class="headerlink" title="计算机性能评价"></a>计算机性能评价<a class="article-anchor" href="#计算机性能评价" aria-hidden="true"></a></h2><p>Computer Performance Evaluation</p>
+<blockquote class="note warn"><strong class="note-title">如何理解“一台计算机性能比另一台好”的含义？</strong><p>不同的性能评价标准会导致不同的结论！</p>
+</blockquote>
+
+<h3 id="性能的基本指标" class="article-heading"><a href="#性能的基本指标" class="headerlink" title="性能的基本指标"></a>性能的基本指标<a class="article-anchor" href="#性能的基本指标" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th>衡量计算机性能的基本指标</th>
+<th>指标组成</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>响应时间(Response Time)</td>
+<td>执行时间(Execution Time)、等待时间(Latency)</td>
+</tr>
+<tr>
+<td>吞吐率(Throughput )</td>
+<td>带宽(Bandwidth)</td>
+</tr>
+<tr>
+<td>指令执行速度(MIPS、MFLOPS)</td>
+<td></td>
+</tr>
+<tr>
+<td>功耗( Power)</td>
+<td></td>
+</tr>
+<tr>
+<td>制造成本(Manufacturing Cost)</td>
+<td></td>
+</tr>
+</tbody></table>
+<blockquote class="note info"><strong class="note-title">计算机有两种不同的性能</strong><table>
+<thead>
+<tr>
+<th>计算机有两种不同的性能</th>
+<th>衡量指标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Time to do the task</td>
+<td>响应时间(response time)：完成单个任务所需的总时间<br>执行时间(execution time)<br>等待时间或时延(latency)</td>
+</tr>
+<tr>
+<td>Tasks per day, hour, sec, ns. ..</td>
+<td>吞吐率(throughput)：单位时间内所完成的任务总量<br>带宽(bandwidth)</td>
+</tr>
+</tbody></table>
+</blockquote>
+
+
+<blockquote class="note info"><strong class="note-title">不同应用场合用户关心的性能不同</strong><ul>
+<li>吞吐率高的场合——多媒体应用(音/视频播放要流畅)</li>
+<li>响应时间短的场合——事务处理系统(响应速度要快)</li>
+<li>吞吐率高且响应时间短的场合——ATM、文件服务器、Web服务器等</li>
+</ul>
+</blockquote>
+
+
+
+<blockquote class="note warn"><strong class="note-title">计算机性能：响应时间(执行时间)的倒数！</strong><p>性能x = 1 / 执行时间x</p>
+</blockquote>
+
+<p>比较计算机性能时，可以用<strong>响应(执行)时间</strong>来衡量</p>
+<ul>
+<li>完成同样工作量所需时间最短的那台计算机性能最好</li>
+<li>处理器时间往往被多个程序共享使用，因此，用户感觉到的程序执行时间并不仅仅是程序真正的执行时间</li>
+</ul>
+<p><strong>系统响应时间(用户感受到的)</strong></p>
+<ul>
+<li>CPU执行时间：CPU真正花费在程序执行上的时间：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">用户CPU时间：用来运行用户代码的时间</span><br><span class="line">系统CPU时间：为执行用户程序而需运行一些操作系统代码的时间</span><br></pre></td></tr></table></figure></li>
+<li>其他时间：等待I/O操作完成或CPU花在其他用户程序的时间</li>
+</ul>
+<blockquote class="note warn"><strong class="note-title">计算机系统性能≠CPU性能</strong><p>系统性能(System performance)：系统响应时间<br>CPU性能(CPU performance)：用户CPU时间<br><strong>CPU性能：CPU真正⽤用于⽤用户程序执⾏行上的时间</strong></p>
+<p>系统性能 = 系统相应时间 = CPU执行时间 + 其他时间<br>系统性能 = 用户CPU时间 + 系统CPU时间 + 其他时间<br>CPU性能 = 用户CPU时间</p>
+</blockquote>
+
+
+<h3 id="CPU执行时间" class="article-heading"><a href="#CPU执行时间" class="headerlink" title="CPU执行时间"></a>CPU执行时间<a class="article-anchor" href="#CPU执行时间" aria-hidden="true"></a></h3><p>Computer Performance Evaluation</p>
+<blockquote class="note warn"><strong class="note-title">经典的CPU性能公式</strong><img src="/mse/computer/pic/39.jpg" alt></blockquote>
+
+<p>评价CPU性能的最重要指标——CPU执行时间</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">一个程序的CPU执行时间 &#x3D; 执行一个程序需要的(计算机)基本时间单元的数量 × 基本时间单元</span><br><span class="line">一个程序的CPU执行时间 &#x3D; 一个程序的CPU时钟周期数÷时钟频率</span><br><span class="line"></span><br><span class="line">一个程序的CPU时钟周期数＝ 程序的指令数 ×每条指令的平均时钟周期数</span><br><span class="line">其中：每条指令的平均时钟周期数：CPI(avg. clock Cycles Per Instr)</span><br><span class="line"></span><br><span class="line">一个程序的CPU时间 ＝ 指令数&#x2F;程序 × CPI × 时钟周期时间</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>时钟周期（Clock cycle）</p>
+</blockquote>
+<ul>
+<li>所有计算机都有一个固定频率的硬件时钟，决定各种硬件事件发生和执行的时间和顺序</li>
+<li>硬件时钟所产生的离散时间间隔称为时钟周期</li>
+</ul>
+<blockquote>
+<p>时钟频率(Clock rate)</p>
+</blockquote>
+<ul>
+<li>时钟周期的倒数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">例：时钟周期为250ps，对应的时钟频率为多少？</span><br><span class="line">时钟频率＝1&#x2F;时钟周期＝1&#x2F;250ps＝4GHz</span><br></pre></td></tr></table></figure>
+
+<blockquote class="note info"><strong class="note-title">基本的性能指标及其测量单位</strong><table>
+<thead>
+<tr>
+<th>性能指标</th>
+<th>测量单位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>程序的CPU执行执行时间</td>
+<td>程序执行的秒数</td>
+</tr>
+<tr>
+<td>指令数</td>
+<td>程序执行的指令数</td>
+</tr>
+<tr>
+<td>CPI</td>
+<td>每条指令平均时钟周期数</td>
+</tr>
+<tr>
+<td>时钟周期时间</td>
+<td>每个时钟周期的秒数</td>
+</tr>
+</tbody></table>
+</blockquote>
+
+
+
+<table>
+<thead>
+<tr>
+<th>影响因素</th>
+<th>指令数</th>
+<th>CPI</th>
+<th>时钟周期时间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>算法和编程语言</td>
+<td>√</td>
+<td>√</td>
+<td></td>
+</tr>
+<tr>
+<td>编译程序</td>
+<td>√</td>
+<td>√</td>
+<td></td>
+</tr>
+<tr>
+<td>指令集体系结构</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>计算机组成</td>
+<td></td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>实现技术</td>
+<td></td>
+<td></td>
+<td>√</td>
+</tr>
+</tbody></table>
+<blockquote class="note info"><strong class="note-title">ISA、计算机组成(Organization)、计算机实现技术(Technology)三个因素如何相关?</strong><ol>
+<li>改变ISA以减少指令条数会使时钟周期变长</li>
+<li>CPI的减少可能会增加时钟周期的长度</li>
+<li>缩短时钟周期可能会增加指令的条数</li>
+<li>即使是在同一台机器上解决同一个问题，最少指令条数的程序不一定执行的最快</li>
+</ol>
+</blockquote>
+
+<p>评价性能时，必须在各个因素进行权衡！</p>
+<h3 id="Amdahl定律" class="article-heading"><a href="#Amdahl定律" class="headerlink" title="Amdahl定律"></a>Amdahl定律<a class="article-anchor" href="#Amdahl定律" aria-hidden="true"></a></h3><blockquote class="note warn"><strong class="note-title">硬件设计的基本策略：使最常用的部件执行得更快</strong></blockquote>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Amdahl定律：</span><br><span class="line">改进后的执行时间 &#x3D; 受改进影响部分的执行时间&#x2F;改进提高的倍数 + 不受影响的执行时间</span><br></pre></td></tr></table></figure>
+
+<blockquote class="note info"><strong class="note-title">例题1</strong><img src="/mse/computer/pic/40.jpg" alt></blockquote>
+
+<blockquote class="note info"><strong class="note-title">例题2</strong><img src="/mse/computer/pic/41.jpg" alt></blockquote>
+
+
+<blockquote>
+<p>动态功耗：CMOS中主要的能量消耗</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">动态功耗主要是指晶体管翻转时消耗的能量</span><br><span class="line">Power &#x3D; Capacitive Load×Voltage2 ×Frequency Switched</span><br><span class="line">* 开关频率是时钟速率的函数</span><br><span class="line">* 负载电容是晶体管扇出数和所用技术(决定导线和晶体管)的函数</span><br><span class="line"></span><br><span class="line">减少芯片动态功耗的方法</span><br><span class="line">* 降低时钟频率</span><br><span class="line">* 降低工作电压 (从5V降低到1.5V)</span><br><span class="line">但是，低电压使晶体管的漏电流问题更加突出，大约30% ～ 40%的芯片功耗是由于漏电流引起的</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>静态功耗：即使芯片内晶体管关闭，仍有漏电流发生</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Static Power &#x3D; Voltage ×Leakage Current</span><br><span class="line">即使晶体管总是关闭，增加晶体管的数量也会增加功耗</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>除了性能，也要考察成本！</p>
+</blockquote>
+<p>封装：将芯片固定在塑胶或陶瓷基座上，把芯片上蚀刻出来的引线与基座底部伸出的引脚连接，盖上盖板并封焊成芯片</p>
+<p>与芯片成本有关的因素</p>
+<ul>
+<li>圆晶价格</li>
+<li>圆晶所含芯片数</li>
+<li>芯片合格率</li>
+</ul>
+<img src="/mse/computer/pic/42.jpg" alt>
+<img src="/mse/computer/pic/43.jpg" alt>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.598Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/mse/politics/index.html" class="article-footer-next" title="政治"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/mse/computer/computer_performance_evaluation.html';
+  var disqus_title = "计算机系统概述";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text">概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3%E7%A8%8B%E5%BA%8F%E6%80%A7%E8%83%BD"><span class="toc-text">如何理解程序性能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="toc-text">计算机的工作过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84"><span class="toc-text">计算机的层次结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E7%A8%8B%E5%BA%8F%E5%88%B0%E7%94%B5%E5%AD%90%E4%BF%A1%E5%8F%B7"><span class="toc-text">从程序到电子信号</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E5%BC%80%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E6%9C%BA%E7%AE%B1"><span class="toc-text">打开计算机的机箱</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E7%A8%8B%E5%BA%8F%E6%80%9D%E6%83%B3"><span class="toc-text">存储程序思想</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%AF%E8%AF%BA%E4%BE%9D%E6%9B%BC%E6%A1%86%E6%9E%B6"><span class="toc-text">冯诺依曼框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E7%BB%84%E6%88%90"><span class="toc-text">硬件组成</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%80%A7%E8%83%BD%E8%AF%84%E4%BB%B7"><span class="toc-text">计算机性能评价</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%8C%87%E6%A0%87"><span class="toc-text">性能的基本指标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CPU%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4"><span class="toc-text">CPU执行时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Amdahl%E5%AE%9A%E5%BE%8B"><span class="toc-text">Amdahl定律</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">文化课</strong><a href="/mse/politics/index.html" class="sidebar-link">政治</a><a href="/mse/english/index.html" class="sidebar-link">英语</a><a href="/mse/calculus/index.html" class="sidebar-link">微积分</a><strong class="sidebar-title">专业课</strong><a href="/mse/computer/index.html" class="sidebar-link">计算机组成原理</a><a href="/mse/algorithm/index.html" class="sidebar-link">数据结构与算法</a><a href="/mse/c++/index.html" class="sidebar-link">C++ 语言程序</a><a href="/mse/software/index.html" class="sidebar-link">软件工程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">文化课</strong><a href="/mse/politics/index.html" class="mobile-nav-link">政治</a><a href="/mse/english/index.html" class="mobile-nav-link">英语</a><a href="/mse/calculus/index.html" class="mobile-nav-link">微积分</a><strong class="mobile-nav-title">专业课</strong><a href="/mse/computer/index.html" class="mobile-nav-link">计算机组成原理</a><a href="/mse/algorithm/index.html" class="mobile-nav-link">数据结构与算法</a><a href="/mse/c++/index.html" class="mobile-nav-link">C++ 语言程序</a><a href="/mse/software/index.html" class="mobile-nav-link">软件工程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

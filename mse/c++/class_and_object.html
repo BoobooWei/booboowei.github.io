@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>类 & 对象 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/mse/c++/class_and_object.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/mse/c++/class_and_object">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="C++ 类 &amp; 对象C++ 在 C 语言的基础上增加了面向对象编程，C++ 支持面向对象程序设计。类是 C++ 的核心特性，通常被称为用户定义的类型。 类用于指定对象的形式，它包含了数据表示法和用于处理数据的方法。类中的数据和方法称为类的成员。函数在一个类中被称为类的成员。 C++ 类定义定义一个类，本质上是定义一个数据类型的蓝图。这实际上并没有定义任何数据，但它定义了类的名称意味着什么，">
+<meta property="og:type" content="website">
+<meta property="og:title" content="类 &amp; 对象">
+<meta property="og:url" content="http://www.toberoot.com/mse/c++/class_and_object">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="C++ 类 &amp; 对象C++ 在 C 语言的基础上增加了面向对象编程，C++ 支持面向对象程序设计。类是 C++ 的核心特性，通常被称为用户定义的类型。 类用于指定对象的形式，它包含了数据表示法和用于处理数据的方法。类中的数据和方法称为类的成员。函数在一个类中被称为类的成员。 C++ 类定义定义一个类，本质上是定义一个数据类型的蓝图。这实际上并没有定义任何数据，但它定义了类的名称意味着什么，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:50.584Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.584Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">类 & 对象</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/mse/c++/class_and_object.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <h1 id="C-类-amp-对象" class="article-heading"><a href="#C-类-amp-对象" class="headerlink" title="C++ 类 &amp; 对象"></a>C++ 类 &amp; 对象<a class="article-anchor" href="#C-类-amp-对象" aria-hidden="true"></a></h1><p>C++ 在 C 语言的基础上增加了面向对象编程，C++ 支持面向对象程序设计。类是 C++ 的核心特性，通常被称为用户定义的类型。</p>
+<p>类用于指定对象的形式，它包含了数据表示法和用于处理数据的方法。类中的数据和方法称为类的成员。函数在一个类中被称为类的成员。</p>
+<h2 id="C-类定义" class="article-heading"><a href="#C-类定义" class="headerlink" title="C++ 类定义"></a>C++ 类定义<a class="article-anchor" href="#C-类定义" aria-hidden="true"></a></h2><p>定义一个类，本质上是定义一个数据类型的蓝图。这实际上并没有定义任何数据，但它定义了类的名称意味着什么，也就是说，它定义了类的对象包括了什么，以及可以在这个对象上执行哪些操作。</p>
+<p>类定义是以关键字 <strong>class</strong> 开头，后跟类的名称。类的主体是包含在一对花括号中。类定义后必须跟着一个分号或一个声明列表。例如，我们使用关键字 <strong>class</strong> 定义 Box 数据类型，如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Box</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="keyword">double</span> length;   <span class="comment">// 盒子的长度</span></span><br><span class="line">      <span class="keyword">double</span> breadth;  <span class="comment">// 盒子的宽度</span></span><br><span class="line">      <span class="keyword">double</span> height;   <span class="comment">// 盒子的高度</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>关键字 <strong>public</strong> 确定了类成员的访问属性。在类对象作用域内，公共成员在类的外部是可访问的。您也可以指定类的成员为 <strong>private</strong> 或 <strong>protected</strong>，这个我们稍后会进行讲解。</p>
+<h2 id="定义-C-对象" class="article-heading"><a href="#定义-C-对象" class="headerlink" title="定义 C++ 对象"></a>定义 C++ 对象<a class="article-anchor" href="#定义-C-对象" aria-hidden="true"></a></h2><p>类提供了对象的蓝图，所以基本上，对象是根据类来创建的。声明类的对象，就像声明基本类型的变量一样。下面的语句声明了类 Box 的两个对象：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Box Box1;          <span class="comment">// 声明 Box1，类型为 Box</span></span><br><span class="line">Box Box2;          <span class="comment">// 声明 Box2，类型为 Box</span></span><br></pre></td></tr></table></figure>
+<p>对象 Box1 和 Box2 都有它们各自的数据成员。</p>
+<h2 id="访问数据成员" class="article-heading"><a href="#访问数据成员" class="headerlink" title="访问数据成员"></a>访问数据成员<a class="article-anchor" href="#访问数据成员" aria-hidden="true"></a></h2><p>类的对象的公共数据成员可以使用直接成员访问运算符 (.) 来访问。为了更好地理解这些概念，让我们尝试一下下面的实例：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">include &lt;iostream&gt;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Box</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="keyword">double</span> length;   <span class="comment">// 长度</span></span><br><span class="line">      <span class="keyword">double</span> breadth;  <span class="comment">// 宽度</span></span><br><span class="line">      <span class="keyword">double</span> height;   <span class="comment">// 高度</span></span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   Box Box1;        <span class="comment">// 声明 Box1，类型为 Box</span></span><br><span class="line">   Box Box2;        <span class="comment">// 声明 Box2，类型为 Box</span></span><br><span class="line">   <span class="keyword">double</span> volume = <span class="number">0.0</span>;     <span class="comment">// 用于存储体积</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">// box 1 详述</span></span><br><span class="line">   Box1.height = <span class="number">5.0</span>; </span><br><span class="line">   Box1.length = <span class="number">6.0</span>; </span><br><span class="line">   Box1.breadth = <span class="number">7.0</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// box 2 详述</span></span><br><span class="line">   Box2.height = <span class="number">10.0</span>;</span><br><span class="line">   Box2.length = <span class="number">12.0</span>;</span><br><span class="line">   Box2.breadth = <span class="number">13.0</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// box 1 的体积</span></span><br><span class="line">   volume = Box1.height * Box1.length * Box1.breadth;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Box1 的体积：&quot;</span> &lt;&lt; volume &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// box 2 的体积</span></span><br><span class="line">   volume = Box2.height * Box2.length * Box2.breadth;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Box2 的体积：&quot;</span> &lt;&lt; volume &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当上面的代码被编译和执行时，它会产生下列结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Box1 的体积：210</span><br><span class="line">Box2 的体积：1560</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，私有的成员和受保护的成员不能使用直接成员访问运算符 (.) 来直接访问。我们将在后续的教程中学习如何访问私有成员和受保护的成员。</p>
+<h1 id="类-amp-对象详解" class="article-heading"><a href="#类-amp-对象详解" class="headerlink" title="类 &amp; 对象详解"></a>类 &amp; 对象详解<a class="article-anchor" href="#类-amp-对象详解" aria-hidden="true"></a></h1><p>到目前为止，我们已经对 C++ 的类和对象有了基本的了解。下面的列表中还列出了其他一些 C++ 类和对象相关的概念，可以点击相应的链接进行学习。</p>
+<table>
+<thead>
+<tr>
+<th align="left">概念</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-class-member-functions.html">类成员函数</a></td>
+<td align="left">类的成员函数是指那些把定义和原型写在类定义内部的函数，就像类定义中的其他变量一样。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-class-access-modifiers.html">类访问修饰符</a></td>
+<td align="left">类成员可以被定义为 public、private 或 protected。默认情况下是定义为 private。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-constructor-destructor.html">构造函数 &amp; 析构函数</a></td>
+<td align="left">类的构造函数是一种特殊的函数，在创建一个新的对象时调用。类的析构函数也是一种特殊的函数，在删除所创建的对象时调用。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-copy-constructor.html">C++ 拷贝构造函数</a></td>
+<td align="left">拷贝构造函数，是一种特殊的构造函数，它在创建对象时，是使用同一类中之前创建的对象来初始化新创建的对象。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-friend-functions.html">C++ 友元函数</a></td>
+<td align="left"><strong>友元函数</strong>可以访问类的 private 和 protected 成员。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-inline-functions.html">C++ 内联函数</a></td>
+<td align="left">通过内联函数，编译器试图在调用函数的地方扩展函数体中的代码。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-this-pointer.html">C++ 中的 this 指针</a></td>
+<td align="left">每个对象都有一个特殊的指针 <strong>this</strong>，它指向对象本身。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-pointer-to-class.html">C++ 中指向类的指针</a></td>
+<td align="left">指向类的指针方式如同指向结构的指针。实际上，类可以看成是一个带有函数的结构。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-static-members.html">C++ 类的静态成员</a></td>
+<td align="left">类的数据成员和函数成员都可以被声明为静态的。</td>
+</tr>
+</tbody></table>
+<h1 id="C-继承" class="article-heading"><a href="#C-继承" class="headerlink" title="C++ 继承"></a>C++ 继承<a class="article-anchor" href="#C-继承" aria-hidden="true"></a></h1><p>面向对象程序设计中最重要的一个概念是继承。继承允许我们依据另一个类来定义一个类，这使得创建和维护一个应用程序变得更容易。这样做，也达到了重用代码功能和提高执行效率的效果。</p>
+<p>当创建一个类时，您不需要重新编写新的数据成员和成员函数，只需指定新建的类继承了一个已有的类的成员即可。这个已有的类称为<strong>基类</strong>，新建的类称为<strong>派生类</strong>。</p>
+<p>继承代表了 <strong>is a</strong> 关系。例如，哺乳动物是动物，狗是哺乳动物，因此，狗是动物，等等。</p>
+<h2 id="基类-amp-派生类" class="article-heading"><a href="#基类-amp-派生类" class="headerlink" title="基类 &amp; 派生类"></a>基类 &amp; 派生类<a class="article-anchor" href="#基类-amp-派生类" aria-hidden="true"></a></h2><p>一个类可以派生自多个类，这意味着，它可以从多个基类继承数据和函数。定义一个派生类，我们使用一个类派生列表来指定基类。类派生列表以一个或多个基类命名，形式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class derived-class: access-specifier base-class</span><br></pre></td></tr></table></figure>
+<p>其中，访问修饰符 access-specifier 是 <strong>public、protected</strong> 或 <strong>private</strong> 其中的一个，base-class 是之前定义过的某个类的名称。如果未使用访问修饰符 access-specifier，则默认为 private。</p>
+<p>假设有一个基类 <strong>Shape</strong>，<strong>Rectangle</strong> 是它的派生类，如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 基类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Shape</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">setWidth</span><span class="params">(<span class="keyword">int</span> w)</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">         width = w;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">setHeight</span><span class="params">(<span class="keyword">int</span> h)</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">         height = h;</span><br><span class="line">      &#125;</span><br><span class="line">   <span class="keyword">protected</span>:</span><br><span class="line">      <span class="keyword">int</span> width;</span><br><span class="line">      <span class="keyword">int</span> height;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 派生类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span>:</span> <span class="keyword">public</span> Shape</span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="function"><span class="keyword">int</span> <span class="title">getArea</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123; </span><br><span class="line">         <span class="keyword">return</span> (width * height); </span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   Rectangle Rect;</span><br><span class="line"> </span><br><span class="line">   Rect.setWidth(<span class="number">5</span>);</span><br><span class="line">   Rect.setHeight(<span class="number">7</span>);</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 输出对象的面积</span></span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Total area: &quot;</span> &lt;&lt; Rect.getArea() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当上面的代码被编译和执行时，它会产生下列结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Total area: 35</span><br></pre></td></tr></table></figure>
+<h2 id="访问控制和继承" class="article-heading"><a href="#访问控制和继承" class="headerlink" title="访问控制和继承"></a>访问控制和继承<a class="article-anchor" href="#访问控制和继承" aria-hidden="true"></a></h2><p>派生类可以访问基类中所有的非私有成员。因此基类成员如果不想被派生类的成员函数访问，则应在基类中声明为 private。</p>
+<p>我们可以根据访问权限总结出不同的访问类型，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th align="left">访问</th>
+<th align="left">public</th>
+<th align="left">protected</th>
+<th align="left">private</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">同一个类</td>
+<td align="left">yes</td>
+<td align="left">yes</td>
+<td align="left">yes</td>
+</tr>
+<tr>
+<td align="left">派生类</td>
+<td align="left">yes</td>
+<td align="left">yes</td>
+<td align="left">no</td>
+</tr>
+<tr>
+<td align="left">外部的类</td>
+<td align="left">yes</td>
+<td align="left">no</td>
+<td align="left">no</td>
+</tr>
+</tbody></table>
+<p>一个派生类继承了所有的基类方法，但下列情况除外：</p>
+<ul>
+<li>基类的构造函数、析构函数和拷贝构造函数。</li>
+<li>基类的重载运算符。</li>
+<li>基类的友元函数。</li>
+</ul>
+<h2 id="继承类型" class="article-heading"><a href="#继承类型" class="headerlink" title="继承类型"></a>继承类型<a class="article-anchor" href="#继承类型" aria-hidden="true"></a></h2><p>当一个类派生自基类，该基类可以被继承为 <strong>public、protected</strong> 或 <strong>private</strong> 几种类型。继承类型是通过上面讲解的访问修饰符 access-specifier 来指定的。</p>
+<p>我们几乎不使用 <strong>protected</strong> 或 <strong>private</strong> 继承，通常使用 <strong>public</strong> 继承。当使用不同类型的继承时，遵循以下几个规则：</p>
+<ul>
+<li><strong>公有继承（public）：</strong>当一个类派生自<strong>公有</strong>基类时，基类的<strong>公有</strong>成员也是派生类的<strong>公有</strong>成员，基类的<strong>保护</strong>成员也是派生类的<strong>保护</strong>成员，基类的<strong>私有</strong>成员不能直接被派生类访问，但是可以通过调用基类的<strong>公有</strong>和<strong>保护</strong>成员来访问。</li>
+<li><strong>保护继承（protected）：</strong> 当一个类派生自<strong>保护</strong>基类时，基类的<strong>公有</strong>和<strong>保护</strong>成员将成为派生类的<strong>保护</strong>成员。</li>
+<li><strong>私有继承（private）：</strong>当一个类派生自<strong>私有</strong>基类时，基类的<strong>公有</strong>和<strong>保护</strong>成员将成为派生类的<strong>私有</strong>成员。</li>
+</ul>
+<h2 id="多继承" class="article-heading"><a href="#多继承" class="headerlink" title="多继承"></a>多继承<a class="article-anchor" href="#多继承" aria-hidden="true"></a></h2><p>多继承即一个子类可以有多个父类，它继承了多个父类的特性。</p>
+<p>C++ 类可以从多个类继承成员，语法如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class &lt;派生类名&gt;:&lt;继承方式1&gt;&lt;基类名1&gt;,&lt;继承方式2&gt;&lt;基类名2&gt;,…</span><br><span class="line">&#123;</span><br><span class="line">&lt;派生类类体&gt;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>其中，访问修饰符继承方式是 <strong>public、protected</strong> 或 <strong>private</strong> 其中的一个，用来修饰每个基类，各个基类之间用逗号分隔，如上所示。现在让我们一起看看下面的实例：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 基类 Shape</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Shape</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">setWidth</span><span class="params">(<span class="keyword">int</span> w)</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">         width = w;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">setHeight</span><span class="params">(<span class="keyword">int</span> h)</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">         height = h;</span><br><span class="line">      &#125;</span><br><span class="line">   <span class="keyword">protected</span>:</span><br><span class="line">      <span class="keyword">int</span> width;</span><br><span class="line">      <span class="keyword">int</span> height;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 基类 PaintCost</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PaintCost</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="function"><span class="keyword">int</span> <span class="title">getCost</span><span class="params">(<span class="keyword">int</span> area)</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">         <span class="keyword">return</span> area * <span class="number">70</span>;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 派生类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span>:</span> <span class="keyword">public</span> Shape, <span class="keyword">public</span> PaintCost</span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="function"><span class="keyword">int</span> <span class="title">getArea</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123; </span><br><span class="line">         <span class="keyword">return</span> (width * height); </span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   Rectangle Rect;</span><br><span class="line">   <span class="keyword">int</span> area;</span><br><span class="line"> </span><br><span class="line">   Rect.setWidth(<span class="number">5</span>);</span><br><span class="line">   Rect.setHeight(<span class="number">7</span>);</span><br><span class="line"> </span><br><span class="line">   area = Rect.getArea();</span><br><span class="line">   </span><br><span class="line">   <span class="comment">// 输出对象的面积</span></span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Total area: &quot;</span> &lt;&lt; Rect.getArea() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 输出总花费</span></span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Total paint cost: $&quot;</span> &lt;&lt; Rect.getCost(area) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当上面的代码被编译和执行时，它会产生下列结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Total area: 35</span><br><span class="line">Total paint cost: $2450</span><br></pre></td></tr></table></figure>
+<h1 id="C-重载运算符和重载函数" class="article-heading"><a href="#C-重载运算符和重载函数" class="headerlink" title="C++ 重载运算符和重载函数"></a>C++ 重载运算符和重载函数<a class="article-anchor" href="#C-重载运算符和重载函数" aria-hidden="true"></a></h1><p>C++ 允许在同一作用域中的某个<strong>函数</strong>和<strong>运算符</strong>指定多个定义，分别称为<strong>函数重载</strong>和<strong>运算符重载</strong>。</p>
+<p>重载声明是指一个与之前已经在该作用域内声明过的函数或方法具有相同名称的声明，但是它们的参数列表和定义（实现）不相同。</p>
+<p>当您调用一个<strong>重载函数</strong>或<strong>重载运算符</strong>时，编译器通过把您所使用的参数类型与定义中的参数类型进行比较，决定选用最合适的定义。选择最合适的重载函数或重载运算符的过程，称为<strong>重载决策</strong>。</p>
+<h2 id="C-中的函数重载" class="article-heading"><a href="#C-中的函数重载" class="headerlink" title="C++ 中的函数重载"></a>C++ 中的函数重载<a class="article-anchor" href="#C-中的函数重载" aria-hidden="true"></a></h2><p>在同一个作用域内，可以声明几个功能类似的同名函数，但是这些同名函数的形式参数（指参数的个数、类型或者顺序）必须不同。您不能仅通过返回类型的不同来重载函数。</p>
+<p>下面的实例中，同名函数 <strong>print()</strong> 被用于输出不同的数据类型：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">printData</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;整数为: &quot;</span> &lt;&lt; i &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">      &#125;</span><br><span class="line"> </span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">double</span>  f)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;浮点数为: &quot;</span> &lt;&lt; f &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">      &#125;</span><br><span class="line"> </span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">char</span> c[])</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;字符串为: &quot;</span> &lt;&lt; c &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   printData pd;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 输出整数</span></span><br><span class="line">   pd.print(<span class="number">5</span>);</span><br><span class="line">   <span class="comment">// 输出浮点数</span></span><br><span class="line">   pd.print(<span class="number">500.263</span>);</span><br><span class="line">   <span class="comment">// 输出字符串</span></span><br><span class="line">   <span class="keyword">char</span> c[] = <span class="string">&quot;Hello C++&quot;</span>;</span><br><span class="line">   pd.print(c);</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当上面的代码被编译和执行时，它会产生下列结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">整数为: 5</span><br><span class="line">浮点数为: 500.263</span><br><span class="line">字符串为: Hello C++</span><br></pre></td></tr></table></figure>
+<h2 id="C-中的运算符重载" class="article-heading"><a href="#C-中的运算符重载" class="headerlink" title="C++ 中的运算符重载"></a>C++ 中的运算符重载<a class="article-anchor" href="#C-中的运算符重载" aria-hidden="true"></a></h2><p>您可以重定义或重载大部分 C++ 内置的运算符。这样，您就能使用自定义类型的运算符。</p>
+<p>重载的运算符是带有特殊名称的函数，函数名是由关键字 operator 和其后要重载的运算符符号构成的。与其他函数一样，重载运算符有一个返回类型和一个参数列表。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Box operator+(const Box&amp;);</span><br></pre></td></tr></table></figure>
+<p>声明加法运算符用于把两个 Box 对象相加，返回最终的 Box 对象。大多数的重载运算符可被定义为普通的非成员函数或者被定义为类成员函数。如果我们定义上面的函数为类的非成员函数，那么我们需要为每次操作传递两个参数，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Box operator+(const Box&amp;, const Box&amp;);</span><br></pre></td></tr></table></figure>
+<p>下面的实例使用成员函数演示了运算符重载的概念。在这里，对象作为参数进行传递，对象的属性使用 <strong>this</strong> 运算符进行访问，如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Box</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line"> </span><br><span class="line">      <span class="function"><span class="keyword">double</span> <span class="title">getVolume</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">         <span class="keyword">return</span> length * breadth * height;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">setLength</span><span class="params">( <span class="keyword">double</span> len )</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          length = len;</span><br><span class="line">      &#125;</span><br><span class="line"> </span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">setBreadth</span><span class="params">( <span class="keyword">double</span> bre )</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          breadth = bre;</span><br><span class="line">      &#125;</span><br><span class="line"> </span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">setHeight</span><span class="params">( <span class="keyword">double</span> hei )</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          height = hei;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 重载 + 运算符，用于把两个 Box 对象相加</span></span><br><span class="line">      Box <span class="keyword">operator</span>+(<span class="keyword">const</span> Box&amp; b)</span><br><span class="line">      &#123;</span><br><span class="line">         Box box;</span><br><span class="line">         box.length = <span class="keyword">this</span>-&gt;length + b.length;</span><br><span class="line">         box.breadth = <span class="keyword">this</span>-&gt;breadth + b.breadth;</span><br><span class="line">         box.height = <span class="keyword">this</span>-&gt;height + b.height;</span><br><span class="line">         <span class="keyword">return</span> box;</span><br><span class="line">      &#125;</span><br><span class="line">   <span class="keyword">private</span>:</span><br><span class="line">      <span class="keyword">double</span> length;      <span class="comment">// 长度</span></span><br><span class="line">      <span class="keyword">double</span> breadth;     <span class="comment">// 宽度</span></span><br><span class="line">      <span class="keyword">double</span> height;      <span class="comment">// 高度</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 程序的主函数</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   Box Box1;                <span class="comment">// 声明 Box1，类型为 Box</span></span><br><span class="line">   Box Box2;                <span class="comment">// 声明 Box2，类型为 Box</span></span><br><span class="line">   Box Box3;                <span class="comment">// 声明 Box3，类型为 Box</span></span><br><span class="line">   <span class="keyword">double</span> volume = <span class="number">0.0</span>;     <span class="comment">// 把体积存储在该变量中</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">// Box1 详述</span></span><br><span class="line">   Box1.setLength(<span class="number">6.0</span>); </span><br><span class="line">   Box1.setBreadth(<span class="number">7.0</span>); </span><br><span class="line">   Box1.setHeight(<span class="number">5.0</span>);</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// Box2 详述</span></span><br><span class="line">   Box2.setLength(<span class="number">12.0</span>); </span><br><span class="line">   Box2.setBreadth(<span class="number">13.0</span>); </span><br><span class="line">   Box2.setHeight(<span class="number">10.0</span>);</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// Box1 的体积</span></span><br><span class="line">   volume = Box1.getVolume();</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Volume of Box1 : &quot;</span> &lt;&lt; volume &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// Box2 的体积</span></span><br><span class="line">   volume = Box2.getVolume();</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Volume of Box2 : &quot;</span> &lt;&lt; volume &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 把两个对象相加，得到 Box3</span></span><br><span class="line">   Box3 = Box1 + Box2;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// Box3 的体积</span></span><br><span class="line">   volume = Box3.getVolume();</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Volume of Box3 : &quot;</span> &lt;&lt; volume &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当上面的代码被编译和执行时，它会产生下列结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Volume of Box1 : 210</span><br><span class="line">Volume of Box2 : 1560</span><br><span class="line">Volume of Box3 : 5400</span><br></pre></td></tr></table></figure>
+<h2 id="可重载运算符-不可重载运算符" class="article-heading"><a href="#可重载运算符-不可重载运算符" class="headerlink" title="可重载运算符/不可重载运算符"></a>可重载运算符/不可重载运算符<a class="article-anchor" href="#可重载运算符-不可重载运算符" aria-hidden="true"></a></h2><p>下面是可重载的运算符列表：</p>
+<table>
+<thead>
+<tr>
+<th>双目算术运算符</th>
+<th>+ (加)，-(减)，*(乘)，/(除)，% (取模)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>关系运算符</td>
+<td>==(等于)，!= (不等于)，&lt; (小于)，&gt; (大于&gt;，&lt;=(小于等于)，&gt;=(大于等于)</td>
+</tr>
+<tr>
+<td>逻辑运算符</td>
+<td>||(逻辑或)，&amp;&amp;(逻辑与)，!(逻辑非)</td>
+</tr>
+<tr>
+<td>单目运算符</td>
+<td>+ (正)，-(负)，*(指针)，&amp;(取地址)</td>
+</tr>
+<tr>
+<td>自增自减运算符</td>
+<td>++(自增)，–(自减)</td>
+</tr>
+<tr>
+<td>位运算符</td>
+<td>| (按位或)，&amp; (按位与)，~(按位取反)，^(按位异或),，&lt;&lt; (左移)，&gt;&gt;(右移)</td>
+</tr>
+<tr>
+<td>赋值运算符</td>
+<td>=, +=, -=, *=, /= , % = , &amp;=, |=, ^=, &lt;&lt;=, &gt;&gt;=</td>
+</tr>
+<tr>
+<td>空间申请与释放</td>
+<td>new, delete, new[ ] , delete[]</td>
+</tr>
+<tr>
+<td>其他运算符</td>
+<td><strong>()</strong>(函数调用)，<strong>-&gt;</strong>(成员访问)，<strong>,</strong>(逗号)，<strong>[]</strong>(下标)</td>
+</tr>
+</tbody></table>
+<p>下面是不可重载的运算符列表：</p>
+<ul>
+<li><strong>.</strong>：成员访问运算符</li>
+<li><strong>.*</strong>, <strong>-&gt;*</strong>：成员指针访问运算符</li>
+<li><strong>::</strong>：域运算符</li>
+<li><strong>sizeof</strong>：长度运算符</li>
+<li><strong>?:</strong>：条件运算符</li>
+<li><strong>#</strong>： 预处理符号</li>
+</ul>
+<h2 id="运算符重载实例" class="article-heading"><a href="#运算符重载实例" class="headerlink" title="运算符重载实例"></a>运算符重载实例<a class="article-anchor" href="#运算符重载实例" aria-hidden="true"></a></h2><p>下面提供了各种运算符重载的实例，帮助您更好地理解重载的概念。</p>
+<table>
+<thead>
+<tr>
+<th align="left">序号</th>
+<th align="left">运算符和实例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1</td>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/unary-operators-overloading.html">一元运算符重载</a></td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/binary-operators-overloading.html">二元运算符重载</a></td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/relational-operators-overloading.html">关系运算符重载</a></td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/input-output-operators-overloading.html">输入/输出运算符重载</a></td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/increment-decrement-operators-overloading.html">++ 和 – 运算符重载</a></td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/assignment-operators-overloading.html">赋值运算符重载</a></td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/function-call-operator-overloading.html">函数调用运算符 () 重载</a></td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/subscripting-operator-overloading.html">下标运算符 [] 重载</a></td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/class-member-access-operator-overloading.html">类成员访问运算符 -&gt; 重载</a></td>
+</tr>
+</tbody></table>
+<h1 id="C-多态" class="article-heading"><a href="#C-多态" class="headerlink" title="C++ 多态"></a>C++ 多态<a class="article-anchor" href="#C-多态" aria-hidden="true"></a></h1><p><strong>多态</strong>按字面的意思就是多种形态。当类之间存在层次结构，并且类之间是通过继承关联时，就会用到多态。</p>
+<p>C++ 多态意味着调用成员函数时，会根据调用函数的对象的类型来执行不同的函数。</p>
+<p>下面的实例中，基类 Shape 被派生为两个类，如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt; </span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Shape</span> &#123;</span></span><br><span class="line">   <span class="keyword">protected</span>:</span><br><span class="line">      <span class="keyword">int</span> width, height;</span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      Shape( <span class="keyword">int</span> a=<span class="number">0</span>, <span class="keyword">int</span> b=<span class="number">0</span>)</span><br><span class="line">      &#123;</span><br><span class="line">         width = a;</span><br><span class="line">         height = b;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="function"><span class="keyword">int</span> <span class="title">area</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">         <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Parent class area :&quot;</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">         <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span>:</span> <span class="keyword">public</span> Shape&#123;</span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      Rectangle( <span class="keyword">int</span> a=<span class="number">0</span>, <span class="keyword">int</span> b=<span class="number">0</span>):Shape(a, b) &#123; &#125;</span><br><span class="line">      <span class="function"><span class="keyword">int</span> <span class="title">area</span> <span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123; </span><br><span class="line">         <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Rectangle class area :&quot;</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">         <span class="keyword">return</span> (width * height); </span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Triangle</span>:</span> <span class="keyword">public</span> Shape&#123;</span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      Triangle( <span class="keyword">int</span> a=<span class="number">0</span>, <span class="keyword">int</span> b=<span class="number">0</span>):Shape(a, b) &#123; &#125;</span><br><span class="line">      <span class="function"><span class="keyword">int</span> <span class="title">area</span> <span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123; </span><br><span class="line">         <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Triangle class area :&quot;</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">         <span class="keyword">return</span> (width * height / <span class="number">2</span>); </span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 程序的主函数</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   Shape *shape;</span><br><span class="line">   <span class="function">Rectangle <span class="title">rec</span><span class="params">(<span class="number">10</span>,<span class="number">7</span>)</span></span>;</span><br><span class="line">   <span class="function">Triangle  <span class="title">tri</span><span class="params">(<span class="number">10</span>,<span class="number">5</span>)</span></span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 存储矩形的地址</span></span><br><span class="line">   shape = &amp;rec;</span><br><span class="line">   <span class="comment">// 调用矩形的求面积函数 area</span></span><br><span class="line">   shape-&gt;area();</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 存储三角形的地址</span></span><br><span class="line">   shape = &amp;tri;</span><br><span class="line">   <span class="comment">// 调用三角形的求面积函数 area</span></span><br><span class="line">   shape-&gt;area();</span><br><span class="line">   </span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当上面的代码被编译和执行时，它会产生下列结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Parent class area</span><br><span class="line">Parent class area</span><br></pre></td></tr></table></figure>
+<p>导致错误输出的原因是，调用函数 area() 被编译器设置为基类中的版本，这就是所谓的<strong>静态多态</strong>，或<strong>静态链接</strong> - 函数调用在程序执行前就准备好了。有时候这也被称为<strong>早绑定</strong>，因为 area() 函数在程序编译期间就已经设置好了。</p>
+<p>但现在，让我们对程序稍作修改，在 Shape 类中，area() 的声明前放置关键字 <strong>virtual</strong>，如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Shape</span> &#123;</span></span><br><span class="line">   <span class="keyword">protected</span>:</span><br><span class="line">      <span class="keyword">int</span> width, height;</span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      Shape( <span class="keyword">int</span> a=<span class="number">0</span>, <span class="keyword">int</span> b=<span class="number">0</span>)</span><br><span class="line">      &#123;</span><br><span class="line">         width = a;</span><br><span class="line">         height = b;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="function"><span class="keyword">virtual</span> <span class="keyword">int</span> <span class="title">area</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">         <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Parent class area :&quot;</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">         <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>修改后，当编译和执行前面的实例代码时，它会产生以下结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Rectangle class area</span><br><span class="line">Triangle class area</span><br></pre></td></tr></table></figure>
+<p>此时，编译器看的是指针的内容，而不是它的类型。因此，由于 tri 和 rec 类的对象的地址存储在 *shape 中，所以会调用各自的 area() 函数。</p>
+<p>正如您所看到的，每个子类都有一个函数 area() 的独立实现。这就是<strong>多态</strong>的一般使用方式。有了多态，您可以有多个不同的类，都带有同一个名称但具有不同实现的函数，函数的参数甚至可以是相同的。</p>
+<h2 id="虚函数" class="article-heading"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数<a class="article-anchor" href="#虚函数" aria-hidden="true"></a></h2><p><strong>虚函数</strong> 是在基类中使用关键字 <strong>virtual</strong> 声明的函数。在派生类中重新定义基类中定义的虚函数时，会告诉编译器不要静态链接到该函数。</p>
+<p>我们想要的是在程序中任意点可以根据所调用的对象类型来选择调用的函数，这种操作被称为<strong>动态链接</strong>，或<strong>后期绑定</strong>。</p>
+<h2 id="纯虚函数" class="article-heading"><a href="#纯虚函数" class="headerlink" title="纯虚函数"></a>纯虚函数<a class="article-anchor" href="#纯虚函数" aria-hidden="true"></a></h2><p>您可能想要在基类中定义虚函数，以便在派生类中重新定义该函数更好地适用于对象，但是您在基类中又不能对虚函数给出有意义的实现，这个时候就会用到纯虚函数。</p>
+<p>我们可以把基类中的虚函数 area() 改写如下：</p>
+<p>修改后，当编译和执行前面的实例代码时，它会产生以下结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Rectangle class area</span><br><span class="line">Triangle class area</span><br></pre></td></tr></table></figure>
+<p>此时，编译器看的是指针的内容，而不是它的类型。因此，由于 tri 和 rec 类的对象的地址存储在 *shape 中，所以会调用各自的 area() 函数。</p>
+<p>正如您所看到的，每个子类都有一个函数 area() 的独立实现。这就是多态的一般使用方式。有了多态，您可以有多个不同的类，都带有同一个名称但具有不同实现的函数，函数的参数甚至可以是相同的。</p>
+<p>虚函数<br>虚函数 是在基类中使用关键字 virtual 声明的函数。在派生类中重新定义基类中定义的虚函数时，会告诉编译器不要静态链接到该函数。</p>
+<p>我们想要的是在程序中任意点可以根据所调用的对象类型来选择调用的函数，这种操作被称为动态链接，或后期绑定。</p>
+<p>纯虚函数<br>您可能想要在基类中定义虚函数，以便在派生类中重新定义该函数更好地适用于对象，但是您在基类中又不能对虚函数给出有意义的实现，这个时候就会用到纯虚函数。</p>
+<p>我们可以把基类中的虚函数 area() 改写如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Shape</span> &#123;</span></span><br><span class="line">   <span class="keyword">protected</span>:</span><br><span class="line">      <span class="keyword">int</span> width, height;</span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      Shape( <span class="keyword">int</span> a=<span class="number">0</span>, <span class="keyword">int</span> b=<span class="number">0</span>)</span><br><span class="line">      &#123;</span><br><span class="line">         width = a;</span><br><span class="line">         height = b;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// pure virtual function</span></span><br><span class="line">      <span class="function"><span class="keyword">virtual</span> <span class="keyword">int</span> <span class="title">area</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>= 0 告诉编译器，函数没有主体，上面的虚函数是<strong>纯虚函数</strong>。</p>
+<h1 id="C-数据抽象" class="article-heading"><a href="#C-数据抽象" class="headerlink" title="C++ 数据抽象"></a>C++ 数据抽象<a class="article-anchor" href="#C-数据抽象" aria-hidden="true"></a></h1><p>数据抽象是指，只向外界提供关键信息，并隐藏其后台的实现细节，即只表现必要的信息而不呈现细节。</p>
+<p>数据抽象是一种依赖于接口和实现分离的编程（设计）技术。</p>
+<p>让我们举一个现实生活中的真实例子，比如一台电视机，您可以打开和关闭、切换频道、调整音量、添加外部组件（如喇叭、录像机、DVD 播放器），但是您不知道它的内部实现细节，也就是说，您并不知道它是如何通过缆线接收信号，如何转换信号，并最终显示在屏幕上。</p>
+<p>因此，我们可以说电视把它的内部实现和外部接口分离开了，您无需知道它的内部实现原理，直接通过它的外部接口（比如电源按钮、遥控器、声量控制器）就可以操控电视。</p>
+<p>现在，让我们言归正传，就 C++ 编程而言，C++ 类为<strong>数据抽象</strong>提供了可能。它们向外界提供了大量用于操作对象数据的公共方法，也就是说，外界实际上并不清楚类的内部实现。</p>
+<p>例如，您的程序可以调用 <strong>sort()</strong> 函数，而不需要知道函数中排序数据所用到的算法。实际上，函数排序的底层实现会因库的版本不同而有所差异，只要接口不变，函数调用就可以照常工作。</p>
+<p>在 C++ 中，我们使用<strong>类</strong>来定义我们自己的抽象数据类型（ADT）。您可以使用类 <strong>iostream</strong> 的 <strong>cout</strong> 对象来输出数据到标准输出，如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Hello C++&quot;</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这里，您不需要理解 <strong>cout</strong> 是如何在用户的屏幕上显示文本。您只需要知道公共接口即可，cout 的底层实现可以自由改变。</p>
+<h2 id="访问标签强制抽象" class="article-heading"><a href="#访问标签强制抽象" class="headerlink" title="访问标签强制抽象"></a>访问标签强制抽象<a class="article-anchor" href="#访问标签强制抽象" aria-hidden="true"></a></h2><p>在 C++ 中，我们使用访问标签来定义类的抽象接口。一个类可以包含零个或多个访问标签：</p>
+<ul>
+<li>使用公共标签定义的成员都可以访问该程序的所有部分。一个类型的数据抽象视图是由它的公共成员来定义的。</li>
+<li>使用私有标签定义的成员无法访问到使用类的代码。私有部分对使用类型的代码隐藏了实现细节。</li>
+</ul>
+<p>访问标签出现的频率没有限制。每个访问标签指定了紧随其后的成员定义的访问级别。指定的访问级别会一直有效，直到遇到下一个访问标签或者遇到类主体的关闭右括号为止。</p>
+<h2 id="数据抽象的好处" class="article-heading"><a href="#数据抽象的好处" class="headerlink" title="数据抽象的好处"></a>数据抽象的好处<a class="article-anchor" href="#数据抽象的好处" aria-hidden="true"></a></h2><p>数据抽象有两个重要的优势：</p>
+<ul>
+<li>类的内部受到保护，不会因无意的用户级错误导致对象状态受损。</li>
+<li>类实现可能随着时间的推移而发生变化，以便应对不断变化的需求，或者应对那些要求不改变用户级代码的错误报告。</li>
+</ul>
+<p>如果只在类的私有部分定义数据成员，编写该类的作者就可以随意更改数据。如果实现发生改变，则只需要检查类的代码，看看这个改变会导致哪些影响。如果数据是公有的，则任何直接访问旧表示形式的数据成员的函数都可能受到影响。</p>
+<h2 id="数据抽象的实例" class="article-heading"><a href="#数据抽象的实例" class="headerlink" title="数据抽象的实例"></a>数据抽象的实例<a class="article-anchor" href="#数据抽象的实例" aria-hidden="true"></a></h2><p>C++ 程序中，任何带有公有和私有成员的类都可以作为数据抽象的实例。请看下面的实例：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Adder</span>&#123;</span></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="comment">// 构造函数</span></span><br><span class="line">      Adder(<span class="keyword">int</span> i = <span class="number">0</span>)</span><br><span class="line">      &#123;</span><br><span class="line">        total = i;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 对外的接口</span></span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">addNum</span><span class="params">(<span class="keyword">int</span> number)</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          total += number;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 对外的接口</span></span><br><span class="line">      <span class="function"><span class="keyword">int</span> <span class="title">getTotal</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> total;</span><br><span class="line">      &#125;;</span><br><span class="line">   <span class="keyword">private</span>:</span><br><span class="line">      <span class="comment">// 对外隐藏的数据</span></span><br><span class="line">      <span class="keyword">int</span> total;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   Adder a;</span><br><span class="line">   </span><br><span class="line">   a.addNum(<span class="number">10</span>);</span><br><span class="line">   a.addNum(<span class="number">20</span>);</span><br><span class="line">   a.addNum(<span class="number">30</span>);</span><br><span class="line"> </span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Total &quot;</span> &lt;&lt; a.getTotal() &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当上面的代码被编译和执行时，它会产生下列结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Total 60</span><br></pre></td></tr></table></figure>
+<p>上面的类把数字相加，并返回总和。公有成员 <strong>addNum</strong> 和 <strong>getTotal</strong> 是对外的接口，用户需要知道它们以便使用类。私有成员 <strong>total</strong> 是用户不需要了解的，但又是类能正常工作所必需的。</p>
+<h2 id="设计策略" class="article-heading"><a href="#设计策略" class="headerlink" title="设计策略"></a>设计策略<a class="article-anchor" href="#设计策略" aria-hidden="true"></a></h2><p>抽象把代码分离为接口和实现。所以在设计组件时，必须保持接口独立于实现，这样，如果改变底层实现，接口也将保持不变。</p>
+<p>在这种情况下，不管任何程序使用接口，接口都不会受到影响，只需要将最新的实现重新编译即可。</p>
+<h1 id="C-数据封装" class="article-heading"><a href="#C-数据封装" class="headerlink" title="C++ 数据封装"></a>C++ 数据封装<a class="article-anchor" href="#C-数据封装" aria-hidden="true"></a></h1><p>所有的 C++ 程序都有以下两个基本要素：</p>
+<ul>
+<li><strong>程序语句（代码）：</strong>这是程序中执行动作的部分，它们被称为函数。</li>
+<li><strong>程序数据：</strong>数据是程序的信息，会受到程序函数的影响。</li>
+</ul>
+<p>封装是面向对象编程中的把数据和操作数据的函数绑定在一起的一个概念，这样能避免受到外界的干扰和误用，从而确保了安全。数据封装引申出了另一个重要的 OOP 概念，即<strong>数据隐藏</strong>。</p>
+<p><strong>数据封装</strong>是一种把数据和操作数据的函数捆绑在一起的机制，<strong>数据抽象</strong>是一种仅向用户暴露接口而把具体的实现细节隐藏起来的机制。</p>
+<p>C++ 通过创建<strong>类</strong>来支持封装和数据隐藏（public、protected、private）。我们已经知道，类包含私有成员（private）、保护成员（protected）和公有成员（public）成员。默认情况下，在类中定义的所有项目都是私有的。例如：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Box</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="function"><span class="keyword">double</span> <span class="title">getVolume</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">         <span class="keyword">return</span> length * breadth * height;</span><br><span class="line">      &#125;</span><br><span class="line">   <span class="keyword">private</span>:</span><br><span class="line">      <span class="keyword">double</span> length;      <span class="comment">// 长度</span></span><br><span class="line">      <span class="keyword">double</span> breadth;     <span class="comment">// 宽度</span></span><br><span class="line">      <span class="keyword">double</span> height;      <span class="comment">// 高度</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>变量 length、breadth 和 height 都是私有的（private）。这意味着它们只能被 Box 类中的其他成员访问，而不能被程序中其他部分访问。这是实现封装的一种方式。</p>
+<p>为了使类中的成员变成公有的（即，程序中的其他部分也能访问），必须在这些成员前使用 <strong>public</strong> 关键字进行声明。所有定义在 public 标识符后边的变量或函数可以被程序中所有其他的函数访问。</p>
+<p>把一个类定义为另一个类的友元类，会暴露实现细节，从而降低了封装性。理想的做法是尽可能地对外隐藏每个类的实现细节。</p>
+<h2 id="数据封装的实例" class="article-heading"><a href="#数据封装的实例" class="headerlink" title="数据封装的实例"></a>数据封装的实例<a class="article-anchor" href="#数据封装的实例" aria-hidden="true"></a></h2><p>C++ 程序中，任何带有公有和私有成员的类都可以作为数据封装和数据抽象的实例。请看下面的实例：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Adder</span>&#123;</span></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="comment">// 构造函数</span></span><br><span class="line">      Adder(<span class="keyword">int</span> i = <span class="number">0</span>)</span><br><span class="line">      &#123;</span><br><span class="line">        total = i;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 对外的接口</span></span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">addNum</span><span class="params">(<span class="keyword">int</span> number)</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          total += number;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 对外的接口</span></span><br><span class="line">      <span class="function"><span class="keyword">int</span> <span class="title">getTotal</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> total;</span><br><span class="line">      &#125;;</span><br><span class="line">   <span class="keyword">private</span>:</span><br><span class="line">      <span class="comment">// 对外隐藏的数据</span></span><br><span class="line">      <span class="keyword">int</span> total;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   Adder a;</span><br><span class="line">   </span><br><span class="line">   a.addNum(<span class="number">10</span>);</span><br><span class="line">   a.addNum(<span class="number">20</span>);</span><br><span class="line">   a.addNum(<span class="number">30</span>);</span><br><span class="line"> </span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Total &quot;</span> &lt;&lt; a.getTotal() &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当上面的代码被编译和执行时，它会产生下列结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Total 60</span><br></pre></td></tr></table></figure>
+<p>上面的类把数字相加，并返回总和。公有成员 <strong>addNum</strong> 和 <strong>getTotal</strong> 是对外的接口，用户需要知道它们以便使用类。私有成员 <strong>total</strong> 是对外隐藏的，用户不需要了解它，但它又是类能正常工作所必需的。</p>
+<h2 id="设计策略-1" class="article-heading"><a href="#设计策略-1" class="headerlink" title="设计策略"></a>设计策略<a class="article-anchor" href="#设计策略-1" aria-hidden="true"></a></h2><p>通常情况下，我们都会设置类成员状态为私有（private），除非我们真的需要将其暴露，这样才能保证良好的<strong>封装性</strong>。</p>
+<p>这通常应用于数据成员，但它同样适用于所有成员，包括虚函数。</p>
+<h1 id="C-接口（抽象类）" class="article-heading"><a href="#C-接口（抽象类）" class="headerlink" title="C++ 接口（抽象类）"></a>C++ 接口（抽象类）<a class="article-anchor" href="#C-接口（抽象类）" aria-hidden="true"></a></h1><p>接口描述了类的行为和功能，而不需要完成类的特定实现。</p>
+<p>C++ 接口是使用<strong>抽象类</strong>来实现的，抽象类与数据抽象互不混淆，数据抽象是一个把实现细节与相关的数据分离开的概念。</p>
+<p>如果类中至少有一个函数被声明为纯虚函数，则这个类就是抽象类。纯虚函数是通过在声明中使用 “= 0” 来指定的，如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Box</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">      <span class="comment">// 纯虚函数</span></span><br><span class="line">      <span class="function"><span class="keyword">virtual</span> <span class="keyword">double</span> <span class="title">getVolume</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">   <span class="keyword">private</span>:</span><br><span class="line">      <span class="keyword">double</span> length;      <span class="comment">// 长度</span></span><br><span class="line">      <span class="keyword">double</span> breadth;     <span class="comment">// 宽度</span></span><br><span class="line">      <span class="keyword">double</span> height;      <span class="comment">// 高度</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>设计<strong>抽象类</strong>（通常称为 ABC）的目的，是为了给其他类提供一个可以继承的适当的基类。抽象类不能被用于实例化对象，它只能作为<strong>接口</strong>使用。如果试图实例化一个抽象类的对象，会导致编译错误。</p>
+<p>因此，如果一个 ABC 的子类需要被实例化，则必须实现每个虚函数，这也意味着 C++ 支持使用 ABC 声明接口。如果没有在派生类中重写纯虚函数，就尝试实例化该类的对象，会导致编译错误。</p>
+<p>可用于实例化对象的类被称为<strong>具体类</strong>。</p>
+<h2 id="抽象类的实例" class="article-heading"><a href="#抽象类的实例" class="headerlink" title="抽象类的实例"></a>抽象类的实例<a class="article-anchor" href="#抽象类的实例" aria-hidden="true"></a></h2><p>请看下面的实例，基类 Shape 提供了一个接口 <strong>getArea()</strong>，在两个派生类 Rectangle 和 Triangle 中分别实现了 <strong>getArea()</strong>：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 基类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Shape</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">   <span class="comment">// 提供接口框架的纯虚函数</span></span><br><span class="line">   <span class="function"><span class="keyword">virtual</span> <span class="keyword">int</span> <span class="title">getArea</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">setWidth</span><span class="params">(<span class="keyword">int</span> w)</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">      width = w;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">setHeight</span><span class="params">(<span class="keyword">int</span> h)</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">      height = h;</span><br><span class="line">   &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">   <span class="keyword">int</span> width;</span><br><span class="line">   <span class="keyword">int</span> height;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 派生类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span>:</span> <span class="keyword">public</span> Shape</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">   <span class="function"><span class="keyword">int</span> <span class="title">getArea</span><span class="params">()</span></span></span><br><span class="line"><span class="function">   </span>&#123; </span><br><span class="line">      <span class="keyword">return</span> (width * height); </span><br><span class="line">   &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Triangle</span>:</span> <span class="keyword">public</span> Shape</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">   <span class="function"><span class="keyword">int</span> <span class="title">getArea</span><span class="params">()</span></span></span><br><span class="line"><span class="function">   </span>&#123; </span><br><span class="line">      <span class="keyword">return</span> (width * height)/<span class="number">2</span>; </span><br><span class="line">   &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   Rectangle Rect;</span><br><span class="line">   Triangle  Tri;</span><br><span class="line"> </span><br><span class="line">   Rect.setWidth(<span class="number">5</span>);</span><br><span class="line">   Rect.setHeight(<span class="number">7</span>);</span><br><span class="line">   <span class="comment">// 输出对象的面积</span></span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Total Rectangle area: &quot;</span> &lt;&lt; Rect.getArea() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"> </span><br><span class="line">   Tri.setWidth(<span class="number">5</span>);</span><br><span class="line">   Tri.setHeight(<span class="number">7</span>);</span><br><span class="line">   <span class="comment">// 输出对象的面积</span></span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Total Triangle area: &quot;</span> &lt;&lt; Tri.getArea() &lt;&lt; <span class="built_in">endl</span>; </span><br><span class="line"> </span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当上面的代码被编译和执行时，它会产生下列结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Total Rectangle area: 35</span><br><span class="line">Total Triangle area: 17</span><br></pre></td></tr></table></figure>
+<p>从上面的实例中，我们可以看到一个抽象类是如何定义一个接口 getArea()，两个派生类是如何通过不同的计算面积的算法来实现这个相同的函数。</p>
+<h2 id="设计策略-2" class="article-heading"><a href="#设计策略-2" class="headerlink" title="设计策略"></a>设计策略<a class="article-anchor" href="#设计策略-2" aria-hidden="true"></a></h2><p>面向对象的系统可能会使用一个抽象基类为所有的外部应用程序提供一个适当的、通用的、标准化的接口。然后，派生类通过继承抽象基类，就把所有类似的操作都继承下来。</p>
+<p>外部应用程序提供的功能（即公有函数）在抽象基类中是以纯虚函数的形式存在的。这些纯虚函数在相应的派生类中被实现。</p>
+<p>这个架构也使得新的应用程序可以很容易地被添加到系统中，即使是在系统被定义之后依然可以如此。</p>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.584Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/mse/politics/index.html" class="article-footer-next" title="政治"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/mse/c++/class_and_object.html';
+  var disqus_title = "类 & 对象";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E7%B1%BB-amp-%E5%AF%B9%E8%B1%A1"><span class="toc-text">C++ 类 &amp; 对象</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E7%B1%BB%E5%AE%9A%E4%B9%89"><span class="toc-text">C++ 类定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-C-%E5%AF%B9%E8%B1%A1"><span class="toc-text">定义 C++ 对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98"><span class="toc-text">访问数据成员</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B1%BB-amp-%E5%AF%B9%E8%B1%A1%E8%AF%A6%E8%A7%A3"><span class="toc-text">类 &amp; 对象详解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E7%BB%A7%E6%89%BF"><span class="toc-text">C++ 继承</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%B1%BB-amp-%E6%B4%BE%E7%94%9F%E7%B1%BB"><span class="toc-text">基类 &amp; 派生类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%92%8C%E7%BB%A7%E6%89%BF"><span class="toc-text">访问控制和继承</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%A7%E6%89%BF%E7%B1%BB%E5%9E%8B"><span class="toc-text">继承类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E7%BB%A7%E6%89%BF"><span class="toc-text">多继承</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E9%87%8D%E8%BD%BD%E8%BF%90%E7%AE%97%E7%AC%A6%E5%92%8C%E9%87%8D%E8%BD%BD%E5%87%BD%E6%95%B0"><span class="toc-text">C++ 重载运算符和重载函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E4%B8%AD%E7%9A%84%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD"><span class="toc-text">C++ 中的函数重载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD"><span class="toc-text">C++ 中的运算符重载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E9%87%8D%E8%BD%BD%E8%BF%90%E7%AE%97%E7%AC%A6-%E4%B8%8D%E5%8F%AF%E9%87%8D%E8%BD%BD%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-text">可重载运算符&#x2F;不可重载运算符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD%E5%AE%9E%E4%BE%8B"><span class="toc-text">运算符重载实例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E5%A4%9A%E6%80%81"><span class="toc-text">C++ 多态</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0"><span class="toc-text">虚函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%AF%E8%99%9A%E5%87%BD%E6%95%B0"><span class="toc-text">纯虚函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E6%95%B0%E6%8D%AE%E6%8A%BD%E8%B1%A1"><span class="toc-text">C++ 数据抽象</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E6%A0%87%E7%AD%BE%E5%BC%BA%E5%88%B6%E6%8A%BD%E8%B1%A1"><span class="toc-text">访问标签强制抽象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%8A%BD%E8%B1%A1%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="toc-text">数据抽象的好处</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%8A%BD%E8%B1%A1%E7%9A%84%E5%AE%9E%E4%BE%8B"><span class="toc-text">数据抽象的实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E7%AD%96%E7%95%A5"><span class="toc-text">设计策略</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E6%95%B0%E6%8D%AE%E5%B0%81%E8%A3%85"><span class="toc-text">C++ 数据封装</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%B0%81%E8%A3%85%E7%9A%84%E5%AE%9E%E4%BE%8B"><span class="toc-text">数据封装的实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E7%AD%96%E7%95%A5-1"><span class="toc-text">设计策略</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E6%8E%A5%E5%8F%A3%EF%BC%88%E6%8A%BD%E8%B1%A1%E7%B1%BB%EF%BC%89"><span class="toc-text">C++ 接口（抽象类）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%BD%E8%B1%A1%E7%B1%BB%E7%9A%84%E5%AE%9E%E4%BE%8B"><span class="toc-text">抽象类的实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E7%AD%96%E7%95%A5-2"><span class="toc-text">设计策略</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">文化课</strong><a href="/mse/politics/index.html" class="sidebar-link">政治</a><a href="/mse/english/index.html" class="sidebar-link">英语</a><a href="/mse/calculus/index.html" class="sidebar-link">微积分</a><strong class="sidebar-title">专业课</strong><a href="/mse/computer/index.html" class="sidebar-link">计算机组成原理</a><a href="/mse/algorithm/index.html" class="sidebar-link">数据结构与算法</a><a href="/mse/c++/index.html" class="sidebar-link">C++ 语言程序</a><a href="/mse/software/index.html" class="sidebar-link">软件工程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">文化课</strong><a href="/mse/politics/index.html" class="mobile-nav-link">政治</a><a href="/mse/english/index.html" class="mobile-nav-link">英语</a><a href="/mse/calculus/index.html" class="mobile-nav-link">微积分</a><strong class="mobile-nav-title">专业课</strong><a href="/mse/computer/index.html" class="mobile-nav-link">计算机组成原理</a><a href="/mse/algorithm/index.html" class="mobile-nav-link">数据结构与算法</a><a href="/mse/c++/index.html" class="mobile-nav-link">C++ 语言程序</a><a href="/mse/software/index.html" class="mobile-nav-link">软件工程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

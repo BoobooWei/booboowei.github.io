@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>MySQL 5.7 JSON 数据类型的使用 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.7_json.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/database/mysql/dba_mysql/tec/mysql_5.7_json">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="什么是jsonJSON(JavaScript Object Notation) 是一种轻量级的数据交换格式。它基于ECMAScript的一个子集。  JSON采用完全独立于语言的文本格式，但是也使用了类似于C语言家族的习惯（包括C、C++、C#、Java、JavaScript、Perl、Python等）。 这些特性使JSON成为理想的数据交换语言。 易于人阅读和编写，同时也易于机器解析和生成(一般">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MySQL 5.7 JSON 数据类型的使用">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.7_json">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="什么是jsonJSON(JavaScript Object Notation) 是一种轻量级的数据交换格式。它基于ECMAScript的一个子集。  JSON采用完全独立于语言的文本格式，但是也使用了类似于C语言家族的习惯（包括C、C++、C#、Java、JavaScript、Perl、Python等）。 这些特性使JSON成为理想的数据交换语言。 易于人阅读和编写，同时也易于机器解析和生成(一般">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:49.713Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:49.713Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">MySQL 5.7 JSON 数据类型的使用</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/database/mysql/dba_mysql/tec/mysql_5.7_json.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <h2 id="什么是json" class="article-heading"><a href="#什么是json" class="headerlink" title="什么是json"></a>什么是json<a class="article-anchor" href="#什么是json" aria-hidden="true"></a></h2><p>JSON(JavaScript Object Notation) 是一种轻量级的数据交换格式。它基于ECMAScript的一个子集。 </p>
+<p>JSON采用完全独立于语言的文本格式，但是也使用了类似于C语言家族的习惯（包括C、C++、C#、Java、JavaScript、Perl、Python等）。</p>
+<p>这些特性使JSON成为理想的数据交换语言。 易于人阅读和编写，同时也易于机器解析和生成(一般用于提升网络传输速率)。</p>
+<h3 id="JSON-语法规则" class="article-heading"><a href="#JSON-语法规则" class="headerlink" title="JSON 语法规则"></a>JSON 语法规则<a class="article-anchor" href="#JSON-语法规则" aria-hidden="true"></a></h3><p>JSON 语法是 JavaScript 对象表示语法的子集。</p>
+<ul>
+<li>数据在键值对中</li>
+<li>数据由逗号分隔</li>
+<li>花括号保存对象</li>
+<li>方括号保存数组</li>
+</ul>
+<h3 id="JSON-名称-值对" class="article-heading"><a href="#JSON-名称-值对" class="headerlink" title="JSON 名称/值对"></a>JSON 名称/值对<a class="article-anchor" href="#JSON-名称-值对" aria-hidden="true"></a></h3><p>JSON 数据的书写格式是：名称/值对。</p>
+<p>名称/值对组合中的名称写在前面（在双引号中），值对写在后面(同样在双引号中)，中间用冒号隔开：</p>
+<p><code>&quot;firstName&quot;:&quot;John&quot;</code></p>
+<p>这很容易理解，等价于这条 JavaScript 语句：</p>
+<p><code>firstName=&quot;John&quot;</code></p>
+<h3 id="JSON-值" class="article-heading"><a href="#JSON-值" class="headerlink" title="JSON 值"></a>JSON 值<a class="article-anchor" href="#JSON-值" aria-hidden="true"></a></h3><p>JSON 值可以是：</p>
+<ul>
+<li>数字（整数或浮点数）</li>
+<li>字符串（在双引号中）</li>
+<li>逻辑值（true 或 false）</li>
+<li>数组（在方括号中）:数组是值（value）的有序集合</li>
+<li>对象（在花括号中）:对象是一个无序的“‘名称/值’对”集合</li>
+<li>null</li>
+</ul>
+<h3 id="实例" class="article-heading"><a href="#实例" class="headerlink" title="实例"></a>实例<a class="article-anchor" href="#实例" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;BeJson&quot;,</span><br><span class="line">    &quot;url&quot;: &quot;http://www.bejson.com&quot;,</span><br><span class="line">    &quot;page&quot;: 88,</span><br><span class="line">    &quot;isNonProfit&quot;: true,</span><br><span class="line">    &quot;address&quot;: &#123;</span><br><span class="line">        &quot;street&quot;: &quot;科技园路.&quot;,</span><br><span class="line">        &quot;city&quot;: &quot;江苏苏州&quot;,</span><br><span class="line">        &quot;country&quot;: &quot;中国&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;links&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;name&quot;: &quot;Google&quot;,</span><br><span class="line">            &quot;url&quot;: &quot;http://www.google.com&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;name&quot;: &quot;Baidu&quot;,</span><br><span class="line">            &quot;url&quot;: &quot;http://www.baidu.com&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;name&quot;: &quot;SoSo&quot;,</span><br><span class="line">            &quot;url&quot;: &quot;http://www.SoSo.com&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="优点" class="article-heading"><a href="#优点" class="headerlink" title="优点"></a>优点<a class="article-anchor" href="#优点" aria-hidden="true"></a></h3><ol>
+<li>方便于传输，较少冗余的字符。当然直接传二进制是最好的，但面临难解析的问题。亦可以是xml、纯字符串的方式，但json有其独到的好处。google有个自己的协议，叫protobuf，有兴趣可了解一下。</li>
+<li>方便转换。有很多的json api提供了json字符串转成对象、对象转换成json串的方法。</li>
+<li>易于阅读。json代码的良好结构，可以很直观地了解存的是什么内容。</li>
+</ol>
+<h2 id="MySQL-5-7-8-开始添加json" class="article-heading"><a href="#MySQL-5-7-8-开始添加json" class="headerlink" title="MySQL 5.7.8 开始添加json"></a>MySQL 5.7.8 开始添加json<a class="article-anchor" href="#MySQL-5-7-8-开始添加json" aria-hidden="true"></a></h2><p>As of MySQL 5.7.8, MySQL supports a native JSON data type that enables efficient access to data inJSON (JavaScript Object Notation) documents. The JSON data type provides these advantages overstoring JSON-format strings in a string column:</p>
+<p>从 MySQL 5.7.8 开始，MySQL支持原生态的JSON数据类型。这使得MySQL数据库可以高效地访问JSON 文档类型的数据。JSON数据类型提供以下优势，在列的类型为字符串类型的时，使用JSON类型的字符串优势更大。</p>
+<ul>
+<li><p>Automatic validation of JSON documents stored in JSON columns. Invalid documents produce an error.</p>
+</li>
+<li><p>Optimized storage format. JSON documents stored in JSON columns are converted to an internal format that permits quick read access to document elements. When the server later must read a JSON values stored in this binary format, the value need not be parsed from a text representation. The binary format Creating JSON Values is structured to enable the server to look up subobjects or nested values directly by key or array index without reading all values before or after them in the document.</p>
+</li>
+<li><p>JSON列中存储的JSON文档能够自动验证。无效的文件会产生一个报错。</p>
+</li>
+<li><p>优化存储类型。JSON列中存储的JSON文档被转换为一个内部格式,内部格式允许快速的读和访问文档元素。当服务器之后必须读取存储为二进制格式的JSON数据的值时,就不需要从文本表示方式来解析了。创建JSON数据值的二进制格式使服务器查找子对象、直接通过键得到的嵌套值、数组索引时，不需要读取文档中所有值，不管这些值是已经在文档中还是之后加进来的。 </p>
+</li>
+</ul>
+<p>MySQL 5.7.8开始支持json字段类型,并提供了不少内置函数,通过计算列,甚至还可以直接索引json中的数据!</p>
+<p>为何说json原生支持非常关键呢,不是可以自己在客户端处理json然后保存字符串到mysql不就完了?</p>
+<p>来看一看，原生支持到底有什么意义</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">create table t (</span><br><span class="line"> id int not null,</span><br><span class="line"> js json not null,</span><br><span class="line"> PRIMARY KEY (id)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>1.可以直接过滤记录</p>
+</blockquote>
+<p>select * from t where js-&gt;’$.a’=100</p>
+<p>避免了要将所有记录都读取出来，在客户端进行过滤。</p>
+<blockquote>
+<p>2.可以直接update，而无须先读取</p>
+</blockquote>
+<p>update t set js=json_set(js,’$.a’,js-&gt;’$.a’+1) where id=1</p>
+<p>单条原子更新</p>
+<p>update t,t1 set t.js=json_merage(t.js,t1.js) where t.id=t1.id</p>
+<p>跨表更新</p>
+<blockquote>
+<p>3.可以在一条SQL中完成多条纪录的修改！</p>
+</blockquote>
+<p>update t set js=json_set(js,’$.a’,123) where id in(1,2)</p>
+<p>没有原生的支持，这个是很难实现的。</p>
+<blockquote>
+<p>4.通过json类型，完美的实现了表结构的动态变化<br>除了一般意义上的增加表字段，还包括嵌套其他对象与数组</p>
+</blockquote>
+<p>update t set js=json_array_append(js,’$.sonAry’,123) where id =1</p>
+<p>增加一个子节点到sonAry中，无须子表。</p>
+<blockquote>
+<p>5.通过计算生成列在json上建立索引</p>
+</blockquote>
+<p>CREATE TABLE j1 (<br>  id int(11) NOT NULL,<br>  js json NOT NULL,<br>  s varchar(45) CHARACTER SET utf8mb4 NOT NULL,<br>  a int(11) GENERATED ALWAYS AS (json_extract(js,’$.a’)) STORED,<br>  PRIMARY KEY (id),<br>  KEY i_a (a)<br>)</p>
+<p>通过a这个生成列<code>(json_extract(js,&#39;$.a&#39;))</code>上建立索引,可以利用mysql的索引来快速定位。</p>
+<p><code>json_extract</code>还可利用<code>path</code>的通配符，发掘更多类型索引。</p>
+<p>甚至还可利用<code>JSON_CONTAINS/JSON_CONTAINS_PATH</code>来建立索引。这里可以组合出很多。</p>
+<h3 id="与MongoDB的差异" class="article-heading"><a href="#与MongoDB的差异" class="headerlink" title="与MongoDB的差异"></a>与MongoDB的差异<a class="article-anchor" href="#与MongoDB的差异" aria-hidden="true"></a></h3><ol>
+<li><strong>mongodb会自动建立表</strong>，也就是可以动态增加表,这点mysql还是必须先定义表</li>
+<li><strong>大部分查询插入更新操作</strong>,因为mysql json支持,两者没有什么功能差别了。但是就查询来说,mysql的SQL语法,特别是json_extract的简写模式,可读性比mongodb的要强不少</li>
+<li><strong>mongodb实际用牺牲事务性降低系统复杂度来实现高性能</strong>，这方面,要看用户使用场景,很难说优势还是劣势</li>
+<li><strong>对于大数据的支持</strong>，mongodb在大数据支持上做的比较好,特别是数据分片,高可用上基本内置实现了；mysql这方面也在不断完善，其差异主要还是在一致性上的选取,弱一致性导致容易分布处理,而强一致性则复杂很多.</li>
+</ol>
+<p>我们可以假设,关系数据库设计之初如果放弃强一致性,那么这方面,mongodb等nosql实际也不会有任何优势.</p>
+<p>从未来趋势来看,</p>
+<p>强一致性方面,传统关系数据库始终是唯一最佳选择,而且通过支持json,把以前Nosql的一些优势也可以纳入到自己体系中.</p>
+<p>对于固定的字段,显然传统的表处理方式性能更优,而对于动态字段放置独立的json字段中,也可以很好的适应这类需求.</p>
+<p>弱一致性方面,NoSQL更擅长一些,传统关系数据库则可以在应用层面通过多实例数据库的分布方式来实现(来降低一致性提高数据吞吐量).</p>
+<p>而在大分布式方面最终一致性方面,传统关系数据库缺乏直接支持,但还是可以通过应用层来实现,而很多NoSQL也在不断完善这方面的功能.</p>
+<p>我们期待一个基础关系数据库,每个实例提供强一致性的事务,易用的SQL,并对动态数据作出很好的支持.</p>
+<p>并在实例之上有一个分布式的层,可以聚合大量数据库实例,并协助用户实现最终一致性,</p>
+<p>这样就比较完美了.</p>
+<h2 id="如何使用json数据类型" class="article-heading"><a href="#如何使用json数据类型" class="headerlink" title="如何使用json数据类型"></a>如何使用json数据类型<a class="article-anchor" href="#如何使用json数据类型" aria-hidden="true"></a></h2><h3 id="声明json类型的列" class="article-heading"><a href="#声明json类型的列" class="headerlink" title="声明json类型的列"></a>声明json类型的列<a class="article-anchor" href="#声明json类型的列" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">create table t(id int,js json,PRIMARY KEY (`id`))</span><br></pre></td></tr></table></figure>
+<h3 id="插入数据" class="article-heading"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据<a class="article-anchor" href="#插入数据" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">insert into t values(1,&#x27;&#123;&quot;a&quot;:1,&quot;s&quot;:&quot;abc&quot;&#125;&#x27;)</span><br><span class="line">insert into t values(2,&#x27;[1,2,&#123;&quot;a&quot;:123&#125;]&#x27;)</span><br><span class="line">insert into t values(3,&#x27;&quot;str&quot;&#x27;)</span><br><span class="line">insert into t values(4,&#x27;123&#x27;)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接提供字符串即可。还可以用JSON_Array和JSON_Object函数来构造</span></span><br><span class="line">insert into t values(5,JSON_Object(&#x27;key1&#x27;,v1,&#x27;key2&#x27;,v2))</span><br><span class="line">insert into t values(4,JSON_Array(v1,v2,v3))</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>JSON_OBJECT([key, val[, key, val] ...])</code></li>
+<li><code>JSON_ARRAY([val[, val] ...])</code></li>
+<li><code>JSON_SET(json_doc, path, val[, path, val] ...)</code></li>
+</ul>
+<h3 id="修改数据" class="article-heading"><a href="#修改数据" class="headerlink" title="修改数据"></a>修改数据<a class="article-anchor" href="#修改数据" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">update t set js=json_set(&#x27;&#123;&quot;a&quot;:1,&quot;s&quot;:&quot;abc&quot;&#125;&#x27;,&#x27;$.a&#x27;,456,&#x27;$.b&#x27;,&#x27;bbb&#x27;) where id=1</span><br></pre></td></tr></table></figure>
+<p>结果<code>js=&#123;&quot;a&quot;:456,&quot;s&quot;:&quot;abc&quot;,&quot;b&quot;:&quot;bbb&quot;&#125;</code></p>
+<p>path中<code>$</code>就代表整个<code>doc</code>,然后可以用<code>JavaScript</code>的方式指定对象属性或者数组下标等.执行效果，类似json的语法</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">.a=456</span></span><br><span class="line"><span class="meta">$</span><span class="bash">.b=<span class="string">&quot;bbb&quot;</span></span></span><br></pre></td></tr></table></figure>
+<p>存在就修改,不存在就设置.</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">.c.c=123</span></span><br></pre></td></tr></table></figure>
+<p>这个在<code>javascript</code>中会出错，因为<code>.c</code>为<code>null</code>。<br>但是在<code>json_set(&#39;&#123;&#125;&#39;,&#39;$.c.c&#39;,123)</code>中，不存在的路径将直接被忽略。</p>
+<p>特殊的对于数组，如果目标<code>doc</code>不是数组则会被转换成<code>[doc]</code>，然后再执行<code>set</code>，<br>如果<code>set</code>的下标超过数组长度，只会添加到数组结尾。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">select json_set(&#x27;&#123;&quot;a&quot;:456&#125;&#x27;,&#x27;$[1]&#x27;,123)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 结果[&#123;<span class="string">&quot;a&quot;</span>:456&#125;,123]。目标现被转换成[&#123;<span class="string">&quot;a&quot;</span>:456&#125;],然后应用$[1]=123。</span></span><br><span class="line"></span><br><span class="line">select json_set(&#x27;&quot;abc&quot;&#x27;,&#x27;$[999]&#x27;,123)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 结果[<span class="string">&quot;abc&quot;</span>,123]。</span></span><br></pre></td></tr></table></figure>
+<p>再举几个例子</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">select json_set(&#x27;[1,2,3]&#x27;,&#x27;$[0]&#x27;,456,&#x27;$[3]&#x27;,&#x27;bbb&#x27;)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 结果[456,2,3,<span class="string">&#x27;bbb&#x27;</span>]</span></span><br></pre></td></tr></table></figure>
+<p>注意:<br>对于<code>javascript</code>中<br><code>var a=[1,2,3]</code><br><code>a.a=&#39;abc&#39;</code><br>是合法的,但是一旦<code>a</code>转成<code>json</code>字符串,<code>a.a</code>就丢失了。</p>
+<p>而在<code>mysql</code>中，这种算作路径不存在，因此<br><code>select json_set(&#39;[1,2,3]&#39;,&#39;$.a&#39;,456)</code><br>结果还是<code>[1,2,3]</code></p>
+<p>然后还有另外两个版本<br><code>JSON_INSERT(json_doc, path, val[, path, val] ...)</code><br>如果不存在对应属性则插入,否则不做任何变动</p>
+<p><code>JSON_REPLACE(json_doc, path, val[, path, val] ...)</code><br>如果存在则替换,否则不做任何变动</p>
+<p>这两个操作倒是没有javascript直接对应的操作<br><code>select json_insert(&#39;&#123;&quot;a&quot;:1,&quot;s&quot;:&quot;abc&quot;&#125;&#39;,&#39;$.a&#39;,456,&#39;$.b&#39;,&#39;bbb&#39;)</code><br>结果<code>&#123;&quot;a&quot;:1,&quot;s&quot;:&quot;abc&quot;,&quot;b&quot;:&quot;bbb&quot;&#125;</code></p>
+<p><code>select json_replace(&#39;&#123;&quot;a&quot;:1,&quot;s&quot;:&quot;abc&quot;&#125;&#39;,&#39;$.a&#39;,456,&#39;$.b&#39;,&#39;bbb&#39;)</code><br>结果<code>&#123;&quot;a&quot;:456,&quot;s&quot;:&quot;abc&quot;&#125;</code></p>
+<p>加上删除节点<br><code>JSON_REMOVE(json_doc, path[, path] ...)</code><br>如果存在则删除对应属性,否则不做任何变动<br><code>select json_replace(&#39;&#123;&quot;a&quot;:1,&quot;s&quot;:&quot;abc&quot;&#125;&#39;,&#39;$.a&#39;,&#39;$.b&#39;)</code><br>结果<code>&#123;&quot;s&quot;:&quot;abc&quot;&#125;</code></p>
+<p>涉及数组时，三个函数与<code>json_set</code>基本一样<br><code>select json_insert(&#39;&#123;&quot;a&quot;:1&#125;&#39;,&#39;$[0]&#39;,456)</code><br>结果不变，认为<code>0</code>元素已经存在了，注意这里结果不是<code>[&#123;&quot;a&quot;:1&#125;]</code></p>
+<p><code>select json_insert(&#39;&#123;&quot;a&quot;:1&#125;&#39;,&#39;$[999]&#39;,456)</code><br>结果追加到数组结尾<code>[&#123;&quot;a&quot;:1&#125;，456]</code></p>
+<p><code>select json_replace(&#39;&#123;&quot;a&quot;:1&#125;&#39;,&#39;$[0]&#39;,456)</code><br>结果<code>456</code>！而非<code>[456]</code></p>
+<p><code>select json_replace(&#39;&#123;&quot;a&quot;:1&#125;&#39;,&#39;$[1]&#39;,456)</code><br>结果不变。</p>
+<p>其实对于<code>json_insert</code>和<code>json_replace</code>来说一般情况没必要针对数组使用。</p>
+<p><code>select json_remove(&#39;&#123;&quot;a&quot;:1&#125;&#39;,&#39;$[0]&#39;)</code><br>结果不变！</p>
+<p><code>select json_remove(&#39;[&#123;&quot;a&quot;:1&#125;]&#39;,&#39;$[0]&#39;)</code><br>结果<code>[]</code></p>
+<p>总之涉及数组的时候要小心。</p>
+<p><code>JSON_MERGE(json_doc, json_doc[, json_doc] ...)</code><br>将多个doc合并</p>
+<p><code>select json_merge(&#39;[1,2,3]&#39;,&#39;[4,5]&#39;)</code><br>结果<code>[1,2,3,4,5]</code>。</p>
+<h3 id="数组简单扩展" class="article-heading"><a href="#数组简单扩展" class="headerlink" title="数组简单扩展"></a>数组简单扩展<a class="article-anchor" href="#数组简单扩展" aria-hidden="true"></a></h3><p><code>select json_merge(&#39;&#123;&quot;a&quot;:1&#125;&#39;,&#39;&#123;&quot;b&quot;:2&#125;&#39;)</code><br>结果<code>&#123;&quot;a&quot;:1,&quot;b&quot;:2&#125;</code>。两个对象直接融合。</p>
+<p>特殊的还是在数组<br><code>select json_merge(&#39;123&#39;,&#39;45&#39;)</code><br>结果<code>[123,45]</code>。两个常量变成数组</p>
+<p><code>select json_merge(&#39;&#123;&quot;a&quot;:1&#125;&#39;,&#39;[1，2]&#39;)</code><br>结果<code>[&#123;&quot;a&quot;:1&#125;,1,2]</code>。目标碰到数组，先转换成<code>[doc]</code></p>
+<p><code>select json_merge(&#39;[1,2]&#39;,&#39;&#123;&quot;a&quot;:1&#125;&#39;)</code><br>结果<code>[1,2,&#123;&quot;a&quot;:1&#125;]</code>。非数组都追加到数组后面。</p>
+<p><code>JSON_ARRAY_APPEND(json_doc, path, val[, path, val] ...)</code><br>给指定的节点，添加元素，如果节点不是数组，则先转换成<code>[doc]</code></p>
+<p><code>select json_Array_append(&#39;[1,2]&#39;,&#39;$&#39;,&#39;456&#39;)</code><br>结果<code>[1,2,456]</code></p>
+<p><code>select json_Array_append(&#39;[1,2]&#39;,&#39;$[0]&#39;,&#39;456&#39;)</code><br>结果<code>[[1,456],2]</code>。指定插在<code>$[0]</code>这个节点，这个节点非数组，所以等效为<br><code>select json_Array_append(&#39;[[1],2]&#39;,&#39;$[0]&#39;,&#39;456&#39;)</code></p>
+<p><code>JSON_ARRAY_INSERT(json_doc, path, val[, path, val] ...)</code><br>在数组的指定下标处插入元素</p>
+<p><code>SELECT JSON_ARRAY_INSERT(&#39;[1,2,3]&#39;,&#39;$[1]&#39;,4)</code><br>结果<code>[1,4,2,3]</code>。在<code>$</code>数组的下标1处插入</p>
+<p><code>SELECT JSON_ARRAY_INSERT(&#39;[1,[1,2,3],3]&#39;,&#39;$[1][1]&#39;,4)</code><br>结果<code>[1,[1,4,2,3],3]</code>。在<code>$[1]</code>数组的下标1处插入</p>
+<p><code>SELECT JSON_ARRAY_INSERT(&#39;[1,2,3]&#39;,&#39;$[0]&#39;,4,&#39;$[1]&#39;,5)</code><br>结果<code>[4,5,1,2,3]</code>。注意后续插入是在前面插入基础上的，而非<code>[4,1,5,2,3]</code></p>
+<p>提取<code>json</code>信息的函数<br><code>JSON_KEYS(json_doc[, path])</code><br>返回指定<code>path</code>的<code>key</code></p>
+<p><code>select json_keys(&#39;&#123;&quot;a&quot;:1,&quot;b&quot;:2&#125;&#39;)</code><br>结果<code>[&quot;a&quot;,&quot;b&quot;]</code></p>
+<p><code>select json_keys(&#39;&#123;&quot;a&quot;:1,&quot;b&quot;:[1,2,3]&#125;&#39;,&#39;$.b&#39;)</code><br>结果<code>null</code>。数组没有<code>key</code></p>
+<p><code>JSON_CONTAINS(json_doc, val[, path])</code><br>是否包含子文档</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">select json_contains(&#x27;&#123;&quot;a&quot;:1,&quot;b&quot;:4&#125;&#x27;,&#x27;&#123;&quot;a&quot;:1&#125;&#x27;)</span><br><span class="line">结果1</span><br><span class="line"></span><br><span class="line">select json_contains(&#x27;&#123;&quot;a&quot;:2,&quot;b&quot;:1&#125;&#x27;,&#x27;&#123;&quot;a&quot;:1&#125;&#x27;)</span><br><span class="line">结果0</span><br><span class="line"></span><br><span class="line">select json_contains(&#x27;&#123;&quot;a&quot;:[1,2,3],&quot;b&quot;:1&#125;&#x27;,&#x27;[1,2]&#x27;,&#x27;$.a&#x27;)</span><br><span class="line">结果1。数组包含则需要所有元素都存在。</span><br><span class="line"></span><br><span class="line">select json_contains(&#x27;&#123;&quot;a&quot;:[1,2,3],&quot;b&quot;:1&#125;&#x27;,&#x27;1&#x27;,&#x27;$.a&#x27;)</span><br><span class="line">结果1。元素存在数组元素中。</span><br></pre></td></tr></table></figure>
+<p><code>JSON_CONTAINS_PATH(json_doc, one_or_all, path[, path] ...)</code><br>检查路径是否存在</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">select JSON_CONTAINS_PATH(&#x27;&#123;&quot;a&quot;:1,&quot;b&quot;:1&#125;&#x27;, &#x27;one&#x27;,&#x27;$.a&#x27;,&#x27;$.c&#x27;)</span><br><span class="line">结果1。只要存在一个</span><br><span class="line"></span><br><span class="line">select JSON_CONTAINS_PATH(&#x27;&#123;&quot;a&quot;:1,&quot;b&quot;:1&#125;&#x27;, &#x27;all&#x27;,&#x27;$.a&#x27;,&#x27;$.c&#x27;)</span><br><span class="line">结果0。必须全部存在。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">select JSON_CONTAINS_PATH(&#x27;&#123;&quot;a&quot;:1,&quot;b&quot;:&#123;&quot;c&quot;:&#123;&quot;d&quot;:1&#125;&#125;&#125;&#x27;, &#x27;one&#x27;,&#x27;$.b.c.d&#x27;)</span><br><span class="line">结果1。</span><br><span class="line"></span><br><span class="line">select JSON_CONTAINS_PATH(&#x27;&#123;&quot;a&quot;:1,&quot;b&quot;:&#123;&quot;c&quot;:&#123;&quot;d&quot;:1&#125;&#125;&#125;&#x27;, &#x27;one&#x27;,&#x27;$.a.c.d&#x27;)</span><br><span class="line">结果0。</span><br></pre></td></tr></table></figure>
+<p><code>JSON_EXTRACT(json_doc, path[, path] ...)</code><br>获得doc中某个或多个节点的值。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">select json_extract(&#x27;&#123;&quot;a&quot;:1,&quot;b&quot;:2&#125;&#x27;,&#x27;$.a&#x27;)</span><br><span class="line">结果1</span><br><span class="line"></span><br><span class="line">select json_extract(&#x27;&#123;&quot;a&quot;:[1,2,3],&quot;b&quot;:2&#125;&#x27;,&#x27;$.a[1]&#x27;)</span><br><span class="line">结果2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">select json_extract(&#x27;&#123;&quot;a&quot;:&#123;&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3&#125;,&quot;b&quot;:2&#125;&#x27;,&#x27;$.a.*&#x27;)</span><br><span class="line">结果[1,2,3]。a.*通配a所有属性的值返回成数组。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">select json_extract(&#x27;&#123;&quot;a&quot;:&#123;&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3&#125;,&quot;b&quot;:4&#125;&#x27;,&#x27;$**.b&#x27;)</span><br><span class="line">结果[2,4]。通配$中所有层次下的属性b的值返回成数组。</span><br></pre></td></tr></table></figure>
+<p>mysql5.7.9开始增加了一种简写方式：column-&gt;path</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">select id,js-&gt;&#x27;$.id&#x27; from t where js-&gt;&#x27;$.a&#x27;=1 order by js-&gt;&#x27;$.b&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 等价于</span></span><br><span class="line">select id,json_extract(js,&#x27;$.id&#x27;) </span><br><span class="line">from t where json_extract(js,&#x27;$.a&#x27;)=1</span><br><span class="line">order by json_extract(js,&#x27;$.b&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p><code>JSON_SEARCH(json_doc, one_or_all, search_str[, escape_char[, path] ...])</code><br>强大的查询函数，用于在doc中返回符合条件的节点，select则是在表中返回符合要求的纪录。</p>
+<p><code>select json_search(&#39;&#123;&quot;a&quot;:&quot;abc&quot;,&quot;b&quot;:&#123;&quot;c&quot;:&quot;dad&quot;&#125;&#125;&#39;,&#39;one&#39;,&#39;%a%&#39;)</code></p>
+<p>结果<code>$.a</code>。和<code>like</code>一样可以用<code>%</code>和<code>_</code>匹配，在所有节点的值中匹配，one只返回一个。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">select json_search(&#x27;&#123;&quot;a&quot;:&quot;abc&quot;,&quot;b&quot;:&#123;&quot;c&quot;:&quot;dad&quot;&#125;&#125;&#x27;,&#x27;all&#x27;,&#x27;%a%&#x27;)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 结果[<span class="string">&quot;$.a&quot;</span>,<span class="string">&quot;$.b.c&quot;</span>]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">select json_search(&#x27;&#123;&quot;a&quot;:&quot;abc&quot;,&quot;b&quot;:&#123;&quot;c&quot;:&quot;dad&quot;&#125;&#125;&#x27;,&#x27;all&#x27;,&#x27;%a%&#x27;,null,&#x27;$.b&#x27;)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 结果[<span class="string">&quot;$.b.c&quot;</span>]。限制查找范围。</span></span><br><span class="line"></span><br><span class="line">select json_search(&#x27;&#123;&quot;a&quot;:&quot;abc&quot;,&quot;b&quot;:&#123;&quot;c&quot;:&quot;dad&quot;&#125;,&quot;c&quot;:&#123;&quot;b&quot;:&quot;aaa&quot;&#125;&#125;&#x27;,&#x27;all&#x27;,&#x27;%a%&#x27;,null,&#x27;$**.b&#x27;)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 结果[<span class="string">&quot;$.b.c&quot;</span>,<span class="string">&quot;$.c.b&quot;</span>]。查找范围还可使用通配符！在每个匹配节点和其下查找。</span></span><br></pre></td></tr></table></figure>
+<p>注意，只有json_extract和json_search中的path才支持通配，其他json_set,json_insert等都不支持。</p>
+<p><code>JSON_LENGTH(json_doc[, path])</code><br>返回数组的长度，如果是object则是属性个数，常量则为<code>1</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">select json_length(&#x27;[1,2,3]&#x27;)</span><br><span class="line">结果3</span><br><span class="line"></span><br><span class="line">select json_length(&#x27;123&#x27;)</span><br><span class="line">结果1</span><br><span class="line"></span><br><span class="line">select json_length(&#x27;&#123;&quot;a&quot;:1,&quot;b&quot;:2&#125;&#x27;)</span><br><span class="line">结果2</span><br><span class="line"></span><br><span class="line">可再跟path参数</span><br><span class="line">select json_length(&#x27;&#123;&quot;a&quot;:1,&quot;b&quot;:[1,2,3]&#125;&#x27;,&#x27;$.b&#x27;)</span><br><span class="line">结果3</span><br></pre></td></tr></table></figure>
+<p><code>JSON_DEPTH(json_doc)</code><br>返回<code>doc</code>深度</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">select json_depth(&#x27;&#123;&#125;&#x27;)，json_depth(&#x27;[]&#x27;),json_depth(&#x27;123&#x27;)</span><br><span class="line">结果1,1,1</span><br><span class="line"></span><br><span class="line">select json_depth(&#x27;[1,2,3,4,5,6]&#x27;)</span><br><span class="line">结果2</span><br><span class="line"></span><br><span class="line">select json_depth(&#x27;&#123;&quot;a&quot;:&#123;&quot;b&quot;:&#123;&quot;c&quot;:1&#125;&#125;&#125;&#x27;)</span><br><span class="line">结果4</span><br></pre></td></tr></table></figure>
+
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:49.713Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.7_json.html';
+  var disqus_title = "MySQL 5.7 JSON 数据类型的使用";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFjson"><span class="toc-text">什么是json</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JSON-%E8%AF%AD%E6%B3%95%E8%A7%84%E5%88%99"><span class="toc-text">JSON 语法规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JSON-%E5%90%8D%E7%A7%B0-%E5%80%BC%E5%AF%B9"><span class="toc-text">JSON 名称&#x2F;值对</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JSON-%E5%80%BC"><span class="toc-text">JSON 值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B"><span class="toc-text">实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-text">优点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MySQL-5-7-8-%E5%BC%80%E5%A7%8B%E6%B7%BB%E5%8A%A0json"><span class="toc-text">MySQL 5.7.8 开始添加json</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8EMongoDB%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="toc-text">与MongoDB的差异</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8json%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">如何使用json数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A3%B0%E6%98%8Ejson%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%88%97"><span class="toc-text">声明json类型的列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="toc-text">插入数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE"><span class="toc-text">修改数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E7%AE%80%E5%8D%95%E6%89%A9%E5%B1%95"><span class="toc-text">数组简单扩展</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

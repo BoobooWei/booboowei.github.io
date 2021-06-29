@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>MySQL 8.0 Root 密码在线破解 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/news/2020/09/24/tec-mysql/index.html">
+  <!-- Alternative links -->
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="# 测试用户booboo的账号密码情况 mysql&gt; select user,host,authentication_string from mysql.user; +------------------+-----------+------------------------------------------------------------------------+ | user">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL 8.0 Root 密码在线破解">
+<meta property="og:url" content="http://www.toberoot.com/news/2020/09/24/tec-mysql/">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="# 测试用户booboo的账号密码情况 mysql&gt; select user,host,authentication_string from mysql.user; +------------------+-----------+------------------------------------------------------------------------+ | user">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-24T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:48.862Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div class="wrapper">
+    <div class="inner">
+      <article class="article post" itemscope itemtype="http://schema.org/Article">
+  <header class="article-header">
+    
+      <h1 class="article-title" itemprop="name">MySQL 8.0 Root 密码在线破解</h1>
+    
+    <a href="/news/2020/09/24/tec-mysql/" class="article-date"><time datetime="2020-09-24T00:00:00.000Z">2020-09-24</time></a>
+  </header>
+  <div class="article-content" itemprop="articleBody">
+    <pre><code class="bash"><span class="comment"># 测试用户booboo的账号密码情况</span>
+mysql&gt; select user,host,authentication_string from mysql.user;
++------------------+-----------+------------------------------------------------------------------------+
+| user             | host      | authentication_string                                                  |
++------------------+-----------+------------------------------------------------------------------------+
+| booboo           | %         | <span class="variable">$A</span><span class="variable">$005</span><span class="variable">$z1</span>;I4T4DFutFGI2Bx8I44RVy7oa0lY6paOoRofbbNcnFKUVJ3ojJkDvCw8 |
+
+<span class="comment"># 系统库mysql</span>
+[root@foundation0 tmp]<span class="comment"># ll /var/lib/mysql/mysql*</span>
+-rw-r-----. 1 mysql mysql 25165824 9月  24 17:44 /var/lib/mysql/mysql.ibd
+srwxrwxrwx. 1 mysql mysql        0 6月   1 17:46 /var/lib/mysql/mysql.sock
+-rw-------. 1 mysql mysql        6 6月   1 17:46 /var/lib/mysql/mysql.sock.lock
+
+/var/lib/mysql/mysql:
+总用量 28
+-rw-r-----. 1 mysql mysql  5594 6月   1 17:46 general_log_202.sdi
+-rw-r-----. 1 mysql mysql    35 6月   1 17:46 general_log.CSM
+-rw-r-----. 1 mysql mysql     0 6月   1 17:46 general_log.CSV
+-rw-r-----. 1 mysql mysql 11803 6月   1 17:46 slow_log_203.sdi
+-rw-r-----. 1 mysql mysql    35 6月   1 17:46 slow_log.CSM
+-rw-r-----. 1 mysql mysql     0 6月   1 17:46 slow_log.CSV
+
+<span class="comment"># 复制一份 mysql.ibd</span>
+cp /var/lib/mysql/mysql.ibd /tmp/mysql.ibd.bac
+
+<span class="comment"># hexdump 分析</span>
+
+hexdump -C mysql.ibd.bac  &gt; /tmp/mysql.ibd.hexdump.txt
+
+*
+006912f0  20 20 20 20 20 20 20 20  20 20 71 69 6e 78 69 20  |          qinxi |
+00691300  20 20 20 20 20 20 20 20  20 20 20 20 20 20 20 20  |                |
+00691310  20 20 20 20 20 20 20 20  20 20 00 00 00 00 14 d7  |          ......|
+00691320  02 00 00 01 1e 14 56 02  02 02 02 02 02 02 02 02  |......V.........|
+00691330  02 01 02 02 02 02 02 02  02 02 02 02 02 02 02 02  |................|
+00691340  02 02 02 02 01 00 00 00  00 00 00 00 00 00 00 00  |................|
+00691350  00 00 00 00 00 63 61 63  68 69 6e 67 5f 73 68 61  |.....caching_sha|
+00691360  32 5f 70 61 73 73 77 6f  72 64 20 20 20 20 20 20  |2_password      |
+00691370  20 20 20 20 20 20 20 20  20 20 20 20 20 20 20 20  |                |
+*
+00691390  20 20 20 20 20 24 41 24  30 30 35 24 21 3e 13 58  |     <span class="variable">$A</span><span class="variable">$005</span>$!&gt;.X|
+006913a0  6c 74 5d 39 62 42 2d 25  10 75 06 57 68 46 79 52  |lt]9bB-%.u.WhFyR|
+006913b0  53 4d 4e 38 39 54 42 68  4a 53 35 67 5a 6c 72 53  |SMN89TBhJS5gZlrS|
+006913c0  32 4d 55 59 2f 4c 77 4c  38 4c 37 4f 4e 68 47 72  |2MUY/LwL8L7ONhGr|
+006913d0  67 4a 68 65 36 37 65 39  4c 79 36 01 5f 6a b1 2c  |gJhe67e9Ly6._j.,|
+006913e0  01 02 02 46 40 00 00 00  20 7c 00 00 60 fe 0c 25  |...F@... |..`..%|
+006913f0  20 20 20 20 20 20 20 20  20 20 20 20 20 20 20 20  |                |
+*
+006914e0  20 20 20 20 20 20 20 20  20 20 20 20 20 20 62 6f  |              bo|
+006914f0  6f 62 6f 6f 20 20 20 20  20 20 20 20 20 20 20 20  |oboo            |
+00691500  20 20 20 20 20 20 20 20  20 20 20 20 20 20 00 00  |              ..|
+00691510  00 00 14 e1 82 00 00 00  9f 01 10 01 01 01 01 01  |................|
+00691520  01 01 01 01 01 01 01 01  01 01 01 01 01 01 01 01  |................|
+00691530  01 01 01 01 01 01 01 01  01 00 00 00 00 00 00 00  |................|
+00691540  00 00 00 00 00 00 00 00  00 63 61 63 68 69 6e 67  |.........caching|
+00691550  5f 73 68 61 32 5f 70 61  73 73 77 6f 72 64 20 20  |_sha2_password  |
+00691560  20 20 20 20 20 20 20 20  20 20 20 20 20 20 20 20  |                |
+*
+00691580  20 20 20 20 20 20 20 20  20 24 41 24 30 30 35 24  |         <span class="variable">$A</span><span class="variable">$005</span>$|
+00691590  7a 31 03 3b 1b 71 49 34  1f 54 0e 34 44 46 75 74  |z1.;.qI4.T.4DFut|
+006915a0  46 47 49 32 42 78 38 49  34 34 52 56 79 37 6f 61  |FGI2Bx8I44RVy7oa|
+006915b0  30 6c 59 36 70 61 4f 6f  52 6f 66 62 62 4e 63 6e  |0lY6paOoRofbbNcn|
+006915c0  46 4b 55 56 4a 33 6f 6a  4a 6b 44 76 43 77 38 01  |FKUVJ3ojJkDvCw8.|
+006915d0  5f 6c 6a 26 01 01 01 00  00 00 00 00 00 00 00 00  |_lj&amp;............|
+006915e0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+
+
+00691580  20 20 20 20 20 24 41 24  30 30 35 24 21 3e 13 58  |     <span class="variable">$A</span><span class="variable">$005</span>$!&gt;.X|
+00691590  6c 74 5d 39 62 42 2d 25  10 75 06 57 68 46 79 52  |lt]9bB-%.u.WhFyR|
+006915a0  53 4d 4e 38 39 54 42 68  4a 53 35 67 5a 6c 72 53  |SMN89TBhJS5gZlrS|
+006915b0  32 4d 55 59 2f 4c 77 4c  38 4c 37 4f 4e 68 47 72  |2MUY/LwL8L7ONhGr|
+006915c0  67 4a 68 65 36 37 65 39  4c 79 36 01 5f 6a b1 2c  |gJhe67e9Ly6._j.,|
+006915d0  01 02 02 46 40 00 00 00  20 7c 00 00 60 fe 0c 25  |...F@... |..`..%|
+006915e0  20 20 20 20 20 20 20 20  20 20 20 20 20 20 20 20  |                |
+
+
+测试发现失败，推测8.0的加密算法已不再是仅仅使用密码进行加密。
+
+进一步尝试修改权限来实现。</code></pre>
+
+  </div>
+  
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/news/2020/09/24/tec-mysql/index.html';
+  var disqus_title = "MySQL 8.0 Root 密码在线破解";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+</article>
+
+
+      <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+    </div>
+  </div>
+</div>
+
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

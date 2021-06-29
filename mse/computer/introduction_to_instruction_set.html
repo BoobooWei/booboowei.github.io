@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>计算机语言 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/mse/computer/introduction_to_instruction_set.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/mse/computer/introduction_to_instruction_set">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="指令系统概述理解计算机语言，首先要学习的是 指令 和 指令系统 这两个概念。 然后是指令系统的两种类型 CISC 与 RISC，以及他们的优缺点。 Introduction to Instruction Set指令：计算机实现某个基本操作的命令指令系统：一台计算机的所有指令。计算机硬件和软件的接口及界面    指令系统设计原则   设计原则 特点    完备性 该有的都要有   有效性 简洁、加速">
+<meta property="og:type" content="website">
+<meta property="og:title" content="计算机语言">
+<meta property="og:url" content="http://www.toberoot.com/mse/computer/introduction_to_instruction_set">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="指令系统概述理解计算机语言，首先要学习的是 指令 和 指令系统 这两个概念。 然后是指令系统的两种类型 CISC 与 RISC，以及他们的优缺点。 Introduction to Instruction Set指令：计算机实现某个基本操作的命令指令系统：一台计算机的所有指令。计算机硬件和软件的接口及界面    指令系统设计原则   设计原则 特点    完备性 该有的都要有   有效性 简洁、加速">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic2/02.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic2/03.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic2/04.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic2/05.jpg">
+<meta property="og:image" content="http://www.toberoot.com/mse/computer/pic2/06.jpg">
+<meta property="article:published_time" content="2020-12-04T00:52:50.598Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.598Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/mse/computer/pic2/02.jpg">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">计算机语言</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/mse/computer/introduction_to_instruction_set.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <h2 id="指令系统概述" class="article-heading"><a href="#指令系统概述" class="headerlink" title="指令系统概述"></a>指令系统概述<a class="article-anchor" href="#指令系统概述" aria-hidden="true"></a></h2><p>理解计算机语言，首先要学习的是 <strong>指令</strong> 和 <strong>指令系统</strong> 这两个概念。</p>
+<p>然后是指令系统的两种类型 <strong>CISC</strong> 与 <strong>RISC</strong>，以及他们的优缺点。</p>
+<blockquote class="note warn"><strong class="note-title">Introduction to Instruction Set</strong><p>指令：计算机实现某个基本操作的命令<br>指令系统：一台计算机的所有指令。计算机硬件和软件的接口及界面</p>
+</blockquote>
+
+
+<blockquote class="note info"><strong class="note-title">指令系统设计原则</strong><table>
+<thead>
+<tr>
+<th>设计原则</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>完备性</td>
+<td>该有的都要有</td>
+</tr>
+<tr>
+<td>有效性</td>
+<td>简洁、加速常用操作、没有歧义</td>
+</tr>
+<tr>
+<td>规整性</td>
+<td>对称、匀齐、一致</td>
+</tr>
+<tr>
+<td>兼容性</td>
+<td>之前/之后的都要能用</td>
+</tr>
+</tbody></table>
+</blockquote>
+
+<p>兼容性：</p>
+<ul>
+<li>向上（下）兼容：按某档机器编制的程序，不加修改的就能运行于比它高（低）档的机器</li>
+<li>向前（后）兼容：按某个时期投入市场的某种型号机器编制的程序，不加修改就能运行于在它之前(后)投入市场的机器</li>
+</ul>
+<blockquote class="note info"><strong class="note-title">一个较完善的指令系统应该包括</strong><table>
+<thead>
+<tr>
+<th>指令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据传送指令</td>
+<td>Load/Save指令</td>
+</tr>
+<tr>
+<td>输入输出指令</td>
+<td>In/Out指令</td>
+</tr>
+<tr>
+<td>算术运算指令</td>
+<td>Add等指令</td>
+</tr>
+<tr>
+<td>逻辑运算指令</td>
+<td>And等指令</td>
+</tr>
+<tr>
+<td>系统控制指令</td>
+<td>中断等指令</td>
+</tr>
+<tr>
+<td>程序控制指令</td>
+<td>Jump等指令</td>
+</tr>
+</tbody></table>
+</blockquote>
+
+<h3 id="CISC与RISC" class="article-heading"><a href="#CISC与RISC" class="headerlink" title="CISC与RISC"></a>CISC与RISC<a class="article-anchor" href="#CISC与RISC" aria-hidden="true"></a></h3><img src="pic2/02.jpg" alt="指令系统">
+
+<blockquote class="note info"><strong class="note-title">CISC 与 RISC的比较</strong><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>定义</th>
+<th>特点</th>
+<th>缺陷</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CISC</td>
+<td>复杂指令集计算机<br>Complex Instruction Set Computer</td>
+<td>(1) 指令系统复杂<br>(2) 指令周期长<br>(3) 各种指令都能访问存储器<br>(4) 有专用寄存器<br>(5) 采用微程序控制<br>(6) 难以进行编译优化生成高效目标代码</td>
+<td>(1) 指令系统复杂<br>(2) 各种指令都能访问存储器<br>(3) 指令周期长<br>(4) 有专用寄存器<br>(5) 采用微程序控制<br>(6) 难以进行编译优化生成高效目标代码</td>
+</tr>
+<tr>
+<td>RISC</td>
+<td>精简指令集计算机<br>Reduce Instruction Set Computer</td>
+<td>(1) 简化的指令系统<br>(2) 以寄存器-寄存器方式工作<br>(3) 指令周期短<br>(4) 采用大量通用寄存器，以减少访存次数<br>(5) 采用组合逻辑电路控制，不用或少用微程序控制<br>(6) 采用优化的编译系统，力求有效地支持高级语言程序</td>
+<td>小而精</td>
+</tr>
+</tbody></table>
+</blockquote>
+
+<p>例：第一代RISC机</p>
+<ul>
+<li>加州伯克利大学的RISCⅠ</li>
+<li>斯坦福大学的MIPS</li>
+<li>IBM公司的IBM801</li>
+</ul>
+<blockquote class="note info"><strong class="note-title">CISC与RISC之争</strong><ul>
+<li>现代处理器大多采用RISC体系结构<br>• Intel x86为“兼容”需要，保留CISC风格，同时借鉴了RISC思想</li>
+</ul>
+</blockquote>
+
+
+<h2 id="指令格式" class="article-heading"><a href="#指令格式" class="headerlink" title="指令格式"></a>指令格式<a class="article-anchor" href="#指令格式" aria-hidden="true"></a></h2><blockquote class="note info"><strong class="note-title">指令含义</strong><p>指令是指挥计算机实现某个基本操作的命令</p>
+</blockquote>
+
+<p>指令执行过程</p>
+<img src="pic2/03.jpg" alt="指令系统">
+
+<blockquote class="note warn"><strong class="note-title">指令设计原则</strong></blockquote>
+<table>
+<thead>
+<tr>
+<th>指令设计</th>
+<th>设计原则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>指令长度的设计</td>
+<td>规整性</td>
+<td>* 一条指令包含1个操作码和多个地址码<br>* 取决于操作码长度、操作数地址长度和地址个数。<br><br>定长指令字：所有指令的长度相同。需向最长指令看齐<br>变长指令字：不同指令的长度不同</td>
+</tr>
+<tr>
+<td>操作码设计</td>
+<td>有效性</td>
+<td>每条指令的操作码：只能是一个。<br>用一定长度的不同编码表示不同的操。</td>
+</tr>
+<tr>
+<td>操作码设计</td>
+<td>完备性</td>
+<td>操作码的编码方式决定操作码的长度<br>* 定长操作码法<br>* 变长/扩展操作码法<br>操作码长度和指令长度的关系<br>* 指令长度是否可变与操作码长度是否可变没有绝对联系<br>* 关注程序代码长度时：变长指令字、变长操作码<br>* 关注性能时：定长指令字、定长操作码</td>
+</tr>
+<tr>
+<td>地址码设计</td>
+<td></td>
+<td>地址码个数与性能和实现难度密切相关</td>
+</tr>
+</tbody></table>
+<h3 id="操作码设计" class="article-heading"><a href="#操作码设计" class="headerlink" title="操作码设计"></a>操作码设计<a class="article-anchor" href="#操作码设计" aria-hidden="true"></a></h3><blockquote>
+<p>长度设计 </p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>基本思想</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>定长操作码法</td>
+<td>指令的操作码部分固定长度的编码</td>
+<td>译码简单，但有信息冗余。</td>
+</tr>
+<tr>
+<td>变长/扩展操作码法</td>
+<td>指令的操作码部分采用可变长度的编码。<br>操作码的编码长度分成几种固定长的格式，<br>操作码的位数随地址数的减少而增加，被大多数指令集采用。</td>
+<td>1.缩短指令长度<br>2.减少程序总位数<br>3.增加指令字所能表示的操作信息<br>一个重要原则：<br>使用频度高的指令：短的操作码<br>使用频度低的指令：较长的操作码</td>
+</tr>
+</tbody></table>
+<p><em>指令长度是否可变与操作码长度是否可变没有绝对联系</em></p>
+<img src="pic2/04.jpg" alt="指令系统">
+<img src="pic2/05.jpg" alt="指令系统">
+
+<blockquote class="note info"><strong class="note-title">等长扩展码实例</strong><img src="pic2/06.jpg" alt="指令系统"></blockquote>
+
+<blockquote class="note info"><strong class="note-title">扩展操作码分析题</strong><p>例：某指令系统指令字长16位，每个地址码为6位。若二地址指令15条，一地址指令34条，则剩下零地址指令最多有多少条？</p>
+</blockquote>
+
+
+<h3 id="地址码结构" class="article-heading"><a href="#地址码结构" class="headerlink" title="地址码结构"></a>地址码结构<a class="article-anchor" href="#地址码结构" aria-hidden="true"></a></h3><p>个数：0到多个，看操作码的需要了。地址码个数与性能和实现难度密切相关。</p>
+<p>个数多少特点：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">地址个数越少,指令长度越短,指令功能越简单</span><br><span class="line">地址个数越少,所需指令条数越多,增加了程序复杂度和执行时间</span><br><span class="line">#需要在硬件设计的简洁性和程序的复杂性中做权衡</span><br></pre></td></tr></table></figure>
+<p>分类</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">零地址指令</span></span><br><span class="line">(1) 无需操作数。如：空操作／停机等</span><br><span class="line">(2) 所需操作数为默认的。如：堆栈等</span><br><span class="line"><span class="meta">#</span><span class="bash">一地址指令</span></span><br><span class="line">其地址既是源操作数地址，也是存放结果地址</span><br><span class="line">(1) 单目运算：如：取反／取负等</span><br><span class="line">(2) 双目运算：另一操作数为默认的　如：累加器等</span><br><span class="line"><span class="meta">#</span><span class="bash">二地址指令(最常用)</span></span><br><span class="line">分别存放双目运算中两个源操作数地址，并将其中一个地址作为存放结果地址</span><br><span class="line"><span class="meta">#</span><span class="bash">三地址指令(RISC风格)</span></span><br><span class="line">分别为双目运算中两个源操作数地址和一个结果地址</span><br><span class="line"><span class="meta">#</span><span class="bash">多地址指令</span></span><br><span class="line">用于成批数据处理的指令，如：向量指令 等</span><br></pre></td></tr></table></figure>
+
+<h2 id="指令的寻址方式" class="article-heading"><a href="#指令的寻址方式" class="headerlink" title="指令的寻址方式"></a>指令的寻址方式<a class="article-anchor" href="#指令的寻址方式" aria-hidden="true"></a></h2><p>寻址方式：就是如何找到操作数存放位置的方法</p>
+<p>使用目的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">* 扩大访存范围</span><br><span class="line">* 提高访问数据的灵活性和有效性</span><br><span class="line">* 支持软件技术的发展：多道程序设计</span><br></pre></td></tr></table></figure>
+<p>址方式的概念</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>难度</th>
+<th>方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>指令寻址</td>
+<td>简单</td>
+<td>正常：PC增值<br>跳转 ( jump / branch / call / return )，同操作数的寻址</td>
+</tr>
+<tr>
+<td>操作数寻址</td>
+<td>复杂</td>
+<td>操作数的来源：寄存器 / 外设端口 / 主(虚)<br>存 / 栈顶<br>操作数的数据结构：位 / 字节 / 半字 / 字 /<br>双字 / 一维表 /…</td>
+</tr>
+</tbody></table>
+<p>基本寻址方式</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>定义</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>立即数寻址</td>
+<td>Ø 指令地址字段直接给出操作数本身<br>Ø 立即数寻址只能作为双操作数指令的源操作数</td>
+<td>1.指令执行时间很短，<br>无需访存<br>2.操作数的大小受地址<br>字段长度的限制<br>3.广泛使用</td>
+</tr>
+<tr>
+<td>存储器直接寻址</td>
+<td>操作数在存储器中，指令地址字段<br>直接给出操作数在存储器中的地址</td>
+<td>1.处理简单、直接<br>2.寻址空间受到指令的地址字段长度限制<br>3.较少使用，8位计算机和一些16位计算机</td>
+</tr>
+<tr>
+<td>寄存器直接寻址</td>
+<td>操作数在通用寄存器中，指令地址字段<br>直接给出存放操作数的寄存器编号</td>
+<td>1. 只需要很短的地址字段<br>2. 无需访存，指令执行速度快<br>3. 地址范围有限，可以编程使用的通用寄存器不多<br>4. 使用最多，是提高性能的常用手段</td>
+</tr>
+<tr>
+<td>存储器间接寻址</td>
+<td>• 操作数和操作数地址都在存储器中<br>• 指令地址字段直接给出”操作数地址”在存储器中的地址</td>
+<td>Ø 寻址空间大，灵活，便于编程<br>Ø 至少需要两次访存才能取到操作数<br>Ø 执行速度慢</td>
+</tr>
+<tr>
+<td>寄存器间接寻址</td>
+<td>• 操作数在存储器中<br>• 操作数地址在寄存器中<br>• 指令地址字段给出的寄存器的内容是操作数在存储器中的地址</td>
+<td>Ø 比存储器间接寻址少访问<br>存储器一次<br>Ø 寻址空间大，使用比较普遍</td>
+</tr>
+<tr>
+<td>偏移寻址</td>
+<td>直接寻址+寄存器间接寻址<br>1 相对寻址： EA=(PC)+A<br>相对于当前指令处 位移量为A的单元<br>2 基址寻址： EA=(B)+A<br>相对于基址(B)处 位移量为A的单元<br>3 变址寻址： EA=(I)+A<br>相对于形式地址A处位移量为(I)的单元</td>
+<td></td>
+</tr>
+<tr>
+<td>堆栈寻址</td>
+<td>Ø 堆栈的结构：一段内存区域<br>Ø 栈底、栈顶<br>Ø 堆栈指针(SP)：一个特殊寄存器，指向栈顶<br>PUSH ( 从寄存器到堆栈)<br>POP (从堆栈到寄存器)</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="数据表示方式" class="article-heading"><a href="#数据表示方式" class="headerlink" title="数据表示方式"></a>数据表示方式<a class="article-anchor" href="#数据表示方式" aria-hidden="true"></a></h2><h3 id="数值定点表示" class="article-heading"><a href="#数值定点表示" class="headerlink" title="数值定点表示"></a>数值定点表示<a class="article-anchor" href="#数值定点表示" aria-hidden="true"></a></h3><h3 id="数值浮点表示" class="article-heading"><a href="#数值浮点表示" class="headerlink" title="数值浮点表示"></a>数值浮点表示<a class="article-anchor" href="#数值浮点表示" aria-hidden="true"></a></h3><h3 id="数值十进制表示" class="article-heading"><a href="#数值十进制表示" class="headerlink" title="数值十进制表示"></a>数值十进制表示<a class="article-anchor" href="#数值十进制表示" aria-hidden="true"></a></h3><h3 id="字符机器表示" class="article-heading"><a href="#字符机器表示" class="headerlink" title="字符机器表示"></a>字符机器表示<a class="article-anchor" href="#字符机器表示" aria-hidden="true"></a></h3><h3 id="数据的度量与存储" class="article-heading"><a href="#数据的度量与存储" class="headerlink" title="数据的度量与存储"></a>数据的度量与存储<a class="article-anchor" href="#数据的度量与存储" aria-hidden="true"></a></h3><h3 id="数据出错" class="article-heading"><a href="#数据出错" class="headerlink" title="数据出错"></a>数据出错<a class="article-anchor" href="#数据出错" aria-hidden="true"></a></h3><h3 id="基本指令和指令类别" class="article-heading"><a href="#基本指令和指令类别" class="headerlink" title="基本指令和指令类别"></a>基本指令和指令类别<a class="article-anchor" href="#基本指令和指令类别" aria-hidden="true"></a></h3>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.598Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/mse/politics/index.html" class="article-footer-next" title="政治"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/mse/computer/introduction_to_instruction_set.html';
+  var disqus_title = "计算机语言";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0"><span class="toc-text">指令系统概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CISC%E4%B8%8ERISC"><span class="toc-text">CISC与RISC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4%E6%A0%BC%E5%BC%8F"><span class="toc-text">指令格式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%A0%81%E8%AE%BE%E8%AE%A1"><span class="toc-text">操作码设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E5%9D%80%E7%A0%81%E7%BB%93%E6%9E%84"><span class="toc-text">地址码结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4%E7%9A%84%E5%AF%BB%E5%9D%80%E6%96%B9%E5%BC%8F"><span class="toc-text">指令的寻址方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%A4%BA%E6%96%B9%E5%BC%8F"><span class="toc-text">数据表示方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E5%AE%9A%E7%82%B9%E8%A1%A8%E7%A4%BA"><span class="toc-text">数值定点表示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E6%B5%AE%E7%82%B9%E8%A1%A8%E7%A4%BA"><span class="toc-text">数值浮点表示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E5%8D%81%E8%BF%9B%E5%88%B6%E8%A1%A8%E7%A4%BA"><span class="toc-text">数值十进制表示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E6%9C%BA%E5%99%A8%E8%A1%A8%E7%A4%BA"><span class="toc-text">字符机器表示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%9A%84%E5%BA%A6%E9%87%8F%E4%B8%8E%E5%AD%98%E5%82%A8"><span class="toc-text">数据的度量与存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%87%BA%E9%94%99"><span class="toc-text">数据出错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4%E5%92%8C%E6%8C%87%E4%BB%A4%E7%B1%BB%E5%88%AB"><span class="toc-text">基本指令和指令类别</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">文化课</strong><a href="/mse/politics/index.html" class="sidebar-link">政治</a><a href="/mse/english/index.html" class="sidebar-link">英语</a><a href="/mse/calculus/index.html" class="sidebar-link">微积分</a><strong class="sidebar-title">专业课</strong><a href="/mse/computer/index.html" class="sidebar-link">计算机组成原理</a><a href="/mse/algorithm/index.html" class="sidebar-link">数据结构与算法</a><a href="/mse/c++/index.html" class="sidebar-link">C++ 语言程序</a><a href="/mse/software/index.html" class="sidebar-link">软件工程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">文化课</strong><a href="/mse/politics/index.html" class="mobile-nav-link">政治</a><a href="/mse/english/index.html" class="mobile-nav-link">英语</a><a href="/mse/calculus/index.html" class="mobile-nav-link">微积分</a><strong class="mobile-nav-title">专业课</strong><a href="/mse/computer/index.html" class="mobile-nav-link">计算机组成原理</a><a href="/mse/algorithm/index.html" class="mobile-nav-link">数据结构与算法</a><a href="/mse/c++/index.html" class="mobile-nav-link">C++ 语言程序</a><a href="/mse/software/index.html" class="mobile-nav-link">软件工程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

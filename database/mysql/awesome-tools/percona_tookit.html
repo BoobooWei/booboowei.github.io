@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Percona Toolkit工具明细说明 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/awesome-tools/percona_tookit.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/database/mysql/awesome-tools/percona_tookit">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="数据库版本和工具版本要求   数据库 版本 Percona Toolkit 版本（采用最新小版本） Percona Toolkit 小版本要求    MySQL 5.5 Percona Toolkit 2.2 Percona Toolkit 2.2.1以上版本   MySQL 5.6 Percona Toolkit 2.2 Percona Toolkit 2.2.1以上版本   MySQL 5.7">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Percona Toolkit工具明细说明">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/awesome-tools/percona_tookit">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="数据库版本和工具版本要求   数据库 版本 Percona Toolkit 版本（采用最新小版本） Percona Toolkit 小版本要求    MySQL 5.5 Percona Toolkit 2.2 Percona Toolkit 2.2.1以上版本   MySQL 5.6 Percona Toolkit 2.2 Percona Toolkit 2.2.1以上版本   MySQL 5.7">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:49.469Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:49.469Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Percona Toolkit工具明细说明</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/database/mysql/awesome-tools/percona_tookit.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <h1 id="数据库版本和工具版本要求" class="article-heading"><a href="#数据库版本和工具版本要求" class="headerlink" title="数据库版本和工具版本要求"></a>数据库版本和工具版本要求<a class="article-anchor" href="#数据库版本和工具版本要求" aria-hidden="true"></a></h1><table>
+<thead>
+<tr>
+<th>数据库</th>
+<th>版本</th>
+<th><em>Percona Toolkit 版本（采用最新小版本）</em></th>
+<th><em>Percona Toolkit 小版本</em>要求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MySQL</td>
+<td>5.5</td>
+<td><em>Percona Toolkit 2.2</em></td>
+<td><em>Percona Toolkit 2.2.1以上版本</em></td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td>5.6</td>
+<td><em>Percona Toolkit 2.2</em></td>
+<td><em>Percona Toolkit 2.2.1以上版本</em></td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td>5.7</td>
+<td><em>Percona Toolkit 2.2</em></td>
+<td><em>Percona Toolkit 2.2.17以上版本</em></td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td>8.0</td>
+<td><em>Percona Toolkit 3.0</em></td>
+<td><em>Percona Toolkit 3.0.1</em></td>
+</tr>
+<tr>
+<td>MariaDB</td>
+<td>MariaDB 10.4</td>
+<td><em>Percona Toolkit 3.0</em></td>
+<td><em>Percona Toolkit 3.2.0</em></td>
+</tr>
+</tbody></table>
+<ul>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.percona.com/doc/percona-toolkit/LATEST/release_notes.html#v0-9-5-released-2011-08-04">Percona Toolkit迭代日志</a></li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.percona.com/services/policies/percona-software-platform-lifecycle">Percona Toolkit支持的平台和版本</a></li>
+</ul>
+<h1 id="Percona-Toolkit工具细节说明" class="article-heading"><a href="#Percona-Toolkit工具细节说明" class="headerlink" title="Percona Toolkit工具细节说明"></a>Percona Toolkit工具细节说明<a class="article-anchor" href="#Percona-Toolkit工具细节说明" aria-hidden="true"></a></h1><p>Percona Toolkit 工具执行需要两个用户：</p>
+<ol>
+<li><p>数据库用户：授权如下</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;solardb&#x27;</span>@<span class="string">&#x27;%&#x27;</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&#x27;SolarDB@123&#x27;</span>;</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">&#x27;solardb&#x27;</span>@<span class="string">&#x27;%&#x27;</span> <span class="keyword">with</span> <span class="keyword">grant</span> options;</span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br></pre></td></tr></table></figure></li>
+<li><p>工具概览</p>
+</li>
+</ol>
+<p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.percona.com/doc/percona-toolkit/LATEST/pt-online-schema-change.html">https://www.percona.com/doc/percona-toolkit/LATEST/pt-online-schema-change.html</a></p>
+<table>
+<thead>
+<tr>
+<th>工具命令</th>
+<th>工具作用</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>开发类</td>
+<td>pt-duplicate-key-checker</td>
+<td>列出并删除重复的索引和外键</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-online-schema-change</td>
+<td>在线修改表结构</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-query-advisor</td>
+<td>分析查询语句，并给出建议，有bug 已废弃</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-show-grants</td>
+<td>规范化和打印权限</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-upgrade</td>
+<td>在多个服务器上执行查询，并比较不同</td>
+</tr>
+<tr>
+<td>性能类</td>
+<td>pt-index-usage</td>
+<td>分析日志中索引使用情况，并出报告</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-pmp</td>
+<td>为查询结果跟踪，并汇总跟踪结果</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-visual-explain</td>
+<td>格式化执行计划</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-table-usage</td>
+<td>分析日志中查询并分析表使用情况 pt 2.2新增命令</td>
+</tr>
+<tr>
+<td>配置类</td>
+<td>pt-config-diff</td>
+<td>比较配置文件和参数</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-mysql-summary</td>
+<td>对mysql配置和status进行汇总</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-variable-advisor</td>
+<td>分析参数，并提出建议</td>
+</tr>
+<tr>
+<td>监控类</td>
+<td>pt-deadlock-logger</td>
+<td>提取和记录mysql死锁信息</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-fk-error-logger</td>
+<td>提取和记录外键信息</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-mext</td>
+<td>并行查看status样本信息</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-query-digest</td>
+<td>分析查询日志，并产生报告 常用命令</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-trend</td>
+<td>按照时间段读取slow日志信息 已废弃</td>
+</tr>
+<tr>
+<td>复制类</td>
+<td>pt-heartbeat</td>
+<td>监控mysql复制延迟</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-slave-delay</td>
+<td>设定从落后主的时间</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-slave-find</td>
+<td>查找和打印所有mysql复制层级关系</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-slave-restart</td>
+<td>监控salve错误，并尝试重启salve</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-table-checksum</td>
+<td>校验主从复制一致性</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-table-sync</td>
+<td>高效同步表数据</td>
+</tr>
+<tr>
+<td>系统类</td>
+<td>pt-diskstats</td>
+<td>查看系统磁盘状态</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-fifo-split</td>
+<td>拟切割文件并输出</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-summary</td>
+<td>收集和显示系统概况</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-stalk</td>
+<td>出现问题时，收集诊断数据</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-sift</td>
+<td>浏览由pt-stalk创建的文件 pt 2.2新增命令</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-ioprofile</td>
+<td>查询进程IO并打印一个IO活动表 pt 2.2新增命令</td>
+</tr>
+<tr>
+<td>实用类</td>
+<td>pt-archiver</td>
+<td>将表数据归档到另一个表或文件中</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-find</td>
+<td>查找表并执行命令</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-kill</td>
+<td>Kill掉符合条件的sql 常用命令</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-align</td>
+<td>对齐其他工具的输出 pt 2.2新增命令</td>
+</tr>
+<tr>
+<td></td>
+<td>pt-fingerprint</td>
+<td>将查询转成密文 pt 2.2新增命令</td>
+</tr>
+</tbody></table>
+<h1 id="实践" class="article-heading"><a href="#实践" class="headerlink" title="实践"></a>实践<a class="article-anchor" href="#实践" aria-hidden="true"></a></h1><h2 id="在线DDL" class="article-heading"><a href="#在线DDL" class="headerlink" title="在线DDL"></a>在线DDL<a class="article-anchor" href="#在线DDL" aria-hidden="true"></a></h2><p>注意:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1. &#123;&#123; &#125;&#125; 或者 xx代表要修改的位置</span><br><span class="line">2. --noversion-check 如果是非原生的MySQL，例如各大云产商的，必须要使用该参数</span><br><span class="line">3. --charset=utf8 根据数据库使用的字符集选择合适的，否则容易造成乱码</span><br><span class="line">4. --alter=<span class="string">&quot;xxx,xxx,xxx&quot;</span> 一张表多个变更使用逗号分割</span><br></pre></td></tr></table></figure>
+
+<h3 id="场景一" class="article-heading"><a href="#场景一" class="headerlink" title="场景一"></a>场景一<a class="article-anchor" href="#场景一" aria-hidden="true"></a></h3><blockquote class="note info"><p>一张表多个变更</p>
+</blockquote>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@build-center cloudcare_dba]<span class="comment"># cat qinxi/alter_table_hana_20191126.sh</span></span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">host=xx</span><br><span class="line">port=xx</span><br><span class="line">dbname=xx</span><br><span class="line">user=xx</span><br><span class="line">password=xx</span><br><span class="line">  </span><br><span class="line">table=xx</span><br><span class="line">pt-online-schema-change --user=<span class="variable">$&#123;user&#125;</span> --port=<span class="variable">$&#123;port&#125;</span> --host=<span class="variable">$&#123;host&#125;</span> --password=<span class="variable">$&#123;password&#125;</span> --alter=<span class="string">&quot;add column update_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,drop index IX_ST_ENTRY_DETAIL_SRCNO_DETAILID,drop index auto_shard_key_ORG_ID,drop index auto_shard_key_WAREHOUSE_ID,drop index IX_ST_ENTRY_DETAIL_ITEMCODE,drop index IX_ST_ENTRY_DETAIL_INOUT_TYPE,drop index IX_ST_ENTRY_DETAIL_TOP_ITEMTYPE_ID,drop index IX_SOURCE_RECEIPT_TYPE,drop index IX_ST_ENTRY_DETAIL_ET_OPER_TIME,drop index IX_ST_ENTRY_DETAIL_ET_CREATE_TIME,drop index IX_ST_ENTRY_DETAIL_CALCULATE_ID,add index index_item_code(ITEM_CODE),add index index_trunk_id(TRUNK_ID),add index index_receipt_id(SOURCE_RECEIPT_ID),add index index_oper_time(OPER_TIME),add index IX_st_entry_detail_et_SOURCE_RECEIPT_NO(SOURCE_RECEIPT_NO),add index IX_st_entry_detail_et_ORG_ID(ORG_ID),add index IX_st_entry_detail_et_WAREHOUSE_ID(WAREHOUSE_ID),add index index_update_time(update_time),add index IX_st_entry_detail_et_IS_BOX(IS_BOX),add index IX_st_entry_detail_et_SOURCE_RECEIPT_TYPE(SOURCE_RECEIPT_TYPE),add index IX_st_entry_detail_et_CREATE_TIME(CREATE_TIME)&quot;</span> D=<span class="variable">$&#123;dbname&#125;</span>,t=<span class="variable">$&#123;table&#125;</span> --no-version-check --execute</span><br></pre></td></tr></table></figure>
+<h3 id="场景2" class="article-heading"><a href="#场景2" class="headerlink" title="场景2"></a>场景2<a class="article-anchor" href="#场景2" aria-hidden="true"></a></h3><blockquote class="note info"><p>多张表变更</p>
+</blockquote>
+
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># pt-osc scripts</span></span><br><span class="line"><span class="comment"># &#123;&#123; time_string &#125;&#125;</span></span><br><span class="line"><span class="comment"># Solar 混合云管理平台     </span></span><br><span class="line">host=&#123;&#123; host &#125;&#125;</span><br><span class="line">port=&#123;&#123; port &#125;&#125;</span><br><span class="line">dbname=&#123;&#123; dbname &#125;&#125;</span><br><span class="line">user=&#123;&#123; user &#125;&#125;</span><br><span class="line">password=&#123;&#123; password &#125;&#125;</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">table=&#123;&#123; sql.table_name1 &#125;&#125;</span><br><span class="line">pt-online-schema-change --user=<span class="variable">$&#123;user&#125;</span> --port=<span class="variable">$&#123;port&#125;</span> --host=<span class="variable">$&#123;host&#125;</span> --password=<span class="variable">$&#123;password&#125;</span> --alter=<span class="string">&quot;&#123;&#123; sql.alter_cmd &#125;&#125;&quot;</span> D=<span class="variable">$&#123;dbname&#125;</span>,t=<span class="variable">$&#123;table&#125;</span> --no-version-check --execute --charset=utf8</span><br><span class="line"></span><br><span class="line">table=&#123;&#123; sql.table_name2 &#125;&#125;</span><br><span class="line">pt-online-schema-change --user=<span class="variable">$&#123;user&#125;</span> --port=<span class="variable">$&#123;port&#125;</span> --host=<span class="variable">$&#123;host&#125;</span> --password=<span class="variable">$&#123;password&#125;</span> --alter=<span class="string">&quot;&#123;&#123; sql.alter_cmd &#125;&#125;&quot;</span> D=<span class="variable">$&#123;dbname&#125;</span>,t=<span class="variable">$&#123;table&#125;</span> --no-version-check --execute --charset=utf8</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="场景2-1" class="article-heading"><a href="#场景2-1" class="headerlink" title="场景2"></a>场景2<a class="article-anchor" href="#场景2-1" aria-hidden="true"></a></h3><blockquote class="note info"><p>生产使用的自动生成PT脚本</p>
+</blockquote>
+
+
+<p>python自动转换脚本：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*-coding:utf8 -*-</span></span><br><span class="line"><span class="comment"># Build-in Modules</span></span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 3rd-part Modules</span></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> sqlparse</span><br><span class="line"><span class="keyword">from</span> jinja2 <span class="keyword">import</span> Template</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SQLParseHelper</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    解析SQL</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, sql_str=<span class="literal">None</span>, split_str=<span class="string">&#x27;;&#x27;</span></span>):</span></span><br><span class="line">        self.sql_str = sql_str</span><br><span class="line">        self.split_str = split_str</span><br><span class="line">        self.sql_list = []</span><br><span class="line">        <span class="keyword">if</span> self.split_str == <span class="string">&#x27;;&#x27;</span>:</span><br><span class="line">            <span class="comment"># print(sqlparse.split(self.sql_str))</span></span><br><span class="line">            self.sql_list = <span class="built_in">list</span>(<span class="built_in">filter</span>(</span><br><span class="line">                <span class="keyword">lambda</span> y: y != <span class="string">&#x27;&#x27;</span>, sqlparse.split(self.sql_str)</span><br><span class="line">            ))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.sql_list = <span class="built_in">list</span>(</span><br><span class="line">                <span class="built_in">filter</span>(</span><br><span class="line">                    <span class="keyword">lambda</span> y: y != <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">                    <span class="built_in">map</span>(<span class="keyword">lambda</span> x: x.strip(), self.sql_str.split(self.split_str))</span><br><span class="line">                ))</span><br><span class="line">        <span class="comment"># print(self.sql_list)</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_length</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        sql文件中的SQL数量</span></span><br><span class="line"><span class="string">        :return:</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.sql_list)</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_format</span>(<span class="params">self, sql</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        根据选项格式化sql。</span></span><br><span class="line"><span class="string">        可用选项记录在“ SQL语句格式”中。</span></span><br><span class="line"><span class="string">        除格式化选项外，该函数还接受关键字“ encoding”，该关键字确定语句的编码。</span></span><br><span class="line"><span class="string">        返回值：    格式化的SQL语句为字符串。</span></span><br><span class="line"><span class="string">        :return:</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        format_sql = sqlparse.<span class="built_in">format</span>(sql, reindent=<span class="literal">True</span>, keyword_case=<span class="string">&#x27;upper&#x27;</span>, strip_comments=<span class="literal">True</span>)</span><br><span class="line">        <span class="comment"># print(format_sql)</span></span><br><span class="line">        <span class="keyword">return</span> format_sql</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_init</span>(<span class="params">self, sql</span>):</span></span><br><span class="line">        tokens = []</span><br><span class="line">        parsed = sqlparse.parse(sql)</span><br><span class="line">        stmt = parsed[<span class="number">0</span>].tokens</span><br><span class="line">        <span class="keyword">for</span> token <span class="keyword">in</span> stmt:</span><br><span class="line">            tokens.append([token.ttype, token.value])</span><br><span class="line"> </span><br><span class="line">        sql = sqlparse.sql.Statement(stmt)</span><br><span class="line">        sql_type = sql.get_type()</span><br><span class="line">        <span class="keyword">return</span> sql_type, tokens</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_type</span>(<span class="params">self, tokens</span>):</span></span><br><span class="line">        <span class="comment"># print(tokens)</span></span><br><span class="line">        <span class="keyword">return</span> tokens[<span class="number">0</span>][<span class="number">0</span>][<span class="number">1</span>] <span class="keyword">if</span> <span class="built_in">len</span>(tokens[<span class="number">0</span>][<span class="number">0</span>]) &gt; <span class="number">1</span> <span class="keyword">else</span> <span class="string">&#x27;Others&#x27;</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sql_statement</span>(<span class="params">self, tokens</span>):</span></span><br><span class="line">        <span class="keyword">return</span> tokens[<span class="number">0</span>][<span class="number">1</span>] <span class="keyword">if</span> <span class="built_in">len</span>(tokens[<span class="number">0</span>]) &gt; <span class="number">1</span> <span class="keyword">else</span> <span class="string">&#x27;Others&#x27;</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_table</span>(<span class="params">self, tokens</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        如何从tokens中获取表名？</span></span><br><span class="line"><span class="string">        :param tokens:</span></span><br><span class="line"><span class="string">        :return:</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        tables = []</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="comment"># 找到 Keyword 为 TABLE的关键字的索引位 + 2</span></span><br><span class="line">            sql_words = <span class="built_in">list</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x: x[<span class="number">1</span>], tokens))</span><br><span class="line">            index_num = sql_words.index(<span class="string">&#x27;TABLE&#x27;</span>)</span><br><span class="line">            table = sql_words[index_num + <span class="number">2</span>]</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            print(<span class="built_in">str</span>(e))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            tables.append(table)</span><br><span class="line">        <span class="keyword">return</span> tables</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PTHelper</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, sql</span>):</span></span><br><span class="line">        self.sql = sql</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">alter_sql_parse</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        对同一张表按照原来的语句顺序用逗号连接,所有双引号替换为单引号</span></span><br><span class="line"><span class="string">        [</span></span><br><span class="line"><span class="string">                &#123;&quot;table_name&quot;: &quot;frm_user&quot;,</span></span><br><span class="line"><span class="string">                &quot;alter_cmd&quot;: &quot;DROP INDEX account_idx,ADD UNIQUE INDEX uniq_account(account)&quot;</span></span><br><span class="line"><span class="string">                &quot;sql_from&quot;:[&#123;</span></span><br><span class="line"><span class="string">                    &quot;original_sql&quot;: &quot;alter table frm_user drop index account_idx;&quot;,</span></span><br><span class="line"><span class="string">                    &quot;format_sql&quot;: &quot;ALTER TABLE frm_user\nDROP INDEX account_idx;&quot;,</span></span><br><span class="line"><span class="string">                    &quot;sql_type&quot;: &quot;DDL&quot;,</span></span><br><span class="line"><span class="string">                    &quot;sql_statement&quot;: &quot;ALTER&quot;</span></span><br><span class="line"><span class="string">                &#125;,</span></span><br><span class="line"><span class="string">                &#123;</span></span><br><span class="line"><span class="string">                    &quot;original_sql&quot;: &quot;alter table frm_user add unique index uniq_account(account);&quot;,</span></span><br><span class="line"><span class="string">                    &quot;format_sql&quot;: &quot;ALTER TABLE frm_user ADD UNIQUE INDEX uniq_account(account);&quot;,</span></span><br><span class="line"><span class="string">                    &quot;sql_type&quot;: &quot;DDL&quot;,</span></span><br><span class="line"><span class="string">                    &quot;sql_statement&quot;: &quot;ALTER&quot;</span></span><br><span class="line"><span class="string">                &#125;]</span></span><br><span class="line"><span class="string">        ]</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">        :return:</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.result = []</span><br><span class="line">        <span class="keyword">for</span> _sql <span class="keyword">in</span> self.sql[<span class="string">&quot;data&quot;</span>]:</span><br><span class="line">            <span class="comment"># 正则匹配出 table_name 和 alter_cmd</span></span><br><span class="line">            sql_str = _sql[<span class="string">&quot;format_sql&quot;</span>].replace(<span class="string">&#x27;`&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">            <span class="comment"># print(sql_str)</span></span><br><span class="line">            match_obj = re.match(</span><br><span class="line">                <span class="string">r&#x27;ALTER TABLE(.*)[\n]?(ADD|ALTER|CHANGE|CHARACTER|CONVERT|DISABLE|ENABLE|DROP|FORCE|LOCK|MODIFY|ORDER|RENAME|WITHOUT|WITH)[\n]?(.*);&#x27;</span>,</span><br><span class="line">                sql_str)</span><br><span class="line">            <span class="keyword">if</span> match_obj:</span><br><span class="line">                table_name = match_obj.group(<span class="number">1</span>).strip()</span><br><span class="line">                alter_cmd_key = match_obj.group(<span class="number">2</span>).strip()</span><br><span class="line">                alter_cmd_option = match_obj.group(<span class="number">3</span>).strip()</span><br><span class="line">                <span class="comment"># print(table_name)</span></span><br><span class="line">                <span class="comment"># print(alter_cmd_key)</span></span><br><span class="line">                <span class="comment"># print(alter_cmd_option)</span></span><br><span class="line">                self.result.append(</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="string">&quot;table_name&quot;</span>: table_name.strip(),</span><br><span class="line">                        <span class="string">&quot;alter_cmd&quot;</span>: <span class="string">&quot;&#123;&#125; &#123;&#125;&quot;</span>.<span class="built_in">format</span>(alter_cmd_key.strip(),</span><br><span class="line">                                                    alter_cmd_option.strip().replace(<span class="string">&#x27;&quot;&#x27;</span>, <span class="string">&quot;&#x27;&quot;</span>)),</span><br><span class="line">                        <span class="string">&quot;sql_from&quot;</span>: _sql</span><br><span class="line">                    &#125;</span><br><span class="line">                )</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                print(<span class="string">&quot;不能正常匹配&quot;</span>)</span><br><span class="line">                self.result.append(</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="string">&quot;table_name&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;alter_cmd&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;sql_from&quot;</span>: _sql</span><br><span class="line">                    &#125;</span><br><span class="line">                )</span><br><span class="line"> </span><br><span class="line">        <span class="comment"># print(json.dumps(self.result, indent=2, ensure_ascii=False))</span></span><br><span class="line">        <span class="keyword">return</span> self.result</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sql_to_pt</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        组成pt脚本</span></span><br><span class="line"><span class="string">        :return:</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        table_names = <span class="built_in">set</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x: x[<span class="string">&quot;table_name&quot;</span>], self.result))</span><br><span class="line">        <span class="comment"># print(table_names)</span></span><br><span class="line">        out = []</span><br><span class="line">        <span class="keyword">for</span> table <span class="keyword">in</span> table_names:</span><br><span class="line">            <span class="comment"># print(table)</span></span><br><span class="line">            info = <span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x: x[<span class="string">&quot;table_name&quot;</span>] == table, self.result))</span><br><span class="line">            <span class="comment"># print(json.dumps(info, indent=2))</span></span><br><span class="line">            out.append(</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="string">&quot;table_name&quot;</span>: table,</span><br><span class="line">                    <span class="string">&quot;alter_cmd&quot;</span>: <span class="string">&#x27;,&#x27;</span>.join(<span class="built_in">list</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x: x[<span class="string">&quot;alter_cmd&quot;</span>], info))),</span><br><span class="line">                    <span class="string">&quot;sql_from&quot;</span>: info</span><br><span class="line">                &#125;</span><br><span class="line">            )</span><br><span class="line"> </span><br><span class="line">        <span class="comment"># print(json.dumps(out, indent=2, ensure_ascii=False))</span></span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GetScripts</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, sql_list, **kwargs</span>):</span></span><br><span class="line">        self.render_data = &#123;<span class="string">&quot;sql_list&quot;</span>: sql_list,</span><br><span class="line">                            <span class="string">&quot;time_string&quot;</span>: time.strftime(<span class="string">&#x27;%Y%m%d%H%M%S&#x27;</span>, time.localtime(time.time())),</span><br><span class="line">                            <span class="string">&quot;host&quot;</span>: kwargs[<span class="string">&#x27;host&#x27;</span>],</span><br><span class="line">                            <span class="string">&quot;port&quot;</span>: kwargs[<span class="string">&#x27;port&#x27;</span>],</span><br><span class="line">                            <span class="string">&quot;dbname&quot;</span>: kwargs[<span class="string">&#x27;dbname&#x27;</span>],</span><br><span class="line">                            <span class="string">&quot;user&quot;</span>: kwargs[<span class="string">&#x27;user&#x27;</span>],</span><br><span class="line">                            <span class="string">&quot;password&quot;</span>: kwargs[<span class="string">&#x27;password&#x27;</span>],</span><br><span class="line">                            &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">render_template</span>(<span class="params">self</span>):</span></span><br><span class="line">        template_data = <span class="string">&quot;&quot;&quot;#!/bin/bash</span></span><br><span class="line"><span class="string"># pt-osc scripts</span></span><br><span class="line"><span class="string"># &#123;&#123; time_string &#125;&#125;</span></span><br><span class="line"><span class="string"># Solar 混合云管理平台     </span></span><br><span class="line"><span class="string">host=&#123;&#123; host &#125;&#125;</span></span><br><span class="line"><span class="string">port=&#123;&#123; port &#125;&#125;</span></span><br><span class="line"><span class="string">dbname=&#123;&#123; dbname &#125;&#125;</span></span><br><span class="line"><span class="string">user=&#123;&#123; user &#125;&#125;</span></span><br><span class="line"><span class="string">password=&#123;&#123; password &#125;&#125;</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">&#123;% for sql in sql_list %&#125;</span></span><br><span class="line"><span class="string">table=&#123;&#123; sql.table_name &#125;&#125;</span></span><br><span class="line"><span class="string">pt-online-schema-change --user=$&#123;user&#125; --port=$&#123;port&#125; --host=$&#123;host&#125; --password=$&#123;password&#125; --alter=&quot;&#123;&#123; sql.alter_cmd &#125;&#125;&quot; D=$&#123;dbname&#125;,t=$&#123;table&#125; --noversion-check --execute --charset=utf8</span></span><br><span class="line"><span class="string">&#123;% endfor %&#125;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">        template = Template(template_data)</span><br><span class="line">        <span class="keyword">return</span> template.render(**self.render_data)</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maker</span>(<span class="params">self</span>):</span></span><br><span class="line">        data = self.render_template()</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SQLCheck</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    检测三个条件:</span></span><br><span class="line"><span class="string">    1. 检查语句中是否包含数据库名，如果包含则Fail;</span></span><br><span class="line"><span class="string">    2. 检查语句结尾是否为分号，如果是则True；</span></span><br><span class="line"><span class="string">    3. 判断SQL是否都为DDL Alter 语句，如果是则True；</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">    [</span></span><br><span class="line"><span class="string">      &#123;</span></span><br><span class="line"><span class="string">        &quot;original_sql&quot;: &quot;ALTER TABLE `aia_use_app_tag_log`   ADD  INDEX `idx_app_use_time` (`use_time`)&quot;,</span></span><br><span class="line"><span class="string">        &quot;format_sql&quot;: &quot;ALTER TABLE `aia_use_app_tag_log` ADD INDEX `idx_app_use_time` (`use_time`)&quot;,</span></span><br><span class="line"><span class="string">        &quot;sql_type&quot;: &quot;DDL&quot;,</span></span><br><span class="line"><span class="string">        &quot;sql_statement&quot;: &quot;ALTER&quot;,</span></span><br><span class="line"><span class="string">        &quot;check_alter&quot;: &quot;Pass&quot;,</span></span><br><span class="line"><span class="string">        &quot;check_database&quot;: &quot;Pass&quot;,</span></span><br><span class="line"><span class="string">        &quot;check_semicolon&quot;: &quot;Fail&quot;,</span></span><br><span class="line"><span class="string">        &quot;check_comma&quot;: &quot;Fail&quot;,</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    ]</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, in_data_list</span>):</span></span><br><span class="line">        self.in_data_list = in_data_list</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">check_database</span>(<span class="params">self, _data, pass_num, fail_num</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        检查语句中是否包含数据库名，如果包含则Fail</span></span><br><span class="line"><span class="string">        语句中不可以包含.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> _data[<span class="string">&quot;format_sql&quot;</span>].find(<span class="string">&#x27;.&#x27;</span>) &lt; <span class="number">0</span>:</span><br><span class="line">            _data[<span class="string">&quot;check_database&quot;</span>] = <span class="string">&quot;Pass&quot;</span></span><br><span class="line">            pass_num += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            _data[<span class="string">&quot;check_database&quot;</span>] = <span class="string">&quot;Fail&quot;</span></span><br><span class="line">            fail_num += <span class="number">1</span></span><br><span class="line">        out_data = _data</span><br><span class="line">        <span class="keyword">return</span> pass_num, fail_num, out_data</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">check_semicolon</span>(<span class="params">self, _data, pass_num, fail_num</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        检查语句结尾是否为分号，如果是则True</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> _data[<span class="string">&quot;format_sql&quot;</span>].find(<span class="string">&#x27;;&#x27;</span>) &gt;= <span class="number">0</span>:</span><br><span class="line">            _data[<span class="string">&quot;check_semicolon&quot;</span>] = <span class="string">&quot;Pass&quot;</span></span><br><span class="line">            pass_num += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            _data[<span class="string">&quot;check_semicolon&quot;</span>] = <span class="string">&quot;Fail&quot;</span></span><br><span class="line">            fail_num += <span class="number">1</span></span><br><span class="line">        out_data = _data</span><br><span class="line">        <span class="keyword">return</span> pass_num, fail_num, out_data</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">check_alter</span>(<span class="params">self, _data, pass_num, fail_num</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        判断SQL是否都为DDL Alter 语句</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> _data[<span class="string">&quot;sql_type&quot;</span>] == <span class="string">&quot;DDL&quot;</span> <span class="keyword">and</span> _data[<span class="string">&quot;sql_statement&quot;</span>] == <span class="string">&quot;ALTER&quot;</span>:</span><br><span class="line">            _data[<span class="string">&quot;check_alter&quot;</span>] = <span class="string">&quot;Pass&quot;</span></span><br><span class="line">            pass_num += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            _data[<span class="string">&quot;check_alter&quot;</span>] = <span class="string">&quot;Fail&quot;</span></span><br><span class="line">            fail_num += <span class="number">1</span></span><br><span class="line">        out_data = _data</span><br><span class="line">        <span class="keyword">return</span> pass_num, fail_num, out_data</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">main</span>(<span class="params">self</span>):</span></span><br><span class="line">        out_data_list = []</span><br><span class="line">        pass_num = <span class="number">0</span></span><br><span class="line">        fail_num = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> _data <span class="keyword">in</span> self.in_data_list:</span><br><span class="line">            pass_num, fail_num, out_data = self.check_alter(_data, pass_num, fail_num)</span><br><span class="line">            pass_num, fail_num, out_data = self.check_database(_data, pass_num, fail_num)</span><br><span class="line">            pass_num, fail_num, out_data = self.check_semicolon(_data, pass_num, fail_num)</span><br><span class="line">            out_data_list.append(out_data)</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;pass_num&quot;</span>: pass_num,</span><br><span class="line">            <span class="string">&quot;fail_num&quot;</span>: fail_num,</span><br><span class="line">            <span class="string">&quot;data&quot;</span>: out_data_list</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">start_up</span>(<span class="params">**kwargs</span>):</span></span><br><span class="line">    <span class="comment"># 1. 解析SQL SQLParseHelper()</span></span><br><span class="line">    api = SQLParseHelper(sql_str=kwargs[<span class="string">&quot;sql_str&quot;</span>], split_str=<span class="string">&quot;;&quot;</span>)</span><br><span class="line">    sql_num = api.get_length()</span><br><span class="line">    data = []</span><br><span class="line">    <span class="keyword">for</span> sql <span class="keyword">in</span> api.sql_list:</span><br><span class="line">        format_sql = api.get_format(sql)</span><br><span class="line">        result = api.get_init(format_sql)</span><br><span class="line">        data.append(&#123;</span><br><span class="line">            <span class="string">&quot;original_sql&quot;</span>: sql,</span><br><span class="line">            <span class="string">&quot;format_sql&quot;</span>: format_sql.strip(),</span><br><span class="line">            <span class="string">&quot;sql_type&quot;</span>: api.get_type(tokens=result[<span class="number">1</span>]),</span><br><span class="line">            <span class="string">&quot;sql_statement&quot;</span>: api.sql_statement(tokens=result[<span class="number">1</span>]),</span><br><span class="line">        &#125;)</span><br><span class="line">    new_result = &#123;</span><br><span class="line">        <span class="string">&quot;num&quot;</span>: sql_num,</span><br><span class="line">        <span class="string">&quot;data&quot;</span>: data</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment"># print(json.dumps(new_result, indent=2, ensure_ascii=False))</span></span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 2. 判断SQL是否都为DDL Alter 语句 check_alter()</span></span><br><span class="line">    check_api = SQLCheck(new_result[<span class="string">&quot;data&quot;</span>])</span><br><span class="line">    check_result = check_api.main()</span><br><span class="line">    <span class="comment"># print(json.dumps(check_result, indent=2, ensure_ascii=False))</span></span><br><span class="line">    <span class="keyword">if</span> check_result[<span class="string">&quot;fail_num&quot;</span>] &gt; <span class="number">0</span>:</span><br><span class="line">        print(<span class="string">&quot;检测不通过&quot;</span>)</span><br><span class="line">        print(json.dumps(</span><br><span class="line">            <span class="built_in">list</span>(<span class="built_in">filter</span>(</span><br><span class="line">                <span class="keyword">lambda</span> x: x[<span class="string">&quot;check_alter&quot;</span>] == <span class="string">&#x27;Fail&#x27;</span> <span class="keyword">or</span> x[<span class="string">&quot;check_database&quot;</span>] == <span class="string">&#x27;Fail&#x27;</span> <span class="keyword">or</span> x[</span><br><span class="line">                    <span class="string">&quot;check_semicolon&quot;</span>] == <span class="string">&#x27;Fail&#x27;</span> <span class="keyword">or</span> x[<span class="string">&quot;check_comma&quot;</span>] == <span class="string">&quot;Fail&quot;</span>,</span><br><span class="line">                check_result[<span class="string">&quot;data&quot;</span>]</span><br><span class="line">            ))</span><br><span class="line">            , indent=<span class="number">2</span>, ensure_ascii=<span class="literal">False</span>))</span><br><span class="line">        <span class="comment"># print(json.dumps(check_result, indent=2, ensure_ascii=False))</span></span><br><span class="line">        exit()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">        <span class="comment"># print(&quot;检测通过&quot;)</span></span><br><span class="line">        <span class="comment"># print(json.dumps(check_result, indent=2, ensure_ascii=False))</span></span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 3. 转PT PTHelper()</span></span><br><span class="line">    pt_api = PTHelper(check_result)</span><br><span class="line">    pt_api.alter_sql_parse()</span><br><span class="line">    pt_sql_list = pt_api.sql_to_pt()</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 4. 渲染脚本</span></span><br><span class="line">    scripts_api = GetScripts(pt_sql_list, **kwargs)</span><br><span class="line">    data = scripts_api.maker()</span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    parser = argparse.ArgumentParser(description=<span class="string">&#x27;&#x27;&#x27;MySQL Alter语句自动转 PT脚本 小工具</span></span><br><span class="line"><span class="string">    支持的Alter类型：ADD|ALTER|CHANGE|CHARACTER|CONVERT|DISABLE|ENABLE|DROP|FORCE|LOCK|MODIFY|ORDER|RENAME|WITHOUT|WITH ；</span></span><br><span class="line"><span class="string">    不支持带库名；</span></span><br><span class="line"><span class="string">    不支持一条sql多个变。</span></span><br><span class="line"><span class="string">    输出结果</span></span><br><span class="line"><span class="string">    #!/bin/bash</span></span><br><span class="line"><span class="string">    # pt-osc scripts</span></span><br><span class="line"><span class="string">    # 20200522190824</span></span><br><span class="line"><span class="string">    # Solar 混合云管理平台     </span></span><br><span class="line"><span class="string">    host=localhost</span></span><br><span class="line"><span class="string">    port=3306</span></span><br><span class="line"><span class="string">    dbname=test01</span></span><br><span class="line"><span class="string">    user=root</span></span><br><span class="line"><span class="string">    password=lsdkjkdjfkdf</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">    table=frm_user</span></span><br><span class="line"><span class="string">    pt-online-schema-change --user=$&#123;user&#125; --port=$&#123;port&#125; --host=$&#123;host&#125; --password=$&#123;password&#125; --alter=&quot;DROP INDEX account_idx,ADD UNIQUE INDEX uniq_account(account)&quot; D=$&#123;dbname&#125;,t=$&#123;table&#125; --no-version-check --execute --charset=utf8</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">    table=aia_present_point_exchange_user</span></span><br><span class="line"><span class="string">    pt-online-schema-change --user=$&#123;user&#125; --port=$&#123;port&#125; --host=$&#123;host&#125; --password=$&#123;password&#125; --alter=&quot;ADD COLUMN end_date DATETIME NULL COMMENT &#x27;有效期结束&#x27; AFTER start_date&quot; D=$&#123;dbname&#125;,t=$&#123;table&#125; --no-version-check --execute --charset=utf8</span></span><br><span class="line"><span class="string">    &quot;</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">    Example：</span></span><br><span class="line"><span class="string">    python3 get_sql2pt.py --InFile demo/mysql_alter_demo.sql --OutFile demo/mysql_alter_pt.sh --Host localhost --Port 3306 --DBName test01 --User root --PassWord lsdkjkdjfkdf</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span>, formatter_class=argparse.RawTextHelpFormatter)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--InFile&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;MySQL Alter SQL源文件 必要参数&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--OutFile&quot;</span>,</span><br><span class="line">                        default=<span class="string">&#x27;sql2pt-&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(time.strftime(<span class="string">&#x27;%Y%m%d%H%M%S&#x27;</span>, time.localtime(time.time()))),</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&quot;转换后的脚本名 非参数&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--Host&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;MySQL服务器连接地址&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--Port&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;MySQL服务器监听端口&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--DBName&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;MySQL访问的数据库名&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--User&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;MySQL服务器登陆用户名&quot;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&quot;--PassWord&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;MySQL服务器登陆用户密码&quot;</span>)</span><br><span class="line"> </span><br><span class="line">    args = parser.parse_args()</span><br><span class="line">    <span class="keyword">if</span> args.InFile <span class="keyword">and</span> args.Host <span class="keyword">and</span> args.Port <span class="keyword">and</span> args.DBName <span class="keyword">and</span> args.User <span class="keyword">and</span> args.PassWord:</span><br><span class="line">        sql_str = <span class="built_in">open</span>(args.InFile, <span class="string">&#x27;r&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>).read().replace(<span class="string">&#x27;#&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        params = &#123;</span><br><span class="line">            <span class="string">&quot;sql_str&quot;</span>: sql_str,</span><br><span class="line">            <span class="string">&quot;out_file&quot;</span>: args.OutFile,</span><br><span class="line">            <span class="string">&quot;host&quot;</span>: args.Host,</span><br><span class="line">            <span class="string">&quot;port&quot;</span>: args.Port,</span><br><span class="line">            <span class="string">&quot;dbname&quot;</span>: args.DBName,</span><br><span class="line">            <span class="string">&quot;user&quot;</span>: args.User,</span><br><span class="line">            <span class="string">&quot;password&quot;</span>: args.PassWord</span><br><span class="line">        &#125;</span><br><span class="line">        result = start_up(**params)</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(args.OutFile, <span class="string">&#x27;w&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(result)</span><br></pre></td></tr></table></figure>
+<h2 id="归档" class="article-heading"><a href="#归档" class="headerlink" title="归档"></a>归档<a class="article-anchor" href="#归档" aria-hidden="true"></a></h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pt-archiver  --<span class="built_in">source</span> h=<span class="variable">$&#123;host&#125;</span>,P=3306,u=<span class="variable">$&#123;user&#125;</span>,p=<span class="variable">$&#123;password&#125;</span>,D=<span class="variable">$&#123;database&#125;</span>,t=<span class="variable">$&#123;table&#125;</span> --dest h=<span class="variable">$&#123;host&#125;</span>,P=3306,u=<span class="variable">$&#123;user&#125;</span>,p=<span class="variable">$&#123;password&#125;</span>,D=<span class="variable">$&#123;database&#125;</span>,t=<span class="variable">$&#123;table&#125;</span>  --no-check-charset --<span class="built_in">where</span> <span class="string">&quot;use_time &lt; &#x27;2020-01-01&#x27;&quot;</span> --progress 5000 --<span class="built_in">limit</span>=1000 --txn-size=1000 --statistics --bulk-insert --bulk-delete --charset <span class="string">&#x27;utf8&#x27;</span> --noversion-check</span><br></pre></td></tr></table></figure>
+<p>参数说明：</p>
+<p><code>--source</code>: 源端<br><code>--dest</code>: 目标端<br><code>--dry-run</code>: debug模式，尝试运行。</p>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:49.469Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/database/mysql/awesome-tools/percona_tookit.html';
+  var disqus_title = "Percona Toolkit工具明细说明";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%89%88%E6%9C%AC%E5%92%8C%E5%B7%A5%E5%85%B7%E7%89%88%E6%9C%AC%E8%A6%81%E6%B1%82"><span class="toc-text">数据库版本和工具版本要求</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Percona-Toolkit%E5%B7%A5%E5%85%B7%E7%BB%86%E8%8A%82%E8%AF%B4%E6%98%8E"><span class="toc-text">Percona Toolkit工具细节说明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5"><span class="toc-text">实践</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BFDDL"><span class="toc-text">在线DDL</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%80"><span class="toc-text">场景一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF2"><span class="toc-text">场景2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF2-1"><span class="toc-text">场景2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%92%E6%A1%A3"><span class="toc-text">归档</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>阿里云云监控实现进程监控告警 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/cloud/aliyun/cms/custom_event.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/cloud/aliyun/cms/custom_event">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="功能概览本文编写时，阿里云的该功能更新时间：2020-07-01 17:59:01 事件监控功能为您提供上报自定义事件的接口，方便您将业务产生的异常事件采集上报到云监控，通过对上报的事件配置报警规则来接收报警通知。 使用限制上报自定义事件监控数据的使用限制如下：  单个阿里云账号的QPS限制为20。 单次最多上报100个事件。 单次最多上报500KB数据。  上报方式云监控为您提供的自定义事件监控">
+<meta property="og:type" content="website">
+<meta property="og:title" content="阿里云云监控实现进程监控告警">
+<meta property="og:url" content="http://www.toberoot.com/cloud/aliyun/cms/custom_event">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="功能概览本文编写时，阿里云的该功能更新时间：2020-07-01 17:59:01 事件监控功能为您提供上报自定义事件的接口，方便您将业务产生的异常事件采集上报到云监控，通过对上报的事件配置报警规则来接收报警通知。 使用限制上报自定义事件监控数据的使用限制如下：  单个阿里云账号的QPS限制为20。 单次最多上报100个事件。 单次最多上报500KB数据。  上报方式云监控为您提供的自定义事件监控">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.toberoot.com/cloud/aliyun/cms/pic/001.png">
+<meta property="og:image" content="http://www.toberoot.com/cloud/aliyun/cms/pic/002.png">
+<meta property="og:image" content="http://www.toberoot.com/cloud/aliyun/cms/pic/003.png">
+<meta property="og:image" content="http://www.toberoot.com/cloud/aliyun/cms/pic/004.png">
+<meta property="article:published_time" content="2020-12-04T00:52:49.295Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:49.295Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/cloud/aliyun/cms/pic/001.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">阿里云云监控实现进程监控告警</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/cloud/aliyun/cms/custom_event.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <h1 id="功能概览" class="article-heading"><a href="#功能概览" class="headerlink" title="功能概览"></a>功能概览<a class="article-anchor" href="#功能概览" aria-hidden="true"></a></h1><p>本文编写时，阿里云的该功能更新时间：2020-07-01 17:59:01</p>
+<p>事件监控功能为您提供上报自定义事件的接口，方便您将业务产生的异常事件采集上报到云监控，通过对上报的事件配置报警规则来接收报警通知。</p>
+<h2 id="使用限制" class="article-heading"><a href="#使用限制" class="headerlink" title="使用限制"></a>使用限制<a class="article-anchor" href="#使用限制" aria-hidden="true"></a></h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">上报自定义事件监控数据的使用限制如下：</span><br></pre></td></tr></table></figure>
+<ul>
+<li>单个阿里云账号的QPS限制为20。</li>
+<li>单次最多上报100个事件。</li>
+<li>单次最多上报500KB数据。</li>
+</ul>
+<h2 id="上报方式" class="article-heading"><a href="#上报方式" class="headerlink" title="上报方式"></a>上报方式<a class="article-anchor" href="#上报方式" aria-hidden="true"></a></h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">云监控为您提供的自定义事件监控数据的上报方式如下：</span><br></pre></td></tr></table></figure>
+<ul>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://help.aliyun.com/document_detail/171419.html#concept-2538347">通过Java SDK上报事件监控数据（推荐）</a></li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://help.aliyun.com/document_detail/171420.html#concept-2538351">通过HTTP上报事件监控数据</a></li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://help.aliyun.com/document_detail/171421.html#concept-2538353">通过命令行（CLI）上报事件监控数据</a></li>
+</ul>
+<h1 id="授权" class="article-heading"><a href="#授权" class="headerlink" title="授权"></a>授权<a class="article-anchor" href="#授权" aria-hidden="true"></a></h1><p>云监控支持使用阿里云账号或RAM用户上报事件监控数据。当RAM用户使用AccessKey上报监控数据时，需要授权云监控的管理权限。操作方法如下：</p>
+<ol>
+<li><p>使用阿里云账号登录<a target="_blank" rel="noopener external nofollow noreferrer" href="https://ram.console.aliyun.com/">RAM控制台</a>。</p>
+</li>
+<li><p>创建RAM用户。</p>
+<p>操作方法请参见<a target="_blank" rel="noopener external nofollow noreferrer" href="https://help.aliyun.com/document_detail/93720.html#task-187540">创建RAM用户</a>。</p>
+</li>
+<li><p>为RAM用户创建访问密钥。</p>
+<p>操作方法请参见<a target="_blank" rel="noopener external nofollow noreferrer" href="https://help.aliyun.com/document_detail/116401.html#task-188766">为RAM用户创建访问密钥</a>。</p>
+</li>
+<li><p>为RAM用户授权（AliyunCloudMonitorFullAccess）。</p>
+<p>操作方法请参见<a target="_blank" rel="noopener external nofollow noreferrer" href="https://help.aliyun.com/document_detail/116146.html#task-187800">为RAM用户授权</a>。</p>
+</li>
+</ol>
+<h2 id="阿里云命令行工具" class="article-heading"><a href="#阿里云命令行工具" class="headerlink" title="阿里云命令行工具"></a>阿里云命令行工具<a class="article-anchor" href="#阿里云命令行工具" aria-hidden="true"></a></h2><p>安装和配置阿里云命令行（CLI）工具，操作方法请参见<a target="_blank" rel="noopener external nofollow noreferrer" href="https://help.aliyun.com/document_detail/110244.html?spm=a2c4g.11186623.2.18.2dae19b8EGun5J">阿里云CLI</a>。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz?spm=a2c4g.11186623.2.12.35cc7dbf1kFtRY&amp;file=aliyun-cli-linux-latest-amd64.tgz</span><br><span class="line">tar xf aliyun-cli-linux-latest-amd64.tgz?spm=a2c4g.11186623.2.12.35cc7dbf1kFtRY</span><br><span class="line">cp aliyun /usr/<span class="built_in">local</span>/bin</span><br></pre></td></tr></table></figure>
+<h2 id="上报监控数据" class="article-heading"><a href="#上报监控数据" class="headerlink" title="上报监控数据"></a>上报监控数据<a class="article-anchor" href="#上报监控数据" aria-hidden="true"></a></h2><p>使用PutCustomEvent接口上报事件监控数据，请参见<a target="_blank" rel="noopener external nofollow noreferrer" href="https://help.aliyun.com/document_detail/115012.html#doc-api-Cms-PutCustomEvent">PutCustomEvent</a>。</p>
+<p>示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">aliyun --region cn-shanghai --access-key-&#96;&#96;id&#96; &#96;xxx --access-key-secret xxx cms PutCustomEvent --EventInfo.1.EventName ErrorEvent --EventInfo.1.Content helloworld --EventInfo.1.Time &#96;&#96;&quot;20171013T170923.456+0800&quot;&#96; &#96;--EventInfo.1.GroupId 0</span><br></pre></td></tr></table></figure>
+<h2 id="命令参数详解" class="article-heading"><a href="#命令参数详解" class="headerlink" title="命令参数详解"></a>命令参数详解<a class="article-anchor" href="#命令参数详解" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">参数</td>
+<td align="left">解释</td>
+</tr>
+<tr>
+<td align="left"><code>--region</code></td>
+<td align="left">地域</td>
+</tr>
+<tr>
+<td align="left"><code>--access-key-id</code></td>
+<td align="left">AccessKey ID</td>
+</tr>
+<tr>
+<td align="left"><code>--access-key-secret</code></td>
+<td align="left">AccessKey Secret</td>
+</tr>
+<tr>
+<td align="left"><code>cms</code></td>
+<td align="left">CMS 云监控</td>
+</tr>
+<tr>
+<td align="left"><code>PutCustomEvent</code></td>
+<td align="left">上传自定义事件</td>
+</tr>
+<tr>
+<td align="left"><code>--EventInfo.1.EventName</code></td>
+<td align="left">事件名称</td>
+</tr>
+<tr>
+<td align="left"><code>--EventInfo.1.Content</code></td>
+<td align="left">事件描述</td>
+</tr>
+<tr>
+<td align="left"><code>--EventInfo.1.Time</code></td>
+<td align="left">事件发生的时间</td>
+</tr>
+<tr>
+<td align="left"><code>--EventInfo.1.GroupId</code></td>
+<td align="left">事件所在应用分组ID</td>
+</tr>
+</tbody></table>
+<p>特别注意：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. accesskey和secretkey用于身份识别，一定注意RAM的权限是否已经授予了AliyunCloudMonitorFullAccess权限；为了更安全，此处可以改为使用 RAM role。</span><br><span class="line">2. EventInfo.Num.xxxx: N的含义：可以一次上报多个事件</span><br><span class="line">3. GroupId:云监控的应用分组ID，可以从应用的角度来对事件进行归类, 可以在云监控的应用分组列表中查看分组ID。</span><br><span class="line">4. 上报事件：每一个事件都包含事件的名称与事件的内容，名称用于识别事件，内容是事件的详细信息，支持全文搜索。</span><br><span class="line">上报事件监控数据成功后，返回状态码200。</span><br><span class="line">&#123;</span><br><span class="line">	&quot;Code&quot;: &quot;200&quot;,</span><br><span class="line">	&quot;Message&quot;: &quot;success&quot;,</span><br><span class="line">	&quot;RequestId&quot;: &quot;45A8F6E2-F8B6-4EB4-AC9A-45A6D15D43BC&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="错误码说明" class="article-heading"><a href="#错误码说明" class="headerlink" title="错误码说明"></a>错误码说明<a class="article-anchor" href="#错误码说明" aria-hidden="true"></a></h2><p>当通过命令行上报事件监控数据时，返回的错误码如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th align="left">错误码</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">400</td>
+<td align="left">客户端请求中的语法错误。</td>
+</tr>
+<tr>
+<td align="left">403</td>
+<td align="left">校验失败、限速、没有授权。</td>
+</tr>
+<tr>
+<td align="left">500</td>
+<td align="left">服务器内部错误。</td>
+</tr>
+</tbody></table>
+<h1 id="操作明细" class="article-heading"><a href="#操作明细" class="headerlink" title="操作明细"></a>操作明细<a class="article-anchor" href="#操作明细" aria-hidden="true"></a></h1><p><img src="pic/001.png" alt><br><img src="pic/002.png" alt><br><img src="pic/003.png" alt></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@fms ~]<span class="comment"># wget https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz?spm=a2c4g.11186623.2.12.35cc7dbf1kFtRY&amp;file=aliyun-cli-linux-latest-amd64.tgz</span></span><br><span class="line">[1] 2422</span><br><span class="line">[root@fms ~]<span class="comment"># --2020-08-03 10:30:34--  https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz?spm=a2c4g.11186623.2.12.35cc7dbf1kFtRY</span></span><br><span class="line">正在解析主机 aliyuncli.alicdn.com (aliyuncli.alicdn.com)... 101.37.183.187, 101.37.183.186</span><br><span class="line">正在连接 aliyuncli.alicdn.com (aliyuncli.alicdn.com)|101.37.183.187|:443... 已连接。</span><br><span class="line">已发出 HTTP 请求，正在等待回应... 200 OK</span><br><span class="line">长度：14313391 (14M) [application/x-gtar-compressed]</span><br><span class="line">正在保存至: “aliyun-cli-linux-latest-amd64.tgz?spm=a2c4g.11186623.2.12.35cc7dbf1kFtRY”</span><br><span class="line"> </span><br><span class="line">100%[================================================================================================================================================&gt;] 14,313,391  20.6MB/s 用时 0.7s</span><br><span class="line"> </span><br><span class="line">2020-08-03 10:30:36 (20.6 MB/s) - 已保存 “aliyun-cli-linux-latest-amd64.tgz?spm=a2c4g.11186623.2.12.35cc7dbf1kFtRY” [14313391/14313391])</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">[1]+  完成                  wget https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz?spm=a2c4g.11186623.2.12.35cc7dbf1kFtRY</span><br><span class="line">[root@fms ~]<span class="comment"># ll</span></span><br><span class="line">总用量 28748</span><br><span class="line">-rw-r--r-- 1 root root 14313391 7月  29 12:25 aliyun-cli-linux-latest-amd64.tgz?spm=a2c4g.11186623.2.12.35cc7dbf1kFtRY</span><br><span class="line">drwxr-xr-x 2 root root     4096 6月   5 2019 dingding</span><br><span class="line">drwxr-xr-x 7 root root     4096 4月  14 2019 flask-admin</span><br><span class="line">-rw-r--r-- 1 root root 15108729 5月  13 2019 grafana-6.1.6-1.x86_64.rpm</span><br><span class="line">drwxr-xr-x 2 root root     4096 5月  17 2019 jinxue</span><br><span class="line">[root@fms ~]<span class="comment"># tar xf aliyun-cli-linux-latest-amd64.tgz?spm=a2c4g.11186623.2.12.35cc7dbf1kFtRY</span></span><br><span class="line">[root@fms ~]<span class="comment"># ll</span></span><br><span class="line">总用量 60812</span><br><span class="line">-rwxr-xr-x 1 root root 32830753 7月  29 12:24 aliyun</span><br><span class="line">-rw-r--r-- 1 root root 14313391 7月  29 12:25 aliyun-cli-linux-latest-amd64.tgz?spm=a2c4g.11186623.2.12.35cc7dbf1kFtRY</span><br><span class="line">drwxr-xr-x 2 root root     4096 6月   5 2019 dingding</span><br><span class="line">drwxr-xr-x 7 root root     4096 4月  14 2019 flask-admin</span><br><span class="line">-rw-r--r-- 1 root root 15108729 5月  13 2019 grafana-6.1.6-1.x86_64.rpm</span><br><span class="line">drwxr-xr-x 2 root root     4096 5月  17 2019 jinxue</span><br><span class="line">[root@fms ~]<span class="comment"># cd aliyun</span></span><br><span class="line">-bash: <span class="built_in">cd</span>: aliyun: 不是目录</span><br><span class="line">[root@fms ~]<span class="comment"># cp aliyun /usr/local/bin</span></span><br><span class="line">[root@fms ~]<span class="comment"># aliyun --region cn-shanghai --access-key-id xx --access-key-secret xx cms PutCustomEvent --EventInfo.1.EventName ErrorEvent  --EventInfo.1.Content 我的应用不可用-测试  --EventInfo.1.Time `date &quot;+%Y%m%dT%H%M%S.000+0800&quot;`  --EventInfo.1.GroupId 5217650</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;Code&quot;</span>: <span class="string">&quot;200&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Message&quot;</span>: <span class="string">&quot;success&quot;</span>,</span><br><span class="line">    <span class="string">&quot;RequestId&quot;</span>: <span class="string">&quot;76335521-0F92-4EF1-989F-889478E63D98&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[root@fms monitor]<span class="comment"># cat web_monitor.sh</span></span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"> </span><br><span class="line">accessid=xx</span><br><span class="line">accesssecret=xxx</span><br><span class="line">region=cn-shanghai</span><br><span class="line">EventName=大宝的进程监控测试</span><br><span class="line">Content=我的应用不可用-测试</span><br><span class="line">GroupId=5217650</span><br><span class="line"> </span><br><span class="line">a=`ps -ef|grep <span class="string">&quot;[p]ython /alidata/fms/app.py&quot;</span>`</span><br><span class="line"><span class="keyword">if</span> [[ $? -eq 0 ]];<span class="keyword">then</span></span><br><span class="line">    <span class="built_in">exit</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    aliyun --region <span class="variable">$&#123;region&#125;</span> --access-key-id <span class="variable">$&#123;accessid&#125;</span> --access-key-secret <span class="variable">$&#123;accesssecret&#125;</span> cms PutCustomEvent --EventInfo.1.EventName <span class="variable">$&#123;EventName&#125;</span> --EventInfo.1.Content <span class="variable">$&#123;Content&#125;</span> --EventInfo.1.Time `date <span class="string">&quot;+%Y%m%dT%H%M%S.000+0800&quot;</span>`  --EventInfo.1.GroupId <span class="variable">$&#123;GroupId&#125;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"> </span><br><span class="line">[root@fms monitor]<span class="comment"># bash -x web_monitor.sh</span></span><br><span class="line">+ accessid=xx</span><br><span class="line">+ accesssecret=xx</span><br><span class="line">+ region=cn-shanghai</span><br><span class="line">+ EventName=大宝的进程监控测试</span><br><span class="line">+ Content=我的应用不可用-测试</span><br><span class="line">+ GroupId=5217650</span><br><span class="line">++ ps -ef</span><br><span class="line">++ grep <span class="string">&#x27;[p]ython /alidata/fms/app.py&#x27;</span></span><br><span class="line">+ a=<span class="string">&#x27;root     27810 19071  1 6月22 ?       16:20:17 /usr/bin/python /alidata/fms/app.py&#x27;</span></span><br><span class="line">+ [[ 0 -eq 0 ]]</span><br><span class="line">+ <span class="built_in">exit</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">[root@fms monitor]<span class="comment"># crontab -l</span></span><br><span class="line">*/1 * * * * /usr/bin/bash /alidata/monitor/web_monitor.sh</span><br></pre></td></tr></table></figure>
+<h1 id="实战总结" class="article-heading"><a href="#实战总结" class="headerlink" title="实战总结"></a>实战总结<a class="article-anchor" href="#实战总结" aria-hidden="true"></a></h1><p><img src="pic/004.png" alt></p>
+<p>有利于运维侧的方法应该是使用aliyun-cli工具来上报事件。</p>
+<p>第一步：阿里云CMS控制台——“事件监控”——“告警规则”——“自定义事件”，创建用于进程丢失后的上报事件名称和告警触发的规则；</p>
+<p>第二步：登陆服务器，准备监控上报的Bash脚本，模版参考如下：</p>
+<p>Demo</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"> </span><br><span class="line">accessid=xx</span><br><span class="line">accesssecret=xxx</span><br><span class="line">region=地域</span><br><span class="line">EventName=事件名称-要与第一步中创建的事件名一致</span><br><span class="line">Content=事件内容描述</span><br><span class="line">GroupId=自定义事件归属的业务分组ID</span><br><span class="line"> </span><br><span class="line">a=`ps -ef|grep <span class="string">&quot;[p]ython /alidata/fms/app.py&quot;</span>`</span><br><span class="line"><span class="keyword">if</span> [[ $? -eq 0 ]];<span class="keyword">then</span></span><br><span class="line">    <span class="built_in">exit</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    aliyun --region <span class="variable">$&#123;region&#125;</span> --access-key-id <span class="variable">$&#123;accessid&#125;</span> --access-key-secret <span class="variable">$&#123;accesssecret&#125;</span> cms PutCustomEvent --EventInfo.1.EventName <span class="variable">$&#123;EventName&#125;</span> --EventInfo.1.Content <span class="variable">$&#123;Content&#125;</span> --EventInfo.1.Time `date <span class="string">&quot;+%Y%m%dT%H%M%S.000+0800&quot;</span>`  --EventInfo.1.GroupId <span class="variable">$&#123;GroupId&#125;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:49.295Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/cloud/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/cloud/aliyun/cms/custom_event.html';
+  var disqus_title = "阿里云云监控实现进程监控告警";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E6%A6%82%E8%A7%88"><span class="toc-text">功能概览</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"><span class="toc-text">使用限制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8A%E6%8A%A5%E6%96%B9%E5%BC%8F"><span class="toc-text">上报方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8E%88%E6%9D%83"><span class="toc-text">授权</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%BF%E9%87%8C%E4%BA%91%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="toc-text">阿里云命令行工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8A%E6%8A%A5%E7%9B%91%E6%8E%A7%E6%95%B0%E6%8D%AE"><span class="toc-text">上报监控数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3"><span class="toc-text">命令参数详解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E7%A0%81%E8%AF%B4%E6%98%8E"><span class="toc-text">错误码说明</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%98%8E%E7%BB%86"><span class="toc-text">操作明细</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E6%80%BB%E7%BB%93"><span class="toc-text">实战总结</span></a></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">开始使用</strong><a href="/cloud/index.html" class="sidebar-link">概览</a><a href="/cloud/aliyun/index.html" class="sidebar-link">阿里云</a><a href="/cloud/tencent/index.html" class="sidebar-link">腾讯云</a><a href="/cloud/aws/index.html" class="sidebar-link">亚马逊云</a><a href="/cloud/azure/index.html" class="sidebar-link">微软云</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">开始使用</strong><a href="/cloud/index.html" class="mobile-nav-link">概览</a><a href="/cloud/aliyun/index.html" class="mobile-nav-link">阿里云</a><a href="/cloud/tencent/index.html" class="mobile-nav-link">腾讯云</a><a href="/cloud/aws/index.html" class="mobile-nav-link">亚马逊云</a><a href="/cloud/azure/index.html" class="mobile-nav-link">微软云</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

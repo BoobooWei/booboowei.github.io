@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>使用Git之前需要做的最小配置 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/devops/git/Chapter01/03_%E4%BD%BF%E7%94%A8Git%E4%B9%8B%E5%89%8D%E9%9C%80%E8%A6%81%E5%81%9A%E7%9A%84%E6%9C%80%E5%B0%8F%E9%85%8D%E7%BD%AE.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/devops/git/Chapter01/03_%E4%BD%BF%E7%94%A8Git%E4%B9%8B%E5%89%8D%E9%9C%80%E8%A6%81%E5%81%9A%E7%9A%84%E6%9C%80%E5%B0%8F%E9%85%8D%E7%BD%AE">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="配置user信息 配置user.name 和 user.email  git config --global user.name &amp;#x27;your_name&amp;#x27;git config --global user.email &amp;#x27;your_email.domain.com&amp;#x27;  仓库中变更的信息会和用户和邮件捆绑在一起，需要配置好user信息。  设置，缺省等同于 --lo">
+<meta property="og:type" content="website">
+<meta property="og:title" content="使用Git之前需要做的最小配置">
+<meta property="og:url" content="http://www.toberoot.com/devops/git/Chapter01/03_%E4%BD%BF%E7%94%A8Git%E4%B9%8B%E5%89%8D%E9%9C%80%E8%A6%81%E5%81%9A%E7%9A%84%E6%9C%80%E5%B0%8F%E9%85%8D%E7%BD%AE">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="配置user信息 配置user.name 和 user.email  git config --global user.name &amp;#x27;your_name&amp;#x27;git config --global user.email &amp;#x27;your_email.domain.com&amp;#x27;  仓库中变更的信息会和用户和邮件捆绑在一起，需要配置好user信息。  设置，缺省等同于 --lo">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:50.238Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.238Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">使用Git之前需要做的最小配置</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/devops/git/Chapter01/03_使用Git之前需要做的最小配置.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <h1 id="配置user信息" class="article-heading"><a href="#配置user信息" class="headerlink" title="配置user信息"></a>配置user信息<a class="article-anchor" href="#配置user信息" aria-hidden="true"></a></h1><blockquote>
+<p>配置user.name 和 user.email</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global user.name &#x27;your_name&#x27;</span><br><span class="line">git config --global user.email &#x27;your_email.domain.com&#x27;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>仓库中变更的信息会和用户和邮件捆绑在一起，需要配置好user信息。</p>
+</li>
+<li><p>设置，缺省等同于 <code>--local</code></p>
+</li>
+<li><p>清除，<code>--unset</code></p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --unset --global user.name</span><br><span class="line">git config --unset --global user.email</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优先级 <code>local &gt; global &gt; system</code></li>
+</ul>
+<h1 id="git-config-命令" class="article-heading"><a href="#git-config-命令" class="headerlink" title="git config 命令"></a>git config 命令<a class="article-anchor" href="#git-config-命令" aria-hidden="true"></a></h1><blockquote>
+<p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%88%9D%E6%AC%A1%E8%BF%90%E8%A1%8C-Git-%E5%89%8D%E7%9A%84%E9%85%8D%E7%BD%AE">官方帮助</a></p>
+</blockquote>
+<h2 id="原理" class="article-heading"><a href="#原理" class="headerlink" title="原理"></a>原理<a class="article-anchor" href="#原理" aria-hidden="true"></a></h2><blockquote>
+<p>命令只是为了更方便地修改配置文件，我们应该知其所以然。</p>
+</blockquote>
+<p>Git 自带一个 <code>git config</code> 的工具来帮助设置控制 Git 外观和行为的配置变量。 这些变量存储在三个不同的位置：</p>
+<ol>
+<li><code>/etc/gitconfig</code> 文件: 包含系统上每一个用户及他们仓库的通用配置。 如果使用带有 <code>--system</code> 选项的 <code>git config</code> 时，它会从此文件读写配置变量。</li>
+<li><code>~/.gitconfig</code> 或 <code>~/.config/git/config</code> 文件：只针对当前用户。 可以传递 <code>--global</code> 选项让 Git 读写此文件。</li>
+<li>当前使用仓库的 Git 目录中的 <code>config</code> 文件（就是 <code>.git/config</code>）：针对该仓库。</li>
+</ol>
+<p>每一个级别覆盖上一级别的配置，所以 <code>.git/config</code> 的配置变量会覆盖 <code>/etc/gitconfig</code> 中的配置变量。</p>
+<p>在 Windows 系统中，Git 会查找 <code>$HOME</code> 目录下（一般情况下是 <code>C:\Users\$USER</code>）的 <code>.gitconfig</code> 文件。 Git 同样也会寻找 <code>/etc/gitconfig</code> 文件，但只限于 MSys 的根目录下，即安装 Git 时所选的目标位置。</p>
+<h2 id="语法" class="article-heading"><a href="#语法" class="headerlink" title="语法"></a>语法<a class="article-anchor" href="#语法" aria-hidden="true"></a></h2><p><code>git config [参数]</code></p>
+<table>
+<thead>
+<tr>
+<th><code>config 作用域</code></th>
+<th><code>参数</code></th>
+<th><code>配置文件</code></th>
+<th><code>说明</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>一个仓库</code></td>
+<td><code>git config --local</code></td>
+<td><code>.g</code>it/config</td>
+<td><code>local</code>只对某个仓库有效</td>
+</tr>
+<tr>
+<td>当前用户</td>
+<td><code>git config --global</code></td>
+<td><code>~/.gitconfig</code> 或 <code>~/.config/git/config</code></td>
+<td><code>global</code>对当前用户所有仓库有效</td>
+</tr>
+<tr>
+<td>当前系统</td>
+<td><code>git config --system</code></td>
+<td><code>/etc/gitconfig</code></td>
+<td><code>system</code>对系统所有登陆用户有效</td>
+</tr>
+</tbody></table>
+<h2 id="帮助" class="article-heading"><a href="#帮助" class="headerlink" title="帮助"></a>帮助<a class="article-anchor" href="#帮助" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看Manual Page详细帮助信息</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">help</span> config</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看简易帮助信息</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git config</span></span><br></pre></td></tr></table></figure>
+<h2 id="练习" class="article-heading"><a href="#练习" class="headerlink" title="练习"></a>练习<a class="article-anchor" href="#练习" aria-hidden="true"></a></h2><blockquote>
+<p>我的环境为windows</p>
+</blockquote>
+<h3 id="1-找到一个仓库，查看该仓库中的所有文件，包含隐藏文件。" class="article-heading"><a href="#1-找到一个仓库，查看该仓库中的所有文件，包含隐藏文件。" class="headerlink" title="1 找到一个仓库，查看该仓库中的所有文件，包含隐藏文件。"></a>1 找到一个仓库，查看该仓库中的所有文件，包含隐藏文件。<a class="article-anchor" href="#1-找到一个仓库，查看该仓库中的所有文件，包含隐藏文件。" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 /</span><br><span class="line"><span class="meta">$</span><span class="bash"> ll /c/Users/rgwei/Desktop/GitHub/DBA_Git -a</span></span><br><span class="line">total 29</span><br><span class="line">drwxr-xr-x 1 rgwei 197121    0 12月 12 20:13 ./</span><br><span class="line">drwxr-xr-x 1 rgwei 197121    0 2月  11 14:27 ../</span><br><span class="line">drwxr-xr-x 1 rgwei 197121    0 12月 12 20:21 .git/</span><br><span class="line">drwxr-xr-x 1 rgwei 197121    0 12月 12 19:57 .idea/</span><br><span class="line">-rw-r--r-- 1 rgwei 197121 1400 12月 12 11:57 README.md</span><br><span class="line">-rw-r--r-- 1 rgwei 197121   13 12月 12 20:13 test.md</span><br><span class="line">drwxr-xr-x 1 rgwei 197121    0 2月  12 10:23 第一章：Git基础/</span><br></pre></td></tr></table></figure>
+<h3 id="2-使用git-config命令-和-配置文件-分别查看仓库的配置情况" class="article-heading"><a href="#2-使用git-config命令-和-配置文件-分别查看仓库的配置情况" class="headerlink" title="2 使用git config命令 和 配置文件 分别查看仓库的配置情况"></a>2 使用<code>git config</code>命令 和 <code>配置文件</code> 分别查看<strong>仓库</strong>的配置情况<a class="article-anchor" href="#2-使用git-config命令-和-配置文件-分别查看仓库的配置情况" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --<span class="built_in">local</span> --list</span></span><br><span class="line">core.repositoryformatversion=0</span><br><span class="line">core.filemode=false</span><br><span class="line">core.bare=false</span><br><span class="line">core.logallrefupdates=true</span><br><span class="line">core.symlinks=false</span><br><span class="line">core.ignorecase=true</span><br><span class="line">remote.origin.url=git@github.com:BoobooWei/DBA_Git.git</span><br><span class="line">remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*</span><br><span class="line">branch.master.remote=origin</span><br><span class="line">branch.master.merge=refs/heads/master</span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> cat .git/config</span></span><br><span class="line">[core]</span><br><span class="line">        repositoryformatversion = 0</span><br><span class="line">        filemode = false</span><br><span class="line">        bare = false</span><br><span class="line">        logallrefupdates = true</span><br><span class="line">        symlinks = false</span><br><span class="line">        ignorecase = true</span><br><span class="line">[remote &quot;origin&quot;]</span><br><span class="line">        url = git@github.com:BoobooWei/DBA_Git.git</span><br><span class="line">        fetch = +refs/heads/*:refs/remotes/origin/*</span><br><span class="line">[branch &quot;master&quot;]</span><br><span class="line">        remote = origin</span><br><span class="line">        merge = refs/heads/master</span><br><span class="line">heads/master</span><br></pre></td></tr></table></figure>
+<h3 id="3-分别查看当前仓库、当前用户、系统的git配置情况" class="article-heading"><a href="#3-分别查看当前仓库、当前用户、系统的git配置情况" class="headerlink" title="3 分别查看当前仓库、当前用户、系统的git配置情况"></a>3 分别查看当前仓库、当前用户、系统的git配置情况<a class="article-anchor" href="#3-分别查看当前仓库、当前用户、系统的git配置情况" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --<span class="built_in">local</span> --list</span></span><br><span class="line">core.repositoryformatversion=0</span><br><span class="line">core.filemode=false</span><br><span class="line">core.bare=false</span><br><span class="line">core.logallrefupdates=true</span><br><span class="line">core.symlinks=false</span><br><span class="line">core.ignorecase=true</span><br><span class="line">core.editor=vim</span><br><span class="line">core.excludesfile=~/.gitignore</span><br><span class="line">core.autocrlf=true</span><br><span class="line">remote.origin.url=git@github.com:BoobooWei/DBA_Git.git</span><br><span class="line">remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*</span><br><span class="line">branch.master.remote=origin</span><br><span class="line">branch.master.merge=refs/heads/master</span><br><span class="line">alias.amend=commit --amend</span><br><span class="line">alias.amendf=commit --amend --no-edit</span><br><span class="line">alias.br=branch</span><br><span class="line">alias.ct=commit</span><br><span class="line">alias.co=checkout</span><br><span class="line">alias.cp=cherry-pick</span><br><span class="line">alias.df=diff</span><br><span class="line">alias.ds=diff --staged</span><br><span class="line">alias.l=log</span><br><span class="line">alias.lg=log --graph --all --format=format:&#x27;%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)&#x27; --abbrev-commit --date=relative</span><br><span class="line">alias.lp=log --pretty=oneline</span><br><span class="line">alias.sa=stash apply</span><br><span class="line">alias.sh=show</span><br><span class="line">alias.ss=stash save</span><br><span class="line">alias.st=status</span><br><span class="line">color.ui=auto</span><br><span class="line">color.branch.current=yellow reverse</span><br><span class="line">color.branch.local=yellow</span><br><span class="line">color.branch.remote=green</span><br><span class="line">color.status.added=yellow</span><br><span class="line">color.status.changed=green</span><br><span class="line">color.status.untracked=cyan</span><br><span class="line">color.diff.meta=yellow</span><br><span class="line">color.diff.frag=magenta bold</span><br><span class="line">color.diff.commit=yellow bold</span><br><span class="line">color.diff.old=red bold</span><br><span class="line">color.diff.new=green bold</span><br><span class="line">color.diff.whitespace=red reverse</span><br><span class="line">color.diff-highlight.oldnormal=red bold</span><br><span class="line">color.diff-highlight.oldhighlight=red bold 52</span><br><span class="line">color.diff-highlight.newnormal=green bold</span><br><span class="line">color.diff-highlight.newhighlight=green bold 22</span><br><span class="line">credential.helper=cache --timeout=28800</span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global --list</span></span><br><span class="line">user.email=weiyaping@jiagouyun.com</span><br><span class="line">user.name=weiyaping</span><br><span class="line">gui.recentrepo=C:/Users/rgwei/Desktop/jigouyun_Git/DevOps-Database-Troubleshooting</span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --system --list</span></span><br><span class="line">http.sslcainfo=C:/Program Files/Git/mingw64/ssl/certs/ca-bundle.crt</span><br><span class="line">diff.astextplain.textconv=astextplain</span><br><span class="line">filter.lfs.clean=git-lfs clean -- %f</span><br><span class="line">filter.lfs.smudge=git-lfs smudge -- %f</span><br><span class="line">filter.lfs.required=true</span><br><span class="line">filter.lfs.process=git-lfs filter-process</span><br><span class="line">credential.helper=manager</span><br></pre></td></tr></table></figure>
+<h3 id="4-清空global配置" class="article-heading"><a href="#4-清空global配置" class="headerlink" title="4 清空global配置"></a>4 清空global配置<a class="article-anchor" href="#4-清空global配置" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 通过命令查看global配置</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global --list</span></span><br><span class="line">user.email=weiyaping@jiagouyun.com</span><br><span class="line">user.name=weiyaping</span><br><span class="line">gui.recentrepo=C:/Users/rgwei/Desktop/jigouyun_Git/DevOps-Database-Troubleshooting</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 通过配置文件查看global配置</span></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> cat ~/.gitconfig</span></span><br><span class="line">[user]</span><br><span class="line">        email = weiyaping@jiagouyun.com</span><br><span class="line">        name = weiyaping</span><br><span class="line">[gui]</span><br><span class="line">[gui]</span><br><span class="line">        recentrepo = C:/Users/rgwei/Desktop/jigouyun_Git/DevOps-Database-Troubleshooting</span><br><span class="line"><span class="meta">#</span><span class="bash"> 清空user.name</span></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global --<span class="built_in">unset</span> user.name</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 清空user.email</span></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global --<span class="built_in">unset</span> user.email</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 再次查看global配置</span></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global --list</span></span><br><span class="line">gui.recentrepo=C:/Users/rgwei/Desktop/jigouyun_Git/DevOps-Database-Troubleshooting</span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> cat ~/.gitconfig</span></span><br><span class="line">[user]</span><br><span class="line">[gui]</span><br><span class="line">[gui]</span><br><span class="line">        recentrepo = C:/Users/rgwei/Desktop/jigouyun_Git/DevOps-Database-Troubleshooting</span><br></pre></td></tr></table></figure>
+<h3 id="5-重新配置global" class="article-heading"><a href="#5-重新配置global" class="headerlink" title="5 重新配置global"></a>5 重新配置global<a class="article-anchor" href="#5-重新配置global" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global user.name booboowei</span></span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global user.email rgweiyaping@hotmail.com</span></span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/GitHub/DBA_Git (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global --list</span></span><br><span class="line">gui.recentrepo=C:/Users/rgwei/Desktop/jigouyun_Git/DevOps-Database-Troubleshooting</span><br><span class="line">user.name=booboowei</span><br><span class="line">user.email=rgweiyaping@hotmail.com</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="git-config-配置文件详解" class="article-heading"><a href="#git-config-配置文件详解" class="headerlink" title="git config 配置文件详解"></a>git config 配置文件详解<a class="article-anchor" href="#git-config-配置文件详解" aria-hidden="true"></a></h1><blockquote>
+<p>常见的配置，具体参见<a target="_blank" rel="noopener external nofollow noreferrer" href="https://git-scm.com/docs/git-config.html">官方帮助</a></p>
+</blockquote>
+<h2 id="core-核心" class="article-heading"><a href="#core-核心" class="headerlink" title="core 核心"></a>core 核心<a class="article-anchor" href="#core-核心" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[core]</span><br><span class="line">	editor = vim</span><br><span class="line">	excludesfile = ~/.gitignore</span><br><span class="line">	autocrlf = true</span><br></pre></td></tr></table></figure>
+<p>核心设置部分包含与git相关的各种不同设置。我们设置到的部分有：</p>
+<ul>
+<li><p><code>editor = vim</code> 设置要用于编辑提交消息的编辑器（如果未设置此值，git将首先尝试从环境变量VISUAL或EDITOR读取你当前的编辑器，如果获取不到，最终会使用vi）。</p>
+</li>
+<li><p><code>excludesfile = ~/.gitignore</code>允许指定全局性质的<code>.gitignore</code>文件。每个git存储库都可以设置特定的项目级别的<code>.gitignore</code>文件，该文件指定要从版本控制中排除的文件。但很多时候，每个git存储库中的一些文件都是相同的（例如，macOS上的.DS_Store，或者当你是Python开发人员时是*.pyc），为了避免重复设置，可以设置全局性质的<code>.gitignore</code>，该设置就会对该用户下所有的项目都生效。</p>
+</li>
+<li><p><code>autocrlf = input</code>。 由于Windows使用的是与Unix和MacOS不同的行结尾，如果来自不同操作系统的人员提交到同一个存储库，则可能会造成一些混乱。关于换行设置三种操作系统（windows，linux和macOS）的是不一样的：MacOS/Linux设置：autocrlf = input  Windows上的autocrlf = true）</p>
+</li>
+</ul>
+<h2 id="alias-别名" class="article-heading"><a href="#alias-别名" class="headerlink" title="alias 别名"></a>alias 别名<a class="article-anchor" href="#alias-别名" aria-hidden="true"></a></h2><ul>
+<li><p>git别名是我们日常进行git配置使用最多的一部分内容。</p>
+</li>
+<li><p>在git使用中，为了便捷减少输入，git提供了别名机制来将标准的git命令自定义为自己习惯使用的命令。</p>
+</li>
+<li><p>我们可以将git的命令设定别名为为1或2个字母的快捷方式。</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[alias]</span><br><span class="line">	amend = commit --amend</span><br><span class="line">	amendf = commit --amend --no-edit</span><br><span class="line">	br = branch</span><br><span class="line">	ct = commit</span><br><span class="line">	co = checkout</span><br><span class="line">	cp = cherry-pick</span><br><span class="line">	df = diff</span><br><span class="line">	ds = diff --staged</span><br><span class="line">	l = log</span><br><span class="line">	lg = log --graph --all --format=format:&#x27;%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)&#x27; --abbrev-commit --date=relative</span><br><span class="line">	lp = log --pretty=oneline</span><br><span class="line">	sa = stash apply</span><br><span class="line">	sh = show</span><br><span class="line">	ss = stash save</span><br><span class="line">	st = status</span><br></pre></td></tr></table></figure>
+<p>此处我们按字母顺序排列别名。注意到这个log命令lg，我们美化了log的显示，是的lg显示更加好看，简洁的图表，说明了仓库库随着时间的推移如何演变。</p>
+<h2 id="color-配色" class="article-heading"><a href="#color-配色" class="headerlink" title="color 配色"></a>color 配色<a class="article-anchor" href="#color-配色" aria-hidden="true"></a></h2><p>给你的工作终端设置一个好看的颜色也是每一个码农一直孜孜以求的目标，那就看本部分：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[color]</span><br><span class="line">	ui = auto # UI的默认设置。它在输出直接到终端时为输出着色，但在输出重定向到管道或文件时会省略颜色控制代码，以免导致问题。分支和状态部分正在以下列方式更改git branch和git status命令的输出颜色。</span><br><span class="line">[color &quot;branch&quot;]</span><br><span class="line">	current = yellow reverse</span><br><span class="line">	local = yellow</span><br><span class="line">	remote = green</span><br><span class="line">[color &quot;status&quot;]</span><br><span class="line">	added = yellow</span><br><span class="line">	changed = green</span><br><span class="line">	untracked = cyan</span><br><span class="line">[color &quot;diff&quot;] # 在执行diff命令时候系统展示的颜色</span><br><span class="line">	meta = yellow</span><br><span class="line">	frag = magenta bold</span><br><span class="line">	commit = yellow bold</span><br><span class="line">	old = red bold</span><br><span class="line">	new = green bold</span><br><span class="line">	whitespace = red reverse</span><br><span class="line">[color &quot;diff-highlight&quot;]</span><br><span class="line">	oldNormal = red bold</span><br><span class="line">	oldHighlight = red bold 52</span><br><span class="line">	newNormal = green bold</span><br><span class="line">	newHighlight = green bold 22</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="credential-凭据" class="article-heading"><a href="#credential-凭据" class="headerlink" title="credential 凭据"></a>credential 凭据<a class="article-anchor" href="#credential-凭据" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[credential]</span><br><span class="line">	helper = cache --timeout=28800</span><br></pre></td></tr></table></figure>
+<p>凭据部分用来指定希望你需要默认保存的账号和密码。</p>
+<p>默认情况下，git根本不会包存储凭据，所以每次连接时（http（s）性质的仓库）都会提示输入用户名和密用,这会很麻烦，你可以在此处设置保存户名密码，这样就可以不用每次都输入了（当然最好方式，是用ssh证书方法，即安全又方便）。</p>
+<p>凭据一般可以通过两种方式保存，保存在带有store选项的文件中（它将使用你的凭据创建纯文本文件），或使用cache选项将它们存储在内存中。当然根据你系统不同，还可以使用第三方的方式，比如MacOS下的osxkeychain，Windows下的Git Credential Manager）。</p>
+<p>此处我们使用的是，通过内存cache的方式，默认是15分钟，此处我们设置为8小时。</p>
+<h2 id="push-推送" class="article-heading"><a href="#push-推送" class="headerlink" title="push 推送"></a>push 推送<a class="article-anchor" href="#push-推送" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[push]</span><br><span class="line">default = current</span><br></pre></td></tr></table></figure>
+<p><code>git push</code>命令中包含分支的名称，如果你没有添加，可能导致意外的行为（例如我正在开发dev分支，但不小心，push到了master分支）。为了防止这种错误，我给push设置了default = current选项。现在，如果忘记包含分支的名称，git将尝试推送到具有相同名称的分支。如果它在远程库中找不到具有相同名称的分支，会新创建一个。</p>
+<h1 id="课后实践" class="article-heading"><a href="#课后实践" class="headerlink" title="课后实践"></a>课后实践<a class="article-anchor" href="#课后实践" aria-hidden="true"></a></h1><p>请动⼿⽐⼀⽐，<code>local</code> 和<code>global</code> 的优先级。</p>
+<ol>
+<li>在 Git 命令⾏⽅式下，⽤ init 创建⼀个 Git 仓库。</li>
+<li>cd 到 repo 中。</li>
+<li>配置 global 和 local 两个级别的 user.name 和 user.email。</li>
+<li>创建空的 commit<br>$ git commit –allow-empty -m ‘Initial’</li>
+<li>⽤ log 看 commit 信息，Author 的 name 和 email 是什么？<br>$ git log</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/20190212</span><br><span class="line"><span class="meta">$</span><span class="bash"> git init my_repo</span></span><br><span class="line">Initialized empty Git repository in C:/Users/rgwei/Desktop/20190212/my_repo/.git/</span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/20190212</span><br><span class="line"><span class="meta">$</span><span class="bash"> ll</span></span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x 1 rgwei 197121 0 2月  12 13:31 my_repo/</span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/20190212</span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> my_repo/</span></span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/20190212/my_repo (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --<span class="built_in">local</span> user.name weiyaping</span></span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/20190212/my_repo (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --<span class="built_in">local</span> user.email weiyaping@jiagouyun.com</span></span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/20190212/my_repo (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit --allow-empty -m <span class="string">&#x27;Initial&#x27;</span></span></span><br><span class="line">[master (root-commit) ca14e14] Initial</span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/20190212/my_repo (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">log</span></span></span><br><span class="line">commit ca14e1450e7b37275b732ea7184687b3be709ff3 (HEAD -&gt; master)</span><br><span class="line">Author: weiyaping &lt;weiyaping@jiagouyun.com&gt;</span><br><span class="line">Date:   Tue Feb 12 13:32:36 2019 +0800</span><br><span class="line"></span><br><span class="line">    Initial</span><br><span class="line"></span><br><span class="line">rgwei@DESKTOP-G9S0U3G MINGW64 ~/Desktop/20190212/my_repo (master)</span><br><span class="line"><span class="meta">$</span><span class="bash"> cat .git/config</span></span><br><span class="line">[core]</span><br><span class="line">        repositoryformatversion = 0</span><br><span class="line">        filemode = false</span><br><span class="line">        bare = false</span><br><span class="line">        logallrefupdates = true</span><br><span class="line">        symlinks = false</span><br><span class="line">        ignorecase = true</span><br><span class="line">[user]</span><br><span class="line">        name = weiyaping</span><br><span class="line">        email = weiyaping@jiagouyun.com</span><br></pre></td></tr></table></figure>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.238Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/devops/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/devops/git/Chapter01/03_%E4%BD%BF%E7%94%A8Git%E4%B9%8B%E5%89%8D%E9%9C%80%E8%A6%81%E5%81%9A%E7%9A%84%E6%9C%80%E5%B0%8F%E9%85%8D%E7%BD%AE.html';
+  var disqus_title = "使用Git之前需要做的最小配置";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEuser%E4%BF%A1%E6%81%AF"><span class="toc-text">配置user信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#git-config-%E5%91%BD%E4%BB%A4"><span class="toc-text">git config 命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-text">语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%AE%E5%8A%A9"><span class="toc-text">帮助</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A0"><span class="toc-text">练习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%89%BE%E5%88%B0%E4%B8%80%E4%B8%AA%E4%BB%93%E5%BA%93%EF%BC%8C%E6%9F%A5%E7%9C%8B%E8%AF%A5%E4%BB%93%E5%BA%93%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%EF%BC%8C%E5%8C%85%E5%90%AB%E9%9A%90%E8%97%8F%E6%96%87%E4%BB%B6%E3%80%82"><span class="toc-text">1 找到一个仓库，查看该仓库中的所有文件，包含隐藏文件。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8git-config%E5%91%BD%E4%BB%A4-%E5%92%8C-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-%E5%88%86%E5%88%AB%E6%9F%A5%E7%9C%8B%E4%BB%93%E5%BA%93%E7%9A%84%E9%85%8D%E7%BD%AE%E6%83%85%E5%86%B5"><span class="toc-text">2 使用git config命令 和 配置文件 分别查看仓库的配置情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%88%86%E5%88%AB%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E4%BB%93%E5%BA%93%E3%80%81%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7%E3%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84git%E9%85%8D%E7%BD%AE%E6%83%85%E5%86%B5"><span class="toc-text">3 分别查看当前仓库、当前用户、系统的git配置情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%B8%85%E7%A9%BAglobal%E9%85%8D%E7%BD%AE"><span class="toc-text">4 清空global配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E9%87%8D%E6%96%B0%E9%85%8D%E7%BD%AEglobal"><span class="toc-text">5 重新配置global</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#git-config-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3"><span class="toc-text">git config 配置文件详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#core-%E6%A0%B8%E5%BF%83"><span class="toc-text">core 核心</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#alias-%E5%88%AB%E5%90%8D"><span class="toc-text">alias 别名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#color-%E9%85%8D%E8%89%B2"><span class="toc-text">color 配色</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#credential-%E5%87%AD%E6%8D%AE"><span class="toc-text">credential 凭据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#push-%E6%8E%A8%E9%80%81"><span class="toc-text">push 推送</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%BE%E5%90%8E%E5%AE%9E%E8%B7%B5"><span class="toc-text">课后实践</span></a></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">开发</strong><a href="/devops/index.html" class="sidebar-link">概览</a><a href="/devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/devops/git/index.html" class="sidebar-link">概览</a><a href="/devops/git/Chapter01/index.html" class="sidebar-link">Git基础</a><a href="/devops/git/Chapter02/index.html" class="sidebar-link">Git常见场景</a><a href="/devops/git/Chapter03/index.html" class="sidebar-link">Github同步</a><a href="/devops/git/Chapter04/index.html" class="sidebar-link">多人协作</a><a href="/devops/git/Chapter05/index.html" class="sidebar-link">Git集成使用禁忌</a><a href="/devops/git/Chapter06/index.html" class="sidebar-link">初识GitHub</a><a href="/devops/git/Chapter07/index.html" class="sidebar-link">使用GitHub</a><a href="/devops/git/Chapter08/index.html" class="sidebar-link">GitLab实践</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">开发</strong><a href="/devops/index.html" class="mobile-nav-link">概览</a><a href="/devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/devops/git/index.html" class="mobile-nav-link">概览</a><a href="/devops/git/Chapter01/index.html" class="mobile-nav-link">Git基础</a><a href="/devops/git/Chapter02/index.html" class="mobile-nav-link">Git常见场景</a><a href="/devops/git/Chapter03/index.html" class="mobile-nav-link">Github同步</a><a href="/devops/git/Chapter04/index.html" class="mobile-nav-link">多人协作</a><a href="/devops/git/Chapter05/index.html" class="mobile-nav-link">Git集成使用禁忌</a><a href="/devops/git/Chapter06/index.html" class="mobile-nav-link">初识GitHub</a><a href="/devops/git/Chapter07/index.html" class="mobile-nav-link">使用GitHub</a><a href="/devops/git/Chapter08/index.html" class="mobile-nav-link">GitLab实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

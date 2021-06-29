@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>02-TICKscript语言-H-InfluxQL | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/5_tick/kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80/H_TICKscriptInfluxQL.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/linux/5_tick/kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80/H_TICKscriptInfluxQL">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="TICKscript InfluxQL    示例30 - 一个简单的InfluxQL查询语句    例31 - 带变量的简单InfluxQL查询语句    示例32 - 带有函数调用的InfluxQL查询语句         TICKscript InfluxQLInfluxQL主要在query节点中发生在TICKscript中，其链接方法采用InfluxQL查询字符串。这几乎总是一个SE">
+<meta property="og:type" content="website">
+<meta property="og:title" content="02-TICKscript语言-H-InfluxQL">
+<meta property="og:url" content="http://www.toberoot.com/linux/5_tick/kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80/H_TICKscriptInfluxQL">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="TICKscript InfluxQL    示例30 - 一个简单的InfluxQL查询语句    例31 - 带变量的简单InfluxQL查询语句    示例32 - 带有函数调用的InfluxQL查询语句         TICKscript InfluxQLInfluxQL主要在query节点中发生在TICKscript中，其链接方法采用InfluxQL查询字符串。这几乎总是一个SE">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-14T11:28:50.000Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.567Z">
+<meta property="article:author" content="魏亚萍">
+<meta property="article:tag" content="监控告警">
+<meta property="article:tag" content="TICK技术栈">
+<meta property="article:tag" content="TICKscript语言">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">02-TICKscript语言-H-InfluxQL</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/linux/5_tick/kapacitor/02_TICKscript语言/H_TICKscriptInfluxQL.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#tickscript-influxql">TICKscript InfluxQL</a>   <ul>
+<li><a href="#示例30-一个简单的influxql查询语句">示例30 - 一个简单的InfluxQL查询语句</a>   </li>
+<li><a href="#例31-带变量的简单influxql查询语句">例31 - 带变量的简单InfluxQL查询语句</a>   </li>
+<li><a href="#示例32-带有函数调用的influxql查询语句">示例32 - 带有函数调用的InfluxQL查询语句</a>   </li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h1 id="TICKscript-InfluxQL" class="article-heading"><a href="#TICKscript-InfluxQL" class="headerlink" title="TICKscript InfluxQL"></a>TICKscript InfluxQL<a class="article-anchor" href="#TICKscript-InfluxQL" aria-hidden="true"></a></h1><p>InfluxQL主要在<code>query</code>节点中发生在TICKscript中，其链接方法采用InfluxQL查询字符串。这几乎总是一个<code>SELECT</code>声明。</p>
+<p>InfluxQL的语法与SQL非常相似。当编写一个TICKscript查询字符串<code>query</code>节点，一般只有三个条款将被要求：<code>SELECT</code>，<code>FROM</code>和<code>WHERE</code>。一般模式如下：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> &#123;&lt;FIELD_KEY&gt; | &lt;TAG_KEY&gt; | &lt;<span class="keyword">FUNCTION</span>&gt;([&lt;FIELD_KEY&gt;|&lt;TAG_KEY])&#125; <span class="keyword">FROM</span> &lt;<span class="keyword">DATABASE</span>&gt;.&lt;RETENTION_POLICY&gt;.&lt;MEASUREMENT&gt; <span class="keyword">WHERE</span> &#123;&lt;CONDITIONAL_EXPRESSION&gt;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>SELECT</code>子句可以使用一个或多个字段或标记键或函数。这些可以与数学运算和字面值组合。它们的值或结果将添加到数据框中，并且可以使用<code>AS</code>子句别名。星号<code>*</code>外卡还可用于从测量中检索所有标签和字段。</p>
+</li>
+<li><p>使用该<code>AS</code>子句时，可以稍后使用双引号将别名标识符作为命名结果在TICKscript中访问。</p>
+</li>
+<li><p>该<code>FROM</code>子句需要数据库，保留策略和将从中选择值的度量名称。这些令牌中的每一个都用点分隔。需要使用双引号设置数据库和保留策略的值。</p>
+</li>
+<li><p>该<code>WHERE</code>子句需要条件表达式。这可能包括<code>AND</code>和<code>OR</code>布尔运算符以及数学运算。</p>
+</li>
+</ul>
+<h2 id="示例30-一个简单的InfluxQL查询语句" class="article-heading"><a href="#示例30-一个简单的InfluxQL查询语句" class="headerlink" title="示例30 - 一个简单的InfluxQL查询语句"></a>示例30 - 一个简单的InfluxQL查询语句<a class="article-anchor" href="#示例30-一个简单的InfluxQL查询语句" aria-hidden="true"></a></h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">batch</span><br><span class="line">    |query(<span class="string">&#x27;SELECT cpu, usage_idle FROM &quot;telegraf&quot;.&quot;autogen&quot;.cpu WHERE time &gt; now() - 10s&#x27;</span>)</span><br><span class="line">        .period(10s)</span><br><span class="line">        .every(10s)</span><br><span class="line">    |httpOut(<span class="string">&#x27;dump&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>示例30显示了一个简单的<code>SELECT</code>语句，该语句从过去十秒内记录的cpu测量中获取<code>cpu</code>标记和<code>usage_idle</code>字段。</p>
+<h2 id="例31-带变量的简单InfluxQL查询语句" class="article-heading"><a href="#例31-带变量的简单InfluxQL查询语句" class="headerlink" title="例31 - 带变量的简单InfluxQL查询语句"></a>例31 - 带变量的简单InfluxQL查询语句<a class="article-anchor" href="#例31-带变量的简单InfluxQL查询语句" aria-hidden="true"></a></h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> my_field = <span class="string">&#x27;usage_idle&#x27;</span></span><br><span class="line"><span class="keyword">var</span> my_tag = <span class="string">&#x27;cpu&#x27;</span></span><br><span class="line"></span><br><span class="line">batch</span><br><span class="line">    |query(<span class="string">&#x27;SELECT &#x27;</span> + my_tag + <span class="string">&#x27;, &#x27;</span> + my_field + <span class="string">&#x27; FROM &quot;telegraf&quot;.&quot;autogen&quot;.cpu WHERE time &gt; now() - 10s&#x27;</span>)</span><br><span class="line">        .period(10s)</span><br><span class="line">        .every(10s)</span><br><span class="line">    |httpOut(<span class="string">&#x27;dump&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>示例31重复了示例30中的相同查询，但显示了如何将变量添加到查询字符串。</p>
+<h2 id="示例32-带有函数调用的InfluxQL查询语句" class="article-heading"><a href="#示例32-带有函数调用的InfluxQL查询语句" class="headerlink" title="示例32 - 带有函数调用的InfluxQL查询语句"></a>示例32 - 带有函数调用的InfluxQL查询语句<a class="article-anchor" href="#示例32-带有函数调用的InfluxQL查询语句" aria-hidden="true"></a></h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">var</span> data = batch</span><br><span class="line">  |query(<span class="string">&#x27;&#x27;</span><span class="string">&#x27;SELECT 100 - mean(usage_idle) AS stat FROM &quot;telegraf&quot;.&quot;autogen&quot;.&quot;cpu&quot; WHERE cpu = &#x27;</span>cpu-total<span class="string">&#x27; &#x27;</span><span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    .period(period)</span><br><span class="line">    .every(every)</span><br><span class="line">    .groupBy(<span class="string">&#x27;host&#x27;</span>)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>示例32显示了一个<code>SELECT</code>语句，该语句包含<code>SELECT</code>子句中的函数和数学运算，以及<code>AS</code>alias子句。</p>
+<p>请注意，select语句将直接传递给InfluxDB API。在InfluxQL查询字符串字段和标记名称中不需要使用双引号访问，就像TICKscript中的其他情况一样。但是，数据库名称和保留策略确实包含在双引号中。字符串文字，例如<code>&#39;cpu-total&#39;</code>在带有单引号的查询字符串中表示。</p>
+<p>有关使用查询语言的完整介绍，请参阅<a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.influxdata.com/influxdb/v1.3/query_language/">InfluxQL</a>文档。</p>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.567Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/linux/5_tick/kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80/H_TICKscriptInfluxQL.html';
+  var disqus_title = "02-TICKscript语言-H-InfluxQL";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#TICKscript-InfluxQL"><span class="toc-text">TICKscript InfluxQL</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B30-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84InfluxQL%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5"><span class="toc-text">示例30 - 一个简单的InfluxQL查询语句</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B31-%E5%B8%A6%E5%8F%98%E9%87%8F%E7%9A%84%E7%AE%80%E5%8D%95InfluxQL%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5"><span class="toc-text">例31 - 带变量的简单InfluxQL查询语句</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B32-%E5%B8%A6%E6%9C%89%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E7%9A%84InfluxQL%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5"><span class="toc-text">示例32 - 带有函数调用的InfluxQL查询语句</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

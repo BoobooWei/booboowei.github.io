@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>安装 Linux 版 Docker-ce | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/4_docker/a02_linux_install_docker.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/linux/4_docker/a02_linux_install_docker">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="CentOS 安装docker-ce  卸载旧版本Docker 的早期版本称为 docker 或 docker-engine。如果安装了这些版本，请卸载它们及关联的依赖资源。 $ sudo yum remove docker docker-common docker-selinux docker-engine 如果 yum 报告未安装任何这些软件包，这表示情况正常。 将保留 &#x2F;var&#x2F;lib&#x2F;d">
+<meta property="og:type" content="website">
+<meta property="og:title" content="安装 Linux 版 Docker-ce">
+<meta property="og:url" content="http://www.toberoot.com/linux/4_docker/a02_linux_install_docker">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="CentOS 安装docker-ce  卸载旧版本Docker 的早期版本称为 docker 或 docker-engine。如果安装了这些版本，请卸载它们及关联的依赖资源。 $ sudo yum remove docker docker-common docker-selinux docker-engine 如果 yum 报告未安装任何这些软件包，这表示情况正常。 将保留 &#x2F;var&#x2F;lib&#x2F;d">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:50.461Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.461Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">安装 Linux 版 Docker-ce</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/linux/4_docker/a02_linux_install_docker.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <blockquote>
+<p>CentOS 安装docker-ce</p>
+</blockquote>
+<h2 id="卸载旧版本" class="article-heading"><a href="#卸载旧版本" class="headerlink" title="卸载旧版本"></a>卸载旧版本<a class="article-anchor" href="#卸载旧版本" aria-hidden="true"></a></h2><p>Docker 的早期版本称为 <code>docker</code> 或 <code>docker-engine</code>。如果安装了这些版本，请卸载它们及关联的依赖资源。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo yum remove docker docker-common docker-selinux docker-engine</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>如果 <code>yum</code> 报告未安装任何这些软件包，这表示情况正常。</p>
+<p>将保留 <code>/var/lib/docker/</code> 的内容，包括镜像、容器、存储卷和网络。Docker CE 软件包现在称为 <code>docker-ce</code>。</p>
+<h2 id="安装-Docker-CE" class="article-heading"><a href="#安装-Docker-CE" class="headerlink" title="安装 Docker CE"></a>安装 Docker CE<a class="article-anchor" href="#安装-Docker-CE" aria-hidden="true"></a></h2><p>您可以通过不同方式安装 Docker CE，具体取决于您的需求：</p>
+<ul>
+<li>大多数用户<a target="_blank" rel="noopener external nofollow noreferrer" href="http://docs.docker-cn.com/engine/installation/linux/docker-ce/centos/#install-using-the-repository">设置 Docker 的镜像仓库</a>并从中进行安装，从而可以轻松完成安装和升级任务。这是推荐方法。</li>
+<li>一些用户下载 RPM 软件包并手动进行安装，然后完全由手动管理升级。在某些情况（例如，在不能访问互联网的隔离系统中安装 Docker）下，这很有用。</li>
+</ul>
+<h3 id="使用镜像仓库进行安装" class="article-heading"><a href="#使用镜像仓库进行安装" class="headerlink" title="使用镜像仓库进行安装"></a>使用镜像仓库进行安装<a class="article-anchor" href="#使用镜像仓库进行安装" aria-hidden="true"></a></h3><p>首次在新的主机上安装 Docker CE 之前，您需要设置 Docker 镜像仓库。然后，您可以从此镜像仓库安装和更新 Docker。</p>
+<h4 id="设置镜像仓库" class="article-heading"><a href="#设置镜像仓库" class="headerlink" title="设置镜像仓库"></a>设置镜像仓库<a class="article-anchor" href="#设置镜像仓库" aria-hidden="true"></a></h4><ol>
+<li><p>安装所需的软件包。<code>yum-utils</code> 提供了 <code>yum-config-manager</code> 实用程序，并且 <code>devicemapper</code> 存储驱动需要<code>device-mapper-persistent-data</code> 和 <code>lvm2</code>。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br></pre></td></tr></table></figure></li>
+<li><p>使用下列命令设置 stable 镜像仓库。您始终需要使用 stable 镜像仓库，即使您还需要通过 edge 或 testing 镜像仓库安装构建也是如此。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo yum-config-manager --add-repo https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;centos&#x2F;docker-ce.repo</span><br></pre></td></tr></table></figure></li>
+<li><p>可选：启用 edge 和 testing 镜像仓库。这些镜像仓库包含在上述 <code>docker.repo</code> 文件中，但默认情况下处于禁用状态。您可以将它们与 stable 镜像仓库一起启用。</p>
+<blockquote>
+<p>注：从 Docker 17.06 开始，还会将 stable 版本推送到 edge 和 testing 镜像仓库。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener external nofollow noreferrer" href="http://docs.docker-cn.com/engine/installation/">了解 stable 和 edge 构建</a>。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo yum-config-manager --<span class="built_in">enable</span> docker-ce-edge  </span><br><span class="line">$ sudo yum-config-manager --<span class="built_in">enable</span> docker-ce-testing</span><br></pre></td></tr></table></figure>
+<p>您可以通过运行带有 <code>--disable</code> 标志的 <code>yum-config-manager</code> 命令来禁用 <code>edge</code> 或 <code>testing</code> 镜像仓库。如需将其重新启用，请使用 <code>--enable</code> 标志。<br>以下命令用于禁用 edge 镜像仓库。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo yum-config-manager --<span class="built_in">disable</span> docker-ce-edge</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h4 id="安装-DOCKER-CE" class="article-heading"><a href="#安装-DOCKER-CE" class="headerlink" title="安装 DOCKER CE"></a>安装 DOCKER CE<a class="article-anchor" href="#安装-DOCKER-CE" aria-hidden="true"></a></h4><ol>
+<li><p>更新 <code>yum</code> 软件包索引。</p>
+<p>如果这是自添加 Docker 镜像仓库以来您首次刷新软件包索引，系统将提示您接受 GPG 密钥，并且将显示此密钥的指纹。验证指纹是否正确，并且在正确的情况下接受此密钥。指纹应匹配 <code>060A 61C5 1B55 8A7F 742B 77AA C52F EB6B 621E 9F35</code>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo yum makecache fast</span><br></pre></td></tr></table></figure></li>
+<li><p>安装最新版本的 Docker CE，或者转至下一步以安装特定版本。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo yum install -y docker-ce</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>警告：如果您启用了多个 Docker 镜像仓库，进行安装 或者更新而不在 <code>yum install</code> 或 <code>yum update</code> 命令中指定版本将始终安装可用的最高版本， 这可能无法满足您的稳定性需求。</p>
+</blockquote>
+</li>
+</ol>
+<ol start="3">
+<li><p>在生产系统中，您应该安装特定版本的 Docker CE，而不是始终使用最新版本。列出可用版本。此示例使用 <code>sort -r</code> 命令按版本号（从最高到最低）对结果进行排序，并且已被截断。</p>
+<blockquote>
+<p>注：此 <code>yum list</code> 命令仅显示二进制软件包。如果还需要显示 源软件包，请从软件包名称中省略 <code>.x86_64</code>。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yum list docker-ce.x86_64  --showduplicates | sort -r  </span><br><span class="line">docker-ce.x86_64  17.06.0.el7                               docker-ce-stable   </span><br></pre></td></tr></table></figure>
+<p>此列表的内容取决于启用了哪些镜像仓库，并且将特定于您的 CentOS 版本（在本示例中，由版本中的 .el7 后缀表示）。选择一个特定版本进行安装。第二列为版本字符串。第三列为镜像仓库名称，它表示软件包来自哪个镜像仓库并按扩展其稳定性级别列出。如需安装特定版本，请将版本字符串附加到软件包名称，并使用连字符 (-) 分隔它们：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo yum install docker-ce-&lt;VERSION&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>启动 Docker。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo systemctl start docker</span><br></pre></td></tr></table></figure></li>
+<li><p>验证是否正确安装了 <code>docker</code>，方法是运行 <code>hello-world</code> 镜像。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo docker run hello-world</span><br></pre></td></tr></table></figure>
+<p>此命令将下载一个测试镜像并在容器中运行它。容器运行时，它将输出一条参考消息并退出。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@booboo ~]<span class="comment"># docker ps --all</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES</span><br><span class="line">9b2faa86cbcd        hello-world         <span class="string">&quot;/hello&quot;</span>            13 minutes ago      Exited (0) 13 minutes ago                       trusting_chatelet</span><br><span class="line">[root@booboo ~]<span class="comment"># docker stop 9b2faa86cbcd</span></span><br><span class="line">9b2faa86cbcd</span><br><span class="line">[root@booboo ~]<span class="comment"># docker ps --all</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES</span><br><span class="line">9b2faa86cbcd        hello-world         <span class="string">&quot;/hello&quot;</span>            14 minutes ago      Exited (0) 14 minutes ago                       trusting_chatelet</span><br><span class="line">[root@booboo ~]<span class="comment"># docker rm  9b2faa86cbcd</span></span><br><span class="line">9b2faa86cbcd</span><br><span class="line">[root@booboo ~]<span class="comment"># docker ps --all</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>Docker CE 已安装并且正在运行。您需要使用 <code>sudo</code> 运行 Docker 命令。继续执行 <a target="_blank" rel="noopener external nofollow noreferrer" href="http://docs.docker-cn.com/engine/installation/linux/docker-ce/linux-postinstall/">Linux 安装后步骤</a>以允许非特权用户运行 Docker 命令，以及了解其他可选配置步骤。</p>
+<h4 id="升级-DOCKER-CE" class="article-heading"><a href="#升级-DOCKER-CE" class="headerlink" title="升级 DOCKER CE"></a>升级 DOCKER CE<a class="article-anchor" href="#升级-DOCKER-CE" aria-hidden="true"></a></h4><p>如需升级 Docker CE，首先运行 <code>sudo yum makecache fast</code>，然后按照<a target="_blank" rel="noopener external nofollow noreferrer" href="http://docs.docker-cn.com/engine/installation/linux/docker-ce/centos/#install-docker">安装说明</a>执行操作，并选择您要安装的新版本。</p>
+<h3 id="从软件包进行安装" class="article-heading"><a href="#从软件包进行安装" class="headerlink" title="从软件包进行安装"></a>从软件包进行安装<a class="article-anchor" href="#从软件包进行安装" aria-hidden="true"></a></h3><h4 id="安装-DOCKER-CE-1" class="article-heading"><a href="#安装-DOCKER-CE-1" class="headerlink" title="安装 DOCKER CE"></a>安装 DOCKER CE<a class="article-anchor" href="#安装-DOCKER-CE-1" aria-hidden="true"></a></h4><p>如果您无法使用 Docker 镜像仓库安装 Docker，可以下载适用于您的版本的 <code>.rpm</code> 文件，并手动进行安装。每次要升级 Docker 时，您都需要下载一个新文件。</p>
+<ol>
+<li><p>转至 <a target="_blank" rel="noopener external nofollow noreferrer" href="https://download.docker.com/linux/centos/7/x86_64/stable/Packages/">https://download.docker.com/linux/centos/7/x86_64/stable/Packages/</a> 并下载适用于您要安装的 Docker 版本的 <code>.rpm</code> 文件。</p>
+<blockquote>
+<p>注：如需安装 edge 软件包，请将 URL 中的词 <code>stable</code> 更改为 <code>edge</code>。 <a target="_blank" rel="noopener external nofollow noreferrer" href="http://docs.docker-cn.com/engine/installation/">了解 stable 和 edge 渠道</a>。</p>
+</blockquote>
+</li>
+<li><p>安装 Docker CE，并将下面的路径更改为您下载 Docker 软件包的路径。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo yum install &#x2F;path&#x2F;to&#x2F;package.rpm</span><br></pre></td></tr></table></figure></li>
+<li><p>启动 Docker。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo systemctl start docker</span><br></pre></td></tr></table></figure></li>
+<li><p>验证是否正确安装了 <code>docker</code>，方法是运行 <code>hello-world</code> 镜像。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo docker run hello-world</span><br></pre></td></tr></table></figure>
+<p>此命令将下载一个测试镜像并在容器中运行它。容器运行时，它将输出一条参考消息并退出。</p>
+</li>
+</ol>
+<p>Docker CE 已安装并且正在运行。您需要使用 <code>sudo</code> 运行 Docker 命令。继续执行 <a target="_blank" rel="noopener external nofollow noreferrer" href="http://docs.docker-cn.com/engine/installation/linux/docker-ce/linux-postinstall/">Linux 的安装后步骤</a>以允许非特权用户运行 Docker 命令，以及了解其他可选配置步骤。</p>
+<h4 id="升级-DOCKER-CE-1" class="article-heading"><a href="#升级-DOCKER-CE-1" class="headerlink" title="升级 DOCKER CE"></a>升级 DOCKER CE<a class="article-anchor" href="#升级-DOCKER-CE-1" aria-hidden="true"></a></h4><p>如需升级 Docker CE，请下载较新的软件包文件并重复<a target="_blank" rel="noopener external nofollow noreferrer" href="http://docs.docker-cn.com/engine/installation/linux/docker-ce/centos/#install-from-a-package">安装过程</a>，使用 <code>yum -y upgrade</code> 而不是 <code>yum -y install</code> 并指向新文件。</p>
+<h2 id="卸载-Docker-CE" class="article-heading"><a href="#卸载-Docker-CE" class="headerlink" title="卸载 Docker CE"></a>卸载 Docker CE<a class="article-anchor" href="#卸载-Docker-CE" aria-hidden="true"></a></h2><ol>
+<li><p>卸载 Docker 软件包：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo yum remove docker-ce</span><br></pre></td></tr></table></figure></li>
+<li><p>主机上的镜像、容器、存储卷、或定制配置文件不会自动删除。如需删除所有镜像、容器和存储卷，请运行下列命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo rm -rf &#x2F;var&#x2F;lib&#x2F;docker</span><br></pre></td></tr></table></figure>
+<p>您必须手动删除任何已编辑的配置文件。</p>
+</li>
+</ol>
+<h2 id="安装过程问题总结" class="article-heading"><a href="#安装过程问题总结" class="headerlink" title="安装过程问题总结"></a>安装过程问题总结<a class="article-anchor" href="#安装过程问题总结" aria-hidden="true"></a></h2><h3 id="YUM安装依赖报错" class="article-heading"><a href="#YUM安装依赖报错" class="headerlink" title="YUM安装依赖报错"></a>YUM安装依赖报错<a class="article-anchor" href="#YUM安装依赖报错" aria-hidden="true"></a></h3><h4 id="报错明细" class="article-heading"><a href="#报错明细" class="headerlink" title="报错明细"></a>报错明细<a class="article-anchor" href="#报错明细" aria-hidden="true"></a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Error: Package: docker-ce-18.05.0.ce-3.el7.centos.x86_64 (docker-ce-edge)</span><br><span class="line">           Requires: container-selinux &gt;&#x3D; 2.9</span><br><span class="line">Error: Package: docker-ce-18.05.0.ce-3.el7.centos.x86_64 (docker-ce-edge)</span><br><span class="line">           Requires: pigz</span><br><span class="line"> You could try using --skip-broken to work around the problem</span><br><span class="line">** Found 6 pre-existing rpmdb problem(s), &#39;yum check&#39; output follows:</span><br><span class="line">perl-DBD-MySQL-4.023-5.el7.x86_64 has missing requires of libmysqlclient.so.18()(64bit)</span><br><span class="line">perl-DBD-MySQL-4.023-5.el7.x86_64 has missing requires of libmysqlclient.so.18(libmysqlclient_18)(64bit)</span><br><span class="line">php-mysql-5.4.16-36.el7_1.x86_64 has missing requires of libmysqlclient.so.18()(64bit)</span><br><span class="line">php-mysql-5.4.16-36.el7_1.x86_64 has missing requires of libmysqlclient.so.18(libmysqlclient_18)(64bit)</span><br><span class="line">2:postfix-2.10.1-6.el7.x86_64 has missing requires of libmysqlclient.so.18()(64bit)</span><br><span class="line">2:postfix-2.10.1-6.el7.x86_64 has missing requires of libmysqlclient.so.18(libmysqlclient_18)(64bit)</span><br></pre></td></tr></table></figure>
+<h4 id="解决" class="article-heading"><a href="#解决" class="headerlink" title="解决"></a>解决<a class="article-anchor" href="#解决" aria-hidden="true"></a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 查看当前可以安装的版本</span><br><span class="line">Loaded plugins: fastestmirror, langpacks, product-id, search-disabled-repos,</span><br><span class="line">docker-ce.x86_64            18.05.0.ce-3.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            18.04.0.ce-3.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            18.03.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.03.1.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            18.03.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.03.0.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            18.02.0.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            18.01.0.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.12.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.12.1.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.12.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.12.0.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.11.0.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.10.0.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.09.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.09.1.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.09.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.09.0.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.07.0.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.06.2.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.06.2.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.06.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.06.1.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.06.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.06.0.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.05.0.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.04.0.ce-1.el7.centos             docker-ce-edge  </span><br><span class="line">docker-ce.x86_64            17.03.2.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.03.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.03.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">Available Packages</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;repo&#x2F;</span><br><span class="line"># 下载epel包 pigz</span><br><span class="line">[root@mastera yum.repos.d]# wget http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;repo&#x2F;epel-7.repo</span><br><span class="line"></span><br><span class="line"># http:&#x2F;&#x2F;mirror.centos.org&#x2F;centos&#x2F;7&#x2F;extras&#x2F;x86_64&#x2F;</span><br><span class="line"># 下载extras包，container-selinux</span><br><span class="line">[root@mastera yum.repos.d]# cat extras.repo</span><br><span class="line">[extras]</span><br><span class="line">name&#x3D;extras</span><br><span class="line">baseurl&#x3D;http:&#x2F;&#x2F;mirror.centos.org&#x2F;centos&#x2F;7&#x2F;extras&#x2F;x86_64&#x2F;</span><br><span class="line">gpgcheck&#x3D;0</span><br><span class="line">enabled&#x3D;1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">yum install -y mariadb* pigz container-selinux</span><br></pre></td></tr></table></figure>
+<p>或者手动配置yum源：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@foundation0 ~]<span class="comment"># cat /etc/yum.repos.d/centos.repo</span></span><br><span class="line">[centos7]</span><br><span class="line">name=<span class="string">&#x27;centos&#x27;</span></span><br><span class="line">baseurl=<span class="string">&#x27;http://mirror.centos.org/centos/7/os/x86_64/&#x27;</span></span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line"></span><br><span class="line">[centos7-extra]</span><br><span class="line">name=<span class="string">&#x27;centos extra&#x27;</span></span><br><span class="line">baseurl=<span class="string">&#x27;http://mirror.centos.org/centos/7/extras/x86_64/&#x27;</span></span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.461Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/linux/4_docker/a02_linux_install_docker.html';
+  var disqus_title = "安装 Linux 版 Docker-ce";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B8%E8%BD%BD%E6%97%A7%E7%89%88%E6%9C%AC"><span class="toc-text">卸载旧版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Docker-CE"><span class="toc-text">安装 Docker CE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E8%BF%9B%E8%A1%8C%E5%AE%89%E8%A3%85"><span class="toc-text">使用镜像仓库进行安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93"><span class="toc-text">设置镜像仓库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-DOCKER-CE"><span class="toc-text">安装 DOCKER CE</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%87%E7%BA%A7-DOCKER-CE"><span class="toc-text">升级 DOCKER CE</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E8%BD%AF%E4%BB%B6%E5%8C%85%E8%BF%9B%E8%A1%8C%E5%AE%89%E8%A3%85"><span class="toc-text">从软件包进行安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-DOCKER-CE-1"><span class="toc-text">安装 DOCKER CE</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%87%E7%BA%A7-DOCKER-CE-1"><span class="toc-text">升级 DOCKER CE</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B8%E8%BD%BD-Docker-CE"><span class="toc-text">卸载 Docker CE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93"><span class="toc-text">安装过程问题总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#YUM%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E6%8A%A5%E9%94%99"><span class="toc-text">YUM安装依赖报错</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%A5%E9%94%99%E6%98%8E%E7%BB%86"><span class="toc-text">报错明细</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3"><span class="toc-text">解决</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

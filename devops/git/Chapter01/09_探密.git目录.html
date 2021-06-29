@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>探密.git目录 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/devops/git/Chapter01/09_%E6%8E%A2%E5%AF%86.git%E7%9B%AE%E5%BD%95.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/devops/git/Chapter01/09_%E6%8E%A2%E5%AF%86.git%E7%9B%AE%E5%BD%95">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="HEAD：指向当前的工作路径 config：存放本地仓库（local）相关的配置信息。 refs&#x2F;heads:存放分支 refs&#x2F;tags:存放tag，又叫里程牌 （当这次commit是具有里程碑意义的 比如项目1.0的时候 就可以打tag） objects：存放对象 .git&#x2F;objects&#x2F; 文件夹中的子文件夹都是以哈希值的前两位字符命名 每个object由40位字符组成，前两位字符用来当文">
+<meta property="og:type" content="website">
+<meta property="og:title" content="探密.git目录">
+<meta property="og:url" content="http://www.toberoot.com/devops/git/Chapter01/09_%E6%8E%A2%E5%AF%86.git%E7%9B%AE%E5%BD%95">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="HEAD：指向当前的工作路径 config：存放本地仓库（local）相关的配置信息。 refs&#x2F;heads:存放分支 refs&#x2F;tags:存放tag，又叫里程牌 （当这次commit是具有里程碑意义的 比如项目1.0的时候 就可以打tag） objects：存放对象 .git&#x2F;objects&#x2F; 文件夹中的子文件夹都是以哈希值的前两位字符命名 每个object由40位字符组成，前两位字符用来当文">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:50.239Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.239Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">探密.git目录</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/devops/git/Chapter01/09_探密.git目录.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <ul>
+<li>HEAD：指向当前的工作路径</li>
+<li>config：存放本地仓库（local）相关的配置信息。</li>
+<li>refs/heads:存放分支</li>
+<li>refs/tags:存放tag，又叫里程牌 （当这次commit是具有里程碑意义的 比如项目1.0的时候 就可以打tag）</li>
+<li>objects：存放对象 .git/objects/ 文件夹中的子文件夹都是以哈希值的前两位字符命名 每个object由40位字符组成，前两位字符用来当文件夹，后38位做文件。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ tree .git</span><br><span class="line">.git</span><br><span class="line">├── COMMIT_EDITMSG //</span><br><span class="line">├── HEAD</span><br><span class="line">├── branches</span><br><span class="line">├── config</span><br><span class="line">├── description</span><br><span class="line">├── hooks</span><br><span class="line">│   ├── applypatch-msg.sample</span><br><span class="line">│   ├── commit-msg.sample</span><br><span class="line">│   ├── fsmonitor-watchman.sample</span><br><span class="line">│   ├── post-update.sample</span><br><span class="line">│   ├── pre-applypatch.sample</span><br><span class="line">│   ├── pre-commit.sample</span><br><span class="line">│   ├── pre-push.sample</span><br><span class="line">│   ├── pre-rebase.sample</span><br><span class="line">│   ├── pre-receive.sample</span><br><span class="line">│   ├── prepare-commit-msg.sample</span><br><span class="line">│   └── update.sample</span><br><span class="line">├── index</span><br><span class="line">├── info</span><br><span class="line">│   └── exclude</span><br><span class="line">├── logs</span><br><span class="line">│   ├── HEAD</span><br><span class="line">│   └── refs</span><br><span class="line">│       └── heads</span><br><span class="line">│           ├── master</span><br><span class="line">│           └── temp</span><br><span class="line">├── objects</span><br><span class="line">│   ├── 36</span><br><span class="line">│   │   └── 9fc63d77b8d13dd29a21037256cb2690c15a82</span><br><span class="line">│   ├── 6f</span><br><span class="line">│   │   └── 47cef9a80991888e82e73aa5b78f7a784f345e</span><br><span class="line">│   ├── 8c</span><br><span class="line">│   │   └── 0b88e3e718781463cdc91c2b1367cdfa4fd293</span><br><span class="line">│   ├── 91</span><br><span class="line">│   │   └── b776cdad383885027c6655bbe4f85c00e17469</span><br><span class="line">│   ├── b3</span><br><span class="line">│   │   └── 02937d18a748f0e071c2c42712d2b18b0eeb1a</span><br><span class="line">│   ├── c1</span><br><span class="line">│   │   └── 9ae052e1588c855701d7aad3f35d2f361d4c1a</span><br><span class="line">│   ├── c4</span><br><span class="line">│   │   └── 744d9f2f4643646721d275f31ba421907d7fb4</span><br><span class="line">│   ├── ce</span><br><span class="line">│   │   └── 013625030ba8dba906f756967f9e9ca394464a</span><br><span class="line">│   ├── e6</span><br><span class="line">│   │   └── 9de29bb2d1d6434b8b29ae775ad8c2e48c5391</span><br><span class="line">│   ├── f2</span><br><span class="line">│   │   └── 23b4d31b661bdbe5947c862ba202991202fbd8</span><br><span class="line">│   ├── f5</span><br><span class="line">│   │   └── 634fdcfdc1b48a30b160b85d8f2aed5f3a60b6</span><br><span class="line">│   ├── info</span><br><span class="line">│   └── pack</span><br><span class="line">└── refs</span><br><span class="line">    ├── heads</span><br><span class="line">    │   ├── master</span><br><span class="line">    │   └── temp</span><br><span class="line">    └── tags</span><br><span class="line"></span><br><span class="line">23 directories, 33 files</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="实践和理解" class="article-heading"><a href="#实践和理解" class="headerlink" title="实践和理解"></a>实践和理解<a class="article-anchor" href="#实践和理解" aria-hidden="true"></a></h1><h2 id="文件-COMMIT-EDITMSG" class="article-heading"><a href="#文件-COMMIT-EDITMSG" class="headerlink" title="文件 COMMIT_EDITMSG"></a>文件 COMMIT_EDITMSG<a class="article-anchor" href="#文件-COMMIT-EDITMSG" aria-hidden="true"></a></h2><p><code>.git/COMMIT_EDITMSG</code>文件中记录了上一次提交时的注释信息；与分支无关。</p>
+<ol>
+<li><p>查看文件的类型为<code>ASCII text</code>；</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ ls -l .git/COMMIT_EDITMSG</span><br><span class="line">-rw-r--r--  1 booboo  staff  10  4  6 23:50 .git/COMMIT_EDITMSG</span><br><span class="line"></span><br><span class="line">MacBook-Pro-4:git_le booboo$ file .git/COMMIT_EDITMSG</span><br><span class="line">.git/COMMIT_EDITMSG: ASCII text</span><br></pre></td></tr></table></figure></li>
+<li><p>第一次查看文件中记录的明细内容为<code>modify 20190406</code>；</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ cat .git/COMMIT_EDITMSG</span><br><span class="line">modify 20190406</span><br></pre></td></tr></table></figure></li>
+<li><p>将分支从<code>master</code>切换至<code>temp</code>后，查看文件内容没有变化；</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ git checkout temp</span><br><span class="line">Switched to branch &#x27;temp&#x27;</span><br><span class="line">MacBook-Pro-4:git_le booboo$ cat .git/COMMIT_EDITMSG</span><br><span class="line">modify 20190406</span><br></pre></td></tr></table></figure></li>
+<li><p>修改<code>temp</code>分支中的文件<code>temp.txt</code>；</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ echo 20190406temp_test &gt; temp.txt</span><br></pre></td></tr></table></figure></li>
+<li><p>提交变更至<code>temp</code>分支；</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ git add -A</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git commit -m &#x27;temp_test&#x27;</span><br><span class="line">[temp 49c201f] temp_test</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br></pre></td></tr></table></figure></li>
+<li><p>查看文件内容，变更为最近一次提交的内容<code>temp_test</code>；</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ cat .git/COMMIT_EDITMSG</span><br><span class="line">temp_test</span><br></pre></td></tr></table></figure></li>
+<li><p>切换分支至<code>master</code>后，第四次查看文件内容，内容仍然为最近一次在<code>temp</code>分支提交的内容<code>temp_test</code>。</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ git checkout master</span><br><span class="line">Switched to branch &#x27;master&#x27;</span><br><span class="line">MacBook-Pro-4:git_le booboo$ cat .git/COMMIT_EDITMSG</span><br><span class="line">temp_test</span><br></pre></td></tr></table></figure>
+<h2 id="文件-HEAD" class="article-heading"><a href="#文件-HEAD" class="headerlink" title="文件 HEAD"></a>文件 HEAD<a class="article-anchor" href="#文件-HEAD" aria-hidden="true"></a></h2></li>
+</ol>
+<p><code>.git/HEAD</code>文件指向当前的工作路径；记录了当前的分支名。</p>
+<ol>
+<li><p>通过<code>git branch</code>命令查看当前分支；</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ git branch</span><br><span class="line">* master</span><br><span class="line">  temp</span><br></pre></td></tr></table></figure>
+<p>当前的分支为<code>master</code>，本地还有一个<code>temp</code>分支；</p>
+</li>
+<li><p>通过<code>.git/HEAD</code>文件查看当前分支；</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ cat .git/HEAD</span><br><span class="line">ref: refs/heads/master</span><br></pre></td></tr></table></figure>
+<p>通过文件查看到当前分支为<code>master</code>；</p>
+<p>该文件中记录了当前<code>master</code>分支的指纹信息记录的文件路径为<code>.git/refs/heads/master</code>；</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ ls -l .git/refs/heads/master</span><br><span class="line">-rw-r--r--  1 booboo  staff  41  4  6 23:01 .git/refs/heads/master</span><br><span class="line">MacBook-Pro-4:git_le booboo$ cat .git/refs/heads/master</span><br><span class="line">f5634fdcfdc1b48a30b160b85d8f2aed5f3a60b6</span><br></pre></td></tr></table></figure>
+<p>当前<code>master</code>分支最新的一次提交的哈希值为<code>f5634fdcfdc1b48a30b160b85d8f2aed5f3a60b6</code>；</p>
+</li>
+<li><p>切换至<code>temp</code>分支；</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ git checkout temp</span><br><span class="line">Switched to branch &#x27;temp&#x27;</span><br></pre></td></tr></table></figure></li>
+<li><p>通过<code>git branch</code>命令查看当前分支；</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ git branch</span><br><span class="line">  master</span><br><span class="line">* temp</span><br></pre></td></tr></table></figure>
+<p>当前分支为<code>temp</code>；</p>
+</li>
+<li><p>通过<code>.git/HEAD</code>文件查看当前分支；</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ cat .git&#x2F;HEAD</span><br><span class="line">ref: refs&#x2F;heads&#x2F;temp</span><br></pre></td></tr></table></figure>
+<p>通过文件查看到当前分支为<code>temp</code>；</p>
+<p>该文件中记录了当前<code>temp</code>分支的指纹信息记录的文件路径为<code>.git/refs/heads/temp</code>；</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ ls -l .git&#x2F;refs&#x2F;heads&#x2F;temp</span><br><span class="line">-rw-r--r--  1 booboo  staff  41  4  6 23:50 .git&#x2F;refs&#x2F;heads&#x2F;temp</span><br><span class="line">MacBook-Pro-4:git_le booboo$ cat .git&#x2F;refs&#x2F;heads&#x2F;temp</span><br><span class="line">49c201fe8ec14b9bc570db7a53f343d8f3875521</span><br></pre></td></tr></table></figure>
+<p>当前<code>temp</code>分支最新的一次提交的哈希值为<code>f5634fdcfdc1b48a30b160b85d8f2aed5f3a60b6</code>；</p>
+</li>
+<li><p>通过<code>git branch -av</code>命令查看各个分支最新的一次提交哈希值前7位；</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ git branch -av</span><br><span class="line">* master f5634fd modify 20190406</span><br><span class="line">  temp   49c201f temp_test</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h2 id="文件-index" class="article-heading"><a href="#文件-index" class="headerlink" title="文件 index"></a>文件 index<a class="article-anchor" href="#文件-index" aria-hidden="true"></a></h2><ol>
+<li><p>创建一个新文件，并查看索引文件明细；</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ touch 20190411.md</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git ls-files --stage</span><br><span class="line">100644 ce013625030ba8dba906f756967f9e9ca394464a 0	20190403.md</span><br><span class="line">100644 b302937d18a748f0e071c2c42712d2b18b0eeb1a 0	readme.md</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git add 20190411.md</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git ls-files --stage</span><br><span class="line">100644 ce013625030ba8dba906f756967f9e9ca394464a 0	20190403.md</span><br><span class="line">100644 e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 0	20190411.md</span><br><span class="line">100644 b302937d18a748f0e071c2c42712d2b18b0eeb1a 0	readme.md</span><br><span class="line">MacBook-Pro-4:git_le booboo$ hexdump -c .git/index</span><br><span class="line">0000000   D   I   R   C  \0  \0  \0 002  \0  \0  \0 003   \   ?  \a 006</span><br><span class="line">0000010 004   ?   ?   ?   \   ?  \a 006 004   ?   ?   ? 001  \0  \0 004</span><br><span class="line">0000020  \0   &#x27; 017   ?  \0  \0 201   ?  \0  \0 001   ?  \0  \0  \0 024</span><br><span class="line">0000030  \0  \0  \0 006   ? 001   6   % 003  \v   ?   ?   ? 006   ?   V</span><br><span class="line">0000040 226 177 236 234   ? 224   F   J  \0  \v   2   0   1   9   0   4</span><br><span class="line">0000050   0   3   .   m   d  \0  \0  \0  \0  \0  \0  \0   \   ?   5    </span><br><span class="line">0000060  \r   ?   ?   ?   \   ?   4   ? 016 023 215   , 001  \0  \0 004</span><br><span class="line">0000070  \0   )   ?   ?  \0  \0 201   ?  \0  \0 001   ?  \0  \0  \0 024</span><br><span class="line">0000080  \0  \0  \0  \0   ? 235   ? 233   ?   ?   ?   C   K 213   )   ?</span><br><span class="line">0000090   w   Z   ?   ?   ? 214   S 221  \0  \v   2   0   1   9   0   4</span><br><span class="line">00000a0   1   1   .   m   d  \0  \0  \0  \0  \0  \0  \0   \   ?   %   ?</span><br><span class="line">00000b0   %   ?   `   4   \   ?   %   ?   %   ?   `   4 001  \0  \0 004</span><br><span class="line">00000c0  \0   # 026   *  \0  \0 201   ?  \0  \0 001   ?  \0  \0  \0 024</span><br><span class="line">00000d0  \0  \0  \0 003   ? 002 223   &#125; 030   ?   H   ?   ?   q   ?   ?</span><br><span class="line">00000e0   &#x27; 022   ?   ? 213 016   ? 032  \0  \t   r   e   a   d   m   e</span><br><span class="line">00000f0   .   m   d  \0   T   R   E   E  \0  \0  \0 006  \0   -   1    </span><br><span class="line">0000100   0  \n   ?   ?   ?   Q   ? 230   H   Q 220   2   1 232   N 203</span><br><span class="line">0000110   ?   ?   :   ?   L 236                                        </span><br><span class="line">0000116</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git ls-files --stage</span><br><span class="line">100644 ce013625030ba8dba906f756967f9e9ca394464a 0	20190403.md</span><br><span class="line">100644 e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 0	20190411.md</span><br><span class="line">100644 b302937d18a748f0e071c2c42712d2b18b0eeb1a 0	readme.</span><br><span class="line"></span><br><span class="line">MacBook-Pro-4:git_le booboo$ git cat-file -p b302937d18a7</span><br><span class="line">le</span><br></pre></td></tr></table></figure>
+<p>我们可以看到文件新增并git add之后，index文件中新增对该文件的索引信息。</p>
+<p> <code>git cat-file -p</code>命令可以看到文件的内容。</p>
+</li>
+<li><p>删除git缓冲区的记录，索引也被删除；</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ git rm --cache 20190411.md</span><br><span class="line">rm &#x27;20190411.md&#x27;</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git ls-files --stage</span><br><span class="line">100644 ce013625030ba8dba906f756967f9e9ca394464a 0	20190403.md</span><br><span class="line">100644 b302937d18a748f0e071c2c42712d2b18b0eeb1a 0	readme.md</span><br></pre></td></tr></table></figure></li>
+<li><p>修改git指针实现回退或重演的功能；</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">MacBook-Pro-4:git_le booboo$ git log --oneline -n4</span><br><span class="line">f5634fd (HEAD -&gt; master) modify 20190406</span><br><span class="line">f223b4d add 20190403.md</span><br><span class="line">c4744d9 add readme.md</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git ls-files --stage</span><br><span class="line">100644 ce013625030ba8dba906f756967f9e9ca394464a 0	20190403.md</span><br><span class="line">100644 b302937d18a748f0e071c2c42712d2b18b0eeb1a 0	readme.md</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git reset --soft c4744d9</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git log --oneline -n4</span><br><span class="line">c4744d9 (HEAD -&gt; master) add readme.md</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git ls-files --stage</span><br><span class="line">100644 ce013625030ba8dba906f756967f9e9ca394464a 0	20190403.md</span><br><span class="line">100644 b302937d18a748f0e071c2c42712d2b18b0eeb1a 0	readme.md</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git reset --soft f5634fd</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git log --oneline -n4</span><br><span class="line">f5634fd (HEAD -&gt; master) modify 20190406</span><br><span class="line">f223b4d add 20190403.md</span><br><span class="line">c4744d9 add readme.md</span><br><span class="line">MacBook-Pro-4:git_le booboo$ git ls-files --stage</span><br><span class="line">100644 ce013625030ba8dba906f756967f9e9ca394464a 0	20190403.md</span><br><span class="line">100644 b302937d18a748f0e071c2c42712d2b18b0eeb1a 0	readme.md</span><br></pre></td></tr></table></figure>
+<p> 我们可以看到指针变化，不会修改索引信息。</p>
+</li>
+</ol>
+<h2 id="git-reset-soft命令" class="article-heading"><a href="#git-reset-soft命令" class="headerlink" title="git reset --soft命令"></a><code>git reset --soft</code>命令<a class="article-anchor" href="#git-reset-soft命令" aria-hidden="true"></a></h2><p>修改指针实现回退或重演功能。</p>
+<h2 id="git-cat-file命令" class="article-heading"><a href="#git-cat-file命令" class="headerlink" title="git cat-file命令"></a><code>git cat-file</code>命令<a class="article-anchor" href="#git-cat-file命令" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th align="left">功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">git cat-file</td>
+<td align="left">显示版本库对象的内容、类型及大小信息。</td>
+</tr>
+<tr>
+<td align="left">git cat-file -t b44dd71d62a5a8ed3</td>
+<td align="left">显示版本库对象的类型</td>
+</tr>
+<tr>
+<td align="left">git cat-file -s b44dd71d62a5a8ed3</td>
+<td align="left">显示版本库对象的大小</td>
+</tr>
+<tr>
+<td align="left">git cat-file -p b44dd71d62a5a8ed3</td>
+<td align="left">显示版本库对象的内容</td>
+</tr>
+</tbody></table>
+<h1 id="什么是指纹？" class="article-heading"><a href="#什么是指纹？" class="headerlink" title="什么是指纹？"></a>什么是指纹？<a class="article-anchor" href="#什么是指纹？" aria-hidden="true"></a></h1><ul>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://git-scm.com/book/zh/v1/%E8%B5%B7%E6%AD%A5-Git-%E5%9F%BA%E7%A1%80#%E6%97%B6%E5%88%BB%E4%BF%9D%E6%8C%81%E6%95%B0%E6%8D%AE%E5%AE%8C%E6%95%B4%E6%80%A7">时刻保持数据完整性</a></li>
+</ul>
+<p>在保存到 Git 之前，所有数据都要进行内容的校验和（checksum）计算，并将此结果作为数据的唯一标识和索引。换句话说，不可能在你修改了文件或目录之后，Git 一无所知。这项特性作为 Git 的设计哲学，建在整体架构的最底层。所以如果文件在传输时变得不完整，或者磁盘损坏导致文件数据缺失，Git 都能立即察觉。</p>
+<p>Git 使用 SHA-1 算法计算数据的校验和，通过对文件的内容或目录的结构计算出一个 SHA-1 哈希值，作为指纹字符串。该字串由 40 个十六进制字符（0-9 及 a-f）组成，看起来就像是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">24b9da6552252987aa493b52f8696cd6d3b00373</span><br></pre></td></tr></table></figure>
+<p>Git 的工作完全依赖于这类指纹字串，所以你会经常看到这样的哈希值。实际上，所有保存在 Git 数据库中的东西都是用此哈希值来作索引的，而不是靠文件名。</p>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.239Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/devops/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/devops/git/Chapter01/09_%E6%8E%A2%E5%AF%86.git%E7%9B%AE%E5%BD%95.html';
+  var disqus_title = "探密.git目录";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E5%92%8C%E7%90%86%E8%A7%A3"><span class="toc-text">实践和理解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6-COMMIT-EDITMSG"><span class="toc-text">文件 COMMIT_EDITMSG</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6-HEAD"><span class="toc-text">文件 HEAD</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6-index"><span class="toc-text">文件 index</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-reset-soft%E5%91%BD%E4%BB%A4"><span class="toc-text">git reset --soft命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-cat-file%E5%91%BD%E4%BB%A4"><span class="toc-text">git cat-file命令</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%8C%87%E7%BA%B9%EF%BC%9F"><span class="toc-text">什么是指纹？</span></a></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">开发</strong><a href="/devops/index.html" class="sidebar-link">概览</a><a href="/devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/devops/git/index.html" class="sidebar-link">概览</a><a href="/devops/git/Chapter01/index.html" class="sidebar-link">Git基础</a><a href="/devops/git/Chapter02/index.html" class="sidebar-link">Git常见场景</a><a href="/devops/git/Chapter03/index.html" class="sidebar-link">Github同步</a><a href="/devops/git/Chapter04/index.html" class="sidebar-link">多人协作</a><a href="/devops/git/Chapter05/index.html" class="sidebar-link">Git集成使用禁忌</a><a href="/devops/git/Chapter06/index.html" class="sidebar-link">初识GitHub</a><a href="/devops/git/Chapter07/index.html" class="sidebar-link">使用GitHub</a><a href="/devops/git/Chapter08/index.html" class="sidebar-link">GitLab实践</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">开发</strong><a href="/devops/index.html" class="mobile-nav-link">概览</a><a href="/devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/devops/git/index.html" class="mobile-nav-link">概览</a><a href="/devops/git/Chapter01/index.html" class="mobile-nav-link">Git基础</a><a href="/devops/git/Chapter02/index.html" class="mobile-nav-link">Git常见场景</a><a href="/devops/git/Chapter03/index.html" class="mobile-nav-link">Github同步</a><a href="/devops/git/Chapter04/index.html" class="mobile-nav-link">多人协作</a><a href="/devops/git/Chapter05/index.html" class="mobile-nav-link">Git集成使用禁忌</a><a href="/devops/git/Chapter06/index.html" class="mobile-nav-link">初识GitHub</a><a href="/devops/git/Chapter07/index.html" class="mobile-nav-link">使用GitHub</a><a href="/devops/git/Chapter08/index.html" class="mobile-nav-link">GitLab实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

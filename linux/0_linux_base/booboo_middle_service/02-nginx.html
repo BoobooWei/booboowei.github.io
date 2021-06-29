@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Nginx | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/0_linux_base/booboo_middle_service/02-nginx.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/linux/0_linux_base/booboo_middle_service/02-nginx">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="概述Nginx 是俄罗斯人编写的十分轻量级的HTTP 服务器,Nginx，它的发音为“engine X”， 是一个高性能的HTTP 和反向代理服务器，同时也是一个IMAP&#x2F;POP3&#x2F;SMTP 代理服务器。 部署方式 官方帮助文档：http:&#x2F;&#x2F;www.nginx.cn&#x2F;install  本文分别介绍了在线和离线两种环境下的安装的方式，即：  在线安装 离线安装 离线安装包 二进制安装包 源码编译安">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nginx">
+<meta property="og:url" content="http://www.toberoot.com/linux/0_linux_base/booboo_middle_service/02-nginx">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="概述Nginx 是俄罗斯人编写的十分轻量级的HTTP 服务器,Nginx，它的发音为“engine X”， 是一个高性能的HTTP 和反向代理服务器，同时也是一个IMAP&#x2F;POP3&#x2F;SMTP 代理服务器。 部署方式 官方帮助文档：http:&#x2F;&#x2F;www.nginx.cn&#x2F;install  本文分别介绍了在线和离线两种环境下的安装的方式，即：  在线安装 离线安装 离线安装包 二进制安装包 源码编译安">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:50.370Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.370Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Nginx</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/linux/0_linux_base/booboo_middle_service/02-nginx.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <h1 id="概述" class="article-heading"><a href="#概述" class="headerlink" title="概述"></a>概述<a class="article-anchor" href="#概述" aria-hidden="true"></a></h1><p>Nginx 是俄罗斯人编写的十分轻量级的HTTP 服务器,Nginx，它的发音为“engine X”， 是一个高性能的HTTP 和反向代理服务器，同时也是一个IMAP/POP3/SMTP 代理服务器。</p>
+<h1 id="部署方式" class="article-heading"><a href="#部署方式" class="headerlink" title="部署方式"></a>部署方式<a class="article-anchor" href="#部署方式" aria-hidden="true"></a></h1><blockquote>
+<p>官方帮助文档：<a target="_blank" rel="noopener external nofollow noreferrer" href="http://www.nginx.cn/install">http://www.nginx.cn/install</a></p>
+</blockquote>
+<p>本文分别介绍了在线和离线两种环境下的安装的方式，即：</p>
+<ol>
+<li>在线安装</li>
+<li>离线安装<ol>
+<li>离线安装包</li>
+<li>二进制安装包</li>
+<li>源码编译安装</li>
+</ol>
+</li>
+</ol>
+<p>安装方式的选择：</p>
+<ol>
+<li>如果可以在线安装则直接使用官方的源即可快速部署；如果为离线安装，则所有的安装包（源码包、二进制预编译包、rpm包、deb包）都需要提前下载并拷贝到待安装服务器上。</li>
+<li>由于源码编译安装需要非常熟悉软件的调优参数，除非定制，一般不建议选择源码编译安装；</li>
+<li>离线安装包（rpm包、deb包）的方式不适用于多环境规范化部署，因此生产中也不建议使用；</li>
+<li>生产环境中，为了多环境部署的规范性，建议使用离线安装之二进制安装包。</li>
+</ol>
+<h1 id="软件说明" class="article-heading"><a href="#软件说明" class="headerlink" title="软件说明"></a>软件说明<a class="article-anchor" href="#软件说明" aria-hidden="true"></a></h1><h2 id="软件版本说明" class="article-heading"><a href="#软件版本说明" class="headerlink" title="软件版本说明"></a>软件版本说明<a class="article-anchor" href="#软件版本说明" aria-hidden="true"></a></h2><ul>
+<li>操作系统：RedHat 7.2 和 LTS Ubuntu 16.04</li>
+<li>Nginx：Nginx 1.12.2 和 Nginx 1.14.1</li>
+</ul>
+<h2 id="软件下载地址" class="article-heading"><a href="#软件下载地址" class="headerlink" title="软件下载地址"></a>软件下载地址<a class="article-anchor" href="#软件下载地址" aria-hidden="true"></a></h2><p>本软件及依赖软件的下载地址，包括：</p>
+<ul>
+<li>二进制包：<a target="_blank" rel="noopener external nofollow noreferrer" href="http://nginx.org/download/nginx-1.14.1.tar.gz">http://nginx.org/download/nginx-1.14.1.tar.gz</a></li>
+<li>epel地址：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://mirrors.ustc.edu.cn/epel//7/x86_64/Packages/e/epel-release-7-11.noarch.rpm">https://mirrors.ustc.edu.cn/epel//7/x86_64/Packages/e/epel-release-7-11.noarch.rpm</a></li>
+</ul>
+<h1 id="前提条件" class="article-heading"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件<a class="article-anchor" href="#前提条件" aria-hidden="true"></a></h1><h2 id="依赖关系包" class="article-heading"><a href="#依赖关系包" class="headerlink" title="依赖关系包"></a>依赖关系包<a class="article-anchor" href="#依赖关系包" aria-hidden="true"></a></h2><p>安装必要的软件包：<br><strong>RedHat系统依赖包</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum install -y openssl zlib pcre</span><br></pre></td></tr></table></figure>
+<p>Ubuntu系统依赖包</p>
+<p>安装gcc g++的依赖库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install build-essential sudo apt-get install libtool</span><br></pre></td></tr></table></figure>
+<p>安装pcre依赖库（<a target="_blank" rel="noopener external nofollow noreferrer" href="http://www.pcre.org/）">http://www.pcre.org/）</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get update sudo apt-get install libpcre3 libpcre3-dev</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>安装zlib依赖库（<a target="_blank" rel="noopener external nofollow noreferrer" href="http://www.zlib.net/">http://www.zlib.net</a>）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install zlib1g-dev</span><br></pre></td></tr></table></figure>
+<h1 id="安装步骤" class="article-heading"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤<a class="article-anchor" href="#安装步骤" aria-hidden="true"></a></h1><h2 id="在线安装-在RedHat上安装" class="article-heading"><a href="#在线安装-在RedHat上安装" class="headerlink" title="在线安装_在RedHat上安装"></a>在线安装_在RedHat上安装<a class="article-anchor" href="#在线安装-在RedHat上安装" aria-hidden="true"></a></h2><p>使用本教程使用<code>.rpm</code> 软件包在Red Hat Enterprise Linux或CentOS Linux版本6和7上安装Nginx 1.12.2。</p>
+<h3 id="安装EPEL源" class="article-heading"><a href="#安装EPEL源" class="headerlink" title="安装EPEL源"></a>安装EPEL源<a class="article-anchor" href="#安装EPEL源" aria-hidden="true"></a></h3><p>首先我们需要安装一个叫“epel-release”的软件包，这个软件包会自动配置yum的软件仓库。到下面的网址找你对应的CentOS版本和计算机架构：<a target="_blank" rel="noopener external nofollow noreferrer" href="http://download.fedoraproject.org/pub/epel">http://download.fedoraproject.org/pub/epel</a></p>
+<p>64位的CentOS7，对应的地址是：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://mirrors.ustc.edu.cn/epel//7/x86_64/Packages/e/epel-release-7-11.noarch.rpm">https://mirrors.ustc.edu.cn/epel//7/x86_64/Packages/e/epel-release-7-11.noarch.rpm</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget https://mirrors.ustc.edu.cn/epel//7/x86_64/Packages/e/epel-release-7-11.noarch.rpm yum localinstall -y epel-release-7-11.noarch.rpm</span><br></pre></td></tr></table></figure>
+<h3 id="安装Nginx" class="article-heading"><a href="#安装Nginx" class="headerlink" title="安装Nginx"></a>安装Nginx<a class="article-anchor" href="#安装Nginx" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum install -y nginx</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="在线安装-在Ubuntu上安装" class="article-heading"><a href="#在线安装-在Ubuntu上安装" class="headerlink" title="在线安装_在Ubuntu上安装"></a>在线安装_在Ubuntu上安装<a class="article-anchor" href="#在线安装-在Ubuntu上安装" aria-hidden="true"></a></h2><p>使用本教程在LTS Ubuntu Linux系统上安装Nginx 1.12.2。</p>
+<h3 id="安装Nginx-1" class="article-heading"><a href="#安装Nginx-1" class="headerlink" title="安装Nginx"></a>安装Nginx<a class="article-anchor" href="#安装Nginx-1" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install nginx</span><br></pre></td></tr></table></figure>
+<h2 id="离线安装-二进制手动安装" class="article-heading"><a href="#离线安装-二进制手动安装" class="headerlink" title="离线安装_二进制手动安装"></a>离线安装_二进制手动安装<a class="article-anchor" href="#离线安装-二进制手动安装" aria-hidden="true"></a></h2><p>在下面的示例中，我们在/usr/local/nginx目录中安装Nginx 1.14.1</p>
+<h3 id="下载软件" class="article-heading"><a href="#下载软件" class="headerlink" title="下载软件"></a>下载软件<a class="article-anchor" href="#下载软件" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget http://nginx.org/download/nginx-1.14.1.tar.gz</span><br></pre></td></tr></table></figure>
+<h3 id="解压软件" class="article-heading"><a href="#解压软件" class="headerlink" title="解压软件"></a>解压软件<a class="article-anchor" href="#解压软件" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tar -zxvf nginx-1.14.1.tar.gz</span><br></pre></td></tr></table></figure>
+<h3 id="进入解压目录" class="article-heading"><a href="#进入解压目录" class="headerlink" title="进入解压目录"></a>进入解压目录<a class="article-anchor" href="#进入解压目录" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> nginx-1.14.1</span><br></pre></td></tr></table></figure>
+<h3 id="配置" class="article-heading"><a href="#配置" class="headerlink" title="配置"></a>配置<a class="article-anchor" href="#配置" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/usr/<span class="built_in">local</span>/nginx</span><br></pre></td></tr></table></figure>
+<h3 id="编译安装" class="article-heading"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装<a class="article-anchor" href="#编译安装" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make &amp;&amp; make install </span><br></pre></td></tr></table></figure>
+<h1 id="配置步骤" class="article-heading"><a href="#配置步骤" class="headerlink" title="配置步骤"></a>配置步骤<a class="article-anchor" href="#配置步骤" aria-hidden="true"></a></h1><h2 id="在线源YUM安装的启动方式" class="article-heading"><a href="#在线源YUM安装的启动方式" class="headerlink" title="在线源YUM安装的启动方式"></a>在线源YUM安装的启动方式<a class="article-anchor" href="#在线源YUM安装的启动方式" aria-hidden="true"></a></h2><p>如果是通过在线源YUM安装，则无需额外配置直接启动nginx服务<br><strong>启动服务</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">systemctl start nginx</span><br></pre></td></tr></table></figure>
+<p><strong>停止服务</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">systemctl stop nginx</span><br></pre></td></tr></table></figure>
+<p><strong>重启服务</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">systemctl restart nginx</span><br></pre></td></tr></table></figure>
+
+<p>在线源DEB安装的启动方式</p>
+<p>nginx服务在安装后启动命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service nginx start</span><br></pre></td></tr></table></figure>
+
+
+<p>使用以下命令停止nginx服务器：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service nginx stop</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>要重新启动nginx服务器，请使用以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service nginx restart</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="二进制包安装的启动方式" class="article-heading"><a href="#二进制包安装的启动方式" class="headerlink" title="二进制包安装的启动方式"></a>二进制包安装的启动方式<a class="article-anchor" href="#二进制包安装的启动方式" aria-hidden="true"></a></h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"> sudo /usr/<span class="built_in">local</span>/nginx/sbin/nginx -c /usr/<span class="built_in">local</span>/nginx/conf/nginx.conf</span><br><span class="line">注意：-c 指定配置文件的路径，不加的话，nginx会自动加载默认路径的配置文件，可以通过-h查看帮助命令。 </span><br></pre></td></tr></table></figure>
+<h1 id="验证" class="article-heading"><a href="#验证" class="headerlink" title="验证"></a>验证<a class="article-anchor" href="#验证" aria-hidden="true"></a></h1><p>执行到这一步能够成功将服务启动。</p>
+<p>查看后台进程是否启动 <code>ps -ef|grer nginx</code></p>
+<p>查看监听端口是否启动 <code>ss -luntp | grep nginx</code></p>
+<h1 id="Nginx配置文件详解" class="article-heading"><a href="#Nginx配置文件详解" class="headerlink" title="Nginx配置文件详解"></a>Nginx配置文件详解<a class="article-anchor" href="#Nginx配置文件详解" aria-hidden="true"></a></h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nginx进程数，建议设置为等于CPU总核心数.</span><br><span class="line">worker_processes 8;</span><br><span class="line"></span><br><span class="line">全局错误日志定义类型，[ debug | info | notice | warn | error | crit ]</span><br><span class="line">error_log /var/<span class="built_in">log</span>/nginx/error.log info;</span><br><span class="line"></span><br><span class="line">进程文件</span><br><span class="line">pid /var/run/nginx.pid;</span><br><span class="line"></span><br><span class="line">一个nginx进程打开的最多文件描述符数目，理论值应该是最多打开文件数（系统的值<span class="built_in">ulimit</span> -n）与nginx进程数相除，但是nginx分配请求并不均匀，所以建议与<span class="built_in">ulimit</span> -n的值保持一致。</span><br><span class="line">worker_rlimit_nofile 65535;</span><br><span class="line"></span><br><span class="line">工作模式与连接数上限</span><br><span class="line">events</span><br><span class="line">&#123;</span><br><span class="line">　　<span class="comment">#参考事件模型，use [ kqueue | rtsig | epoll | /dev/poll | select | poll ]; epoll模型是Linux 2.6以上版本内核中的高性能网络I/O模型，如果跑在FreeBSD上面，就用kqueue模型。</span></span><br><span class="line">　　use epoll;</span><br><span class="line">　　<span class="comment">#单个进程最大连接数（最大连接数=连接数*进程数）</span></span><br><span class="line">　　worker_connections 65535;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">设定http服务器</span><br><span class="line">http</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">include mime.types; <span class="comment">#文件扩展名与文件类型映射表</span></span><br><span class="line">default_type application/octet-stream; <span class="comment">#默认文件类型</span></span><br><span class="line"><span class="comment">#charset utf-8; #默认编码</span></span><br><span class="line">server_names_hash_bucket_size 128; <span class="comment">#服务器名字的hash表大小</span></span><br><span class="line">client_header_buffer_size 32k; <span class="comment">#上传文件大小限制</span></span><br><span class="line">large_client_header_buffers 4 64k; <span class="comment">#设定请求缓</span></span><br><span class="line">client_max_body_size 8m; <span class="comment">#设定请求缓</span></span><br><span class="line">sendfile on; <span class="comment">#开启高效文件传输模式，sendfile指令指定nginx是否调用sendfile函数来输出文件，对于普通应用设为 on，如果用来进行下载等应用磁盘IO重负载应用，可设置为off，以平衡磁盘与网络I/O处理速度，降低系统的负载。注意：如果图片显示不正常把这个改成off。</span></span><br><span class="line">autoindex on; <span class="comment">#开启目录列表访问，合适下载服务器，默认关闭。</span></span><br><span class="line">tcp_nopush on; <span class="comment">#防止网络阻塞</span></span><br><span class="line">tcp_nodelay on; <span class="comment">#防止网络阻塞</span></span><br><span class="line">keepalive_timeout 120; <span class="comment">#长连接超时时间，单位是秒</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#FastCGI相关参数是为了改善网站的性能：减少资源占用，提高访问速度。下面参数看字面意思都能理解。</span></span><br><span class="line">fastcgi_connect_timeout 300;</span><br><span class="line">fastcgi_send_timeout 300;</span><br><span class="line">fastcgi_read_timeout 300;</span><br><span class="line">fastcgi_buffer_size 64k;</span><br><span class="line">fastcgi_buffers 4 64k;</span><br><span class="line">fastcgi_busy_buffers_size 128k;</span><br><span class="line">fastcgi_temp_file_write_size 128k;</span><br><span class="line"></span><br><span class="line"><span class="comment">#gzip模块设置</span></span><br><span class="line">gzip on; <span class="comment">#开启gzip压缩输出</span></span><br><span class="line">gzip_min_length 1k; <span class="comment">#最小压缩文件大小</span></span><br><span class="line">gzip_buffers 4 16k; <span class="comment">#压缩缓冲区</span></span><br><span class="line">gzip_http_version 1.0; <span class="comment">#压缩版本（默认1.1，前端如果是squid2.5请使用1.0）</span></span><br><span class="line">gzip_comp_level 2; <span class="comment">#压缩等级</span></span><br><span class="line">gzip_types text/plain application/x-javascript text/css application/xml;</span><br><span class="line"><span class="comment">#压缩类型，默认就已经包含text/html，所以下面就不用再写了，写上去也不会有问题，但是会有一个warn。</span></span><br><span class="line">gzip_vary on;</span><br><span class="line"><span class="comment">#limit_zone crawler $binary_remote_addr 10m; #开启限制IP连接数的时候需要使用</span></span><br><span class="line"></span><br><span class="line">upstream blog.ha97.com &#123;</span><br><span class="line"><span class="comment">#upstream的负载均衡，weight是权重，可以根据机器配置定义权重。weigth参数表示权值，权值越高被分配到的几率越大。</span></span><br><span class="line">server 192.168.80.121:80 weight=3;</span><br><span class="line">server 192.168.80.122:80 weight=2;</span><br><span class="line">server 192.168.80.123:80 weight=3;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">虚拟主机的配置</span><br><span class="line">server</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">listen 80;　　　　<span class="comment">#监听端口</span></span><br><span class="line"></span><br><span class="line">　　　　server_name aa.cn www.aa.cn ; <span class="comment">#server_name end  #域名可以有多个，用空格隔开</span></span><br><span class="line"></span><br><span class="line">index index.html index.htm index.php;  <span class="comment"># 设置访问主页</span></span><br><span class="line"></span><br><span class="line">　　　　<span class="built_in">set</span> <span class="variable">$subdomain</span> <span class="string">&#x27;&#x27;</span>;  <span class="comment"># 绑定目录为二级域名 bbb.aa.com  根目录 /bbb  文件夹</span></span><br><span class="line">　　　　<span class="keyword">if</span> ( <span class="variable">$host</span> ~* <span class="string">&quot;(?:(\w+\.)&#123;0,&#125;)(\b(?!www\b)\w+)\.\b(?!(com|org|gov|net|cn)\b)\w+\.[a-zA-Z]+&quot;</span> ) &#123; <span class="built_in">set</span> <span class="variable">$subdomain</span> <span class="string">&quot;/<span class="variable">$2</span>&quot;</span>; &#125;</span><br><span class="line"></span><br><span class="line">root /home/wwwroot/aa.cn/web<span class="variable">$subdomain</span>;<span class="comment"># 访问域名跟目录  </span></span><br><span class="line"></span><br><span class="line">include rewrite/dedecms.conf; <span class="comment">#rewrite end   #载入其他配置文件</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">location ~ .*.(php|php5)?$</span><br><span class="line">&#123;</span><br><span class="line">　　fastcgi_pass 127.0.0.1:9000;</span><br><span class="line">　　fastcgi_index index.php;</span><br><span class="line">　　include fastcgi.conf;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#图片缓存时间设置</span></span><br><span class="line">location ~ .*.(gif|jpg|jpeg|png|bmp|swf)$</span><br><span class="line">&#123;</span><br><span class="line">　　expires 10d;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#JS和CSS缓存时间设置</span></span><br><span class="line">location ~ .*.(js|css)?$</span><br><span class="line">&#123;</span><br><span class="line">　　expires 1h;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">日志格式设定</span><br><span class="line"></span><br><span class="line">log_format access <span class="string">&#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span></span><br><span class="line"><span class="string">&#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span></span><br><span class="line"><span class="string">&#x27;&quot;$http_user_agent&quot; $http_x_forwarded_for&#x27;</span>;</span><br><span class="line"><span class="comment">#定义本虚拟主机的访问日志</span></span><br><span class="line">access_log /var/<span class="built_in">log</span>/nginx/ha97access.log access;</span><br><span class="line"></span><br><span class="line"><span class="comment">#对 &quot;/&quot; 启用反向代理</span></span><br><span class="line">location / &#123;</span><br><span class="line"></span><br><span class="line">proxy_pass http://127.0.0.1:88;</span><br><span class="line">proxy_redirect off;</span><br><span class="line">proxy_set_header X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line"><span class="comment">#后端的Web服务器可以通过X-Forwarded-For获取用户真实IP</span></span><br><span class="line">proxy_set_header X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"><span class="comment">#以下是一些反向代理的配置，可选。</span></span><br><span class="line">proxy_set_header Host <span class="variable">$host</span>;</span><br><span class="line">client_max_body_size 10m; <span class="comment">#允许客户端请求的最大单文件字节数</span></span><br><span class="line">client_body_buffer_size 128k; <span class="comment">#缓冲区代理缓冲用户端请求的最大字节数，</span></span><br><span class="line">proxy_connect_timeout 90; <span class="comment">#nginx跟后端服务器连接超时时间(代理连接超时)</span></span><br><span class="line">proxy_send_timeout 90; <span class="comment">#后端服务器数据回传时间(代理发送超时)</span></span><br><span class="line">proxy_read_timeout 90; <span class="comment">#连接成功后，后端服务器响应时间(代理接收超时)</span></span><br><span class="line">proxy_buffer_size 4k; <span class="comment">#设置代理服务器（nginx）保存用户头信息的缓冲区大小</span></span><br><span class="line">proxy_buffers 4 32k; <span class="comment">#proxy_buffers缓冲区，网页平均在32k以下的设置</span></span><br><span class="line">proxy_busy_buffers_size 64k; <span class="comment">#高负荷下缓冲大小（proxy_buffers*2）</span></span><br><span class="line">proxy_temp_file_write_size 64k;</span><br><span class="line"><span class="comment">#设定缓存文件夹大小，大于这个值，将从upstream服务器传</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">设定查看Nginx状态的地址</span><br><span class="line"></span><br><span class="line">location /NginxStatus &#123;</span><br><span class="line"></span><br><span class="line">stub_status on;</span><br><span class="line">access_log on;</span><br><span class="line">auth_basic <span class="string">&quot;NginxStatus&quot;</span>;</span><br><span class="line">auth_basic_user_file conf/htpasswd;</span><br><span class="line"><span class="comment">#htpasswd文件的内容可以用apache提供的htpasswd工具来产生。</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#本地动静分离反向代理配置</span></span><br><span class="line"><span class="comment">#所有jsp的页面均交由tomcat或resin处理</span></span><br><span class="line">location ~ .(jsp|jspx|<span class="keyword">do</span>)?$ &#123;</span><br><span class="line"></span><br><span class="line">proxy_set_header Host <span class="variable">$host</span>;</span><br><span class="line">proxy_set_header X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">proxy_set_header X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">proxy_pass http://127.0.0.1:8080;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#所有静态文件由nginx直接读取不经过tomcat或resin</span></span><br><span class="line">location ~ .*.(htm|html|gif|jpg|jpeg|png|bmp|swf|ioc|rar|zip|txt|flv|mid|doc|ppt|pdf|xls|mp3|wma)$</span><br><span class="line">&#123;　　 expires 15d;　　 &#125;</span><br><span class="line">location ~ .*.(js|css)?$</span><br><span class="line">&#123; 　　expires 1h;　　 &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.370Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/linux/0_linux_base/booboo_middle_service/02-nginx.html';
+  var disqus_title = "Nginx";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E6%96%B9%E5%BC%8F"><span class="toc-text">部署方式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E8%AF%B4%E6%98%8E"><span class="toc-text">软件说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E"><span class="toc-text">软件版本说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%9C%B0%E5%9D%80"><span class="toc-text">软件下载地址</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6"><span class="toc-text">前提条件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB%E5%8C%85"><span class="toc-text">依赖关系包</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4"><span class="toc-text">安装步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E5%AE%89%E8%A3%85-%E5%9C%A8RedHat%E4%B8%8A%E5%AE%89%E8%A3%85"><span class="toc-text">在线安装_在RedHat上安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85EPEL%E6%BA%90"><span class="toc-text">安装EPEL源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Nginx"><span class="toc-text">安装Nginx</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E5%AE%89%E8%A3%85-%E5%9C%A8Ubuntu%E4%B8%8A%E5%AE%89%E8%A3%85"><span class="toc-text">在线安装_在Ubuntu上安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Nginx-1"><span class="toc-text">安装Nginx</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85-%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85"><span class="toc-text">离线安装_二进制手动安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E8%BD%AF%E4%BB%B6"><span class="toc-text">下载软件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%8E%8B%E8%BD%AF%E4%BB%B6"><span class="toc-text">解压软件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E5%85%A5%E8%A7%A3%E5%8E%8B%E7%9B%AE%E5%BD%95"><span class="toc-text">进入解压目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-text">配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85"><span class="toc-text">编译安装</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A4"><span class="toc-text">配置步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E6%BA%90YUM%E5%AE%89%E8%A3%85%E7%9A%84%E5%90%AF%E5%8A%A8%E6%96%B9%E5%BC%8F"><span class="toc-text">在线源YUM安装的启动方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%8C%85%E5%AE%89%E8%A3%85%E7%9A%84%E5%90%AF%E5%8A%A8%E6%96%B9%E5%BC%8F"><span class="toc-text">二进制包安装的启动方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81"><span class="toc-text">验证</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Nginx%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3"><span class="toc-text">Nginx配置文件详解</span></a></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

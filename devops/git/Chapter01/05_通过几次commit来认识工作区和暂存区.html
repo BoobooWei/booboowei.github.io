@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>通过几次commit来认识工作区和暂存区 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/devops/git/Chapter01/05_%E9%80%9A%E8%BF%87%E5%87%A0%E6%AC%A1commit%E6%9D%A5%E8%AE%A4%E8%AF%86%E5%B7%A5%E4%BD%9C%E5%8C%BA%E5%92%8C%E6%9A%82%E5%AD%98%E5%8C%BA.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/devops/git/Chapter01/05_%E9%80%9A%E8%BF%87%E5%87%A0%E6%AC%A1commit%E6%9D%A5%E8%AE%A4%E8%AF%86%E5%B7%A5%E4%BD%9C%E5%8C%BA%E5%92%8C%E6%9A%82%E5%AD%98%E5%8C%BA">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="往仓库里添加文件 4 次提交，一个像模像样的静态页面生成了  graph LRA(工作目录) -- git add files --- B(暂存区);B(暂存区) -- git commit --- C(版本历史);   课堂练习 练习的目的：熟悉git的提交流程   加入index.html和git-logo 加入style.css 加入scripts.js 修改index.html和style">
+<meta property="og:type" content="website">
+<meta property="og:title" content="通过几次commit来认识工作区和暂存区">
+<meta property="og:url" content="http://www.toberoot.com/devops/git/Chapter01/05_%E9%80%9A%E8%BF%87%E5%87%A0%E6%AC%A1commit%E6%9D%A5%E8%AE%A4%E8%AF%86%E5%B7%A5%E4%BD%9C%E5%8C%BA%E5%92%8C%E6%9A%82%E5%AD%98%E5%8C%BA">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="往仓库里添加文件 4 次提交，一个像模像样的静态页面生成了  graph LRA(工作目录) -- git add files --- B(暂存区);B(暂存区) -- git commit --- C(版本历史);   课堂练习 练习的目的：熟悉git的提交流程   加入index.html和git-logo 加入style.css 加入scripts.js 修改index.html和style">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.toberoot.com/devops/git/Chapter01/pic/001.png">
+<meta property="og:image" content="http://www.toberoot.com/devops/git/Chapter01/pic/002.png">
+<meta property="og:image" content="http://www.toberoot.com/devops/git/Chapter01/pic/003.png">
+<meta property="og:image" content="http://www.toberoot.com/devops/git/Chapter01/pic/004.png">
+<meta property="article:published_time" content="2020-12-04T00:52:50.239Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.239Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/devops/git/Chapter01/pic/001.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">通过几次commit来认识工作区和暂存区</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/devops/git/Chapter01/05_通过几次commit来认识工作区和暂存区.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <h1 id="往仓库里添加文件" class="article-heading"><a href="#往仓库里添加文件" class="headerlink" title="往仓库里添加文件"></a>往仓库里添加文件<a class="article-anchor" href="#往仓库里添加文件" aria-hidden="true"></a></h1><blockquote>
+<p>4 次提交，一个像模像样的静态页面生成了</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">graph LR</span><br><span class="line">A(工作目录) -- git add files --- B(暂存区);</span><br><span class="line">B(暂存区) -- git commit --- C(版本历史);</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="课堂练习" class="article-heading"><a href="#课堂练习" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习" aria-hidden="true"></a></h2><blockquote>
+<p>练习的目的：熟悉git的提交流程</p>
+</blockquote>
+<ol>
+<li>加入<code>index.html</code>和<code>git-logo</code></li>
+<li>加入<code>style.css</code></li>
+<li>加入<code>scripts.js</code></li>
+<li>修改<code>index.html</code>和<code>style.css</code></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 下载稍后需要的文件，并解压</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl -O  <span class="string">&quot;https://github.com/BoobooWei/DBA_Git/blob/master/info/git_learning_master_6_commits-27d2f8146eabcf2782e87ce445b8469cc1accc73.zip&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> unzip git_learning_master_6_commits-27d2f8146eabcf2782e87ce445b8469cc1accc73.zip</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git init git_learning</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> git_learning</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ll -al</span></span><br><span class="line">total 44</span><br><span class="line">drwxr-xr-x 1 rgwei 197121 0 3月  10 13:07 ./</span><br><span class="line">drwxr-xr-x 1 rgwei 197121 0 3月  10 13:28 ../</span><br><span class="line">drwxr-xr-x 1 rgwei 197121 0 3月  10 13:07 .git/</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 复制index.html到git_learning目录中</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cp ../git_learning_master_6_commits-27d2f8146eabcf2782e87ce445b8469cc1accc73/index.html index.html</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 复制images目录到git_learning目录中</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cp -r ../git_learning_master_6_commits-27d2f8146eabcf2782e87ce445b8469cc1accc73/images/ .</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ll</span></span><br><span class="line">total 4</span><br><span class="line">drwxr-xr-x 1 rgwei 197121    0 3月  10 13:35 images/</span><br><span class="line">-rw-r--r-- 1 rgwei 197121 1303 3月  10 13:35 index.html</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看git仓库中存在没有被git管理的文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line"></span><br><span class="line">Initial commit</span><br><span class="line"></span><br><span class="line">Untracked files:</span><br><span class="line">  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span><br><span class="line"></span><br><span class="line">        images/</span><br><span class="line">        index.html</span><br><span class="line"></span><br><span class="line">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 通过git add命令使得git可以管理index.html和images文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add index.html images</span></span><br><span class="line">warning: LF will be replaced by CRLF in index.html.</span><br><span class="line">The file will have its original line endings in your working directory.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 再次查看git管理情况</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line"></span><br><span class="line">Initial commit</span><br><span class="line"></span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)</span><br><span class="line"></span><br><span class="line">        new file:   images/git-logo.png</span><br><span class="line">        new file:   index.html</span><br><span class="line"><span class="meta">#</span><span class="bash"> 看到已经将images和index.html添加到git仓库的暂存处</span></span><br></pre></td></tr></table></figure>
+<p>通过浏览器打开本地的index.html文件，如下图所示</p>
+<p><img src="pic/001.png" alt></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建styles目录</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir styles</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 将style.css复制到仓库中的styles目录下</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cp ../git_learning_master_6_commits-27d2f8146eabcf2782e87ce445b8469cc1accc73/styles/style.css styles/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line"></span><br><span class="line">Initial commit</span><br><span class="line"></span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)</span><br><span class="line"></span><br><span class="line">        new file:   images/git-logo.png</span><br><span class="line">        new file:   index.html</span><br><span class="line"></span><br><span class="line">Untracked files:</span><br><span class="line">  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span><br><span class="line"></span><br><span class="line">        styles/</span><br><span class="line"><span class="meta">#</span><span class="bash"> 将styles目录添加到暂存区，让git管理起来</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add styles</span></span><br><span class="line">warning: LF will be replaced by CRLF in styles/style.css.</span><br><span class="line">The file will have its original line endings in your working directory.</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line"></span><br><span class="line">Initial commit</span><br><span class="line"></span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)</span><br><span class="line"></span><br><span class="line">        new file:   images/git-logo.png</span><br><span class="line">        new file:   index.html</span><br><span class="line">        new file:   styles/style.css</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>添加了css文件后，刷新网页</p>
+<p><img src="pic/002.png" alt></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 添加js目录</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir js</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 复制动画文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cp ../git_learning_master_6_commits-27d2f8146eabcf2782e87ce445b8469cc1accc73/js/script.js js</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line"></span><br><span class="line">Initial commit</span><br><span class="line"></span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)</span><br><span class="line"></span><br><span class="line">        new file:   images/git-logo.png</span><br><span class="line">        new file:   index.html</span><br><span class="line">        new file:   styles/style.css</span><br><span class="line"></span><br><span class="line">Untracked files:</span><br><span class="line">  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span><br><span class="line"></span><br><span class="line">        js/</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 将js目录添加到暂存区</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add js</span></span><br><span class="line">warning: LF will be replaced by CRLF in js/script.js.</span><br><span class="line">The file will have its original line endings in your working directory.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看状态</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line"></span><br><span class="line">Initial commit</span><br><span class="line"></span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)</span><br><span class="line"></span><br><span class="line">        new file:   images/git-logo.png</span><br><span class="line">        new file:   index.html</span><br><span class="line">        new file:   js/script.js</span><br><span class="line">        new file:   styles/style.css</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>添加动画后，可以点击展开明细</p>
+<p><img src="pic/003.png" alt></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> index.html 文件中增加的代码</span></span><br><span class="line">&lt;footer&gt;</span><br><span class="line">        &lt;p&gt;</span><br><span class="line">            &lt;a href=&quot;https://github.com/TTN-js/unforGITtable&quot;&gt; 参考项目 01&lt;/a&gt;</span><br><span class="line">        &lt;/p&gt;</span><br><span class="line">&lt;/footer&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> style.css 文件中增加的代码</span></span><br><span class="line"></span><br><span class="line">footer&#123;</span><br><span class="line">  right: 0;</span><br><span class="line">  bottom: 0;</span><br><span class="line">  position: relative;</span><br><span class="line">  padding: 10px 1rem 10px 0;</span><br><span class="line">  margin-top: 50px;</span><br><span class="line">  font-size: 0.7em;</span><br><span class="line">  text-align: right;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">footer p&#123;</span><br><span class="line">  margin-bottom:0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vim styles/style.css</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vim index.html</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Changes not staged for commit:</span><br><span class="line">  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)</span><br><span class="line">  (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)</span><br><span class="line"></span><br><span class="line">        modified:   index.html</span><br><span class="line">        modified:   styles/style.css</span><br><span class="line"></span><br><span class="line">no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 将所有变更保存到暂存区</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add -u</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line"></span><br><span class="line">        modified:   index.html</span><br><span class="line">        modified:   styles/style.css</span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">&#x27;修改格式&#x27;</span></span></span><br><span class="line">[master ca1cf5a] 修改格式</span><br><span class="line"> 2 files changed, 19 insertions(+)        </span><br></pre></td></tr></table></figure>
+<p>添加参考连接地址</p>
+<p><img src="pic/004.png" alt="添加参考连接地址"></p>
+<h1 id="git-add-基础命令" class="article-heading"><a href="#git-add-基础命令" class="headerlink" title="git add 基础命令"></a><code>git add</code> 基础命令<a class="article-anchor" href="#git-add-基础命令" aria-hidden="true"></a></h1><p><code>git-add</code> - 将文件内容添加到索引（暂存区）中</p>
+<table>
+<thead>
+<tr>
+<th><code>git add</code></th>
+<th>新增</th>
+<th>删除</th>
+<th>修改</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>git add .</code></td>
+<td>✔</td>
+<td></td>
+<td>✔</td>
+</tr>
+<tr>
+<td><code>git add -u</code></td>
+<td></td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+<tr>
+<td><code>git add -A</code></td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+</tbody></table>
+<ul>
+<li>git add -u：将文件的修改、文件的删除，添加到暂存区。</li>
+<li>git add .：将文件的修改，文件的新建，添加到暂存区。</li>
+<li>git add -A：将文件的修改，文件的删除，文件的新建，添加到暂存区。</li>
+</ul>
+<h1 id="git-commit-基础命令" class="article-heading"><a href="#git-commit-基础命令" class="headerlink" title="git commit 基础命令"></a><code>git commit</code> 基础命令<a class="article-anchor" href="#git-commit-基础命令" aria-hidden="true"></a></h1><p><code>git-commit</code> - 记录对存储库的更改</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git commit [-a | --interactive | --patch] [-s] [-v] [-u&lt;mode&gt;] [--amend]</span><br><span class="line">	   [--dry-run] [(-c | -C | --fixup | --squash) &lt;commit&gt;]</span><br><span class="line">	   [-F &lt;file&gt; | -m &lt;msg&gt;] [--reset-author] [--allow-empty]</span><br><span class="line">	   [--allow-empty-message] [--no-verify] [-e] [--author=&lt;author&gt;]</span><br><span class="line">	   [--date=&lt;date&gt;] [--cleanup=&lt;mode&gt;] [--[no-]status]</span><br><span class="line">	   [-i | -o] [-S[&lt;keyid&gt;]] [--] [&lt;file&gt;…​]</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>git commit -m &#39;说明文字&#39;</code></li>
+</ul>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.239Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/devops/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/devops/git/Chapter01/05_%E9%80%9A%E8%BF%87%E5%87%A0%E6%AC%A1commit%E6%9D%A5%E8%AE%A4%E8%AF%86%E5%B7%A5%E4%BD%9C%E5%8C%BA%E5%92%8C%E6%9A%82%E5%AD%98%E5%8C%BA.html';
+  var disqus_title = "通过几次commit来认识工作区和暂存区";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BE%80%E4%BB%93%E5%BA%93%E9%87%8C%E6%B7%BB%E5%8A%A0%E6%96%87%E4%BB%B6"><span class="toc-text">往仓库里添加文件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0"><span class="toc-text">课堂练习</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#git-add-%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4"><span class="toc-text">git add 基础命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#git-commit-%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4"><span class="toc-text">git commit 基础命令</span></a></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">开发</strong><a href="/devops/index.html" class="sidebar-link">概览</a><a href="/devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/devops/git/index.html" class="sidebar-link">概览</a><a href="/devops/git/Chapter01/index.html" class="sidebar-link">Git基础</a><a href="/devops/git/Chapter02/index.html" class="sidebar-link">Git常见场景</a><a href="/devops/git/Chapter03/index.html" class="sidebar-link">Github同步</a><a href="/devops/git/Chapter04/index.html" class="sidebar-link">多人协作</a><a href="/devops/git/Chapter05/index.html" class="sidebar-link">Git集成使用禁忌</a><a href="/devops/git/Chapter06/index.html" class="sidebar-link">初识GitHub</a><a href="/devops/git/Chapter07/index.html" class="sidebar-link">使用GitHub</a><a href="/devops/git/Chapter08/index.html" class="sidebar-link">GitLab实践</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">开发</strong><a href="/devops/index.html" class="mobile-nav-link">概览</a><a href="/devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/devops/git/index.html" class="mobile-nav-link">概览</a><a href="/devops/git/Chapter01/index.html" class="mobile-nav-link">Git基础</a><a href="/devops/git/Chapter02/index.html" class="mobile-nav-link">Git常见场景</a><a href="/devops/git/Chapter03/index.html" class="mobile-nav-link">Github同步</a><a href="/devops/git/Chapter04/index.html" class="mobile-nav-link">多人协作</a><a href="/devops/git/Chapter05/index.html" class="mobile-nav-link">Git集成使用禁忌</a><a href="/devops/git/Chapter06/index.html" class="mobile-nav-link">初识GitHub</a><a href="/devops/git/Chapter07/index.html" class="mobile-nav-link">使用GitHub</a><a href="/devops/git/Chapter08/index.html" class="mobile-nav-link">GitLab实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

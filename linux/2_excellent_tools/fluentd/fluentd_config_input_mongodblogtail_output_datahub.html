@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Fluentd 采集器插件 td-agentd | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/2_excellent_tools/fluentd/fluentd_config_input_mongodblogtail_output_datahub.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/linux/2_excellent_tools/fluentd/fluentd_config_input_mongodblogtail_output_datahub">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="采集 MongoDB的日志 并输出到 datahub 中  curl -L https:&#x2F;&#x2F;toolbelt.treasuredata.com&#x2F;sh&#x2F;install-redhat-td-agent3.sh | shsystemctl start td-agent.servicecurl -X POST -d &amp;#x27;json&#x3D;&amp;#123;&quot;json&quot;:&quot;mess">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fluentd 采集器插件 td-agentd">
+<meta property="og:url" content="http://www.toberoot.com/linux/2_excellent_tools/fluentd/fluentd_config_input_mongodblogtail_output_datahub">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="采集 MongoDB的日志 并输出到 datahub 中  curl -L https:&#x2F;&#x2F;toolbelt.treasuredata.com&#x2F;sh&#x2F;install-redhat-td-agent3.sh | shsystemctl start td-agent.servicecurl -X POST -d &amp;#x27;json&#x3D;&amp;#123;&quot;json&quot;:&quot;mess">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T00:52:50.438Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.438Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Fluentd 采集器插件 td-agentd</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/linux/2_excellent_tools/fluentd/fluentd_config_input_mongodblogtail_output_datahub.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <blockquote>
+<p>采集 MongoDB的日志 并输出到 datahub 中</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -L https://toolbelt.treasuredata.com/sh/install-redhat-td-agent3.sh | sh</span><br><span class="line">systemctl start td-agent.service</span><br><span class="line">curl -X POST -d &#x27;json=&#123;&quot;json&quot;:&quot;message&quot;&#125;&#x27; http://localhost:8888/debug.test</span><br><span class="line">tail -f /var/log/td-agent/td-agent.log</span><br></pre></td></tr></table></figure>
+<h1 id="ruby和gem" class="article-heading"><a href="#ruby和gem" class="headerlink" title="ruby和gem"></a>ruby和gem<a class="article-anchor" href="#ruby和gem" aria-hidden="true"></a></h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd /alidata/install/</span><br><span class="line">wget wget https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.0-preview1.tar.gz</span><br><span class="line">tar -xf ruby-2.6.0-preview1.tar.gz </span><br><span class="line">cd ruby-2.6.0-preview1</span><br><span class="line">./configure</span><br><span class="line">make &amp;&amp; make install</span><br><span class="line">ruby -v</span><br><span class="line">gem -v</span><br><span class="line">cd ext/openssl/</span><br><span class="line"> ruby extconf.rb --with-openssl-include=/usr/include/openssl/</span><br><span class="line">gem source -l</span><br><span class="line">gem source -r https://rubygems.org/</span><br><span class="line">gem source -a https://gems.ruby-china.org/</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="插件-fluent-plugin-datahub" class="article-heading"><a href="#插件-fluent-plugin-datahub" class="headerlink" title="插件 fluent-plugin-datahub"></a>插件 fluent-plugin-datahub<a class="article-anchor" href="#插件-fluent-plugin-datahub" aria-hidden="true"></a></h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">gem install fluent-plugin-datahub</span><br></pre></td></tr></table></figure>
+<h1 id="插件fluent-plugin-grok-parser" class="article-heading"><a href="#插件fluent-plugin-grok-parser" class="headerlink" title="插件fluent-plugin-grok-parser"></a>插件fluent-plugin-grok-parser<a class="article-anchor" href="#插件fluent-plugin-grok-parser" aria-hidden="true"></a></h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">gem install fluent-plugin-grok-parser</span><br></pre></td></tr></table></figure>
+<h1 id="查看所有安装的gem包" class="article-heading"><a href="#查看所有安装的gem包" class="headerlink" title="查看所有安装的gem包"></a>查看所有安装的gem包<a class="article-anchor" href="#查看所有安装的gem包" aria-hidden="true"></a></h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@sh_02 openssl]# gem list</span><br><span class="line"></span><br><span class="line">*** LOCAL GEMS ***</span><br><span class="line"></span><br><span class="line">bigdecimal (1.2.8)</span><br><span class="line">cool.io (1.5.3)</span><br><span class="line">did_you_mean (1.0.0)</span><br><span class="line">dig_rb (1.0.1)</span><br><span class="line">fluent-plugin-datahub (0.12.25)</span><br><span class="line">fluent-plugin-grok-parser (2.1.6)</span><br><span class="line">fluentd (1.2.4)</span><br><span class="line">http_parser.rb (0.6.0)</span><br><span class="line">io-console (0.4.5)</span><br><span class="line">json (1.8.3.1)</span><br><span class="line">minitest (5.8.5)</span><br><span class="line">msgpack (1.2.4)</span><br><span class="line">net-telnet (0.1.1)</span><br><span class="line">power_assert (0.2.6)</span><br><span class="line">psych (2.1.0.1)</span><br><span class="line">rake (10.4.2)</span><br><span class="line">rdoc (4.2.1)</span><br><span class="line">serverengine (2.0.7)</span><br><span class="line">sigdump (0.2.4)</span><br><span class="line">strptime (0.2.3)</span><br><span class="line">test-unit (3.1.5)</span><br><span class="line">thread_safe (0.3.6)</span><br><span class="line">tzinfo (1.2.5)</span><br><span class="line">tzinfo-data (1.2018.5)</span><br><span class="line">yajl-ruby (1.4.1)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="mongodb的匹配" class="article-heading"><a href="#mongodb的匹配" class="headerlink" title="mongodb的匹配"></a>mongodb的匹配<a class="article-anchor" href="#mongodb的匹配" aria-hidden="true"></a></h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">2018-08-01T22:00:31.367+0800 I COMMAND  [conn4986471] command omdmain.item_region_erp command: find &#123; find: &quot;item_region_erp&quot;, filter: &#123; ent_id: 1590271648210249400, region_code: &quot;Q022&quot;, smg_out_key: &#123; $exists: true &#125;, status: &quot;1&quot;, sale_price: &#123; $gt: 0 &#125;, $where: this.timestamp &gt; this.smg_timestamp &#125;, ntoreturn: 950, shardVersion: [ Timestamp 3000|4, ObjectId(&#x27;5acbb4b0a7366023da49b822&#x27;) ] &#125; planSummary: IXSCAN &#123; ent_id: 1, region_code: 1, item_code: 1, barcode: 1 &#125; cursorid:112196383467 keysExamined:5859 docsExamined:5859 numYields:76 nreturned:950 reslen:902847 locks:&#123; Global: &#123; acquireCount: &#123; r: 158 &#125; &#125;, Database: &#123; acquireCount: &#123; r: 79 &#125; &#125;, Collection: &#123; acquireCount: &#123; r: 79 &#125; &#125; &#125; protocol:op_command 1222ms</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2018-08-01T22:00:31.367+0800 I COMMAND  [conn4986471] command omdmain.item_region_erp command: find &#123; find: &quot;item_region_erp&quot;, filter: &#123; ent_id: 1590271648210249400, region_code: &quot;Q022&quot;, smg_out_key: &#123; $exists: true &#125;, status: &quot;1&quot;, sale_price: &#123; $gt: 0 &#125;, $where: this.timestamp &gt; this.smg_timestamp &#125;, ntoreturn: 950, shardVersion: [ Timestamp 3000|4, ObjectId(&#x27;5acbb4b0a7366023da49b822&#x27;) ] &#125; planSummary: IXSCAN &#123; ent_id: 1, region_code: 1, item_code: 1, barcode: 1 &#125; cursorid:112196383467 keysExamined:5859 docsExamined:5859 numYields:76 nreturned:950 reslen:902847 locks:&#123; Global: &#123; acquireCount: &#123; r: 158 &#125; &#125;, Database: &#123; acquireCount: &#123; r: 79 &#125; &#125;, Collection: &#123; acquireCount: &#123; r: 79 &#125; &#125; &#125; protocol:op_command 1222ms</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">%</span><span class="bash">&#123;WORD&#125; %&#123;MONGO_WORDDASH:database&#125;\.%&#123;MONGO_WORDDASH:collection&#125; %&#123;WORD&#125;: %&#123;MONGO_QUERY:query&#125; %&#123;WORD&#125;:%&#123;NONNEGINT:ntoreturn&#125; %&#123;WORD&#125;:%&#123;NONNEGINT:ntoskip&#125; %&#123;WORD&#125;:%&#123;NONNEGINT:nscanned&#125;.*nreturned:%&#123;NONNEGINT:nreturned&#125;..+ (?&lt;duration&gt;[0-9]+)ms</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">%</span><span class="bash">&#123;TIMESTAMP_ISO8601:timestamp&#125; %&#123;MONGO3_SEVERITY:severity&#125; %&#123;MONGO3_COMPONENT:component&#125;%&#123;SPACE&#125;(?:\[%&#123;DATA:context&#125;\])? %&#123;GREEDYDATA:message&#125;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">&quot;timestamp&quot;:&quot;2018-08-01T22:24:44.497+0800&quot;,</span><br><span class="line">&quot;severity&quot;:&quot;I&quot;,</span><br><span class="line">&quot;component&quot;:&quot;COMMAND&quot;,</span><br><span class="line">&quot;context&quot;:&quot;conn4987280&quot;,</span><br><span class="line">&quot;message&quot;:&quot;command omdmain.item_region_erp command: find &#123; find: &quot;item_region_erp&quot;, filter: &#123; ent_id: 1590271648210249400, region_code: &quot;Q022&quot;, smg_out_key: &#123; $exists: true &#125;, status: &quot;1&quot;, sale_price: &#123; $gt: 0 &#125;, $where: this.timestamp &gt; this.smg_timestamp &#125;, ntoreturn: 4850, shardVersion: [ Timestamp 3000|4, ObjectId(&#x27;5acbb4b0a7366023da49b822&#x27;) ] &#125; planSummary: IXSCAN &#123; ent_id: 1, region_code: 1, item_code: 1, barcode: 1 &#125; cursorid:112999479763 keysExamined:59019 docsExamined:59019 numYields:541 nreturned:4850 reslen:4592724 locks:&#123; Global: &#123; acquireCount: &#123; r: 1084 &#125; &#125;, Database: &#123; acquireCount: &#123; r: 542 &#125; &#125;, Collection: &#123; acquireCount: &#123; r: 542 &#125; &#125; &#125; protocol:op_command 6477ms&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x27;timestamp&#x27;,&quot;severity&quot;,&quot;component&quot;,&quot;context&quot;,&quot;message&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>日志格式</p>
+<p>datahub endpoint：<br><a target="_blank" rel="noopener external nofollow noreferrer" href="http://dh-cn-hangzhou.aliyun-inc.com">http://dh-cn-hangzhou.aliyun-inc.com</a><br>project:datahub_43_booboowei</p>
+<p>[root@sh_02 td-agent]# cat td-agent.conf</p>
+<source>
+  @type tail
+  path /alidata/mongodb/log/test.log
+  tag test
+  format csv 
+  keys id,name,gender,salary,my_time
+
+
+
+<match test>
+  @type datahub
+  access_id xxx
+  access_key xxx
+  endpoint http://dh-cn-hangzhou.aliyun-inc.com
+  project_name datahub_43_booboowei
+  topic_name mongodb_log_ana_43_booboowei
+  column_names ["id", "name", "gender", "salary", "my_time"]
+  flush_interval 1s
+  buffer_chunk_limit 3m
+  buffer_queue_limit 128
+  dirty_data_continue true
+  dirty_data_file /var/log/td-agent/dirty.file
+  retry_times 3
+  put_data_batch_size 1000
+</match>
+
+<p>fluentd -c /alidata/install/fluentd/conf/datahub.conf</p>
+<p>[root@sh_02 fluentd]# fluentd -c /alidata/install/fluentd/conf/datahub.conf<br>2018-08-08 17:21:21 +0800 [info]: parsing config file is succeeded path=”/alidata/install/fluentd/conf/datahub.conf”<br>2018-08-08 17:21:26 +0800 [warn]: ‘pos_file PATH’ parameter is not set to a ‘tail’ source.<br>2018-08-08 17:21:26 +0800 [warn]: this parameter is highly recommended to save the position to resume tailing.<br>2018-08-08 17:21:26 +0800 [info]: using configuration file: <root><br>  <source><br>    @type tail<br>    path “/alidata/mongodb/log/test.log”<br>    tag “test”<br>    format csv<br>    keys id,name,gender,salary,my_time<br>    <parse><br>      keys id,name,gender,salary,my_time<br>      @type csv<br>    </parse><br>  <br>  <match test><br>    @type datahub<br>    access_id “xxx”<br>    access_key “xxx”<br>    endpoint “<a target="_blank" rel="noopener external nofollow noreferrer" href="https://dh-cn-hangzhou.aliyuncs.com&quot;">https://dh-cn-hangzhou.aliyuncs.com&quot;</a><br>    project_name “datahub_43_booboowei”<br>    topic_name “mongodb_log_ana_43_booboowei”<br>    column_names [“id”,”name”,”gender”,”salary”,”my_time”]<br>    flush_interval 1s<br>    buffer_chunk_limit 3m<br>    buffer_queue_limit 128<br>    dirty_data_continue true<br>    dirty_data_file “/var/log/td-agent/dirty.file”<br>    retry_times 3<br>    put_data_batch_size 1000<br>    <buffer><br>      flush_mode interval<br>      retry_type exponential_backoff<br>      flush_interval 1s<br>      chunk_limit_size 3m<br>      queue_limit_length 128<br>    </buffer><br>  </match><br></root><br>2018-08-08 17:21:26 +0800 [info]: starting fluentd-1.2.4 pid=9655 ruby=”2.3.7”<br>2018-08-08 17:21:26 +0800 [info]: spawn command to main:  cmdline=[“/usr/local/bin/ruby”, “-Eascii-8bit:ascii-8bit”, “/usr/local/bin/fluentd”, “-c”, “/alidata/install/fluentd/conf/datahub.conf”, “–under-supervisor”]<br>2018-08-08 17:21:31 +0800 [info]: gem ‘fluent-plugin-datahub’ version ‘0.12.25’<br>2018-08-08 17:21:31 +0800 [info]: gem ‘fluent-plugin-grok-parser’ version ‘2.1.6’<br>2018-08-08 17:21:31 +0800 [info]: gem ‘fluentd’ version ‘1.2.4’<br>2018-08-08 17:21:31 +0800 [info]: adding match pattern=”test” type=”datahub”<br>2018-08-08 17:21:31 +0800 [info]: adding source type=”tail”<br>2018-08-08 17:21:31 +0800 [warn]: #0 ‘pos_file PATH’ parameter is not set to a ‘tail’ source.<br>2018-08-08 17:21:31 +0800 [warn]: #0 this parameter is highly recommended to save the position to resume tailing.<br>2018-08-08 17:21:31 +0800 [info]: #0 starting fluentd worker pid=9665 ppid=9655 worker=0<br>2018-08-08 17:21:31 +0800 [info]: #0 following tail of /alidata/mongodb/log/test.log<br>2018-08-08 17:21:31 +0800 [info]: #0 fluentd worker is now running worker=0<br>2018-08-08 17:21:38 +0800 [info]: #0 Put data to datahub success, total 12</p>
+<h1 id="问题汇总" class="article-heading"><a href="#问题汇总" class="headerlink" title="问题汇总"></a>问题汇总<a class="article-anchor" href="#问题汇总" aria-hidden="true"></a></h1><p>使用ruby2.6的时候出现bug，具体如下<br><a target="_blank" rel="noopener external nofollow noreferrer" href="https://bugs.ruby-lang.org/issues/14976">https://bugs.ruby-lang.org/issues/14976</a></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">2018-08-08 16:31:35 +0800 [info]: starting fluentd-1.2.4 pid=24157 ruby=&quot;2.6.0&quot;</span><br><span class="line">2018-08-08 16:31:35 +0800 [info]: spawn command to main: cmdline=[&quot;/usr/local/bin/ruby&quot;, &quot;-Eascii-8bit:ascii-8bit&quot;, &quot;/usr/local/bin/fluentd&quot;, &quot;-c&quot;, &quot;/alidata/install/fluentd/conf/datahub.conf&quot;, &quot;--under-supervisor&quot;]</span><br><span class="line">2018-08-08 16:31:35 +0800 [info]: gem &#x27;fluent-plugin-datahub&#x27; version &#x27;0.12.25&#x27;</span><br><span class="line">2018-08-08 16:31:35 +0800 [info]: gem &#x27;fluent-plugin-grok-parser&#x27; version &#x27;2.1.6&#x27;</span><br><span class="line">2018-08-08 16:31:35 +0800 [info]: gem &#x27;fluent-plugin-mongo&#x27; version &#x27;1.1.2&#x27;</span><br><span class="line">2018-08-08 16:31:35 +0800 [info]: gem &#x27;fluent-plugin-tail-multiline&#x27; version &#x27;0.1.5&#x27;</span><br><span class="line">2018-08-08 16:31:35 +0800 [info]: gem &#x27;fluentd&#x27; version &#x27;1.2.4&#x27;</span><br><span class="line">2018-08-08 16:31:35 +0800 [info]: adding match pattern=&quot;test&quot; type=&quot;datahub&quot;</span><br><span class="line">2018-08-08 16:31:35 +0800 [info]: adding source type=&quot;tail&quot;</span><br><span class="line">2018-08-08 16:31:35 +0800 [warn]: #0 &#x27;pos_file PATH&#x27; parameter is not set to a &#x27;tail&#x27; source.</span><br><span class="line">2018-08-08 16:31:35 +0800 [warn]: #0 this parameter is highly recommended to save the position to resume tailing.</span><br><span class="line">2018-08-08 16:31:35 +0800 [info]: #0 starting fluentd worker pid=24167 ppid=24157 worker=0</span><br><span class="line">2018-08-08 16:31:35 +0800 [info]: #0 following tail of /alidata/mongodb/log/test.log</span><br><span class="line">2018-08-08 16:31:35 +0800 [info]: #0 fluentd worker is now running worker=0</span><br><span class="line">/usr/local/lib/ruby/gems/2.6.0/gems/fluentd-1.2.4/lib/fluent/event.rb:193: [BUG] Segmentation fault at 0x0000000000000000</span><br><span class="line">ruby 2.6.0preview1 (2018-02-24 trunk 62554) [x86_64-linux]</span><br><span class="line"></span><br><span class="line">-- Control frame information ---------------------------------------</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>解决方法：</p>
+<p>将ruby改为2.3.6版本即可</p>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.438Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/linux/2_excellent_tools/fluentd/fluentd_config_input_mongodblogtail_output_datahub.html';
+  var disqus_title = "Fluentd 采集器插件 td-agentd";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ruby%E5%92%8Cgem"><span class="toc-text">ruby和gem</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8F%92%E4%BB%B6-fluent-plugin-datahub"><span class="toc-text">插件 fluent-plugin-datahub</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8F%92%E4%BB%B6fluent-plugin-grok-parser"><span class="toc-text">插件fluent-plugin-grok-parser</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%89%80%E6%9C%89%E5%AE%89%E8%A3%85%E7%9A%84gem%E5%8C%85"><span class="toc-text">查看所有安装的gem包</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#mongodb%E7%9A%84%E5%8C%B9%E9%85%8D"><span class="toc-text">mongodb的匹配</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB"><span class="toc-text">问题汇总</span></a></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

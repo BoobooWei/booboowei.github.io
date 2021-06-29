@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>初识数组 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/mse/c++/array.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/mse/c++/array">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="数组基础个人理解C++中的数组 与 Python的列表List对比    对比 C++ Array Python List    声明一维数组 type arrayName [ arraySize ]; 不需要   初始化 int balance[2] &#x3D; {1000, 2}; balance &#x3D; [1, ‘a’]   存储的数据类型 必须相同 可以不同   获取长度 int num_ach &#x3D;">
+<meta property="og:type" content="website">
+<meta property="og:title" content="初识数组">
+<meta property="og:url" content="http://www.toberoot.com/mse/c++/array">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="数组基础个人理解C++中的数组 与 Python的列表List对比    对比 C++ Array Python List    声明一维数组 type arrayName [ arraySize ]; 不需要   初始化 int balance[2] &#x3D; {1000, 2}; balance &#x3D; [1, ‘a’]   存储的数据类型 必须相同 可以不同   获取长度 int num_ach &#x3D;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.runoob.com/wp-content/uploads/2014/08/array_presentation.jpg">
+<meta property="og:image" content="https://www.runoob.com/wp-content/uploads/2014/09/two_dimensional_arrays.jpg">
+<meta property="article:published_time" content="2020-12-04T00:52:50.583Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:50.583Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.runoob.com/wp-content/uploads/2014/08/array_presentation.jpg">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">初识数组</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/mse/c++/array.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <h1 id="数组基础" class="article-heading"><a href="#数组基础" class="headerlink" title="数组基础"></a>数组基础<a class="article-anchor" href="#数组基础" aria-hidden="true"></a></h1><blockquote class="note warn"><strong class="note-title">个人理解</strong><p>C++中的数组 与 Python的列表List对比</p>
+<table>
+<thead>
+<tr>
+<th>对比</th>
+<th>C++ Array</th>
+<th>Python List</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>声明一维数组</td>
+<td>type arrayName [ arraySize ];</td>
+<td>不需要</td>
+</tr>
+<tr>
+<td>初始化</td>
+<td>int balance[2] = {1000, 2};</td>
+<td>balance = [1, ‘a’]</td>
+</tr>
+<tr>
+<td>存储的数据类型</td>
+<td>必须相同</td>
+<td>可以不同</td>
+</tr>
+<tr>
+<td>获取长度</td>
+<td>int num_ach = sizeof(balance) / sizeof(int);</td>
+<td>num_ach = len(balance)</td>
+</tr>
+<tr>
+<td>获取指定位置的数据</td>
+<td>balance[index]</td>
+<td>balance[index]</td>
+</tr>
+<tr>
+<td>循环打印数组中每个元素的值</td>
+<td>for ( int j = 0; j &lt; num_ach; j++ )<br>   {<br>      cout &lt;&lt;  n[ j ] &lt;&lt; endl;<br>   }</td>
+<td>for i in num_ach:<br>    print(i)<br>for b in balance:<br>    print(b)</td>
+</tr>
+<tr>
+<td>获取最大最小值</td>
+<td>需要自定义算法比较</td>
+<td>内置方法 max() min() <br>此时要求列表中的元素为同一类型。</td>
+</tr>
+<tr>
+<td>删除</td>
+<td>1. 找到要删除的元素下标记 <br>2. 从找到的下标开始，将后面的元素依次赋值给前一位</td>
+<td>del balance[1]</td>
+</tr>
+<tr>
+<td>插入</td>
+<td>balance[num_ach+1] = 10</td>
+<td>balance.append(10)</td>
+</tr>
+<tr>
+<td>声明多维数组</td>
+<td>type name[size1][size2]…[sizeN];</td>
+<td>balance = [ [1,’tom’], [2. ‘jack’]]</td>
+</tr>
+</tbody></table>
+</blockquote>
+
+<p>C++ 支持<strong>数组</strong>数据结构，它可以存储一个固定大小的相同类型元素的顺序集合。数组是用来存储一系列数据，但它往往被认为是一系列相同类型的变量。</p>
+<p>数组的声明并不是声明一个个单独的变量，比如 number0、number1、…、number99，而是声明一个数组变量，比如 numbers，然后使用 numbers[0]、numbers[1]、…、numbers[99] 来代表一个个单独的变量。数组中的特定元素可以通过索引访问。</p>
+<p>所有的数组都是由连续的内存位置组成。最低的地址对应第一个元素，最高的地址对应最后一个元素。</p>
+<h2 id="声明数组" class="article-heading"><a href="#声明数组" class="headerlink" title="声明数组"></a>声明数组<a class="article-anchor" href="#声明数组" aria-hidden="true"></a></h2><p>在 C++ 中要声明一个数组，需要指定元素的类型和元素的数量，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type arrayName [ arraySize ];</span><br></pre></td></tr></table></figure>
+<p>这叫做一维数组。<strong>arraySize</strong> 必须是一个大于零的整数常量，<strong>type</strong> 可以是任意有效的 C++ 数据类型。例如，要声明一个类型为 double 的包含 10 个元素的数组 <strong>balance</strong>，声明语句如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">double balance[10];</span><br></pre></td></tr></table></figure>
+<p>现在 <em>balance</em> 是一个可用的数组，可以容纳 10 个类型为 double 的数字。</p>
+<h2 id="初始化数组" class="article-heading"><a href="#初始化数组" class="headerlink" title="初始化数组"></a>初始化数组<a class="article-anchor" href="#初始化数组" aria-hidden="true"></a></h2><p>在 C++ 中，您可以逐个初始化数组，也可以使用一个初始化语句，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">double balance[5] &#x3D; &#123;1000.0, 2.0, 3.4, 7.0, 50.0&#125;;</span><br></pre></td></tr></table></figure>
+<p>大括号 { } 之间的值的数目不能大于我们在数组声明时在方括号 [ ] 中指定的元素数目。</p>
+<p>如果您省略掉了数组的大小，数组的大小则为初始化时元素的个数。因此，如果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">double balance[] &#x3D; &#123;1000.0, 2.0, 3.4, 7.0, 50.0&#125;;</span><br></pre></td></tr></table></figure>
+<p>您将创建一个数组，它与前一个实例中所创建的数组是完全相同的。下面是一个为数组中某个元素赋值的实例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">balance[4] &#x3D; 50.0;</span><br></pre></td></tr></table></figure>
+<p>上述的语句把数组中第五个元素的值赋为 50.0。所有的数组都是以 0 作为它们第一个元素的索引，也被称为基索引，数组的最后一个索引是数组的总大小减去 1。以下是上面所讨论的数组的的图形表示：</p>
+<p><img src="https://www.runoob.com/wp-content/uploads/2014/08/array_presentation.jpg" alt="数组表示"></p>
+<h2 id="访问数组元素" class="article-heading"><a href="#访问数组元素" class="headerlink" title="访问数组元素"></a>访问数组元素<a class="article-anchor" href="#访问数组元素" aria-hidden="true"></a></h2><p>数组元素可以通过数组名称加索引进行访问。元素的索引是放在方括号内，跟在数组名称的后边。例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">double salary &#x3D; balance[9];</span><br></pre></td></tr></table></figure>
+<p>上面的语句将把数组中第 10 个元素的值赋给 salary 变量。下面的实例使用了上述的三个概念，即，声明数组、数组赋值、访问数组：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="built_in">std</span>::setw;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="keyword">int</span> n[ <span class="number">10</span> ]; <span class="comment">// n 是一个包含 10 个整数的数组</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 初始化数组元素          </span></span><br><span class="line">   <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ )</span><br><span class="line">   &#123;</span><br><span class="line">      n[ i ] = i + <span class="number">100</span>; <span class="comment">// 设置元素 i 为 i + 100</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Element&quot;</span> &lt;&lt; setw( <span class="number">13</span> ) &lt;&lt; <span class="string">&quot;Value&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 输出数组中每个元素的值                     </span></span><br><span class="line">   <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">10</span>; j++ )</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="built_in">cout</span> &lt;&lt; setw( <span class="number">7</span> )&lt;&lt; j &lt;&lt; setw( <span class="number">13</span> ) &lt;&lt; n[ j ] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>上面的程序使用了 <strong>setw()</strong> 函数来格式化输出。当上面的代码被编译和执行时，它会产生下列结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Element        Value</span><br><span class="line">      0          100</span><br><span class="line">      1          101</span><br><span class="line">      2          102</span><br><span class="line">      3          103</span><br><span class="line">      4          104</span><br><span class="line">      5          105</span><br><span class="line">      6          106</span><br><span class="line">      7          107</span><br><span class="line">      8          108</span><br><span class="line">      9          109</span><br></pre></td></tr></table></figure>
+<h1 id="数组操作" class="article-heading"><a href="#数组操作" class="headerlink" title="数组操作"></a>数组操作<a class="article-anchor" href="#数组操作" aria-hidden="true"></a></h1><h2 id="排序算法" class="article-heading"><a href="#排序算法" class="headerlink" title="排序算法"></a>排序算法<a class="article-anchor" href="#排序算法" aria-hidden="true"></a></h2><p>此处不展开讲解，具体参考《数据结构与算法分析C++》</p>
+<p>使用C++，对于最一般的内部排序应用，选用的方法不是插入排序、谢尔排序，就是快速排序，它们的选用主要是根据输入的大小来决定的。</p>
+<p>不同的算法排序的比较（所有时间均以秒计）</p>
+<table>
+<thead>
+<tr>
+<th>N</th>
+<th>插入排序<br>O(N^2)</th>
+<th>谢尔排序<br>O(N^7/6)</th>
+<th>堆排序<br>O(NlogN)</th>
+<th>快速排序<br>O(NlogN)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>10</td>
+<td>0.000001</td>
+<td>0.000002</td>
+<td>0.000003</td>
+<td>0.000002</td>
+</tr>
+<tr>
+<td>100</td>
+<td>0.000106</td>
+<td>0.000039</td>
+<td>0.000052</td>
+<td>0.000023</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>0.011240</td>
+<td>0.000678</td>
+<td>0.000750</td>
+<td>0.000316</td>
+</tr>
+<tr>
+<td>1万</td>
+<td>1.047</td>
+<td>0.009782</td>
+<td>0.010215</td>
+<td>0.004129</td>
+</tr>
+<tr>
+<td>10万</td>
+<td>110.492</td>
+<td>0.13438</td>
+<td>0.139542</td>
+<td>0.052790</td>
+</tr>
+<tr>
+<td>100万</td>
+<td>NA</td>
+<td>1.6777</td>
+<td>1.7967</td>
+<td>0.6154</td>
+</tr>
+</tbody></table>
+<p>高度优化的快速排序算法即使对于很少的输入也能像谢尔排序一样快。</p>
+<p>快速排序的改进算法仍然有O(N^2)最坏情况，但是机会是微不足道的。</p>
+<p>如果不想过多的考虑输入是随机的大小，那么谢尔排序是不错的选择。</p>
+<p>一般大家脑子里的只有“替换选择”算法哈——打擂台法</p>
+<h2 id="删除插入" class="article-heading"><a href="#删除插入" class="headerlink" title="删除插入"></a>删除插入<a class="article-anchor" href="#删除插入" aria-hidden="true"></a></h2><p>删除：</p>
+<ol>
+<li>找到要删除的元素下标记</li>
+<li>从找到的下标开始，将后面的元素依次赋值给前一位</li>
+</ol>
+<p>插入：</p>
+<ol>
+<li>将新值放在数组的末尾，重新排序</li>
+</ol>
+<h1 id="二维数组" class="article-heading"><a href="#二维数组" class="headerlink" title="二维数组"></a>二维数组<a class="article-anchor" href="#二维数组" aria-hidden="true"></a></h1><p>在 C++ 中，数组是非常重要的，我们需要了解更多有关数组的细节。下面列出了 C++ 程序员必须清楚的一些与数组相关的重要概念：</p>
+<table>
+<thead>
+<tr>
+<th align="left">概念</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-multi-dimensional-arrays.html">多维数组</a></td>
+<td align="left">C++ 支持多维数组。多维数组最简单的形式是二维数组。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-pointer-to-an-array.html">指向数组的指针</a></td>
+<td align="left">您可以通过指定不带索引的数组名称来生成一个指向数组中第一个元素的指针。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-passing-arrays-to-functions.html">传递数组给函数</a></td>
+<td align="left">您可以通过指定不带索引的数组名称来给函数传递一个指向数组的指针。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.runoob.com/cplusplus/cpp-return-arrays-from-function.html">从函数返回数组</a></td>
+<td align="left">C++ 允许从函数返回数组。</td>
+</tr>
+</tbody></table>
+<p>C++ 支持多维数组。多维数组声明的一般形式如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">type name[size1][size2]...[sizeN];</span><br></pre></td></tr></table></figure>
+<p>例如，下面的声明创建了一个三维 5 . 10 . 4 整型数组：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> threedim[<span class="number">5</span>][<span class="number">10</span>][<span class="number">4</span>];</span><br></pre></td></tr></table></figure>
+<p>多维数组最简单的形式是二维数组。一个二维数组，在本质上，是一个一维数组的列表。声明一个 x 行 y 列的二维整型数组，形式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type arrayName [ x ][ y ];</span><br></pre></td></tr></table></figure>
+<p>其中，<strong>type</strong> 可以是任意有效的 C++ 数据类型，<strong>arrayName</strong> 是一个有效的 C++ 标识符。</p>
+<p>一个二维数组可以被认为是一个带有 x 行和 y 列的表格。下面是一个二维数组，包含 3 行和 4 列：</p>
+<p><img src="https://www.runoob.com/wp-content/uploads/2014/09/two_dimensional_arrays.jpg" alt="C++ 中的二维数组"></p>
+<p>因此，数组中的每个元素是使用形式为 a[ i , j ] 的元素名称来标识的，其中 a 是数组名称，i 和 j 是唯一标识 a 中每个元素的下标。</p>
+<h2 id="初始化" class="article-heading"><a href="#初始化" class="headerlink" title="初始化"></a>初始化<a class="article-anchor" href="#初始化" aria-hidden="true"></a></h2><p>多维数组可以通过在括号内为每行指定值来进行初始化。下面是一个带有 3 行 4 列的数组。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int a[3][4] &#x3D; &#123;  </span><br><span class="line"> &#123;0, 1, 2, 3&#125; ,   &#x2F;*  初始化索引号为 0 的行 *&#x2F;</span><br><span class="line"> &#123;4, 5, 6, 7&#125; ,   &#x2F;*  初始化索引号为 1 的行 *&#x2F;</span><br><span class="line"> &#123;8, 9, 10, 11&#125;   &#x2F;*  初始化索引号为 2 的行 *&#x2F;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>内部嵌套的括号是可选的，下面的初始化与上面是等同的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int a[3][4] &#x3D; &#123;0,1,2,3,4,5,6,7,8,9,10,11&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="访问元素" class="article-heading"><a href="#访问元素" class="headerlink" title="访问元素"></a>访问元素<a class="article-anchor" href="#访问元素" aria-hidden="true"></a></h2><p>二维数组中的元素是通过使用下标（即数组的行索引和列索引）来访问的。例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int val &#x3D; a[2][3];</span><br></pre></td></tr></table></figure>
+<p>上面的语句将获取数组中第 3 行第 4 个元素。您可以通过上面的示意图来进行验证。让我们来看看下面的程序，我们将使用嵌套循环来处理二维数组：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"> </span><br><span class="line">int main ()</span><br><span class="line">&#123;</span><br><span class="line">   &#x2F;&#x2F; 一个带有 5 行 2 列的数组</span><br><span class="line">   int a[5][2] &#x3D; &#123; &#123;0,0&#125;, &#123;1,2&#125;, &#123;2,4&#125;, &#123;3,6&#125;,&#123;4,8&#125;&#125;;</span><br><span class="line"> </span><br><span class="line">   &#x2F;&#x2F; 输出数组中每个元素的值                      </span><br><span class="line">   for ( int i &#x3D; 0; i &lt; 5; i++ )</span><br><span class="line">      for ( int j &#x3D; 0; j &lt; 2; j++ )</span><br><span class="line">      &#123;</span><br><span class="line">         cout &lt;&lt; &quot;a[&quot; &lt;&lt; i &lt;&lt; &quot;][&quot; &lt;&lt; j &lt;&lt; &quot;]: &quot;;</span><br><span class="line">         cout &lt;&lt; a[i][j]&lt;&lt; endl;</span><br><span class="line">      &#125;</span><br><span class="line"> </span><br><span class="line">   return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当上面的代码被编译和执行时，它会产生下列结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a[0][0]: 0</span><br><span class="line">a[0][1]: 0</span><br><span class="line">a[1][0]: 1</span><br><span class="line">a[1][1]: 2</span><br><span class="line">a[2][0]: 2</span><br><span class="line">a[2][1]: 4</span><br><span class="line">a[3][0]: 3</span><br><span class="line">a[3][1]: 6</span><br><span class="line">a[4][0]: 4</span><br><span class="line">a[4][1]: 8</span><br></pre></td></tr></table></figure>
+<p>如上所述，您可以创建任意维度的数组，但是一般情况下，我们创建的数组是一维数组和二维数组。</p>
+<h1 id="向量容器" class="article-heading"><a href="#向量容器" class="headerlink" title="向量容器"></a>向量容器<a class="article-anchor" href="#向量容器" aria-hidden="true"></a></h1><blockquote class="note warn"><strong class="note-title">数组的替代品</strong><p>数组的替代品:向量容器vector</p>
+</blockquote>
+
+<h2 id="定义和初始化" class="article-heading"><a href="#定义和初始化" class="headerlink" title="定义和初始化"></a>定义和初始化<a class="article-anchor" href="#定义和初始化" aria-hidden="true"></a></h2><p>向量（Vector）是一个封装了动态大小数组的顺序容器（Sequence Container）。跟任意其它类型容器一样，它能够存放各种类型的对象。可以简单的认为，向量是一个能够存放任意类型的动态数组。</p>
+<ul>
+<li>动态数组，可以运行阶段设置长度</li>
+<li>具有数组的快速索引方式</li>
+<li>可以插入和删除元素</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt; </span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span> &lt;<span class="keyword">double</span>&gt; vec1; <span class="comment">// 未指定个数</span></span><br><span class="line"><span class="built_in">vector</span> &lt;<span class="built_in">string</span>&gt; vec2(<span class="number">5</span>); <span class="comment">// 5个元素，每个元素的数据类型都是字符串</span></span><br><span class="line"><span class="built_in">vector</span> &lt;<span class="keyword">int</span>&gt; vec3(<span class="number">20</span>,<span class="number">998</span>); <span class="comment">// 20个元素，每个元素的值都是998</span></span><br></pre></td></tr></table></figure>
+<h2 id="容器特性" class="article-heading"><a href="#容器特性" class="headerlink" title="容器特性"></a>容器特性<a class="article-anchor" href="#容器特性" aria-hidden="true"></a></h2><ul>
+<li><p>顺序序列：顺序容器中的元素按照严格的线性顺序排序。可以通过元素在序列中的位置访问对应的元素。</p>
+</li>
+<li><p>动态数组：支持对序列中的任意元素进行快速直接访问，甚至可以通过指针算述进行该操作。操供了在序列末尾相对快速地添加/删除元素的操作。</p>
+</li>
+<li><p>能够感知内存分配器的（Allocator-aware）：容器使用一个内存分配器对象来动态地处理它的存储需求。</p>
+</li>
+</ul>
+<h2 id="基本函数" class="article-heading"><a href="#基本函数" class="headerlink" title="基本函数"></a>基本函数<a class="article-anchor" href="#基本函数" aria-hidden="true"></a></h2><h3 id="构造函数" class="article-heading"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数<a class="article-anchor" href="#构造函数" aria-hidden="true"></a></h3><ul>
+<li>vector():创建一个空vector</li>
+<li>vector(int nSize):创建一个vector,元素个数为nSize</li>
+<li>vector(int nSize,const t&amp; t):创建一个vector，元素个数为nSize,且值均为t</li>
+<li>vector(const vector&amp;):复制构造函数</li>
+<li>vector(begin,end):复制[begin,end)区间内另一个数组的元素到vector中</li>
+</ul>
+<h3 id="增加函数" class="article-heading"><a href="#增加函数" class="headerlink" title="增加函数"></a>增加函数<a class="article-anchor" href="#增加函数" aria-hidden="true"></a></h3><ul>
+<li>void push_back(const T&amp; x):向量尾部增加一个元素X</li>
+<li>iterator insert(iterator it,const T&amp; x):向量中迭代器指向元素前增加一个元素x</li>
+<li>iterator insert(iterator it,int n,const T&amp; x):向量中迭代器指向元素前增加n个相同的元素x</li>
+<li>iterator insert(iterator it,const_iterator first,const_iterator last):向量中迭代器指向元素前插入另一个相同类型向量的[first,last)间的数据</li>
+</ul>
+<h3 id="删除函数" class="article-heading"><a href="#删除函数" class="headerlink" title="删除函数"></a>删除函数<a class="article-anchor" href="#删除函数" aria-hidden="true"></a></h3><ul>
+<li>iterator erase(iterator it):删除向量中迭代器指向元素</li>
+<li>iterator erase(iterator first,iterator last):删除向量中[first,last)中元素</li>
+<li>void pop_back():删除向量中最后一个元素</li>
+<li>void clear():清空向量中所有元素</li>
+</ul>
+<h3 id="遍历函数" class="article-heading"><a href="#遍历函数" class="headerlink" title="遍历函数"></a>遍历函数<a class="article-anchor" href="#遍历函数" aria-hidden="true"></a></h3><ul>
+<li>reference at(int pos):返回pos位置元素的引用</li>
+<li>reference front():返回首元素的引用</li>
+<li>reference back():返回尾元素的引用</li>
+<li>iterator begin():返回向量头指针，指向第一个元素</li>
+<li>iterator end():返回向量尾指针，指向向量最后一个元素的下一个位置</li>
+<li>reverse_iterator rbegin():反向迭代器，指向最后一个元素</li>
+<li>reverse_iterator rend():反向迭代器，指向第一个元素之前的位置</li>
+</ul>
+<h3 id="判断函数" class="article-heading"><a href="#判断函数" class="headerlink" title="判断函数"></a>判断函数<a class="article-anchor" href="#判断函数" aria-hidden="true"></a></h3><ul>
+<li>bool empty() const:判断向量是否为空，若为空，则向量中无元素</li>
+</ul>
+<h3 id="大小函数" class="article-heading"><a href="#大小函数" class="headerlink" title="大小函数"></a>大小函数<a class="article-anchor" href="#大小函数" aria-hidden="true"></a></h3><ul>
+<li>int size() const:返回向量中元素的个数</li>
+<li>int capacity() const:返回当前向量所能容纳的最大元素值</li>
+<li>int max_size() const:返回最大可允许的vector元素数量值</li>
+</ul>
+<h3 id="其他函数" class="article-heading"><a href="#其他函数" class="headerlink" title="其他函数"></a>其他函数<a class="article-anchor" href="#其他函数" aria-hidden="true"></a></h3><ul>
+<li>void swap(vector&amp;):交换两个同类型向量的数据</li>
+<li>void assign(int n,const T&amp; x):设置向量中第n个元素的值为x</li>
+<li>void assign(const_iterator first,const_iterator last):向量中[first,last)中元素设置成当前向量元素</li>
+</ul>
+<h3 id="看着清楚" class="article-heading"><a href="#看着清楚" class="headerlink" title="看着清楚"></a>看着清楚<a class="article-anchor" href="#看着清楚" aria-hidden="true"></a></h3><blockquote>
+<p>1.push_back 在数组的最后添加一个数据</p>
+<p>2.pop_back 去掉数组的最后一个数据</p>
+<p>3.at 得到编号位置的数据</p>
+<p>4.begin 得到数组头的指针</p>
+<p>5.end 得到数组的最后一个单元+1的指针</p>
+<p>6.front 得到数组头的引用</p>
+<p>7.back 得到数组的最后一个单元的引用</p>
+<p>8.max_size 得到vector最大可以是多大</p>
+<p>9.capacity 当前vector分配的大小</p>
+<p>10.size 当前使用数据的大小</p>
+<p>11.resize 改变当前使用数据的大小，如果它比当前使用的大，者填充默认值</p>
+<p>12.reserve 改变当前vecotr所分配空间的大小</p>
+<p>13.erase 删除指针指向的数据项</p>
+<p>14.clear 清空当前的vector</p>
+<p>15.rbegin 将vector反转后的开始指针返回(其实就是原来的end-1)</p>
+<p>16.rend 将vector反转构的结束指针返回(其实就是原来的begin-1)</p>
+<p>17.empty 判断vector是否为空</p>
+<p>18.swap 与另一个vector交换数据</p>
+</blockquote>
+<hr>
+<h1 id="课堂练习" class="article-heading"><a href="#课堂练习" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习" aria-hidden="true"></a></h1><h2 id="数组基本操作" class="article-heading"><a href="#数组基本操作" class="headerlink" title="数组基本操作"></a>数组基本操作<a class="article-anchor" href="#数组基本操作" aria-hidden="true"></a></h2><ul>
+<li>使用一维数组存放学生单门学科的成绩</li>
+<li>求最好成绩和最差成绩</li>
+<li>打印奇数个数 和 偶数个数</li>
+<li>查找输入的数字在数组中的下表，没有找到的则下标-1</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="built_in">std</span>::setw;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 使用一维数组存放学生单门学科的成绩</span></span><br><span class="line">    <span class="keyword">int</span> achievement[<span class="number">11</span>] = &#123;<span class="number">77</span>, <span class="number">34</span>, <span class="number">10</span>, <span class="number">100</span>, <span class="number">53</span>, <span class="number">25</span>, <span class="number">99</span>, <span class="number">44</span>, <span class="number">76</span>, <span class="number">69</span>, <span class="number">78</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算数组的长度</span></span><br><span class="line">    <span class="keyword">int</span> num_ach = <span class="keyword">sizeof</span>(achievement) / <span class="keyword">sizeof</span>(<span class="keyword">int</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 累加操作</span></span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; num_ach; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        sum = sum + achievement[i];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 求最好成绩和最差成绩</span></span><br><span class="line">    <span class="keyword">int</span> max_ach = achievement[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">int</span> min_ach = achievement[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; num_ach; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (achievement[i] &gt; max_ach)</span><br><span class="line">        &#123;</span><br><span class="line">            max_ach = achievement[i];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (achievement[i] &lt; min_ach)</span><br><span class="line">        &#123;</span><br><span class="line">            min_ach = achievement[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;MAX&quot;</span> &lt;&lt; setw(<span class="number">13</span>) &lt;&lt; max_ach</span><br><span class="line">         &lt;&lt; <span class="string">&quot;\n&quot;</span></span><br><span class="line">         &lt;&lt; <span class="string">&quot;MIN&quot;</span> &lt;&lt; setw(<span class="number">13</span>) &lt;&lt; min_ach &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 打印奇数个数 和 偶数个数</span></span><br><span class="line">    <span class="comment">// 10/2=5</span></span><br><span class="line">    <span class="comment">// 11/2=5..1 偶数 6 5</span></span><br><span class="line">    <span class="keyword">int</span> a = num_ach / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">int</span> b = num_ach % <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">int</span> odd_number = <span class="number">0</span>;  <span class="comment">// 奇数个数</span></span><br><span class="line">    <span class="keyword">int</span> even_number = <span class="number">0</span>; <span class="comment">// 偶数个数</span></span><br><span class="line">    <span class="keyword">if</span> (b == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        odd_number = a;</span><br><span class="line">        even_number = a;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (b == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        odd_number = a;</span><br><span class="line">        even_number = a + b;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cerr</span> &lt;&lt; <span class="string">&quot;Error message : &quot;</span></span><br><span class="line">             &lt;&lt; <span class="string">&quot;计算异常&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; setw(<span class="number">7</span>) &lt;&lt; <span class="string">&quot;奇数个数&quot;</span> &lt;&lt; setw(<span class="number">13</span>) &lt;&lt; odd_number &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; setw(<span class="number">7</span>) &lt;&lt; <span class="string">&quot;偶数个数&quot;</span> &lt;&lt; setw(<span class="number">13</span>) &lt;&lt; even_number &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找输入的数字在数组中的下标，没有找到的则下标-1</span></span><br><span class="line">    <span class="keyword">int</span> in_num;</span><br><span class="line">    <span class="keyword">int</span> k;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;输入待查找的数组下标：&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; in_num;</span><br><span class="line">    <span class="keyword">if</span> (in_num &gt; <span class="number">-1</span> &amp;&amp; in_num &lt;= num_ach)</span><br><span class="line">    &#123;</span><br><span class="line">        k = in_num;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        k = <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; setw(<span class="number">7</span>) &lt;&lt; <span class="string">&quot;查找[&quot;</span> &lt;&lt; k &lt;&lt; <span class="string">&quot;]&quot;</span> &lt;&lt; setw(<span class="number">13</span>) &lt;&lt; achievement[k] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">MAX          100</span><br><span class="line">MIN           10</span><br><span class="line">奇数个数            5</span><br><span class="line">偶数个数            6</span><br><span class="line">输入待查找的数组下标：</span><br><span class="line">2</span><br><span class="line">查找[2]           10</span><br></pre></td></tr></table></figure>
+<h2 id="元素删除与插入" class="article-heading"><a href="#元素删除与插入" class="headerlink" title="元素删除与插入"></a>元素删除与插入<a class="article-anchor" href="#元素删除与插入" aria-hidden="true"></a></h2><p>要求：根据要求操作排行榜战斗力值</p>
+<ol>
+<li>战力值从大到小排序</li>
+<li>删除200</li>
+<li>插入战斗力41000并保持降序</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="built_in">std</span>::setw;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 使用维数组存放战斗力</span></span><br><span class="line">    <span class="keyword">int</span> hero[]&#123;</span><br><span class="line">        <span class="number">100</span>,</span><br><span class="line">        <span class="number">200</span>,</span><br><span class="line">        <span class="number">300</span>,</span><br><span class="line">        <span class="number">400</span>&#125;;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> ROW = <span class="keyword">sizeof</span>(hero) / <span class="keyword">sizeof</span>(<span class="keyword">int</span>);</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;=====当前战斗力明细:=====&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ROW; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;战斗力：&quot;</span> &lt;&lt; hero[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 删除战斗力200</span></span><br><span class="line">    <span class="comment">// 1. 找到200的索引位</span></span><br><span class="line">    <span class="comment">// 2. 将后一位覆盖前一位</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;=====请输入待删除的战斗力: &quot;</span>;</span><br><span class="line">    <span class="keyword">int</span> data_del;</span><br><span class="line">    <span class="keyword">int</span> index_del;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; data_del;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ROW; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (hero[i] == data_del)</span><br><span class="line">        &#123;</span><br><span class="line">            index_del = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;@待删除的元素索引位: &quot;</span> &lt;&lt; index_del &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = index_del; i &lt; ROW - <span class="number">1</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        hero[i] = hero[i + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;=====删除后:=====&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ROW - <span class="number">1</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;战斗力：&quot;</span> &lt;&lt; hero[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入41000的战斗力</span></span><br><span class="line">    <span class="comment">// 1. 插入到末尾</span></span><br><span class="line">    <span class="comment">// 2. 重新排序[先不做]</span></span><br><span class="line">    <span class="keyword">int</span> data_insert;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;=====请输入待插入的战斗力: &quot;</span>;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; data_insert;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;=====待插入战斗力：&quot;</span> &lt;&lt; data_insert &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    hero[ROW<span class="number">-1</span>] = data_insert;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;=====插入后:=====&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;=====ROW:=====&quot;</span> &lt;&lt; ROW &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ROW; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;战斗力：&quot;</span> &lt;&lt; hero[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">=====当前战斗力明细:=====</span><br><span class="line">战斗力：100</span><br><span class="line">战斗力：200</span><br><span class="line">战斗力：300</span><br><span class="line">战斗力：400</span><br><span class="line">=====请输入待删除的战斗力: 200</span><br><span class="line">@待删除的元素索引位: 1</span><br><span class="line">=====删除后:=====</span><br><span class="line">战斗力：100</span><br><span class="line">战斗力：300</span><br><span class="line">战斗力：400</span><br><span class="line">=====请输入待插入的战斗力: 900</span><br><span class="line">=====待插入战斗力：900</span><br><span class="line">=====插入后:=====</span><br><span class="line">=====ROW:=====4</span><br><span class="line">战斗力：100</span><br><span class="line">战斗力：300</span><br><span class="line">战斗力：400</span><br><span class="line">战斗力：900</span><br></pre></td></tr></table></figure>
+<h2 id="二维数组-1" class="article-heading"><a href="#二维数组-1" class="headerlink" title="二维数组"></a>二维数组<a class="article-anchor" href="#二维数组-1" aria-hidden="true"></a></h2><p>要求：</p>
+<ol>
+<li>记录学生的多门学科成绩</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="built_in">std</span>::setw;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 使用二维数组存放学生多门学科的成绩</span></span><br><span class="line">    <span class="built_in">string</span> stu_names[]&#123;<span class="string">&quot;superman&quot;</span>, <span class="string">&quot;batman&quot;</span>, <span class="string">&quot;wonderwoman&quot;</span>, <span class="string">&quot;booboo&quot;</span>&#125;;</span><br><span class="line">    <span class="built_in">string</span> cource_names[]&#123;<span class="string">&quot;english&quot;</span>, <span class="string">&quot;math&quot;</span>, <span class="string">&quot;yuwen&quot;</span>&#125;;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> ROW = <span class="keyword">sizeof</span>(stu_names) / <span class="keyword">sizeof</span>(stu_names[<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> COL = <span class="keyword">sizeof</span>(cource_names) / <span class="keyword">sizeof</span>(cource_names[<span class="number">0</span>]);</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ROW &lt;&lt; <span class="string">&#x27;\t&#x27;</span> &lt;&lt; COL &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">double</span> scores[ROW][COL];</span><br><span class="line">    <span class="comment">// 录入数据</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ROW; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; COL; j++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; stu_names[i] &lt;&lt; <span class="string">&quot;&#x27;s&quot;</span> &lt;&lt; cource_names[j] &lt;&lt; <span class="string">&quot; score: &quot;</span>;</span><br><span class="line">            <span class="built_in">cin</span> &gt;&gt; scores[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//  打印数据</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&#x27;\t&#x27;</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; COL; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; cource_names[i] &lt;&lt; <span class="string">&quot;\t&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;\n&quot;</span></span><br><span class="line">         &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ROW; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; stu_names[i] &lt;&lt; <span class="string">&quot;\t&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; COL; j++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; scores[i][j] &lt;&lt; <span class="string">&quot;\t&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;\n&quot;</span></span><br><span class="line">             &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">4       3</span><br><span class="line">superman<span class="string">&#x27;senglish score: 2</span></span><br><span class="line"><span class="string">superman&#x27;</span>smath score: 2</span><br><span class="line">superman<span class="string">&#x27;syuwen score: 2</span></span><br><span class="line"><span class="string">batman&#x27;</span>senglish score: 2</span><br><span class="line">batman<span class="string">&#x27;smath score: 2</span></span><br><span class="line"><span class="string">batman&#x27;</span>syuwen score: 2</span><br><span class="line">wonderwoman<span class="string">&#x27;senglish score: 2</span></span><br><span class="line"><span class="string">wonderwoman&#x27;</span>smath score: 2</span><br><span class="line">wonderwoman<span class="string">&#x27;syuwen score: 2</span></span><br><span class="line"><span class="string">booboo&#x27;</span>senglish score: 2</span><br><span class="line">booboo<span class="string">&#x27;smath score: 2</span></span><br><span class="line"><span class="string">booboo&#x27;</span>syuwen score: 2</span><br><span class="line">        english math    yuwen</span><br><span class="line"></span><br><span class="line">superman        2       2       2</span><br><span class="line"></span><br><span class="line">batman  2       2       2</span><br><span class="line"></span><br><span class="line">wonderwoman     2       2       2</span><br><span class="line"></span><br><span class="line">booboo  2       2       2</span><br></pre></td></tr></table></figure>
+<h2 id="向量容器练习" class="article-heading"><a href="#向量容器练习" class="headerlink" title="向量容器练习"></a>向量容器练习<a class="article-anchor" href="#向量容器练习" aria-hidden="true"></a></h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="built_in">std</span>::setw;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* C++ vector VS Python List</span></span><br><span class="line"><span class="comment">    *  追加元素 push_back()                             append() </span></span><br><span class="line"><span class="comment">    *  数组长度 size()                                  __len__()</span></span><br><span class="line"><span class="comment">    *  迭代器   vector&lt;double&gt;::iterator it;            __iter__()</span></span><br><span class="line"><span class="comment">    *          for (it = vec_double.begin(); it != vec_double.end(); it++)&#123; &#125; </span></span><br><span class="line"><span class="comment">    *  排序     </span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; vec_double = &#123;<span class="number">98.5</span>, <span class="number">67.9</span>, <span class="number">55.8</span>, <span class="number">100.1</span>, <span class="number">13.2</span>&#125;;</span><br><span class="line">    <span class="comment">// 遍历</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;初始化数组长度：&quot;</span> &lt;&lt; vec_double.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;初始化数组元素：&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vec_double.size(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; vec_double[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 向数组中插入数字</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;向数组中插入数字：77.7&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    vec_double.push_back(<span class="number">77.7</span>); <span class="comment">//末尾追加一个元素 类似python的append()方法</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;插入后数组长度：&quot;</span> &lt;&lt; vec_double.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;插入后数组元素：&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="comment">// 遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vec_double.size(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; vec_double[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125; <span class="comment">// 获取数字的大小 size()方法 类似python list的__len__() 方法</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 集合的通用遍历，使用迭代器 iterator</span></span><br><span class="line">    <span class="comment">// 以下是迭代器的基本用法，高能慎重</span></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;::iterator it; <span class="comment">// 得到迭代器对象</span></span><br><span class="line">    <span class="comment">// 排序</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;正序排列：&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    sort(vec_double.begin(), vec_double.end());</span><br><span class="line">    <span class="comment">// it.begin</span></span><br><span class="line">    <span class="keyword">for</span> (it = vec_double.begin(); it != vec_double.end(); it++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; *it &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;倒序排列：&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    reverse(vec_double.begin(), vec_double.end());</span><br><span class="line">    <span class="comment">// it.begin</span></span><br><span class="line">    <span class="keyword">for</span> (it = vec_double.begin(); it != vec_double.end(); it++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; *it &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 类似 Python list的 __iter__() 方法</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">初始化数组长度：5     </span><br><span class="line">初始化数组元素：      </span><br><span class="line">98.5</span><br><span class="line">67.9</span><br><span class="line">55.8</span><br><span class="line">100.1</span><br><span class="line">13.2</span><br><span class="line">向数组中插入数字：77.7</span><br><span class="line">插入后数组长度：6     </span><br><span class="line">插入后数组元素：</span><br><span class="line">98.5</span><br><span class="line">67.9</span><br><span class="line">55.8</span><br><span class="line">100.1</span><br><span class="line">13.2</span><br><span class="line">77.7</span><br><span class="line">正序排列：</span><br><span class="line">13.2</span><br><span class="line">55.8</span><br><span class="line">67.9</span><br><span class="line">77.7</span><br><span class="line">98.5</span><br><span class="line">100.1</span><br><span class="line">倒序排列：</span><br><span class="line">100.1</span><br><span class="line">98.5</span><br><span class="line">77.7</span><br><span class="line">67.9</span><br><span class="line">55.8</span><br><span class="line">13.2</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<blockquote class="note info"><strong class="note-title">学习感受</strong><p>我已经学习过的语言包括：</p>
+<p>大学（汇编语言、C语言）</p>
+<p>工作（Bash Shell、SQL、PL/SQL、Python）</p>
+<p>现在（C++）</p>
+<p>对比下来，Python确实简单，快，美，不过我也很期待C++高级的功能，迫不及待想学习更多哈</p>
+<p>数组的替代品 向量容器 vector 类似Python的 List。</p>
+</blockquote>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:50.583Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/mse/politics/index.html" class="article-footer-next" title="政治"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/mse/c++/array.html';
+  var disqus_title = "初识数组";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E5%9F%BA%E7%A1%80"><span class="toc-text">数组基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E%E6%95%B0%E7%BB%84"><span class="toc-text">声明数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E7%BB%84"><span class="toc-text">初始化数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E6%95%B0%E7%BB%84%E5%85%83%E7%B4%A0"><span class="toc-text">访问数组元素</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E6%93%8D%E4%BD%9C"><span class="toc-text">数组操作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95"><span class="toc-text">排序算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%8F%92%E5%85%A5"><span class="toc-text">删除插入</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="toc-text">二维数组</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E5%85%83%E7%B4%A0"><span class="toc-text">访问元素</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E5%AE%B9%E5%99%A8"><span class="toc-text">向量容器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">定义和初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E7%89%B9%E6%80%A7"><span class="toc-text">容器特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%87%BD%E6%95%B0"><span class="toc-text">基本函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-text">构造函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A2%9E%E5%8A%A0%E5%87%BD%E6%95%B0"><span class="toc-text">增加函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%87%BD%E6%95%B0"><span class="toc-text">删除函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%81%8D%E5%8E%86%E5%87%BD%E6%95%B0"><span class="toc-text">遍历函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E5%87%BD%E6%95%B0"><span class="toc-text">判断函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E5%B0%8F%E5%87%BD%E6%95%B0"><span class="toc-text">大小函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%87%BD%E6%95%B0"><span class="toc-text">其他函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9C%8B%E7%9D%80%E6%B8%85%E6%A5%9A"><span class="toc-text">看着清楚</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0"><span class="toc-text">课堂练习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="toc-text">数组基本操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%83%E7%B4%A0%E5%88%A0%E9%99%A4%E4%B8%8E%E6%8F%92%E5%85%A5"><span class="toc-text">元素删除与插入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84-1"><span class="toc-text">二维数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E5%AE%B9%E5%99%A8%E7%BB%83%E4%B9%A0"><span class="toc-text">向量容器练习</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">文化课</strong><a href="/mse/politics/index.html" class="sidebar-link">政治</a><a href="/mse/english/index.html" class="sidebar-link">英语</a><a href="/mse/calculus/index.html" class="sidebar-link">微积分</a><strong class="sidebar-title">专业课</strong><a href="/mse/computer/index.html" class="sidebar-link">计算机组成原理</a><a href="/mse/algorithm/index.html" class="sidebar-link">数据结构与算法</a><a href="/mse/c++/index.html" class="sidebar-link">C++ 语言程序</a><a href="/mse/software/index.html" class="sidebar-link">软件工程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">文化课</strong><a href="/mse/politics/index.html" class="mobile-nav-link">政治</a><a href="/mse/english/index.html" class="mobile-nav-link">英语</a><a href="/mse/calculus/index.html" class="mobile-nav-link">微积分</a><strong class="mobile-nav-title">专业课</strong><a href="/mse/computer/index.html" class="mobile-nav-link">计算机组成原理</a><a href="/mse/algorithm/index.html" class="mobile-nav-link">数据结构与算法</a><a href="/mse/c++/index.html" class="mobile-nav-link">C++ 语言程序</a><a href="/mse/software/index.html" class="mobile-nav-link">软件工程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>

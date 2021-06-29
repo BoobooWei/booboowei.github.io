@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践17:数据库维护 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/17-DatabaseMaintenance-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%B4%E6%8A%A4.html">
+  <!-- Alternative links -->
+  
+    
+      <link rel="alternative" hreflang="zh-cn" href="http://www.toberoot.com/zh-cn/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/17-DatabaseMaintenance-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%B4%E6%8A%A4">
+    
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="/icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="/css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="/atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 17: Database Maintenance 2020.01.29 BoobooWei     实践17:数据库维护    实践17:概览    实践17-1:数据库维护    实践17-2:修改PDB数据库名称    实践17-3:修改CDB的数据库名称    实践17-4:在PDB上使用STARTUP SQL * Plus命令Management">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践17:数据库维护">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/17-DatabaseMaintenance-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%B4%E6%8A%A4">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 17: Database Maintenance 2020.01.29 BoobooWei     实践17:数据库维护    实践17:概览    实践17-1:数据库维护    实践17-2:修改PDB数据库名称    实践17-3:修改CDB的数据库名称    实践17-4:在PDB上使用STARTUP SQL * Plus命令Management">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/pic/1701.png">
+<meta property="og:image" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/pic/1702.png">
+<meta property="og:image" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/pic/1703.png">
+<meta property="og:image" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/pic/1704.png">
+<meta property="og:image" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/pic/1705.png">
+<meta property="og:image" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/pic/1706.png">
+<meta property="og:image" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/pic/1710.png">
+<meta property="og:image" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/pic/1711.png">
+<meta property="article:published_time" content="2020-12-04T00:52:49.989Z">
+<meta property="article:modified_time" content="2020-12-04T00:52:49.989Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/pic/1701.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-6482217598104186",
+          enable_page_level_ads: true
+     });
+  </script>
+  <!-- at the end of the HEAD -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href='/' id="logo">ToBeRoot</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="/api/" class="main-nav-link">MySQL8.0</a><a href="/database/" class="main-nav-link">Database</a><a href="/devops/" class="main-nav-link">DevOps</a><a href="/linux/" class="main-nav-link">Linux</a><a href="/cloud/" class="main-nav-link">Cloud</a><a href="/mse/" class="main-nav-link">MSE</a><a href="/projects/" class="main-nav-link">Projects</a><a href="/news/" class="main-nav-link">News</a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+      <a href="/themes/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>技术广角</span></label></a>
+    </div>
+
+
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践17:数据库维护</h1>
+                <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/booboowei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/17-DatabaseMaintenance-数据库维护.md" class="article-edit-link" title="改进本文"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <blockquote>
+<p><strong>Practices for Lesson 17: Database Maintenance</strong></p>
+<p>2020.01.29 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:2 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#实践17数据库维护">实践17:数据库维护</a>   <ul>
+<li><a href="#实践17概览">实践17:概览</a>   </li>
+<li><a href="#实践17-1数据库维护">实践17-1:数据库维护</a>   </li>
+<li><a href="#实践17-2修改pdb数据库名称">实践17-2:修改PDB数据库名称</a>   </li>
+<li><a href="#实践17-3修改cdb的数据库名称">实践17-3:修改CDB的数据库名称</a>   </li>
+<li><a href="#实践17-4在pdb上使用startup-sql-plus命令management">实践17-4:在PDB上使用STARTUP SQL * Plus命令Management</a>   </li>
+<li><a href="#实践17-5删除pdb">实践17-5:删除PDB</a>   </li>
+<li><a href="#实践17-6创建pdb">实践17-6:创建PDB</a>   </li>
+<li><a href="#实践17-7拔出pdb">实践17-7:拔出PDB</a>   </li>
+<li><a href="#实践17-8non-cdb-to-pdb">实践17-8:Non-CDB to PDB</a>   </li>
+<li><a href="#总结">总结</a>   </li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="实践17-概览" class="article-heading"><a href="#实践17-概览" class="headerlink" title="实践17:概览"></a>实践17:概览<a class="article-anchor" href="#实践17-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 17: Overview</p>
+<p><strong>Background:</strong> You want to proactively monitor your orcl database so that common problems can be fixed before they affect users. Users, developers, and unanticipated changes in the way applications are used can bring serious performance problems. As DBA you are seldom informed about what changed, you are instead told there is a generic problem. At that point you must find the problem based often on misleading information from users.</p>
+<p>In this scenario, a developer is providing scripts for you to run to provision changes to an application. These supplied scripts create a problem so that you can familiarize yourself with the tools that are available. Examine each script to satisfy yourself that the script is doing what you have been told.</p>
+<p>These practices have been scripted because delays in performing the tasks can have a large effect on the results you see due to the short time that the workload runs.</p>
+<p>背景:您希望主动监控数据库，以便在常见问题影响用户之前修复它们。用户、开发人员和应用程序使用方式的意外变化可能带来严重的性能问题。作为DBA，您很少被告知发生了什么变化，而是被告知存在一个通用问题。此时，您必须根据来自用户的误导信息发现问题。<br>在此场景中，开发人员为您提供脚本，以运行对应用程序的供应更改。这些提供的脚本会产生一个问题，以便您能够熟悉可用的工具。检查每个脚本，以确保脚本正在执行所告知的操作。<br>这些实践已经编写了脚本，因为由于工作负载运行的时间很短，执行任务的延迟会对您看到的结果产生很大的影响。</p>
+<h2 id="实践17-1-数据库维护" class="article-heading"><a href="#实践17-1-数据库维护" class="headerlink" title="实践17-1:数据库维护"></a>实践17-1:数据库维护<a class="article-anchor" href="#实践17-1-数据库维护" aria-hidden="true"></a></h2><p>Practice 17-1: Database Maintenance</p>
+<h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><h3 id="Task" class="article-heading"><a href="#Task" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task" aria-hidden="true"></a></h3><ol>
+<li><p>A new tablespace is being added to hold the new tables. The first script creates a new locally managed tablespace called TBSSPC with a data file named<code>/u01/app/oracle/oradata/orcl/tbsspc01.dbf</code>of 50 MB. Ensure that the TBSSPC tablespace does not use Automatic Segment Space Management (ASSM). The <strong>lab_17_01_01.sh</strong> script performs these tasks. Examine the script and then execute it.</p>
+</li>
+<li><p>The <code>lab_17_01_02.sh</code> script adds a new user. The script creates the <code>SPCT</code> user, identified by <code>oracle_4U</code>, assigns the TBSSPC tablespace as the default tablespace, assigns the TEMP tablespace as the temporary tablespace, and grants the CONNECT, RESOURCE, and DBA roles to the SPCT user. Execute the <strong>lab_17_01_02.sh</strong> script to perform these tasks.</p>
+</li>
+<li><p>The test workload that is provided runs only a few minutes. In order to get meaningful data, the time between Automatic Workload Repository (AWR) snapshots should be reduced. Use the <code>DBMS_ADVISOR</code> package to set the database activity time to 30 minutes. The test script, running as the SPCT user, drops and creates the SPCT table and gathers statistics for this table. It also creates a snapshot in AWR. Execute the <strong>lab_17_01_03.sh</strong> script to perform these tasks.</p>
+</li>
+<li><p>Run the workload script. This creates an activity to be analyzed. Execute the <strong>lab_17_01_04.sh</strong> script to perform these tasks. DO NOT wait for the script to finish continue to the next step.</p>
+</li>
+<li><p>Watch the activity in the Active Session Graph on the Cloud Control Performance Home page until the script completes.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Cloud Control</td>
+<td>Login  User: <strong>ADMIN</strong>  Password: <strong>oracle_4U</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Summary</td>
+<td>Navigate to the <strong>orcl</strong> database home page.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>orcl database home</td>
+<td>Click <strong>Performance</strong> &gt; <strong>Performance Home.</strong></td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Database Login</td>
+<td>Credentials: Select <strong>Preferred.</strong>  Preferred Credential Name: <strong>SYSDBA Database Credentials</strong>  Click <strong>Login.</strong></td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Database Instance: orcl</td>
+<td>Verify that the refresh rate is set to Real  Time:  15 Second Refresh  Watch the <strong>Average Active Session</strong> graph until It has peaked and returned to the previous low level.</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>After the spike has finished, return to the terminal window to execute the</p>
+<p>lab_17_01_05.sh script.</p>
+</li>
+<li><p>Find and examine the ADDM Performance Analysis and findings.</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Database Instance: orcl</td>
+<td>Click <strong>Performance &gt;  Advisors Home</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Advisors Central</td>
+<td>In the result  section, click the latest ADDM  report.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Automatic Database Diagnostic  Monitor (ADDM)</td>
+<td>Notice the findings. Click each finding.  Review the Detail  findings.</td>
+</tr>
+</tbody></table>
+<p>   d.  Look at the <strong>Performance Analysis</strong> findings in order of their impact. There are several access paths to this information.</p>
+<p>   e.  Looking at the Performance Analysis section, you see that the first finding has a high percentage (in this example, 98.9 percent) impact on the system. So your first step is to look at this finding in more detail. Click the link in the Finding column. In the Recommendations Rationale, you find a statement “waiting for event ‘Buffer Busy Waits’”.</p>
+<p>   f.   Return to the ADDM Performance Analysis page and investigate the other ADDM findings in order of severity. Look at the <strong>Buffer Busy</strong> findings in particular by clicking the link in the Finding column. For one of the Buffer Busy results, you should see that there is read-and-write contention on your SPCT table. The recommended action is to use the Automatic Segment Space Management (ASSM) feature for your SPCT table. The Rationale shows that there is a hot data block that belongs to the SPCT.SPCT table.</p>
+<p>   The findings may appear in a different order than shown. If you do not see results similar to the ones outlined in the preceding screenshot, you may need to restart this practice. If you still do not see the expected results, you may need to adjust the load by modifying the lab_17_01_04.sh and lab_17_01_04.sql scripts. Ask your instructor for assistance if this is the case. Take care not to increase the load too much or you will slow your system down too much.</p>
+<ol start="8">
+<li><p>decide to implement the recommendation to use Automated Segment Space Management. To do this, you must re-create the object. Create a new, locally managed tablespace, called TBSSPC2 with a 50 MB data file. Ensure that the TBSSPC2 tablespace uses the Automatic Segment Space Management feature. Then execute the <strong>lab_17_01_07.sh</strong> script to drop the SPCT table, re-create the table in the new tablespace, gather statistics, and to take a new snapshot.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page</strong>  <strong>Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Cloud Control</td>
+<td>Click <strong>Administration &gt; Storage &gt;  Tablespaces</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Tablespaces</td>
+<td>Click <strong>Create.</strong></td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Create Tablespace</td>
+<td>Enter  Name: <strong>TBSSPC2</strong>  In the Datafiles section, click  <strong>Add.</strong></td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Add Datafile</td>
+<td>Enter  File Name: <strong>tbsspc02.dbf</strong>  File Size: <strong>50  MB</strong>  Verify Automatically extend data  file when full  is NOT  checked  Click <strong>Continue.</strong></td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Create Tablespace</td>
+<td>Click the <strong>Storage</strong> tab.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Create Tablespace: Storage tab</td>
+<td>Verify  Extent Allocation: <strong>Automatic</strong></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>Segment Space Management: <strong>Automatic</strong>  Click <strong>Show SQL</strong>.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>Show SQL</td>
+<td>Examine the  SQL Statement.  It should be:  CREATE SMALLFILE TABLESPACE “TBSSPC2”  DATAFILE  ‘/u01/app/oracle/oradata/orcl/tbsspc02.dbf’  SIZE 50M LOGGING EXTENT  MANAGEMENT LOCAL SEGMENT SPACE  MANAGEMENT AUTO  Click <strong>Return</strong>.</td>
+</tr>
+<tr>
+<td>h.</td>
+<td>Create Tablespace: Storage tab</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>i.</td>
+<td>Tablespaces</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>Execute your workload again. (Use the <strong>lab_17_01_04.sh</strong> script.) DO NOT wait for the script to complete continue to next task.</p>
+</li>
+<li><p>Return to Enterprise Manager Cloud Control. On the orcl Performance Home page, review the Average Active Session graph. View performance data in real time with a 15- second refresh cycle. After a while, you should see a spike on the Average Active Sessions graph. <strong>Hint:</strong> This is that same procedure that you used in Task 5.</p>
+<p>After the spike is finished, execute the <strong>lab_17_01_05.sh</strong> script again. This script forces the creation of a new snapshot and gathers statistics on the table in the workload test.</p>
+<p>a.  Invoke Enterprise Manager as the <strong>D**</strong>BA1** user in the <strong>SYSDBA</strong> role for your <strong>orcl</strong></p>
+<p>database.</p>
+<p>b.  Select <strong>Performance Home</strong> in the <strong>Performance</strong> menu. Watch for the spike in the Active Sessions chart to complete.</p>
+<p>c.  After the spike is finished, run the <strong>lab_17_01_05.sh</strong> script to force the creation of a new snapshot and gather statistics on your SPCT table.</p>
+<p><strong>Note:</strong> You may have to press Enter after the PL/SQL procedures from step 9 have completed in order to see the command prompt again.</p>
+</li>
+<li><p>Review the ADDM from the <strong>Advisor Home</strong> link.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Cloud Control</td>
+<td>Click <strong>Performance &gt;  Advisors Home.</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Advisor Central</td>
+<td>Click the latest ADDM  report.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Automatic Database Diagnostic  Monitor (ADDM)</td>
+<td>Review the ADDM Performance  Analysis section.</td>
+</tr>
+</tbody></table>
+<p>You see that the impact value for the Buffer Busy finding (indicating read-and-write contention) has been greatly reduced or is no longer there. By moving the ADDM table to the locally managed TBSSPC2 tablespace, which uses the Automatic Autoextend Segment feature, you obviously fixed the root cause of the contention problem.</p>
+<p><strong>Note:</strong> You may see additional Buffer Busy findings (at a lower impact percentage) and other further recommendations that could improve performance, but you are not going to pursue them at this time.</p>
+</li>
+<li><p>Execute the <strong>lab_17_01_11.sh</strong> script to clean up your environment so that this practice will not affect other practices.</p>
+</li>
+</ol>
+<h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><ol>
+<li><p>添加了一个新的表空间来容纳新表。第一个脚本使用一个名为/u01/app/oracle/oradata/orcl/tbsspc01的数据文件创建一个名为TBSSPC的新本地管理表空间。确保TBSSPC表空间不使用自动段空间管理(ASSM)。lab_17_01_01.sh脚本执行这些任务。检查脚本，然后执行它。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[oracle@ocm P17]$ <span class="built_in">pwd</span></span><br><span class="line">/u01/software/labs/P17</span><br><span class="line">[oracle@ocm P17]$ ll</span><br><span class="line">total 32</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 603 Jan 22  2013 lab_17_01_01.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 521 Jan 22  2013 lab_17_01_02.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 694 Jan 22  2013 lab_17_01_03.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 483 Jan 23  2013 lab_17_01_04.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 345 Jan 22  2013 lab_17_01_04.sql</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 522 Jan 22  2013 lab_17_01_05.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 616 Jan 22  2013 lab_17_01_07.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 476 Jan 22  2013 lab_17_01_11.sh</span><br><span class="line"></span><br><span class="line">[oracle@ocm P17]$ cat P17/lab_17_01_01.sh</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$LABS</span>/P17</span><br><span class="line"></span><br><span class="line">. <span class="variable">$LABS</span>/set_db.sh</span><br><span class="line">sqlplus dba1/oracle@emrep as sysdba &lt;&lt; <span class="string">END</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">set echo on</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">drop tablespace TBSSPC including contents and datafiles;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">CREATE SMALLFILE TABLESPACE &quot;TBSSPC&quot;</span></span><br><span class="line"><span class="string">DATAFILE &#x27;/u01/app/oracle/oradata/booboo/tbsspc01.dbf&#x27; SIZE 50M</span></span><br><span class="line"><span class="string">AUTOEXTEND ON NEXT 10M MAXSIZE 200M</span></span><br><span class="line"><span class="string">LOGGING</span></span><br><span class="line"><span class="string">EXTENT MANAGEMENT LOCAL</span></span><br><span class="line"><span class="string">SEGMENT SPACE MANAGEMENT MANUAL;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">exit;</span></span><br><span class="line"><span class="string">END</span></span><br><span class="line"></span><br><span class="line">[oracle@ocm labs]$ <span class="built_in">export</span> LABS=/u01/software/labs</span><br><span class="line">[oracle@ocm labs]$ bash P17/lab_17_01_01.sh</span><br><span class="line">The Oracle base remains unchanged with value /u01/app/oracle</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 12.2.0.1.0 Production on Wed Feb 5 02:36:50 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2016, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Last Successful login time: Wed Feb 05 2020 02:34:23 +08:00</span><br><span class="line"></span><br><span class="line">Connected to:</span><br><span class="line">Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line"></span><br><span class="line">SQL&gt; SQL&gt; SQL&gt; drop tablespace TBSSPC including contents and datafiles</span><br><span class="line">*</span><br><span class="line">ERROR at line 1:</span><br><span class="line">ORA-00959: tablespace <span class="string">&#x27;TBSSPC&#x27;</span> does not exist</span><br></pre></td></tr></table></figure>
+
+<p>SQL&gt; SQL&gt;   2    3    4    5    6<br>Tablespace created.</p>
+<p>SQL&gt; SQL&gt; Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2. lab_17_01_02.sh脚本添加了一个新用户。该脚本创建由oracle_4U标识的SPCT用户，将TBSSPC表空间指定为默认表空间，将临时表空间指定为临时表空间，并将连接、资源和DBA角色授予SPCT用户。执行lab_17_01_02.sh脚本来执行这些任务。</span><br><span class="line"></span><br><span class="line">   &#96;&#96;&#96;bash</span><br><span class="line">   [oracle@ocm labs]$ cd $LABS&#x2F;P17</span><br><span class="line"></span><br><span class="line">   . $LABS&#x2F;set_db.sh</span><br><span class="line"></span><br><span class="line">   sqlplus dba1&#x2F;oracle@emrep as sysdba &lt;&lt; END</span><br><span class="line"></span><br><span class="line">   set echo on</span><br><span class="line"></span><br><span class="line">   drop user spct cascade;</span><br><span class="line"></span><br><span class="line">   create user spct identified by oracle_4U account unlock</span><br><span class="line">   default tablespace TBSSPC</span><br><span class="line">   temporary tablespace temp;</span><br><span class="line"></span><br><span class="line">   grant connect, resource, dba to spct;</span><br><span class="line"></span><br><span class="line">   exit;</span><br><span class="line">   END</span><br><span class="line"></span><br><span class="line">   [oracle@ocm labs]$ bash P17&#x2F;lab_17_01_02.sh</span><br><span class="line">   The Oracle base remains unchanged with value &#x2F;u01&#x2F;app&#x2F;oracle</span><br><span class="line"></span><br><span class="line">   SQL*Plus: Release 12.2.0.1.0 Production on Wed Feb 5 02:37:22 2020</span><br><span class="line"></span><br><span class="line">   Copyright (c) 1982, 2016, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">   Last Successful login time: Wed Feb 05 2020 02:36:50 +08:00</span><br><span class="line"></span><br><span class="line">   Connected to:</span><br><span class="line">   Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line"></span><br><span class="line">   SQL&gt; SQL&gt; SQL&gt; SQL&gt; drop user spct cascade</span><br><span class="line">             *</span><br><span class="line">   ERROR at line 1:</span><br><span class="line">   ORA-01918: user &#39;SPCT&#39; does not exist</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   SQL&gt; SQL&gt;   2    3  </span><br><span class="line">   User created.</span><br><span class="line"></span><br><span class="line">   SQL&gt; SQL&gt;</span><br><span class="line">   Grant succeeded.</span><br><span class="line"></span><br><span class="line">   SQL&gt; SQL&gt; Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<ol start="3">
+<li><p>提供的测试工作负载只运行几分钟。为了获得有意义的数据，应该缩短自动工作负载存储库(AWR)快照之间的时间。使用DBMS_ADVISOR包将数据库活动时间设置为30分钟。作为SPCT用户运行的测试脚本删除并创建SPCT表，并收集此表的统计信息。它还在AWR中创建快照。执行lab_17_01_03.sh脚本来执行这些任务。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">[oracle@ocm P17]$ cat lab_17_01_03.sh</span><br><span class="line"><span class="comment"># Oracle Database 12c: Administration Workshop</span></span><br><span class="line"><span class="comment"># Oracle Server Technologies - Curriculum Development</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># ***Training purposes only***</span></span><br><span class="line"><span class="comment"># ***Not appropriate for production use***</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Start this script as OS user: oracle</span></span><br><span class="line"><span class="comment">#   This script supports the ADDM practice</span></span><br><span class="line"></span><br><span class="line">cd $LABS/P17</span><br><span class="line"></span><br><span class="line">. $LABS/set_db.sh</span><br><span class="line"></span><br><span class="line">sqlplus dba1/oracle@emrep as sysdba  &lt;&lt; EOF</span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span> echo <span class="keyword">on</span></span><br><span class="line"></span><br><span class="line">exec dbms_advisor.set_default_task_parameter(<span class="string">&#x27;ADDM&#x27;</span>,<span class="string">&#x27;DB_ACTIVITY_MIN&#x27;</span>,<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line">connect spct/oracle_4U@emrep</span><br><span class="line"></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> spct <span class="keyword">purge</span>;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> spct(<span class="keyword">id</span> <span class="built_in">number</span>, <span class="keyword">name</span> <span class="built_in">varchar2</span>(<span class="number">2000</span>));</span><br><span class="line"></span><br><span class="line">exec DBMS_STATS.GATHER_TABLE_STATS(-</span><br><span class="line">ownname=&gt;&#x27;SPCT&#x27;, tabname=&gt;&#x27;SPCT&#x27;,-</span><br><span class="line">estimate_percent=&gt;DBMS_STATS.AUTO_SAMPLE_SIZE);</span><br><span class="line"></span><br><span class="line">exec DBMS_WORKLOAD_REPOSITORY.CREATE_SNAPSHOT();</span><br><span class="line"></span><br><span class="line">exit;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<p>[oracle@ocm labs]$ bash P17/lab_17_01_03.sh<br>The Oracle base remains unchanged with value /u01/app/oracle</p>
+<p>SQL*Plus: Release 12.2.0.1.0 Production on Wed Feb 5 02:43:47 2020</p>
+<p>Copyright (c) 1982, 2016, Oracle.  All rights reserved.</p>
+<p>Last Successful login time: Wed Feb 05 2020 02:41:32 +08:00</p>
+<p>Connected to:<br>Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</p>
+<p>SQL&gt; SQL&gt; SQL&gt; SQL&gt;<br>PL/SQL procedure successfully completed.</p>
+<p>SQL&gt; SQL&gt; Connected.<br>SQL&gt; SQL&gt; drop table spct purge</p>
+<pre><code>*</code></pre><p>ERROR at line 1:<br>ORA-00942: table or view does not exist</p>
+</li>
+</ol>
+<p>   SQL&gt;<br>   Table created.</p>
+<p>   SQL&gt; SQL&gt; &gt; &gt;<br>   PL/SQL procedure successfully completed.</p>
+<p>   SQL&gt; SQL&gt;<br>   PL/SQL procedure successfully completed.</p>
+<p>   SQL&gt; SQL&gt; Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production<br>   <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">4. 运行工作负载脚本。这将创建要分析的活动。执行lab_17_01_04.sh脚本来执行这些任务。不要等待脚本完成，继续下一步。</span><br><span class="line"></span><br><span class="line">   &#96;&#96;&#96;bash</span><br><span class="line">   [oracle@ocm P17]$ cat lab_17_01_04.sh</span><br><span class="line">   # Oracle Database 12c: Administration Workshop</span><br><span class="line">   # Oracle Server Technologies - Curriculum Development</span><br><span class="line">   #</span><br><span class="line">   # ***Training purposes only***</span><br><span class="line">   # ***Not appropriate for production use***</span><br><span class="line">   #</span><br><span class="line">   # Start this script as OS user: oracle</span><br><span class="line">   #   This script supports the ADDM practice</span><br><span class="line"></span><br><span class="line">   #!&#x2F;bin&#x2F;bash</span><br><span class="line"></span><br><span class="line">   cd $LABS&#x2F;P17</span><br><span class="line"></span><br><span class="line">   . $LABS&#x2F;set_db.sh</span><br><span class="line"></span><br><span class="line">   . $LABS&#x2F;wkfctrfunc</span><br><span class="line"></span><br><span class="line">   users&#x3D;12</span><br><span class="line">   cpufactor $users</span><br><span class="line"></span><br><span class="line">   x&#x3D;1</span><br><span class="line">   y&#x3D;$newval</span><br><span class="line">   UNPW&#x3D;&quot;spct&#x2F;oracle_4U@emrep&quot;</span><br><span class="line"></span><br><span class="line">   while [ $x -le $y ]</span><br><span class="line">   do</span><br><span class="line">       sqlplus -s $UNPW @lab_17_01_04.sql &amp;</span><br><span class="line">       x&#x3D;&#96;expr $x + 1&#96;</span><br><span class="line">   done</span><br><span class="line">   [oracle@ocm P17]$ cat lab_17_01_04.sql</span><br><span class="line">   -- Oracle Database 12c: Administration Workshop</span><br><span class="line">   -- Oracle Server Technologies - Curriculum Development</span><br><span class="line">   --</span><br><span class="line">   -- ***Training purposes only***</span><br><span class="line">   -- ***Not appropriate for production use***</span><br><span class="line">   --</span><br><span class="line">   --   This script supports the ADDM practice</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   declare</span><br><span class="line">   t number;</span><br><span class="line">   begin</span><br><span class="line">   for t in 1..20000 loop</span><br><span class="line">   insert into spct values (Null,&#39;a&#39;);</span><br><span class="line">   commit;</span><br><span class="line">   end loop;</span><br><span class="line">   end;</span><br><span class="line">   &#x2F;</span><br><span class="line">   exit</span><br><span class="line"></span><br><span class="line">   [oracle@ocm labs]$ bash P17&#x2F;lab_17_01_04.sh</span><br><span class="line">   The Oracle base remains unchanged with value &#x2F;u01&#x2F;app&#x2F;oracle</span><br></pre></td></tr></table></figure></p>
+<ol start="5">
+<li><p>在云控制性能主页上查看活动会话图中的活动，直到脚本完成。</p>
+<p><img src="pic/1701.png" alt></p>
+<p><img src="pic/1702.png" alt></p>
+</li>
+<li><p>当spike完成后，返回到终端窗口执行lab_17_01_05.sh脚本。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[oracle@ocm P17]$ cat lab_17_01_05.sh</span><br><span class="line"><span class="comment"># Oracle Database 12c: Administration Workshop</span></span><br><span class="line"><span class="comment"># Oracle Server Technologies - Curriculum Development</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># ***Training purposes only***</span></span><br><span class="line"><span class="comment"># ***Not appropriate for production use***</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Start this script as OS user: oracle</span></span><br><span class="line"><span class="comment">#   This script supports the ADDM practice</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$LABS</span>/P17</span><br><span class="line"></span><br><span class="line">. <span class="variable">$LABS</span>/set_db.sh</span><br><span class="line"></span><br><span class="line">sqlplus spct/oracle_4U@emrep  &lt;&lt; <span class="string">END</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">set echo on</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">exec DBMS_WORKLOAD_REPOSITORY.CREATE_SNAPSHOT();</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">exec DBMS_STATS.GATHER_TABLE_STATS(-</span></span><br><span class="line"><span class="string">ownname=&gt;&#x27;SPCT&#x27;, tabname=&gt;&#x27;SPCT&#x27;,-</span></span><br><span class="line"><span class="string">estimate_percent=&gt;DBMS_STATS.AUTO_SAMPLE_SIZE);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">exit;</span></span><br><span class="line"><span class="string">END</span></span><br><span class="line"></span><br><span class="line">[oracle@ocm labs]$ bash P17/lab_17_01_05.sh</span><br><span class="line">The Oracle base remains unchanged with value /u01/app/oracle</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 12.2.0.1.0 Production on Wed Feb 5 03:01:18 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2016, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Last Successful login time: Wed Feb 05 2020 02:47:19 +08:00</span><br><span class="line"></span><br><span class="line">Connected to:</span><br><span class="line">Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line"></span><br><span class="line">SQL&gt; SQL&gt; SQL&gt; SQL&gt;</span><br><span class="line">PL/SQL procedure successfully completed.</span><br><span class="line"></span><br><span class="line">SQL&gt; SQL&gt; &gt; &gt;</span><br><span class="line">PL/SQL procedure successfully completed.</span><br><span class="line"></span><br><span class="line">SQL&gt; SQL&gt; Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<ol start="7">
+<li><p>查找和检查ADDM性能分析和结果。</p>
+<p><img src="pic/1703.png" alt></p>
+<p><img src="pic/1704.png" alt></p>
+<p><img src="pic/1705.png" alt></p>
+<p>返回ADDM性能分析页面并研究其他ADDM按严重程度排序。</p>
+<p>通过单击查看缓冲区繁忙的结果查找列中的链接。</p>
+<p>对于一个繁忙的缓冲区结果，您应该看到这一点在SPCT表上存在读写争用。建议的操作是</p>
+<p>使用SPCT表的自动段空间管理(ASSM)功能。</p>
+<p><img src="pic/1706.png" alt></p>
+</li>
+<li><p>决定实施建议使用自动段空间管理。为此，必须重新创建对象。创建一个新的本地管理的表空间，名为TBSSPC2，其数据文件大小为50 MB。确保TBSSPC2表空间使用自动段空间管理特性。然后执行lab_17_01_07.sh脚本删除SPCT表，在新的表空间中重新创建表，收集统计信息，并获取新的快照。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[oracle@ocm P17]$ cat lab_17_01_07.sh</span><br><span class="line"><span class="comment"># Oracle Database 12c: Administration Workshop</span></span><br><span class="line"><span class="comment"># Oracle Server Technologies - Curriculum Development</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># ***Training purposes only***</span></span><br><span class="line"><span class="comment"># ***Not appropriate for production use***</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Start this script as OS user: oracle</span></span><br><span class="line"><span class="comment">#   This script supports the ADDM practice</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$LABS</span>/P17</span><br><span class="line"></span><br><span class="line">. <span class="variable">$LABS</span>/set_db.sh</span><br><span class="line"></span><br><span class="line">sqlplus spct/oracle_4U@emrep &lt;&lt; <span class="string">END</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">set echo on</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">drop table spct purge;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">create table SPCT(id number, name varchar2(2000)) tablespace TBSSPC2;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">exec DBMS_STATS.GATHER_TABLE_STATS(-</span></span><br><span class="line"><span class="string">ownname=&gt;&#x27;SPCT&#x27;, tabname=&gt;&#x27;SPCT&#x27;,-</span></span><br><span class="line"><span class="string">estimate_percent=&gt;DBMS_STATS.AUTO_SAMPLE_SIZE);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">exec DBMS_WORKLOAD_REPOSITORY.CREATE_SNAPSHOT();</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">exit;</span></span><br><span class="line"><span class="string">END</span></span><br></pre></td></tr></table></figure>
+
+<p>sqlplus dba1/oracle@emrep as sysdba  &lt;&lt; EOF<br>CREATE SMALLFILE TABLESPACE “TBSSPC2”<br>DATAFILE ‘/u01/app/oracle/oradata/booboo/booboopdb1/tbsspc02.dbf’<br>SIZE 50M LOGGING EXTENT MANAGEMENT LOCAL<br>SEGMENT SPACE MANAGEMENT AUTO;<br>EOF</p>
+<p>[oracle@ocm labs]$ bash P17/lab_17_01_07.sh<br>The Oracle base remains unchanged with value /u01/app/oracle</p>
+<p>SQL*Plus: Release 12.2.0.1.0 Production on Wed Feb 5 03:23:37 2020</p>
+<p>Copyright (c) 1982, 2016, Oracle.  All rights reserved.</p>
+<p>Last Successful login time: Wed Feb 05 2020 03:01:18 +08:00</p>
+<p>Connected to:<br>Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</p>
+<p>SQL&gt; SQL&gt; SQL&gt; SQL&gt;<br>Table dropped.</p>
+<p>SQL&gt; SQL&gt;<br>Table created.</p>
+<p>SQL&gt; SQL&gt; &gt; &gt;<br>PL/SQL procedure successfully completed.</p>
+<p>SQL&gt; SQL&gt;<br>PL/SQL procedure successfully completed.</p>
+<p>SQL&gt; SQL&gt; Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">9. 再次执行工作负载。(使用lab_17_01_04.sh脚本。)不要等待脚本完成，继续下一个任务。</span><br><span class="line"></span><br><span class="line">   &#96;&#96;&#96;bash</span><br><span class="line">   [oracle@ocm labs]$ bash P17&#x2F;lab_17_01_04.sh</span><br><span class="line">   The Oracle base remains unchanged with value &#x2F;u01&#x2F;app&#x2F;oracle</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<ol start="10">
+<li><p>回到企业经理云控制。在性能主页上，查看平均活动会话图。以15秒的刷新周期实时查看性能数据。一段时间后，您应该会在平均活动会话图上看到一个峰值。提示:这与您在Task 5中使用的过程相同。</p>
+<p>当spike完成后，返回到终端窗口执行lab_17_01_05.sh脚本。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">PL/SQL procedure successfully completed.</span><br></pre></td></tr></table></figure>
+
+<p>[oracle@ocm labs]$ bash P17/lab_17_01_05.sh<br>The Oracle base remains unchanged with value /u01/app/oracle</p>
+<p>SQL*Plus: Release 12.2.0.1.0 Production on Wed Feb 5 03:28:56 2020</p>
+<p>Copyright (c) 1982, 2016, Oracle.  All rights reserved.</p>
+<p>Last Successful login time: Wed Feb 05 2020 03:25:50 +08:00</p>
+<p>Connected to:<br>Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</p>
+<p>SQL&gt; SQL&gt; SQL&gt; SQL&gt;<br>PL/SQL procedure successfully completed.</p>
+<p>SQL&gt; SQL&gt; &gt; &gt;<br>PL/SQL procedure successfully completed.</p>
+<p>SQL&gt; SQL&gt; Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">    ![](pic&#x2F;1707.png)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">11. 从Advisor主页链接查看ADDM。</span><br><span class="line"></span><br><span class="line">    您可以看到Busy查找缓冲区的影响值(表示读写)争用)已大大减少或不再存在。将ADDM表移动到</span><br><span class="line"></span><br><span class="line">    本地管理的TBSSPC2表空间，它使用自动自动扩展段显然，您已经修复了争用问题的根源。</span><br><span class="line"></span><br><span class="line">    注意:您可能会看到额外的缓冲区繁忙的结果(在较低的影响百分比)和其他可以提高性能的建议。</span><br><span class="line">    ![](pic&#x2F;1708.png)</span><br><span class="line"></span><br><span class="line">    ![](pic&#x2F;1709.png)</span><br><span class="line"></span><br><span class="line">12. 执行lab_17_01_11.sh脚本来清理您的环境，这样就不会影响其他实践。</span><br><span class="line"></span><br><span class="line">    &#96;&#96;&#96;bash</span><br><span class="line">    [oracle@ocm P17]$ cat lab_17_01_11.sh</span><br><span class="line">    # Oracle Database 12c: Administration Workshop</span><br><span class="line">    # Oracle Server Technologies - Curriculum Development</span><br><span class="line">    #</span><br><span class="line">    # ***Training purposes only***</span><br><span class="line">    # ***Not appropriate for production use***</span><br><span class="line">    #</span><br><span class="line">    # Start this script as OS user: oracle</span><br><span class="line">    #   This script supports the ADDM practice</span><br><span class="line"></span><br><span class="line">    cd $LABS&#x2F;P17</span><br><span class="line"></span><br><span class="line">    . $LABS&#x2F;set_db.sh</span><br><span class="line"></span><br><span class="line">    sqlplus dba1&#x2F;oracle@emrep as sysdba  &lt;&lt; END</span><br><span class="line">    drop user spct cascade;</span><br><span class="line"></span><br><span class="line">    drop tablespace tbsspc including contents and datafiles;</span><br><span class="line"></span><br><span class="line">    drop tablespace tbsspc2 including contents and datafiles;</span><br><span class="line"></span><br><span class="line">    exit;</span><br><span class="line">    END</span><br><span class="line"></span><br><span class="line">    [oracle@ocm labs]$ bash P17&#x2F;lab_17_01_11.sh</span><br><span class="line">    The Oracle base remains unchanged with value &#x2F;u01&#x2F;app&#x2F;oracle</span><br><span class="line"></span><br><span class="line">    SQL*Plus: Release 12.2.0.1.0 Production on Wed Feb 5 03:42:41 2020</span><br><span class="line"></span><br><span class="line">    Copyright (c) 1982, 2016, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">    Last Successful login time: Wed Feb 05 2020 02:43:47 +08:00</span><br><span class="line"></span><br><span class="line">    Connected to:</span><br><span class="line">    Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line"></span><br><span class="line">    SQL&gt;</span><br><span class="line">    User dropped.</span><br><span class="line"></span><br><span class="line">    SQL&gt; SQL&gt;</span><br><span class="line">    Tablespace dropped.</span><br><span class="line"></span><br><span class="line">    SQL&gt; SQL&gt;</span><br><span class="line">    Tablespace dropped.</span><br><span class="line"></span><br><span class="line">    SQL&gt; SQL&gt; Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3><h2 id="实践17-2-修改PDB数据库名称" class="article-heading"><a href="#实践17-2-修改PDB数据库名称" class="headerlink" title="实践17-2:修改PDB数据库名称"></a>实践17-2:修改PDB数据库名称<a class="article-anchor" href="#实践17-2-修改PDB数据库名称" aria-hidden="true"></a></h2><ol>
+<li>将pdb 从 booboopdb1修改为 emrep</li>
+</ol>
+<p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/administering-pdbs-with-sql-plus.html#GUID-2003FF3F-C403-45B7-B198-4CAF7172A4F4">更改PDB的全局数据库名称</a></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqlplus / as sysdba</span><br><span class="line">startup</span><br><span class="line"><span class="keyword">show</span> pdbs</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">session</span> <span class="keyword">set</span> <span class="keyword">container</span>=booboopdb1;</span><br><span class="line"><span class="keyword">show</span> pdbs</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>,open_mode,db_unique_name <span class="keyword">from</span> v$<span class="keyword">database</span>;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">SYSTEM</span> <span class="keyword">ENABLE</span> <span class="keyword">RESTRICTED</span> <span class="keyword">SESSION</span>;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">PLUGGABLE</span> <span class="keyword">DATABASE</span> <span class="keyword">RENAME</span> <span class="keyword">GLOBAL_NAME</span> <span class="keyword">TO</span> emrep;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">SYSTEM</span> <span class="keyword">DISABLE</span> <span class="keyword">RESTRICTED</span> <span class="keyword">SESSION</span>;</span><br><span class="line">SHUTDOWN IMMEDIATE</span><br><span class="line">STARTUP OPEN</span><br><span class="line"><span class="keyword">show</span> pdbs</span><br></pre></td></tr></table></figure>
+<p>运行结果</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">[oracle@ocm ~]$ sqlplus / as sysdba</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 12.2.0.1.0 Production on Sat Feb 1 19:16:16 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2016, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Connected to an idle instance.</span><br><span class="line"><span class="comment">--启动cdb</span></span><br><span class="line">SQL&gt; startup</span><br><span class="line">ORACLE instance started.</span><br><span class="line"></span><br><span class="line">Total System Global Area  855638016 bytes</span><br><span class="line">Fixed Size		    8798504 bytes</span><br><span class="line">Variable Size		  327159512 bytes</span><br><span class="line">Database Buffers	  511705088 bytes</span><br><span class="line">Redo Buffers		    7974912 bytes</span><br><span class="line">Database mounted.</span><br><span class="line">Database opened.</span><br><span class="line"></span><br><span class="line"><span class="comment">--查看pdb</span></span><br><span class="line">SQL&gt; show pdbs</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  OPEN MODE  RESTRICTED</span><br><span class="line"><span class="comment">---------- ------------------------------ ---------- ----------</span></span><br><span class="line">	 2 PDB$SEED			  READ ONLY  NO</span><br><span class="line">	 3 BOOBOOPDB1			  READ WRITE NO</span><br><span class="line">	 4 BOOBOOPDB2			  MOUNTED</span><br><span class="line">	 5 BOOBOOPDB3			  MOUNTED</span><br><span class="line">	 6 BOOBOOPDB4			  MOUNTED</span><br><span class="line"></span><br><span class="line"><span class="comment">--切换到容器booboopdb1	 </span></span><br><span class="line">SQL&gt; alter session set container=booboopdb1;</span><br><span class="line"></span><br><span class="line">Session altered.</span><br><span class="line"></span><br><span class="line">SQL&gt; show pdbs;</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  OPEN MODE  RESTRICTED</span><br><span class="line"><span class="comment">---------- ------------------------------ ---------- ----------</span></span><br><span class="line">	 3 BOOBOOPDB1			  READ WRITE NO</span><br><span class="line"></span><br><span class="line"><span class="comment">--查看pdb中的db_name参数</span></span><br><span class="line">SQL&gt; show parameter db_name;</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 VALUE</span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">db_name 			     string	 booboo</span><br><span class="line"></span><br><span class="line"><span class="comment">--查看pdb中的数据库名</span></span><br><span class="line">SQL&gt; select name,open_mode,db_unique_name from v$database;</span><br><span class="line"></span><br><span class="line">NAME	  OPEN_MODE	       DB_UNIQUE_NAME</span><br><span class="line"><span class="comment">--------- -------------------- ------------------------------</span></span><br><span class="line">BOOBOO	  READ WRITE	       booboo</span><br><span class="line"><span class="comment">--尝试直接修改pdb的数据库名，发现报错</span></span><br><span class="line">SQL&gt; ALTER PLUGGABLE DATABASE RENAME GLOBAL_NAME TO emrep;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">PLUGGABLE</span> <span class="keyword">DATABASE</span> <span class="keyword">RENAME</span> <span class="keyword">GLOBAL_NAME</span> <span class="keyword">TO</span> emrep</span><br><span class="line">*</span><br><span class="line"><span class="keyword">ERROR</span> <span class="keyword">at</span> line <span class="number">1</span>:</span><br><span class="line">ORA<span class="number">-65045</span>: <span class="keyword">pluggable</span> <span class="keyword">database</span> <span class="keyword">not</span> <span class="keyword">in</span> a <span class="keyword">restricted</span> <span class="keyword">mode</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--修改pdb的数据库模式为RESTRICTED SESSION</span></span><br><span class="line"><span class="keyword">SQL</span>&gt; <span class="keyword">ALTER</span> <span class="keyword">SYSTEM</span> <span class="keyword">ENABLE</span> <span class="keyword">RESTRICTED</span> <span class="keyword">SESSION</span>;</span><br><span class="line"></span><br><span class="line">System altered.</span><br><span class="line"><span class="comment">--修改pdb的数据库名成功</span></span><br><span class="line">SQL&gt; ALTER PLUGGABLE DATABASE RENAME GLOBAL_NAME TO emrep;</span><br><span class="line"></span><br><span class="line">Pluggable database altered.</span><br><span class="line"><span class="comment">--关闭RESTRICTED SESSION</span></span><br><span class="line">SQL&gt; ALTER SYSTEM DISABLE RESTRICTED SESSION;</span><br><span class="line"></span><br><span class="line">System altered.</span><br><span class="line"><span class="comment">--关闭pdb</span></span><br><span class="line">SQL&gt; SHUTDOWN IMMEDIATE</span><br><span class="line">Pluggable Database closed.</span><br><span class="line"><span class="comment">--启动pdb</span></span><br><span class="line">SQL&gt; STARTUP</span><br><span class="line">Pluggable Database opened.</span><br><span class="line"><span class="comment">--查看pdb</span></span><br><span class="line">SQL&gt; show pdbs</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  OPEN MODE  RESTRICTED</span><br><span class="line"><span class="comment">---------- ------------------------------ ---------- ----------</span></span><br><span class="line">	 3 EMREP			  READ WRITE NO</span><br><span class="line"><span class="comment">--切换到cdb</span></span><br><span class="line">SQL&gt; alter session set container=cdb$root;</span><br><span class="line"></span><br><span class="line">Session altered.</span><br><span class="line"><span class="comment">--查看pdbs</span></span><br><span class="line">SQL&gt; show pdbs;</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  OPEN MODE  RESTRICTED</span><br><span class="line"><span class="comment">---------- ------------------------------ ---------- ----------</span></span><br><span class="line">	 2 PDB$SEED			  READ ONLY  NO</span><br><span class="line">	 3 EMREP			  READ WRITE NO</span><br><span class="line">	 4 BOOBOOPDB2			  MOUNTED</span><br><span class="line">	 5 BOOBOOPDB3			  MOUNTED</span><br><span class="line">	 6 BOOBOOPDB4			  MOUNTED</span><br></pre></td></tr></table></figure>
+<h2 id="实践17-3-修改CDB的数据库名称" class="article-heading"><a href="#实践17-3-修改CDB的数据库名称" class="headerlink" title="实践17-3:修改CDB的数据库名称"></a>实践17-3:修改CDB的数据库名称<a class="article-anchor" href="#实践17-3-修改CDB的数据库名称" aria-hidden="true"></a></h2><p>将cdb 从 booboo 修改为 emcdb</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">--查看当前dbname和dbid；并将数据库启动到mount状态</span></span><br><span class="line">sqlplus / as sysdba</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>,dbid <span class="keyword">from</span> v$<span class="keyword">database</span>;</span><br><span class="line">shutdown immediate</span><br><span class="line">startup mount</span><br><span class="line"><span class="comment">--nid命令同时修改dbname 和 dbid</span></span><br><span class="line">nid target=sys/oracle dbname=emcdb</span><br><span class="line"><span class="comment">--将数据库启动到nomount状态；修改db_name;强制启动到mount状态</span></span><br><span class="line">sqlplus / as sysdba</span><br><span class="line">startup nomount</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">system</span> <span class="keyword">set</span> db_name=<span class="string">&#x27;emcdb&#x27;</span> <span class="keyword">scope</span>=<span class="keyword">spfile</span>;</span><br><span class="line">startup force mount</span><br><span class="line"><span class="comment">--关闭数据库实例修改环境变量</span></span><br><span class="line">shutdown immediate</span><br><span class="line"></span><br><span class="line">mv $ORACLE_HOME/dbs/orapwbooboo $ORACLE_HOME/dbs/orapwemcdb</span><br><span class="line">mv $ORACLE_HOME/dbs/spfilebooboo.ora $ORACLE_HOME/dbs/spfileemcdb.ora</span><br><span class="line"><span class="comment">--启动数据库实例</span></span><br><span class="line">startup</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> <span class="keyword">open</span> <span class="keyword">resetlogs</span>;</span><br></pre></td></tr></table></figure>
+<p>执行结果</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">SQL&gt; alter session set container=cdb$root;</span><br><span class="line"></span><br><span class="line">Session altered.</span><br><span class="line"></span><br><span class="line">SQL&gt; show pdbs;</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  OPEN MODE  RESTRICTED</span><br><span class="line"><span class="comment">---------- ------------------------------ ---------- ----------</span></span><br><span class="line">	 2 PDB$SEED			  READ ONLY  NO</span><br><span class="line">	 3 EMREP			  READ WRITE NO</span><br><span class="line">	 4 BOOBOOPDB2			  MOUNTED</span><br><span class="line">	 5 BOOBOOPDB3			  MOUNTED</span><br><span class="line">	 6 BOOBOOPDB4			  MOUNTED</span><br><span class="line">SQL&gt; select name,dbid from v$database;</span><br><span class="line"></span><br><span class="line">NAME		DBID</span><br><span class="line"><span class="comment">--------- ----------</span></span><br><span class="line">BOOBOO	  3416647573</span><br><span class="line"></span><br><span class="line">SQL&gt; shutdown immediate</span><br><span class="line">Database closed.</span><br><span class="line">Database dismounted.</span><br><span class="line">ORACLE instance shut down.</span><br><span class="line">SQL&gt; startup mount</span><br><span class="line">ORACLE instance started.</span><br><span class="line"></span><br><span class="line">Total System Global Area  855638016 bytes</span><br><span class="line">Fixed Size		    8798504 bytes</span><br><span class="line">Variable Size		  327159512 bytes</span><br><span class="line">Database Buffers	  511705088 bytes</span><br><span class="line">Redo Buffers		    7974912 bytes</span><br><span class="line">Database mounted.</span><br><span class="line">SQL&gt; exit</span><br><span class="line">Disconnected from Oracle Database 12c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> - <span class="number">64</span><span class="built_in">bit</span> Production</span><br><span class="line">[<span class="keyword">oracle</span>@ocm ~]$ which nid</span><br><span class="line">/u01/app/<span class="keyword">oracle</span>/product/<span class="number">12.2</span><span class="number">.0</span>/db_1/<span class="keyword">bin</span>/nid</span><br><span class="line">[<span class="keyword">oracle</span>@ocm ~]$ nid tartget=<span class="keyword">sys</span>/<span class="keyword">oracle</span> dbname=emcdb</span><br><span class="line"></span><br><span class="line">DBNEWID: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> - Production <span class="keyword">on</span> Sat Feb <span class="number">1</span> <span class="number">19</span>:<span class="number">53</span>:<span class="number">07</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2017</span>, <span class="keyword">Oracle</span> <span class="keyword">and</span>/<span class="keyword">or</span> its affiliates.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">NID<span class="number">-00002</span>: <span class="keyword">Parse</span> <span class="keyword">error</span>: LRM<span class="number">-00101</span>: <span class="literal">unknown</span> parameter <span class="keyword">name</span> <span class="string">&#x27;tartget&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">Change</span> <span class="keyword">of</span> <span class="keyword">database</span> <span class="keyword">ID</span> <span class="keyword">failed</span> during <span class="keyword">validation</span> - <span class="keyword">database</span> <span class="keyword">is</span> intact.</span><br><span class="line">DBNEWID - Completed <span class="keyword">with</span> <span class="keyword">validation</span> errors.</span><br><span class="line"></span><br><span class="line">[<span class="keyword">oracle</span>@ocm ~]$ nid target=<span class="keyword">sys</span>/<span class="keyword">oracle</span> dbname=emcdb</span><br><span class="line"></span><br><span class="line">DBNEWID: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> - Production <span class="keyword">on</span> Sat Feb <span class="number">1</span> <span class="number">19</span>:<span class="number">53</span>:<span class="number">21</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2017</span>, <span class="keyword">Oracle</span> <span class="keyword">and</span>/<span class="keyword">or</span> its affiliates.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span> <span class="keyword">database</span> BOOBOO (DBID=<span class="number">3416647573</span>)</span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span> <span class="keyword">server</span> <span class="keyword">version</span> <span class="number">12.2</span><span class="number">.0</span></span><br><span class="line"></span><br><span class="line">Control Files <span class="keyword">in</span> <span class="keyword">database</span>:</span><br><span class="line">    /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/control01.ctl</span><br><span class="line">    /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/control02.ctl</span><br><span class="line"></span><br><span class="line"><span class="keyword">Change</span> <span class="keyword">database</span> <span class="keyword">ID</span> <span class="keyword">and</span> <span class="keyword">database</span> <span class="keyword">name</span> BOOBOO <span class="keyword">to</span> EMCDB? (Y/[N]) =&gt; y</span><br><span class="line"></span><br><span class="line">Proceeding <span class="keyword">with</span> operation</span><br><span class="line">Changing <span class="keyword">database</span> <span class="keyword">ID</span> <span class="keyword">from</span> <span class="number">3416647573</span> <span class="keyword">to</span> <span class="number">785286577</span></span><br><span class="line">Changing <span class="keyword">database</span> <span class="keyword">name</span> <span class="keyword">from</span> BOOBOO <span class="keyword">to</span> EMCDB</span><br><span class="line">    Control <span class="keyword">File</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/control01.ctl - modified</span><br><span class="line">    Control <span class="keyword">File</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/control02.ctl - modified</span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/system01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/sysaux01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/undotbs01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/pdbseed/system01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/pdbseed/sysaux01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/users01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/pdbseed/undotbs01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb1/system01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb1/sysaux01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb1/undotbs01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb1/users01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb2/system01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb2/sysaux01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb2/undotbs01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb2/users01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb3/system01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb3/sysaux01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb3/undotbs01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb3/users01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb4/system01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb4/sysaux01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb4/undotbs01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb4/users01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/temp01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/pdbseed/temp012019<span class="number">-09</span><span class="number">-22</span>_02<span class="number">-06</span><span class="number">-21</span><span class="number">-856</span>-AM.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb1/temp01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb2/temp01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb3/temp01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Datafile</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/booboopdb4/temp01.db - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    Control <span class="keyword">File</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/control01.ctl - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    Control <span class="keyword">File</span> /u01/app/<span class="keyword">oracle</span>/<span class="keyword">oradata</span>/booboo/control02.ctl - dbid <span class="keyword">changed</span>, wrote <span class="keyword">new</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">Instance</span> shut down</span><br><span class="line"></span><br><span class="line"><span class="keyword">Database</span> <span class="keyword">name</span> <span class="keyword">changed</span> <span class="keyword">to</span> EMCDB.</span><br><span class="line"><span class="keyword">Modify</span> parameter <span class="keyword">file</span> <span class="keyword">and</span> generate a <span class="keyword">new</span> <span class="keyword">password</span> <span class="keyword">file</span> <span class="keyword">before</span> restarting.</span><br><span class="line"><span class="keyword">Database</span> <span class="keyword">ID</span> <span class="keyword">for</span> <span class="keyword">database</span> EMCDB <span class="keyword">changed</span> <span class="keyword">to</span> <span class="number">785286577.</span></span><br><span class="line"><span class="keyword">All</span> previous backups <span class="keyword">and</span> <span class="keyword">archived</span> <span class="keyword">redo</span> <span class="keyword">logs</span> <span class="keyword">for</span> this <span class="keyword">database</span> <span class="keyword">are</span> unusable.</span><br><span class="line"><span class="keyword">Database</span> has been <span class="keyword">shutdown</span>, <span class="keyword">open</span> <span class="keyword">database</span> <span class="keyword">with</span> <span class="keyword">RESETLOGS</span> option.</span><br><span class="line">Succesfully <span class="keyword">changed</span> <span class="keyword">database</span> <span class="keyword">name</span> <span class="keyword">and</span> ID.</span><br><span class="line">DBNEWID - Completed succesfully.</span><br><span class="line"></span><br><span class="line">[<span class="keyword">oracle</span>@ocm ~]$ sqlplus / <span class="keyword">as</span> <span class="keyword">sysdba</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span>*Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Sat Feb <span class="number">1</span> <span class="number">19</span>:<span class="number">54</span>:<span class="number">38</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span> an idle instance.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span>&gt; <span class="keyword">startup</span> nomount</span><br><span class="line"><span class="keyword">ORACLE</span> <span class="keyword">instance</span> started.</span><br><span class="line"></span><br><span class="line">Total <span class="keyword">System</span> <span class="keyword">Global</span> Area  <span class="number">855638016</span> <span class="keyword">bytes</span></span><br><span class="line"><span class="keyword">Fixed</span> <span class="keyword">Size</span>		    <span class="number">8798504</span> <span class="keyword">bytes</span></span><br><span class="line"><span class="keyword">Variable</span> <span class="keyword">Size</span>		  <span class="number">327159512</span> <span class="keyword">bytes</span></span><br><span class="line"><span class="keyword">Database</span> Buffers	  <span class="number">511705088</span> <span class="keyword">bytes</span></span><br><span class="line"><span class="keyword">Redo</span> Buffers		    <span class="number">7974912</span> <span class="keyword">bytes</span></span><br><span class="line"><span class="keyword">SQL</span>&gt; <span class="keyword">alter</span> <span class="keyword">system</span> <span class="keyword">set</span> db_name=<span class="string">&#x27;emcdb&#x27;</span> <span class="keyword">scope</span>=<span class="keyword">spfile</span>;</span><br><span class="line"></span><br><span class="line">System altered.</span><br><span class="line"></span><br><span class="line">SQL&gt; startup force mount</span><br><span class="line">ORACLE instance started.</span><br><span class="line"></span><br><span class="line">Total System Global Area  855638016 bytes</span><br><span class="line">Fixed Size		    8798504 bytes</span><br><span class="line">Variable Size		  327159512 bytes</span><br><span class="line">Database Buffers	  511705088 bytes</span><br><span class="line">Redo Buffers		    7974912 bytes</span><br><span class="line">Database mounted.</span><br><span class="line">SQL&gt; select name,dbid from v$database;</span><br><span class="line"></span><br><span class="line">NAME		DBID</span><br><span class="line"><span class="comment">--------- ----------</span></span><br><span class="line">EMCDB	   785286577</span><br><span class="line">SQL&gt; shutdown immediate</span><br><span class="line">ORA-01109: database not open</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Database dismounted.</span><br><span class="line">ORACLE instance shut down.</span><br><span class="line">SQL&gt; exit</span><br><span class="line">Disconnected from Oracle Database 12c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> - <span class="number">64</span><span class="built_in">bit</span> Production</span><br><span class="line">[<span class="keyword">oracle</span>@ocm ~]$ vim ~/scripts/setEnv.sh</span><br><span class="line">[<span class="keyword">oracle</span>@ocm ~]$ <span class="keyword">source</span> ~/scripts/setEnv.sh</span><br><span class="line">[<span class="keyword">oracle</span>@ocm ~]$ echo $ORACLE_SID</span><br><span class="line">emcdb</span><br><span class="line">[<span class="keyword">oracle</span>@ocm ~]$ cd $ORACLE_HOME/dbs</span><br><span class="line">[<span class="keyword">oracle</span>@ocm dbs]$ ll</span><br><span class="line">total <span class="number">36</span></span><br><span class="line">-rw-rw<span class="comment">----. 1 oracle oinstall 1544 Feb  1 19:59 hc_booboo.dat</span></span><br><span class="line">-rw-rw<span class="comment">----  1 oracle oinstall 1544 Feb  1 19:15 hc_emcdb.dat</span></span><br><span class="line">-rw-r<span class="comment">--r--  1 oracle oinstall   14 Feb  1 18:55 initemcdb.ora</span></span><br><span class="line">-rw-r<span class="comment">--r--. 1 oracle oinstall 3079 May 15  2015 init.ora</span></span><br><span class="line">-rw-r<span class="comment">-----. 1 oracle oinstall   24 Sep 22 17:03 lkBOOBOO</span></span><br><span class="line">-rw-r<span class="comment">-----  1 oracle oinstall   24 Dec  8 16:31 lkEMCDB</span></span><br><span class="line">-rw-r<span class="comment">-----. 1 oracle oinstall 3584 Nov 17 14:03 orapwbooboo</span></span><br><span class="line">-rw-r<span class="comment">-----  1 oracle oinstall 2048 Dec  8 16:30 orapwemcdb</span></span><br><span class="line">-rw-r<span class="comment">-----. 1 oracle oinstall 3584 Feb  1 19:57 spfilebooboo.ora</span></span><br><span class="line">[<span class="keyword">oracle</span>@ocm dbs]$ mv $ORACLE_HOME/dbs/orapwbooboo $ORACLE_HOME/dbs/orapwemcdb</span><br><span class="line">[<span class="keyword">oracle</span>@ocm dbs]$ mv $ORACLE_HOME/dbs/spfilebooboo.ora $ORACLE_HOME/dbs/spfileemcdb.ora</span><br><span class="line">[<span class="keyword">oracle</span>@ocm dbs]$ ll</span><br><span class="line">total <span class="number">32</span></span><br><span class="line">-rw-rw<span class="comment">----. 1 oracle oinstall 1544 Feb  1 19:59 hc_booboo.dat</span></span><br><span class="line">-rw-rw<span class="comment">----  1 oracle oinstall 1544 Feb  1 19:15 hc_emcdb.dat</span></span><br><span class="line">-rw-r<span class="comment">--r--  1 oracle oinstall   14 Feb  1 18:55 initemcdb.ora</span></span><br><span class="line">-rw-r<span class="comment">--r--. 1 oracle oinstall 3079 May 15  2015 init.ora</span></span><br><span class="line">-rw-r<span class="comment">-----. 1 oracle oinstall   24 Sep 22 17:03 lkBOOBOO</span></span><br><span class="line">-rw-r<span class="comment">-----  1 oracle oinstall   24 Dec  8 16:31 lkEMCDB</span></span><br><span class="line">-rw-r<span class="comment">-----. 1 oracle oinstall 3584 Nov 17 14:03 orapwemcdb</span></span><br><span class="line">-rw-r<span class="comment">-----. 1 oracle oinstall 3584 Feb  1 19:57 spfileemcdb.ora</span></span><br><span class="line">[<span class="keyword">oracle</span>@ocm ~]$ sqlplus / <span class="keyword">as</span> <span class="keyword">sysdba</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span>*Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Sat Feb <span class="number">1</span> <span class="number">20</span>:<span class="number">03</span>:<span class="number">32</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span> an idle instance.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span>&gt; <span class="keyword">startup</span></span><br><span class="line"><span class="keyword">ORACLE</span> <span class="keyword">instance</span> started.</span><br><span class="line"></span><br><span class="line">Total <span class="keyword">System</span> <span class="keyword">Global</span> Area  <span class="number">855638016</span> <span class="keyword">bytes</span></span><br><span class="line"><span class="keyword">Fixed</span> <span class="keyword">Size</span>		    <span class="number">8798504</span> <span class="keyword">bytes</span></span><br><span class="line"><span class="keyword">Variable</span> <span class="keyword">Size</span>		  <span class="number">327159512</span> <span class="keyword">bytes</span></span><br><span class="line"><span class="keyword">Database</span> Buffers	  <span class="number">511705088</span> <span class="keyword">bytes</span></span><br><span class="line"><span class="keyword">Redo</span> Buffers		    <span class="number">7974912</span> <span class="keyword">bytes</span></span><br><span class="line"><span class="keyword">Database</span> mounted.</span><br><span class="line">ORA<span class="number">-01589</span>: must <span class="keyword">use</span> <span class="keyword">RESETLOGS</span> <span class="keyword">or</span> <span class="keyword">NORESETLOGS</span> <span class="keyword">option</span> <span class="keyword">for</span> <span class="keyword">database</span> <span class="keyword">open</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span>&gt; <span class="keyword">alter</span> <span class="keyword">database</span> <span class="keyword">open</span> <span class="keyword">resetlogs</span>;</span><br><span class="line"></span><br><span class="line">Database altered.</span><br><span class="line"></span><br><span class="line">SQL&gt; select name,dbid,open_mode from v$database;</span><br><span class="line"></span><br><span class="line">NAME		DBID OPEN_MODE</span><br><span class="line"><span class="comment">--------- ---------- --------------------</span></span><br><span class="line">EMCDB	   785286577 READ WRITE</span><br><span class="line"></span><br><span class="line">SQL&gt; show pdbs;</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  OPEN MODE  RESTRICTED</span><br><span class="line"><span class="comment">---------- ------------------------------ ---------- ----------</span></span><br><span class="line">	 2 PDB$SEED			  READ ONLY  NO</span><br><span class="line">	 3 EMREP			  MOUNTED</span><br><span class="line">	 4 BOOBOOPDB2			  MOUNTED</span><br><span class="line">	 5 BOOBOOPDB3			  MOUNTED</span><br><span class="line">	 6 BOOBOOPDB4			  MOUNTED</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="实践17-4-在PDB上使用STARTUP-SQL-Plus命令Management" class="article-heading"><a href="#实践17-4-在PDB上使用STARTUP-SQL-Plus命令Management" class="headerlink" title="实践17-4:在PDB上使用STARTUP SQL * Plus命令Management"></a>实践17-4:在PDB上使用STARTUP SQL * Plus命令Management<a class="article-anchor" href="#实践17-4-在PDB上使用STARTUP-SQL-Plus命令Management" aria-hidden="true"></a></h2><h3 id="Overview-1" class="article-heading"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-1" aria-hidden="true"></a></h3><h3 id="Task-1" class="article-heading"><a href="#Task-1" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-1" aria-hidden="true"></a></h3><p>Example 43-10 Opening a PDB in Read/Write Mode with the STARTUP Command</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">STARTUP OPEN</span><br></pre></td></tr></table></figure>
+<p>Example 43-11 Opening a PDB in Read-Only Mode with the STARTUP Command</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">STARTUP OPEN READ ONLY</span><br></pre></td></tr></table></figure>
+<p>Example 43-12 Opening a PDB in Read-Only Restricted Mode with the STARTUP Command</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">STARTUP RESTRICT OPEN READ ONLY</span><br></pre></td></tr></table></figure>
+<p>Example 43-13 Opening a PDB in Read/Write Mode with the STARTUP Command and the FORCE Option</p>
+<p>This example assumes that the PDB is currently open. The <code>FORCE</code> option closes the PDB and then opens it in the read/write mode.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">STARTUP FORCE</span><br></pre></td></tr></table></figure>
+<h3 id="Practice-1" class="article-heading"><a href="#Practice-1" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-1" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-1" class="article-heading"><a href="#KnowledgePoint-1" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-1" aria-hidden="true"></a></h3><p>当前容器是PDB时，SQL * Plus <code>STARTUP</code>命令将打开PDB。</p>
+<p>使用<code>STARTUP</code>命令的以下选项打开PDB：</p>
+<ul>
+<li><p><code>FORCE</code></p>
+<p>在以读/写模式重新打开打开的PDB之前，请先关闭它。指定此选项后，将不允许其他选项。</p>
+</li>
+<li><p><code>RESTRICT</code></p>
+<p>仅允许<code>RESTRICTED</code> <code>SESSION</code>在PDB中具有系统特权的用户访问PDB。</p>
+<p>如果既未指定也<code>OPEN</code> <code>READ</code> <code>WRITE</code>未指定，则当PDB所属的CDB是物理备用数据库时，它将以只读模式打开。否则，将以读/写模式打开PDB。 <code>OPEN</code> <code>READ</code> <code>ONLY``RESTRICT</code></p>
+</li>
+<li><p><code>OPEN</code> open_pdb_options</p>
+<p>在读/写模式或只读模式下打开PDB。指定<code>OPEN</code> <code>READ</code> <code>WRITE</code>或<code>OPEN</code> <code>READ</code> <code>ONLY</code>。如果<code>RESTRICT</code>未指定，<code>READ</code> <code>WRITE</code>则始终为默认值。</p>
+</li>
+</ul>
+<p>要<code>STARTUP</code>在当前容器是PDB时发出命令，必须满足以下先决条件：</p>
+<ul>
+<li>当前用户必须有<code>SYSDBA</code>，<code>SYSOPER</code>，<code>SYSBACKUP</code>，或<code>SYSDG</code>行政特权，特权必须是常用的授予或PDB本地授予。用户必须使用行使特权<code>AS</code> <code>SYSDBA</code>，<code>AS</code> <code>SYSOPER</code>，<code>AS</code> <code>SYSBACKUP</code>，或<code>AS</code> <code>SYSDG</code>分别在连接时。</li>
+<li>除使用该<code>FORCE</code>选项外，PDB必须处于挂载模式才能打开。</li>
+<li>要将PDB置于挂载模式，PDB必须处于开放只读或开放读/写模式。</li>
+</ul>
+<p>也可以看看：</p>
+<ul>
+<li>“ <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/starting-up-and-shutting-down.html#GUID-203404B5-5157-4F29-A241-B8ABC4753819">启动数据库</a> ”</li>
+<li>“ <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/administering-a-cdb-with-sql-plus.html#GUID-E1BBCE0F-76CA-49F3-9A6B-AC6B13AB9AC5">关于当前容器</a> ”</li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/admin&id=SQPUG128">SQL * Plus用户指南和参考</a></li>
+</ul>
+<h2 id="实践17-5-删除PDB" class="article-heading"><a href="#实践17-5-删除PDB" class="headerlink" title="实践17-5:删除PDB"></a>实践17-5:删除PDB<a class="article-anchor" href="#实践17-5-删除PDB" aria-hidden="true"></a></h2><h3 id="Overview-2" class="article-heading"><a href="#Overview-2" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-2" aria-hidden="true"></a></h3><h3 id="Task-2" class="article-heading"><a href="#Task-2" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-2" aria-hidden="true"></a></h3><p>删除PDB：</p>
+<ol>
+<li><p>在SQL * Plus中，确保当前容器是CDB根，或者对于应用程序PDB，是包含应用程序PDB的应用程序根。</p>
+<p>如果将PDB插入CDB根目录，则当前容器必须是CDB根目录。如果将PDB插入应用程序根目录，则当前容器必须是该应用程序根目录或CDB根目录。</p>
+<p>如果要删除应用程序容器，则当前容器必须是CDB根目录，并且该应用程序容器中不得插入任何应用程序PDB。</p>
+<p>请参见“ <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/administering-a-cdb-with-sql-plus.html#GUID-E1BBCE0F-76CA-49F3-9A6B-AC6B13AB9AC5">关于当前容器</a> ”和“ <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/administering-a-cdb-with-sql-plus.html#GUID-D75CAF12-1073-40DB-B096-51B63E4C01E3">使用SQL * Plus访问CDB中的容器</a> ”。</p>
+</li>
+<li><p>运行该<code>DROP</code> <code>PLUGGABLE</code> <code>DATABASE</code>语句并指定要删除的PDB。</p>
+</li>
+</ol>
+<p>Example 38-51 Dropping PDB salespdb While Keeping Its Data Files</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">PLUGGABLE</span> <span class="keyword">DATABASE</span> salespdb</span><br><span class="line">  <span class="keyword">KEEP</span> <span class="keyword">DATAFILES</span>;</span><br></pre></td></tr></table></figure>
+<p>Example 38-52 Dropping PDB salespdb and Its Data Files</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">PLUGGABLE</span> <span class="keyword">DATABASE</span> salespdb</span><br><span class="line">  <span class="keyword">INCLUDING</span> <span class="keyword">DATAFILES</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="Practice-2" class="article-heading"><a href="#Practice-2" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-2" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-2" class="article-heading"><a href="#KnowledgePoint-2" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-2" aria-hidden="true"></a></h3><p>该<code>DROP</code> <code>PLUGGABLE</code> <code>DATABASE</code>语句将删除PDB。当您要将PDB从一个CDB移到另一个CDB或不再需要PDB时，可以删除PDB。</p>
+<p>删除PDB时，将修改CDB的控制文件，以消除对删除的PDB的所有引用。不会删除与PDB关联的归档重做日志文件和备份，但是您可以使用Oracle Recovery Manager（RMAN）删除它们。</p>
+<p>删除PDB时，可以使用以下子句之一保留或删除PDB的数据文件：</p>
+<ul>
+<li><p><code>KEEP</code> <code>DATAFILES</code>（默认值）保留数据文件。</p>
+<p>即使<code>KEEP</code> <code>DATAFILES</code>指定了PDB的临时文件，也会删除它，因为不再需要该临时文件。</p>
+<p>当<code>KEEP</code> <code>DATAFILES</code>被指定，PDB必须拔掉。</p>
+</li>
+<li><p><code>INCLUDING</code> <code>DATAFILES</code> 从磁盘中删除数据文件。</p>
+<p>如果使用该<code>SNAPSHOT</code> <code>COPY</code>子句创建了PDB ，则必须指定<code>INCLUDING</code> <code>DATAFILES</code>何时删除PDB。</p>
+</li>
+</ul>
+<p>必须满足以下先决条件：</p>
+<ul>
+<li><p>PDB必须处于挂载模式，或者必须拔出。</p>
+<p>请参阅“ <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/administering-a-cdb-with-sql-plus.html#GUID-322C5C03-4C48-40CD-8230-0BA5F16BF96B">修改PDB的打开模式</a> ”。</p>
+<p>请参阅“ <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/creating-and-removing-pdbs-with-sql-plus.html#GUID-893E1D67-BD95-4757-B862-03AD13AFF722">从CDB拔出PDB</a> ”。</p>
+</li>
+<li><p>当前用户必须具有<code>SYSDBA</code>或<code>SYSOPER</code>管理特权，并且该特权必须在PDB中被普遍授予或本地授予。用户必须使用<code>AS</code> <code>SYSDBA</code>或<code>AS</code> <code>SYSOPER</code>在连接时行使特权。</p>
+</li>
+</ul>
+<p>注意：</p>
+<p>此操作具有破坏性。</p>
+<h2 id="实践17-6-创建PDB" class="article-heading"><a href="#实践17-6-创建PDB" class="headerlink" title="实践17-6:创建PDB"></a>实践17-6:创建PDB<a class="article-anchor" href="#实践17-6-创建PDB" aria-hidden="true"></a></h2><h3 id="Overview-3" class="article-heading"><a href="#Overview-3" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-3" aria-hidden="true"></a></h3><p>创建PDB并将预定义的Oracle角色授予PDB管理员</p>
+<h3 id="Task-3" class="article-heading"><a href="#Task-3" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-3" aria-hidden="true"></a></h3><p>本示例假定以下因素：</p>
+<ul>
+<li><p>PDB不需要存储限制。因此，该<code>STORAGE</code>子句不是必需的。</p>
+</li>
+<li><p>PDB不需要默认表空间。</p>
+</li>
+<li><p>该<code>PATH_PREFIX</code>子句不是必需的。</p>
+</li>
+<li><p>该<code>FILE_NAME_CONVERT</code>子句和该<code>CREATE_FILE_DEST</code>子句不是必需的。</p>
+<p>启用Oracle托管文件，或设置<code>PDB_FILE_NAME_CONVERT</code>初始化参数。与CDB种子或应用程序种子相关联的文件将基于Oracle托管文件配置或初始化参数设置被复制到新位置。</p>
+</li>
+<li><p>没有与在目标位置创建的新临时文件同名的文件。因此，该<code>TEMPFILE REUSE</code>子句不是必需的。</p>
+</li>
+<li><p>该<code>PDB_DBA</code>角色应该在本地授予下列预定义的Oracle角色：<code>DBA</code>。</p>
+</li>
+</ul>
+<p>鉴于上述因素，以下语句将创建PDB：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PLUGGABLE</span> <span class="keyword">DATABASE</span> salespdb <span class="keyword">ADMIN</span> <span class="keyword">USER</span> salesadm <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="keyword">password</span></span><br><span class="line"><span class="keyword">ROLES</span>=(DBA);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Practice-3" class="article-heading"><a href="#Practice-3" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-3" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">Connected to:</span><br><span class="line">Oracle Database 12c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> - <span class="number">64</span><span class="built_in">bit</span> Production</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PLUGGABLE</span> <span class="keyword">DATABASE</span> salespdb <span class="keyword">ADMIN</span> <span class="keyword">USER</span> salesadm <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="keyword">password</span></span><br><span class="line">  <span class="number">2</span>    <span class="keyword">ROLES</span>=(DBA);</span><br><span class="line"></span><br><span class="line">Pluggable database created.</span><br><span class="line"></span><br><span class="line">SQL&gt; show pdbs;</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  OPEN MODE  RESTRICTED</span><br><span class="line"><span class="comment">---------- ------------------------------ ---------- ----------</span></span><br><span class="line">	 2 PDB$SEED			  READ ONLY  NO</span><br><span class="line">	 3 EMREP			  READ WRITE NO</span><br><span class="line">	 4 SALESPDB			  MOUNTED</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="KnowledgePoint-3" class="article-heading"><a href="#KnowledgePoint-3" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-3" aria-hidden="true"></a></h3><p>使用种子创建PDB</p>
+<p>您可以使用该<code>CREATE</code> <code>PLUGGABLE</code> <code>DATABASE</code>语句使用CDB种子的文件在CDB中创建PDB。您还可以使用此语句使用应用程序种子或CDB种子的文件在应用程序容器中创建应用程序PDB。</p>
+<ul>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/creating-and-removing-pdbs-with-sql-plus.html#GUID-534B3B1D-0ED7-4828-9CA4-B1757398801F">关于从种子创建PDB</a><br>您可以使用该<code>CREATE</code> <code>PLUGGABLE</code> <code>DATABASE</code>语句通过使用CDB种子文件或应用程序种子或CDB种子文件中的应用程序PDB创建新的PDB。</li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/creating-and-removing-pdbs-with-sql-plus.html#GUID-F462EB77-4D25-42E5-B919-42B283CE6CF0">从种子创建PDB</a><br>使用该<code>CREATE</code> <code>PLUGGABLE</code> <code>DATABASE</code>语句，可以从CDB种子创建PDB，并且可以从应用程序种子或CDB种子创建应用程序PDB。</li>
+</ul>
+<p>也可以看看：</p>
+<p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/admin&id=SQLRF55686">《 Oracle数据库SQL语言参考》</a>以获取有关该<code>CREATE</code> <code>PLUGGABLE</code> <code>DATABASE</code>语句的 更多信息</p>
+<h4 id="1-克隆种子容器" class="article-heading"><a href="#1-克隆种子容器" class="headerlink" title="1.克隆种子容器"></a>1.克隆种子容器<a class="article-anchor" href="#1-克隆种子容器" aria-hidden="true"></a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sqlplus &#x2F; as sysdba</span><br><span class="line">alter session set db_create_file_dest&#x3D;&#39;&#x2F;opt&#x2F;oradata&#x2F;&#39;;</span><br><span class="line">create pluggable database pdbdb admin user pdb_dba identified by oracle</span><br><span class="line">alter  pluggable database pdbdb open ;</span><br></pre></td></tr></table></figure>
+<h4 id="2-克隆已有的PDB" class="article-heading"><a href="#2-克隆已有的PDB" class="headerlink" title="2. 克隆已有的PDB"></a>2. 克隆已有的PDB<a class="article-anchor" href="#2-克隆已有的PDB" aria-hidden="true"></a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">alter pluggable database q2 close ;</span><br><span class="line">alter pluggable database q2 open read only ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">create pluggable database q1 from q2  </span><br><span class="line">    storage unlimited</span><br><span class="line">    file_name_convert&#x3D;none ;</span><br><span class="line"></span><br><span class="line">alter  pluggable database q1  open read wirte ;;</span><br><span class="line"></span><br><span class="line">alter pluggable database q2 close ;</span><br><span class="line">alter pluggable database q2 open read write ;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="3-插入一个非CDB数据库" class="article-heading"><a href="#3-插入一个非CDB数据库" class="headerlink" title="3. 插入一个非CDB数据库"></a>3. 插入一个非CDB数据库<a class="article-anchor" href="#3-插入一个非CDB数据库" aria-hidden="true"></a></h4><p>注：如果是12c以前的版本，就必须先升级到12c， 或者使用data pump 移动该数据库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">alter datbase open read only  ;</span><br><span class="line">exec dbms_pdb.describe(&#39;&#x2F;home&#x2F;oracle&#x2F;to_pdb.xml&#39;)</span><br><span class="line"></span><br><span class="line">#数据文件拷贝过去</span><br><span class="line"></span><br><span class="line">create pluggable database  p1 using &#39;&#x2F;home&#x2F;oracle&#x2F;to_pdb.xml&#39;;</span><br><span class="line">alte session set container&#x3D;p1</span><br><span class="line">@noncdb_to_pdb.sql</span><br><span class="line">alter pluggable database p1 open read write ;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h4 id="4-插入一个以前拔出的PDB" class="article-heading"><a href="#4-插入一个以前拔出的PDB" class="headerlink" title="4.插入一个以前拔出的PDB"></a>4.插入一个以前拔出的PDB<a class="article-anchor" href="#4-插入一个以前拔出的PDB" aria-hidden="true"></a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">alter pluggable database m1 close ;</span><br><span class="line">alter pluggable database m1 unplug into &#39;&#x2F;home&#x2F;oracle&#x2F;to_pdb.xml&#39;</span><br><span class="line"></span><br><span class="line">#数据文件拷贝过去</span><br><span class="line">#drop pluggable database m1 including datafiles ;                     #删除数据库和文件</span><br><span class="line">#drop pluggable database pdb01 keep datafiles;                        #删除数据库 保存文件</span><br><span class="line"></span><br><span class="line">create pluggable database m1 using &#39;&#x2F;home&#x2F;oracle&#x2F;to_pdb.xml&#39; nocopy ;</span><br><span class="line">alte pluggable database m1 open read wirte ;</span><br></pre></td></tr></table></figure>
+<h2 id="实践17-7-拔出PDB" class="article-heading"><a href="#实践17-7-拔出PDB" class="headerlink" title="实践17-7:拔出PDB"></a>实践17-7:拔出PDB<a class="article-anchor" href="#实践17-7-拔出PDB" aria-hidden="true"></a></h2><h3 id="Overview-4" class="article-heading"><a href="#Overview-4" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-4" aria-hidden="true"></a></h3><p>拔下PDB</p>
+<h3 id="Task-4" class="article-heading"><a href="#Task-4" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-4" aria-hidden="true"></a></h3><h3 id="Practice-4" class="article-heading"><a href="#Practice-4" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-4" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-4" class="article-heading"><a href="#KnowledgePoint-4" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-4" aria-hidden="true"></a></h3><p>关于拔下PDB</p>
+<p>拔出PDB会使PDB与CDB解除关联。当您要将PDB移至其他CDB时，要存档PDB以便以后使用或不再希望PDB可用时，请拔出PDB。</p>
+<p>要拔出PDB，请连接到其CDB根目录或应用程序根目录，并使用该<code>ALTER</code> <code>PLUGGABLE</code> <code>DATABASE</code>语句指定XML文件或.pdb文件。当您指定XML文件（扩展名为.xml）时，该文件将在拔出后包含有关PDB的元数据。SQL语句创建XML文件，其中包含所需的信息，以使<code>CREATE</code> <code>PLUGGABLE</code> <code>DATABASE</code>目标CDB上的语句能够插入PDB。指定.pdb文件时，该文件包含XML文件的压缩档案，该档案描述了PDB以及PDB使用的文件（例如数据文件和钱包文件）。.pdb文件使您可以将单个压缩文件（而不是多个文件）复制到新位置，以将PDB插入CDB。</p>
+<p>必须先关闭PDB，然后才能将其拔出。拔出PDB时，拔出的PDB处于挂载模式。拔出操作会对PDB的数据文件进行一些更改，以记录例如成功拔出PDB的信息。因为它仍然是CDB的一部分，所以未插入的PDB包含在整个CDB的RMAN备份中。这样的备份提供了一种方便的方式来归档未插入的PDB，以备将来需要时使用。</p>
+<p>要从CDB完全删除PDB，可以删除PDB。拔出的PDB上唯一支持的操作是删除PDB。必须先从CDB中删除PDB，然后才能将其重新插入同一CDB。PDB仅在插入CDB时才可用。</p>
+<p>您可以从CDB拔出PDB。</p>
+<ul>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/creating-and-removing-pdbs-with-sql-plus.html#GUID-3D9AA767-F03C-46EB-AF8E-6808AF1C9D9F">关于拔下PDB</a><br>拔下<a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/creating-and-removing-pdbs-with-sql-plus.html#GUID-3D9AA767-F03C-46EB-AF8E-6808AF1C9D9F">PDB</a>会将PDB与CDB解除关联。当您要将PDB移至其他CDB时，要存档PDB以便以后使用或不再希望PDB可用时，请拔出PDB。</li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/creating-and-removing-pdbs-with-sql-plus.html#GUID-75C46F1B-00D8-4FB9-A8E7-6F7FE3DE4CA0">拔出PDB</a><br>拔出PDB时必须满足先决条件。</li>
+</ul>
+<h2 id="实践17-8-Non-CDB-to-PDB" class="article-heading"><a href="#实践17-8-Non-CDB-to-PDB" class="headerlink" title="实践17-8:Non-CDB to PDB"></a>实践17-8:Non-CDB to PDB<a class="article-anchor" href="#实践17-8-Non-CDB-to-PDB" aria-hidden="true"></a></h2><h3 id="Overview-5" class="article-heading"><a href="#Overview-5" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-5" aria-hidden="true"></a></h3><h3 id="Task-5" class="article-heading"><a href="#Task-5" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-5" aria-hidden="true"></a></h3><h3 id="Practice-5" class="article-heading"><a href="#Practice-5" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-5" aria-hidden="true"></a></h3><ol>
+<li><p>DBCA创建新的非容器数据库实例db01</p>
+</li>
+<li><p>修改ORACLE_SID参数</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export ORACLE_SID=db01</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<ol start="3">
+<li><p>使用以下SQL命令来确保数据库处于只读模式：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqlplus / as sysdba</span><br><span class="line">startup mount</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> <span class="keyword">open</span> <span class="keyword">read</span> <span class="keyword">only</span>;</span><br></pre></td></tr></table></figure></li>
+<li><p>为PDB创建XML文件。XML文件的根名称与PDB的名称匹配。在以下语法示例中，path的值是XML的保存位置，而myPDB .xml是可插入数据库文件的名称。您可以选择要放置文件的位置。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SQL&gt; exec DBMS_PDB.DESCRIBE(&#39;path&#x2F;myPDB.xml&#39;);</span><br></pre></td></tr></table></figure>
+<p>例如，其中path是<code>/home/oracle</code>，myPDB是`db01：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SQL&gt; exec DBMS_PDB.DESCRIBE(&#39;&#x2F;home&#x2F;oracle&#x2F;db01.xml&#39;);</span><br></pre></td></tr></table></figure></li>
+<li><p>使用以下命令在旧的（源）Oracle主目录中关闭数据库：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SQL&gt; SHUTDOWN IMMEDIATE</span><br></pre></td></tr></table></figure>
+<p><img src="pic/1710.png" alt></p>
+</li>
+<li><p>修改ORACLE_SID为原来的容器数据库booboo，然后运行DBMS_PDB.CHECK_PLUG_COMPATIBILITY函数。</p>
+<p>运行该函数时，请设置以下参数：</p>
+<ul>
+<li><code>pdb_descr_file</code> 将此参数设置为XML文件的完整路径。</li>
+<li><code>pdb_name</code>指定新的PDB的名称。如果省略此参数，则使用XML文件中的PDB名称。</li>
+</ul>
+</li>
+</ol>
+<p>   例如，要确定文件描述的PDB <code>/disk1/usr/salespdb.xml</code>是否与当前CDB兼容，请从新的Oracle主目录运行以下PL / SQL块：</p>
+   <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export ORACLE_SID&#x3D;booboo</span><br><span class="line">sqlplus &#x2F; as sysdba</span><br><span class="line">set serveroutput on</span><br><span class="line"></span><br><span class="line">DECLARE</span><br><span class="line">compatible CONSTANT VARCHAR2(3) :&#x3D;</span><br><span class="line">CASE DBMS_PDB.CHECK_PLUG_COMPATIBILITY(</span><br><span class="line">pdb_descr_file &#x3D;&gt; &#39;&#x2F;home&#x2F;oracle&#x2F;db01.xml&#39;,</span><br><span class="line">pdb_name       &#x3D;&gt; &#39;db01&#39;)</span><br><span class="line">WHEN TRUE THEN &#39;YES&#39;</span><br><span class="line">ELSE &#39;NO&#39;</span><br><span class="line">END;</span><br><span class="line">BEGIN</span><br><span class="line">DBMS_OUTPUT.PUT_LINE(compatible);</span><br><span class="line">END;</span><br><span class="line">&#x2F;</span><br></pre></td></tr></table></figure>
+<p>   如果输出是 YES，那么PDB是兼容的，您可以继续下一步。</p>
+<p>   如果输出是 NO，则表明PDB不兼容，您可以检查PDB_PLUG_IN_VIOLATIONS视图以查看为什么它不兼容。</p>
+<p>   <img src="pic/1711.png" alt></p>
+<ol start="7">
+<li><p>使用以下命令语法创建可插入数据库，并将数据库插入CDB：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE PLUGGABLE DATABASE SALESPDB USING &#39;mypdb.xml&#39; NOCOPY TEMPFILE REUSE;</span><br></pre></td></tr></table></figure>
+<p>以下示例显示了用于创建可插入数据库的命令<code>salespdb</code>：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">SQL&gt; CREATE PLUGGABLE DATABASE db01 USING &#x27;/home/oracle/db01.xml&#x27; NOCOPY TEMPFILE REUSE;</span><br></pre></td></tr></table></figure>
+<p>您可以为PDB使用任何名称，但是您使用的名称在此CDB中必须唯一。<code>TEMPFILE REUSE</code>指定<code>TEMP</code>可以重用现有表空间。</p>
+<p>当此SQL命令完成时，将出现以下消息：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Pluggable database created.</span><br></pre></td></tr></table></figure>
+<p>db01数据库现在是PDB，可以将其放入CDB中了。</p>
+<p>警告：</p>
+<p>Oracle强烈建议您先使用有效的备份，然后再使用NOCOPY选项。如果此命令由于任何原因失败，则数据库可能会损坏且无法恢复。</p>
+</li>
+<li><p>使用以下命令连接到PDB：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALTER SESSION set container&#x3D;salespdb;</span><br></pre></td></tr></table></figure></li>
+<li><p>将字典转换为PDB类型。在<code>admin</code>目录中，运行<code>noncdb_to_pdb.sql</code>脚本。您必须先运行此脚本，才能首次打开PDB。</p>
+<p>例如：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">@$ORACLE_HOME/rdbms/admin/noncdb_to_pdb.sql</span><br></pre></td></tr></table></figure>
+<p>注意：</p>
+<p>请注意，根据必须转换的新PDB词典中对象的数量和类型，此脚本的运行时间可能从几分钟到一个小时不等。</p>
+</li>
+<li><p>启动并以读/写模式打开新的PDB。您必须以读/写模式打开Oracle数据库的新PDB，才能完成新PDB与CDB的集成。</p>
+<p>例如，由于您已经将PDB容器设置为<code>salespdb</code>，请输入以下命令以启动PDB：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SQL&gt; STARTUP</span><br></pre></td></tr></table></figure></li>
+<li><p>使用RMAN（恢复管理器）备份PDB。</p>
+<p>Oracle强烈建议您使用RMAN执行PDB的备份，因为在将其转换为PDB之前，您将无法再使用从数据库中获取的ARCHIVELOG和备份。</p>
+<p>警告：</p>
+<p>您必须立即执行备份以确保可恢复性。</p>
+</li>
+</ol>
+<h3 id="KnowledgePoint-5" class="article-heading"><a href="#KnowledgePoint-5" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-5" aria-hidden="true"></a></h3><p><strong>相关话题</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/upgrd&id=BRADV428">Oracle数据库备份和恢复用户指南</a></li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/upgrd&id=ADMIN13549">Oracle数据库管理员指南</a></li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/upgrd/what-is-oracle-database-compatibility.html#GUID-A2E90F08-BC9F-4688-A9D0-4A948DD3F7A9">Oracle数据库中的COMPATIBLE初始化参数</a></li>
+</ul>
+<h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><ol>
+<li>主动监控数据库</li>
+<li>PDB和CDB的数据库名变更</li>
+<li>修改PDB状态</li>
+<li>删除PDB</li>
+<li>创建PDB</li>
+<li>拔出PDB</li>
+<li>Non-PDB to PDB</li>
+</ol>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2020-12-04T00:52:49.989Z" itemprop="dateModified">上次更新：2020-12-04</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>下一页</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+<section id="comments">
+  <div id="disqus_thread"></div>
+</section>
+<script>
+  var disqus_shortname = 'www-toberoot-com';
+  var disqus_url = 'http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/17-DatabaseMaintenance-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%B4%E6%8A%A4.html';
+  var disqus_title = "Oracle数据库12c-管理 实践17:数据库维护";
+  var disqus_config = function(){
+    this.language = 'zh';
+  };
+  (function(){
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'https://go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              
+<div id="carbonads">
+<span>
+<span class="carbon-wrap">
+<a href="https://github.com/booboowei" class="carbon-img" target="_blank" rel="noopener sponsored external nofollow noreferrer">
+    <img src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+    alt="ads via Carbon" border="0" style="max-width: 130px;">
+</a>
+<a href="/about/" class="carbon-text" target="_blank" rel="noopener sponsored">除了自己的无知，我什么都不知道</a>
+</span>
+</span>
+
+              <strong class="sidebar-title">目录</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B517-%E6%A6%82%E8%A7%88"><span class="toc-text">实践17:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B517-1-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%B4%E6%8A%A4"><span class="toc-text">实践17-1:数据库维护</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B517-2-%E4%BF%AE%E6%94%B9PDB%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D%E7%A7%B0"><span class="toc-text">实践17-2:修改PDB数据库名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B517-3-%E4%BF%AE%E6%94%B9CDB%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D%E7%A7%B0"><span class="toc-text">实践17-3:修改CDB的数据库名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B517-4-%E5%9C%A8PDB%E4%B8%8A%E4%BD%BF%E7%94%A8STARTUP-SQL-Plus%E5%91%BD%E4%BB%A4Management"><span class="toc-text">实践17-4:在PDB上使用STARTUP SQL * Plus命令Management</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-1"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-1"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-1"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-1"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B517-5-%E5%88%A0%E9%99%A4PDB"><span class="toc-text">实践17-5:删除PDB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-2"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-2"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-2"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-2"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B517-6-%E5%88%9B%E5%BB%BAPDB"><span class="toc-text">实践17-6:创建PDB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-3"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-3"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-3"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-3"><span class="toc-text">KnowledgePoint</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%85%8B%E9%9A%86%E7%A7%8D%E5%AD%90%E5%AE%B9%E5%99%A8"><span class="toc-text">1.克隆种子容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%85%8B%E9%9A%86%E5%B7%B2%E6%9C%89%E7%9A%84PDB"><span class="toc-text">2. 克隆已有的PDB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%8F%92%E5%85%A5%E4%B8%80%E4%B8%AA%E9%9D%9ECDB%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">3. 插入一个非CDB数据库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%8F%92%E5%85%A5%E4%B8%80%E4%B8%AA%E4%BB%A5%E5%89%8D%E6%8B%94%E5%87%BA%E7%9A%84PDB"><span class="toc-text">4.插入一个以前拔出的PDB</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B517-7-%E6%8B%94%E5%87%BAPDB"><span class="toc-text">实践17-7:拔出PDB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-4"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-4"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-4"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-4"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B517-8-Non-CDB-to-PDB"><span class="toc-text">实践17-8:Non-CDB to PDB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-5"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-5"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-5"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-5"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+              <a href="#" id="article-toc-top">回到顶部</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+
+
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2021 <a href="https://github.com/hexojs/hexo/graphs/contributors" rel="external nofollow noreferrer" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="https://choosealicense.com/licenses/agpl-3.0/" rel="external nofollow noreferrer" target="_blank">GNU AGPLv3</a><br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://github.com/BoobooWei" rel="external nofollow noreferrer" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+      <a target="_blank" rel="noopener external nofollow noreferrer" href="http://exam.toberoot.com/">在线测评系统</a><
+      <a href="https://www.huangjingxue.com/" rel="external nofollow noreferrer" target="_blank">衾袭</a><
+      <a href="https://husky-wu.github.io/" rel="external nofollow noreferrer" target="_blank">明夋</a><
+      <a href="https://footman-ljn.github.io/" rel="external nofollow noreferrer" target="_blank">伊斯</a>
+    </div>
+  </div>
+  <br>
+  <div class="inner">
+  </div>
+
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="/api/" class="mobile-nav-link">MySQL8.0</a><a href="/database/" class="mobile-nav-link">Database</a><a href="/devops/" class="mobile-nav-link">DevOps</a><a href="/linux/" class="mobile-nav-link">Linux</a><a href="/cloud/" class="mobile-nav-link">Cloud</a><a href="/mse/" class="mobile-nav-link">MSE</a><a href="/projects/" class="mobile-nav-link">Projects</a><a href="/news/" class="mobile-nav-link">News</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>简体中文</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="zh-cn" selected>简体中文</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="/js/lang_select.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+
+<script src="/js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+
+<!-- at the end of the BODY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+    indexName: 'toberoot',
+    inputSelector: '#search-input'
+});
+</script>
+
+<!--   backup
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+  apiKey: 'ad652bf20bcd81434ad119c8cf34722e',
+  indexName: 'toberoot',
+  inputSelector: '#search-input'
+});
+</script>
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+
+
+
+</body>
+</html>
