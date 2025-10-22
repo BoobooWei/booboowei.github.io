@@ -46,7 +46,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
 <meta property="article:published_time" content="2020-05-13T15:33:00.000Z">
-<meta property="article:modified_time" content="2025-10-20T17:00:02.103Z">
+<meta property="article:modified_time" content="2025-10-22T14:33:10.760Z">
 <meta property="article:author" content="魏亚萍">
 <meta property="article:tag" content="RedHat">
 <meta name="twitter:card" content="summary">
@@ -111,8 +111,39 @@
     
       <h1 class="article-title" itemprop="name">制作RedHat教学系统装机U盘</h1>
     
-    <a href="" class="article-date"><time datetime="2020-05-13T15:33:00.000Z">2020-05-13</time></a>
+
+    <!-- ✨ Meta 信息区：日期 / 分类 / 标签 -->
+    <div class="article-meta">
+      <span class="meta-item">
+        <i class="fa fa-calendar"></i>
+        <time datetime="2020-05-13T15:33:00.000Z">2020-05-13</time>
+      </span>
+
+      
+        <span class="meta-item">
+          <i class="fa fa-folder-open"></i>
+          
+            <a href="../../../../../categories/%E6%8A%80%E6%9C%AF%E5%B9%BF%E8%A7%92/">技术广角</a>
+            , 
+          
+            <a href="../../../../../categories/%E6%8A%80%E6%9C%AF%E5%B9%BF%E8%A7%92/RedHat/">RedHat</a>
+            
+          
+        </span>
+      
+
+      
+        <span class="meta-item">
+          <i class="fa fa-tags"></i>
+          
+            <a href="../../../../../tags/RedHat/">#RedHat</a>
+            
+          
+        </span>
+      
+    </div>
   </header>
+
   <div class="article-content" itemprop="articleBody">
     <html><head></head><body><blockquote>
 <p>红帽官方教学系统</p>
@@ -122,12 +153,13 @@
 <h2 id="制作u盘启动" class="article-heading"><a href="#制作u盘启动" class="headerlink" title="制作u盘启动"></a>制作u盘启动<a class="article-anchor" href="#制作u盘启动" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@foundation0 ~]# rht-usb usbformat /dev/sdb1</span><br><span class="line">INFO     Configuration file: /root/.icrm/config.yml</span><br><span class="line">INFO     Formatting USB Device: /dev/sdb1</span><br><span class="line">Confirm reformatting /dev/sdb1 (y/N) y</span><br><span class="line">INFO     mkfs.ext4 64-bit support</span><br><span class="line">INFO     /dev/sdb1: format OK</span><br><span class="line">INFO     Appear to have properly formatted USB device.</span><br><span class="line"></span><br><span class="line">[root@foundation0 ~]# cd /home/kiosk/booboo/cache</span><br><span class="line">[root@foundation0 cache]# ll</span><br><span class="line">total 4038772</span><br><span class="line">-rw------- 1 kiosk kiosk      27967 Mar  3  2016 ClassPrep-7.x-4.r35344.txt</span><br><span class="line">-rw------- 1 kiosk kiosk      16186 Mar  3  2016 ClassroomReset-7.x-4.r35344.txt</span><br><span class="line">-rw------- 1 kiosk kiosk      38605 Mar  3  2016 ClassroomSetup-7.x-4.r35344.txt</span><br><span class="line">-rw------- 1 kiosk kiosk      27054 Mar  3  2016 ClassroomTroubleshooting-7.x-4.r35344.txt</span><br><span class="line">-rw------- 1 kiosk kiosk      75892 Mar  3  2016 foundation0-config-7.x-4.r35344.noarch.rpm</span><br><span class="line">-rw------- 1 kiosk kiosk      27568 Mar  3  2016 foundation-config-7.x-4.r35344.noarch.rpm</span><br><span class="line">-rw------- 1 kiosk kiosk     189984 Mar  3  2016 redhat-survey-7.x-55.1.noarch.rpm</span><br><span class="line">-rw------- 1 kiosk kiosk   91254784 Mar  4  2016 rhci-foundation-7.2-4.r35344.iso</span><br><span class="line">-rw------- 1 kiosk kiosk       2775 May  9 11:02 RHCIfoundation-RHEL72-4.r35344.1-ILT-7-en_US.icmf</span><br><span class="line">-rw------- 1 kiosk kiosk     621805 Oct 20  2014 RHEL7和CentOS7打开屏幕VNC.pdf</span><br><span class="line">-rw------- 1 kiosk kiosk 4043309056 Mar  4  2016 rhel-server-7.2-x86_64-dvd.iso</span><br><span class="line">-rw------- 1 kiosk kiosk      96050 Mar  3  2016 rht-usb-7.x-4.r35344</span><br><span class="line"></span><br><span class="line">[root@foundation0 cache]# vim /root/.icrm/config.yml</span><br><span class="line">---</span><br><span class="line">repository: /root/.icrm/repository</span><br><span class="line">repository: /home/kiosk/booboo/cache</span><br><span class="line"></span><br><span class="line">[root@foundation0 cache]# rht-usb verify *.icmf</span><br><span class="line">INFO     Configuration file: /root/.icrm/config.yml</span><br><span class="line">INFO     Verifying Cache Directory: /home/kiosk/booboo/cache</span><br><span class="line"></span><br><span class="line">Verifying manifest file RHCIfoundation-RHEL72-4.r35344.1-ILT-7-en_US.icmf</span><br><span class="line">  Publish date: 2016-02-24 20:43:25</span><br><span class="line">  type        md5sum  artifact-name</span><br><span class="line">  ----------- ------- -----------------------------------------------</span><br><span class="line">  content     CORRUPT rhel-server-7.2-x86_64-dvd.iso</span><br><span class="line">  content     GOODSUM foundation-config-7.x-4.r35344.noarch.rpm</span><br><span class="line">  content     GOODSUM foundation0-config-7.x-4.r35344.noarch.rpm</span><br><span class="line">  content     GOODSUM redhat-survey-7.x-55.1.noarch.rpm</span><br><span class="line">  content     GOODSUM rhci-foundation-7.2-4.r35344.iso</span><br><span class="line">  content     GOODSUM rht-usb-7.x-4.r35344</span><br><span class="line">  content     GOODSUM ClassroomSetup-7.x-4.r35344.txt</span><br><span class="line">  content     GOODSUM ClassroomReset-7.x-4.r35344.txt</span><br><span class="line">  content     GOODSUM ClassroomTroubleshooting-7.x-4.r35344.txt</span><br><span class="line">  content     GOODSUM ClassPrep-7.x-4.r35344.txt</span><br><span class="line">  content     GOODSUM RHEL7和CentOS7打开屏幕VNC.pdf</span><br><span class="line">=====================================================================</span><br><span class="line">WARNING  Manifest RHCIfoundation-RHEL72-4.r35344.1-ILT-7-en_US.icmf failed.</span><br><span class="line"></span><br><span class="line">WARNING  Verification FAILED - look above for problem</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@foundation0 cache]# rht-usb usbadd RHCIfoundation-RHEL72-4.r35344.1-ILT-7-en_US.icmf</span><br><span class="line">INFO     Configuration file: /root/.icrm/config.yml</span><br><span class="line">INFO     Adding to USB: RHCIfoundation-RHEL72-4.r35344.1-ILT-7-en_US.icmf</span><br><span class="line">INFO     New files needed space is 3.9G out of 3.9G</span><br><span class="line">INFO     Calculation finds we need: 4135687726 bytes (3.9G)</span><br><span class="line">INFO     USB space Total: 14.2G  Used: 35.5M  Free: 13.4G</span><br><span class="line">INFO     Starting copy of RHCIfoundation-RHEL72-4.r35344.1-ILT-7-en_US.icmf</span><br><span class="line">INFO     Copying artifact: rhel-server-7.2-x86_64-dvd.iso</span><br><span class="line">INFO     Copying /home/kiosk/booboo/cache/rhel-server-7.2-x86_64-dvd.iso (3.8G) to /tmp/tmpKRYNm9/rhel7.2/x86_64/isos/rhel-server-7.2-x86_64-dvd.iso</span><br><span class="line"></span><br><span class="line">rht-usb usbmkboot</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
 </body></html>
   </div>
+
   
 </article>
 
               </div>
               <footer class="article-footer">
-                <time class="article-footer-updated" datetime="2025-10-20T17:00:02.103Z" itemprop="dateModified">Last updated: 2025-10-20</time>
+                <time class="article-footer-updated" datetime="2025-10-22T14:33:10.760Z" itemprop="dateModified">Last updated: 2025-10-22</time>
                 
               </footer>
               

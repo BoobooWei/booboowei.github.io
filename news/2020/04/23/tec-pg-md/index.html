@@ -46,7 +46,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
 <meta property="article:published_time" content="2020-04-22T16:34:59.000Z">
-<meta property="article:modified_time" content="2025-10-20T17:00:01.810Z">
+<meta property="article:modified_time" content="2025-10-22T14:33:10.756Z">
 <meta property="article:author" content="魏亚萍">
 <meta property="article:tag" content="慢SQL">
 <meta name="twitter:card" content="summary">
@@ -111,8 +111,39 @@
     
       <h1 class="article-title" itemprop="name">PostgreSQL安装pg_stat_statements模块开启慢查询统计</h1>
     
-    <a href="" class="article-date"><time datetime="2020-04-22T16:34:59.000Z">2020-04-22</time></a>
+
+    <!-- ✨ Meta 信息区：日期 / 分类 / 标签 -->
+    <div class="article-meta">
+      <span class="meta-item">
+        <i class="fa fa-calendar"></i>
+        <time datetime="2020-04-22T16:34:59.000Z">2020-04-22</time>
+      </span>
+
+      
+        <span class="meta-item">
+          <i class="fa fa-folder-open"></i>
+          
+            <a href="../../../../../categories/%E6%8A%80%E6%9C%AF%E5%B9%BF%E8%A7%92/">技术广角</a>
+            , 
+          
+            <a href="../../../../../categories/%E6%8A%80%E6%9C%AF%E5%B9%BF%E8%A7%92/PostgreSQL/">PostgreSQL</a>
+            
+          
+        </span>
+      
+
+      
+        <span class="meta-item">
+          <i class="fa fa-tags"></i>
+          
+            <a href="../../../../../tags/%E6%85%A2SQL/">#慢SQL</a>
+            
+          
+        </span>
+      
+    </div>
   </header>
+
   <div class="article-content" itemprop="articleBody">
     <html><head></head><body><h2 id="安装pg-stat-statements模块开启慢查询统计" class="article-heading"><a href="#安装pg-stat-statements模块开启慢查询统计" class="headerlink" title="安装pg_stat_statements模块开启慢查询统计"></a>安装pg_stat_statements模块开启慢查询统计<a class="article-anchor" href="#安装pg-stat-statements模块开启慢查询统计" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">需要安装相同版本的contrib包</span></span><br><span class="line">yum install -y postgresql-contrib.x86_64</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改配置文件</span></span><br><span class="line">vim /var/lib/pgsql/data/postgresql.conf</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">当需要跟踪SQL语句或者慢语句，得需要设置以下参数：</span></span><br><span class="line">log_statement = all     #需设置跟踪所有语句，否则只能跟踪出错信息</span><br><span class="line">log_min_duration_statement = 5000    #milliseconds,记录执行5秒及以上的语句</span><br><span class="line"></span><br><span class="line">shared_preload_libraries = 'pg_stat_statements'         # (change requires restart)</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">以下配置pg_stat_statements采样参数</span></span><br><span class="line">pg_stat_statements.max = 10000</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 在pg_stat_statements中最多保留多少条统计信息，通过LRU算法，覆盖老的记录。</span></span></span><br><span class="line">pg_stat_statements.track = all</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># all - (所有SQL包括函数内嵌套的SQL), top - 直接执行的SQL(函数内的sql不被跟踪), none - (不跟踪)</span></span></span><br><span class="line">pg_stat_statements.track_utility = off</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 是否跟踪非DML语句 (例如DDL，DCL)，on表示跟踪, off表示不跟踪</span></span></span><br><span class="line">pg_stat_statements.save = on</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重启服务</span></span><br><span class="line">su - postgres</span><br><span class="line">pg_ctl -D /var/lib/pgsql/data reload</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建 extension</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">由于pg_stat_statements针对的是数据库级别，所以需要首先进入指定数据库</span></span><br><span class="line">psql</span><br><span class="line">\l</span><br><span class="line">\c test01</span><br><span class="line">create extension pg_stat_statements;</span><br><span class="line"></span><br><span class="line">\df</span><br></pre></td></tr></tbody></table></figure>
 
@@ -126,12 +157,13 @@
 </ul>
 </body></html>
   </div>
+
   
 </article>
 
               </div>
               <footer class="article-footer">
-                <time class="article-footer-updated" datetime="2025-10-20T17:00:01.810Z" itemprop="dateModified">Last updated: 2025-10-20</time>
+                <time class="article-footer-updated" datetime="2025-10-22T14:33:10.756Z" itemprop="dateModified">Last updated: 2025-10-22</time>
                 
               </footer>
               

@@ -46,7 +46,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
 <meta property="article:published_time" content="2020-03-26T19:58:02.000Z">
-<meta property="article:modified_time" content="2025-10-20T17:00:01.598Z">
+<meta property="article:modified_time" content="2025-10-22T14:33:10.754Z">
 <meta property="article:author" content="魏亚萍">
 <meta property="article:tag" content="python">
 <meta name="twitter:card" content="summary">
@@ -111,8 +111,39 @@
     
       <h1 class="article-title" itemprop="name">CentOS6.5配置python3.7安装后ssl问题</h1>
     
-    <a href="" class="article-date"><time datetime="2020-03-26T19:58:02.000Z">2020-03-26</time></a>
+
+    <!-- ✨ Meta 信息区：日期 / 分类 / 标签 -->
+    <div class="article-meta">
+      <span class="meta-item">
+        <i class="fa fa-calendar"></i>
+        <time datetime="2020-03-26T19:58:02.000Z">2020-03-26</time>
+      </span>
+
+      
+        <span class="meta-item">
+          <i class="fa fa-folder-open"></i>
+          
+            <a href="../../../../../categories/%E6%8A%80%E6%9C%AF%E5%B9%BF%E8%A7%92/">技术广角</a>
+            , 
+          
+            <a href="../../../../../categories/%E6%8A%80%E6%9C%AF%E5%B9%BF%E8%A7%92/Python/">Python</a>
+            
+          
+        </span>
+      
+
+      
+        <span class="meta-item">
+          <i class="fa fa-tags"></i>
+          
+            <a href="../../../../../tags/python/">#python</a>
+            
+          
+        </span>
+      
+    </div>
   </header>
+
   <div class="article-content" itemprop="articleBody">
     <html><head></head><body><p>摘要：解决Python3安装中的SSL问题</p>
 <span id="more"></span>
@@ -127,12 +158,13 @@
 <h2 id="详细记录" class="article-heading"><a href="#详细记录" class="headerlink" title="详细记录"></a>详细记录<a class="article-anchor" href="#详细记录" aria-hidden="true"></a></h2><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@CNACLQLJMP010 install]# rpm -qa|grep openssl</span><br><span class="line">openssl-devel-1.0.1e-58.el6_10.x86_64</span><br><span class="line">openssl-1.0.1e-58.el6_10.x86_64</span><br><span class="line">openssl-static-1.0.1e-58.el6_10.x86_64</span><br><span class="line">[root@CNACLQLJMP010 install]# openssl version</span><br><span class="line">OpenSSL 1.0.1e-fips 11 Feb 2013</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">wget https://www.openssl.org/source/openssl-1.1.1-pre8.tar.gz</span><br><span class="line">tar -xf openssl-1.1.1-pre8.tar.gz</span><br><span class="line"><span class="built_in">cd</span> openssl-1.1.1-pre8</span><br><span class="line">./config --prefix=/usr/local/openssl no-zlib</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"><span class="built_in">mv</span> /usr/bin/openssl /usr/bin/openssl.bak</span><br><span class="line"><span class="built_in">mv</span> /usr/include/openssl/ /usr/include/openssl.bak</span><br><span class="line"><span class="built_in">ln</span> -s /usr/local/openssl/include/openssl /usr/include/openssl</span><br><span class="line"><span class="built_in">ln</span> -s /usr/local/openssl/lib/libssl.so.1.1 /usr/local/lib64/libssl.so</span><br><span class="line"><span class="built_in">ln</span> -s /usr/local/openssl/bin/openssl /usr/bin/openssl</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"/usr/local/openssl/lib"</span> &gt;&gt; /etc/ld.so.conf</span><br><span class="line">ldconfig -v</span><br><span class="line"></span><br><span class="line">openssl version</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [[ -f <span class="string">"/usr/bin/python3"</span> ]]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">exit</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装系统依赖包</span></span><br><span class="line">yum -y install zlib-devel bzip2 bzip2-devel openssl openssl-static openssl-devel \</span><br><span class="line">ncurses ncurses-devel sqlite sqlite-devel readline readline-devel tk tk-devel lzma gdbm \</span><br><span class="line">gdbm-devel db4-devel libpcap-devel xz xz-devel libffi-devel gcc</span><br><span class="line"></span><br><span class="line"><span class="comment">#检测 cloudcare 是否存在</span></span><br><span class="line"><span class="keyword">if</span> [[ ! -f <span class="string">"/alidata"</span> ]];<span class="keyword">then</span></span><br><span class="line"><span class="built_in">mkdir</span> /alidata</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Created /alidata"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载安装包 python 3.7.3</span></span><br><span class="line"><span class="keyword">if</span> [[ ! -f <span class="string">"./Python-3.7.3.tgz"</span> ]];<span class="keyword">then</span></span><br><span class="line">curl -O https://cloud-software.oss-cn-hangzhou.aliyuncs.com/linux%20%E8%BD%AF%E4%BB%B6/Python-3.7.3.tgz</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 解压文件</span></span><br><span class="line">tar -xvf Python-3.7.3.tgz &amp;&amp; <span class="built_in">cd</span> Python-3.7.3/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译 python 包</span></span><br><span class="line"><span class="built_in">export</span> LDFLAGS=<span class="string">"-L/usr/local/openssl/lib/"</span></span><br><span class="line"></span><br><span class="line">./configure --prefix=/alidata/python3</span><br><span class="line">make &amp;&amp; make install &amp;&amp; <span class="built_in">echo</span> <span class="string">"### Python3 install success!"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建软连接</span></span><br><span class="line"><span class="built_in">ln</span> -s /alidata/python3/bin/python3 /usr/bin/python3 &amp;&amp; <span class="built_in">echo</span> <span class="string">"### Add python3 link Done!"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">ln</span> -s /alidata/python3/bin/pip3 /usr/bin/pip3 &amp;&amp; <span class="built_in">echo</span> <span class="string">"### Add pip3 link Done!"</span></span><br><span class="line">./configure --prefix=/alidata/python3 --with-openssl=/usr/local/openssl</span><br><span class="line">make &amp;&amp; make install &amp;&amp; <span class="built_in">echo</span> <span class="string">"### Python3 install success!"</span></span><br></pre></td></tr></tbody></table></figure>
 </body></html>
   </div>
+
   
 </article>
 
               </div>
               <footer class="article-footer">
-                <time class="article-footer-updated" datetime="2025-10-20T17:00:01.598Z" itemprop="dateModified">Last updated: 2025-10-20</time>
+                <time class="article-footer-updated" datetime="2025-10-22T14:33:10.754Z" itemprop="dateModified">Last updated: 2025-10-22</time>
                 
               </footer>
               
