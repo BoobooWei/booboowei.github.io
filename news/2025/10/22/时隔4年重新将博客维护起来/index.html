@@ -2,11 +2,11 @@
 <html lang="en">
 <head prefix="og: http://ogp.me/ns#">
   <meta charset="utf-8">
-  <title>记一次有趣的MySQL权限问题 | BoobooWei</title>
+  <title>时隔4年重新将博客维护起来 | BoobooWei</title>
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://www.toberoot.com/news/2022/03/24/%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9C%89%E8%B6%A3%E7%9A%84MySQL%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98/">
+  <link rel="canonical" href="http://www.toberoot.com/news/2025/10/22/%E6%97%B6%E9%9A%944%E5%B9%B4%E9%87%8D%E6%96%B0%E5%B0%86%E5%8D%9A%E5%AE%A2%E7%BB%B4%E6%8A%A4%E8%B5%B7%E6%9D%A5/">
   <!-- Alternate links -->
   
   <!-- Icon -->
@@ -37,19 +37,21 @@
   <!-- RSS -->
   <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
   <!-- Open Graph -->
-  <meta name="description" content="报错与解决Java程序报错： nested exception is java.sql.SQLSyntaxErrorException:(conn&#x3D;8795) SELECT command denied to user &#x27;test&#x27;@ip  for table &#x27;table1&#x27;  收到这个反馈后，我和另一个DBA同事，一起仔细排查了权限，可以非常确定权限已经">
+  <meta name="description" content="这4年多，博客几乎没有任何更新~回顾工作、学习、生活，做了很多，但沉淀得很少。 工作的忙，永无止境。 学习的乐，需要追求。 生活的痛，时间真的能磨平吗？ 22年，全家移民新加坡，一切从零开始；忙着孩子的学校，从私立到国际再到公立学校。 23年，家人车祸，一死一伤；奶奶永远离开了，而婆婆重伤在家躺了近一年。 我自己做了个小手术没成功反而住院十几天。。。 24年-25年，陪妈妈抗癌400天，25年6月">
 <meta property="og:type" content="article">
-<meta property="og:title" content="记一次有趣的MySQL权限问题">
-<meta property="og:url" content="http://www.toberoot.com/news/2022/03/24/%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9C%89%E8%B6%A3%E7%9A%84MySQL%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98/">
+<meta property="og:title" content="时隔4年重新将博客维护起来">
+<meta property="og:url" content="http://www.toberoot.com/news/2025/10/22/%E6%97%B6%E9%9A%944%E5%B9%B4%E9%87%8D%E6%96%B0%E5%B0%86%E5%8D%9A%E5%AE%A2%E7%BB%B4%E6%8A%A4%E8%B5%B7%E6%9D%A5/">
 <meta property="og:site_name" content="BoobooWei">
-<meta property="og:description" content="报错与解决Java程序报错： nested exception is java.sql.SQLSyntaxErrorException:(conn&#x3D;8795) SELECT command denied to user &#x27;test&#x27;@ip  for table &#x27;table1&#x27;  收到这个反馈后，我和另一个DBA同事，一起仔细排查了权限，可以非常确定权限已经">
+<meta property="og:description" content="这4年多，博客几乎没有任何更新~回顾工作、学习、生活，做了很多，但沉淀得很少。 工作的忙，永无止境。 学习的乐，需要追求。 生活的痛，时间真的能磨平吗？ 22年，全家移民新加坡，一切从零开始；忙着孩子的学校，从私立到国际再到公立学校。 23年，家人车祸，一死一伤；奶奶永远离开了，而婆婆重伤在家躺了近一年。 我自己做了个小手术没成功反而住院十几天。。。 24年-25年，陪妈妈抗癌400天，25年6月">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
-<meta property="article:published_time" content="2022-03-24T00:00:00.000Z">
-<meta property="article:modified_time" content="2025-10-22T14:57:25.420Z">
+<meta property="article:published_time" content="2025-10-22T00:00:00.000Z">
+<meta property="article:modified_time" content="2025-10-22T15:31:50.454Z">
 <meta property="article:author" content="魏亚萍">
-<meta property="article:tag" content="MySQL">
-<meta property="article:tag" content="权限">
+<meta property="article:tag" content="可呼吸的日子">
+<meta property="article:tag" content="理想">
+<meta property="article:tag" content="生存">
+<meta property="article:tag" content="自由">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
 <meta property="fb:admins" content="100000247608790">
@@ -110,24 +112,21 @@
                 <article class="article post" itemscope itemtype="http://schema.org/Article">
   <header class="article-header">
     
-      <h1 class="article-title" itemprop="name">记一次有趣的MySQL权限问题</h1>
+      <h1 class="article-title" itemprop="name">时隔4年重新将博客维护起来</h1>
     
 
     <!-- ✨ Meta 信息区：日期 / 分类 / 标签 -->
     <div class="article-meta">
       <span class="meta-item">
         <i class="fa fa-calendar"></i>
-        <time datetime="2022-03-24T00:00:00.000Z">2022-03-24</time>
+        <time datetime="2025-10-22T00:00:00.000Z">2025-10-22</time>
       </span>
 
       
         <span class="meta-item">
           <i class="fa fa-folder-open"></i>
           
-            <a href="../../../../../categories/%E6%8A%80%E6%9C%AF%E5%B9%BF%E8%A7%92/">技术广角</a>
-            , 
-          
-            <a href="../../../../../categories/%E6%8A%80%E6%9C%AF%E5%B9%BF%E8%A7%92/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+            <a href="../../../../../categories/%E9%9A%8F%E7%AC%94/">随笔</a>
             
           
         </span>
@@ -137,10 +136,16 @@
         <span class="meta-item">
           <i class="fa fa-tags"></i>
           
-            <a href="../../../../../tags/MySQL/">#MySQL</a>
+            <a href="../../../../../tags/%E5%8F%AF%E5%91%BC%E5%90%B8%E7%9A%84%E6%97%A5%E5%AD%90/">#可呼吸的日子</a>
              
           
-            <a href="../../../../../tags/%E6%9D%83%E9%99%90/">#权限</a>
+            <a href="../../../../../tags/%E8%87%AA%E7%94%B1/">#自由</a>
+             
+          
+            <a href="../../../../../tags/%E7%90%86%E6%83%B3/">#理想</a>
+             
+          
+            <a href="../../../../../tags/%E7%94%9F%E5%AD%98/">#生存</a>
             
           
         </span>
@@ -149,18 +154,49 @@
   </header>
 
   <div class="article-content" itemprop="articleBody">
-    <html><head></head><body><h1 id="报错与解决" class="article-heading"><a href="#报错与解决" class="headerlink" title="报错与解决"></a>报错与解决<a class="article-anchor" href="#报错与解决" aria-hidden="true"></a></h1><p>Java程序报错：</p>
-<figure class="highlight java"><table><tbody><tr><td class="code"><pre><span class="line">nested exception is java.sql.SQLSyntaxErrorException:</span><br><span class="line">(conn=<span class="number">8795</span>) SELECT command denied to user <span class="string">'test'</span><span class="meta">@ip</span>  <span class="keyword">for</span> table <span class="string">'table1'</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>收到这个反馈后，我和另一个DBA同事，一起仔细排查了权限，可以非常确定权限已经授予。</p>
-<p>仔细比对报错中的表名，确认业务侧表名也没有错。</p>
-<p>但是就是无法访问。没有思路了，期间，开发还说要不要再找个dba大佬一起看（ps：意思是说，我俩不行啊）</p>
-<p>最后，我们大胆猜测是否Java的报错有问题，果然，sql语句中实际查询的是 <code>db1.table1</code>; 而实际上不存在 <code>db1</code> 库，而是 <code>db1_xx</code>。</p>
-<p>终于破案了哈。（pia pia 打脸啊😂）</p>
-<h1 id="一些思考" class="article-heading"><a href="#一些思考" class="headerlink" title="一些思考"></a>一些思考<a class="article-anchor" href="#一些思考" aria-hidden="true"></a></h1><p>最近公司内部在做关于《批判性思维》的培训，今天的案例非常符合其中一点：</p>
-<blockquote>
-<p>大胆猜测，小心求证。</p>
+    <html><head></head><body><h2 id="这4年多，博客几乎没有任何更新" class="article-heading"><a href="#这4年多，博客几乎没有任何更新" class="headerlink" title="这4年多，博客几乎没有任何更新~"></a>这4年多，博客几乎没有任何更新~<a class="article-anchor" href="#这4年多，博客几乎没有任何更新" aria-hidden="true"></a></h2><p>回顾工作、学习、生活，做了很多，但沉淀得很少。</p>
+<p>工作的忙，永无止境。</p>
+<p>学习的乐，需要追求。</p>
+<p>生活的痛，时间真的能磨平吗？</p>
+<p>22年，全家移民新加坡，一切从零开始；忙着孩子的学校，从私立到国际再到公立学校。</p>
+<p>23年，家人车祸，一死一伤；奶奶永远离开了，而婆婆重伤在家躺了近一年。 我自己做了个小手术没成功反而住院十几天。。。</p>
+<p>24年-25年，陪妈妈抗癌400天，25年6月11日亲爱的妈妈去天上做仙女了。</p>
+<p>妈妈离开后，生活似乎再也回不到正轨了，间歇性崩溃、时而笑嘻嘻、时而抽泣、厌世。</p>
+<p>也许这是我最难的时光，一定要挺过去。</p>
+<h2 id="老妈去世后，我经常思考关于“成功”的定义" class="article-heading"><a href="#老妈去世后，我经常思考关于“成功”的定义" class="headerlink" title="老妈去世后，我经常思考关于“成功”的定义"></a>老妈去世后，我经常思考关于“成功”的定义<a class="article-anchor" href="#老妈去世后，我经常思考关于“成功”的定义" aria-hidden="true"></a></h2><blockquote>
+<p>“成功只有一个，按照自己的方式去度过人生。”</p>
 </blockquote>
+<p>所谓“成功”，不是别人定义的财富、名声、地位，而是能按照自己的节奏、价值观、兴趣去活，那就是最大的成功。</p>
+<p><strong>我渴望的是一种自在而松弛的生活。</strong></p>
+<p>大部分打工人其实就是把时间、精力、技能，换取薪水。换句话说，就是用有限的生命去换确定的收入。<br>这也解释了为什么“自由掌握时间”会让人感觉那么奢侈。因为在工作模式里，时间不完全属于我，而是被雇主、任务、deadline、会议、KPI 占据了。</p>
+<h3 id="想辞职，可是又担心钱不够。" class="article-heading"><a href="#想辞职，可是又担心钱不够。" class="headerlink" title="想辞职，可是又担心钱不够。"></a>想辞职，可是又担心钱不够。<a class="article-anchor" href="#想辞职，可是又担心钱不够。" aria-hidden="true"></a></h3><p>这就是典型的<code>“理想自由 vs. 生存安全”</code>的拉扯呀——几乎每个想辞职的人都会遇到。我一边渴望真正属于自己的生活，一边又害怕辞职后没了稳定收入，未来不确定。<br>换句话说，我的矛盾不是“不想工作”，而是“不想被金钱困住”。</p>
+<p>如果完全不工作，我和家人能靠储蓄/投资撑多久？</p>
+<p>比如至少要准备x年的生活费，这样辞职才不会每天都焦虑。</p>
+<h3 id="如果我真的辞职了，手里有一年的生活费，我的一天会这么安排" class="article-heading"><a href="#如果我真的辞职了，手里有一年的生活费，我的一天会这么安排" class="headerlink" title="如果我真的辞职了，手里有一年的生活费，我的一天会这么安排"></a>如果我真的辞职了，手里有一年的生活费，我的一天会这么安排<a class="article-anchor" href="#如果我真的辞职了，手里有一年的生活费，我的一天会这么安排" aria-hidden="true"></a></h3><p>一想到自己辞职了，心情特别放松!<br>睡到自然醒，慢慢起来，先发个呆，泡一杯咖啡，看看新闻…… 放点音乐，跳跳舞，健身。<br>中午出去吃个饭，或者自己做，睡个午觉，下午看看书，写写字，可以出门上课。晚上追个剧，睡觉</p>
+<p>这画面我都能想象出来了——我的一天里没有 deadline，没有会议提醒，没有无休止的任务单，取而代之的是：<code>身体的节奏、心情的节奏</code>。</p>
+<p>其实我描述的生活，核心是两个字：<code>掌控</code>。</p>
+<ul>
+<li>掌控时间：什么时候起床、什么时候午休、什么时候出门，全是我决定。</li>
+<li>掌控节奏：想动就动（舞蹈、健身），想静就静（发呆、看书、写字）。</li>
+<li>掌控选择：今天吃外面还是自己煮，今晚追剧还是出门上课，完全按心意。</li>
+</ul>
+<blockquote>
+<p>说实话，我想要的并不是“无所事事”，而是一种可呼吸的、有弹性的日子。</p>
+</blockquote>
+<h3 id="如果真这样过上一年，我会不会在某个时刻开始焦虑？" class="article-heading"><a href="#如果真这样过上一年，我会不会在某个时刻开始焦虑？" class="headerlink" title="如果真这样过上一年，我会不会在某个时刻开始焦虑？"></a>如果真这样过上一年，我会不会在某个时刻开始焦虑？<a class="article-anchor" href="#如果真这样过上一年，我会不会在某个时刻开始焦虑？" aria-hidden="true"></a></h3><p>比如：</p>
+<ul>
+<li>第 3 个月时，突然冒出“钱在变少”的念头？</li>
+<li>第 6 个月时，觉得“我是不是该做点什么有产出”？</li>
+<li>第 9 个月时，别人问“你最近在忙什么”，我会不会犹豫？</li>
+</ul>
+<p>观察点</p>
+<ol>
+<li>快乐 vs. 空虚：自由时间越长，我是越享受，还是开始想找“意义”？</li>
+<li>花费水平：这种生活方式一天大概需要多少钱？（吃、娱乐、课程等）。</li>
+<li>可持续性：我能不能想象自己这样过一年？需要增加什么元素才能不无聊？</li>
+</ol>
+<p>争取50%的时间给自己，50%的时间给家人。</p>
+<p>工作，赚够本钱，然后理财，脱离用时间和生命换钱的方式，然后就可以追求可呼吸的日子了！</p>
 </body></html>
   </div>
 
@@ -169,7 +205,7 @@
 
               </div>
               <footer class="article-footer">
-                <time class="article-footer-updated" datetime="2025-10-22T14:57:25.420Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <time class="article-footer-updated" datetime="2025-10-22T15:31:50.454Z" itemprop="dateModified">Last updated: 2025-10-22</time>
                 
               </footer>
               
@@ -318,7 +354,7 @@
 
 
               <strong class="sidebar-title">Contents</strong>
-              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%A5%E9%94%99%E4%B8%8E%E8%A7%A3%E5%86%B3"><span class="toc-text">报错与解决</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83"><span class="toc-text">一些思考</span></a></li></ol>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%994%E5%B9%B4%E5%A4%9A%EF%BC%8C%E5%8D%9A%E5%AE%A2%E5%87%A0%E4%B9%8E%E6%B2%A1%E6%9C%89%E4%BB%BB%E4%BD%95%E6%9B%B4%E6%96%B0"><span class="toc-text">这4年多，博客几乎没有任何更新~</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%80%81%E5%A6%88%E5%8E%BB%E4%B8%96%E5%90%8E%EF%BC%8C%E6%88%91%E7%BB%8F%E5%B8%B8%E6%80%9D%E8%80%83%E5%85%B3%E4%BA%8E%E2%80%9C%E6%88%90%E5%8A%9F%E2%80%9D%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-text">老妈去世后，我经常思考关于“成功”的定义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%83%B3%E8%BE%9E%E8%81%8C%EF%BC%8C%E5%8F%AF%E6%98%AF%E5%8F%88%E6%8B%85%E5%BF%83%E9%92%B1%E4%B8%8D%E5%A4%9F%E3%80%82"><span class="toc-text">想辞职，可是又担心钱不够。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E6%88%91%E7%9C%9F%E7%9A%84%E8%BE%9E%E8%81%8C%E4%BA%86%EF%BC%8C%E6%89%8B%E9%87%8C%E6%9C%89%E4%B8%80%E5%B9%B4%E7%9A%84%E7%94%9F%E6%B4%BB%E8%B4%B9%EF%BC%8C%E6%88%91%E7%9A%84%E4%B8%80%E5%A4%A9%E4%BC%9A%E8%BF%99%E4%B9%88%E5%AE%89%E6%8E%92"><span class="toc-text">如果我真的辞职了，手里有一年的生活费，我的一天会这么安排</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E7%9C%9F%E8%BF%99%E6%A0%B7%E8%BF%87%E4%B8%8A%E4%B8%80%E5%B9%B4%EF%BC%8C%E6%88%91%E4%BC%9A%E4%B8%8D%E4%BC%9A%E5%9C%A8%E6%9F%90%E4%B8%AA%E6%97%B6%E5%88%BB%E5%BC%80%E5%A7%8B%E7%84%A6%E8%99%91%EF%BC%9F"><span class="toc-text">如果真这样过上一年，我会不会在某个时刻开始焦虑？</span></a></li></ol></li></ol>
               <a href="#" id="article-toc-top">Back to Top</a>
             </div>
           </aside>
