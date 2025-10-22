@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>MongoDB 认证权限管理 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/nosql/booboo_mongodb/03-MongoDB%E8%AE%A4%E8%AF%81%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/nosql/booboo_mongodb/03-MongoDB%E8%AE%A4%E8%AF%81%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="虽然认证和 授权 关系非常紧密，认证和授权是两个不同的概念。  认证是用来识别用户的身份 授权控制已经认证的用户使用资源和行为的权限。  本节初步了解和熟悉MongoDB的认证和权限，官方3.4版本安全参考文献 认证认证简介MongoDB中的用户分为超级用户(super user)和普通的数据库用户(database user)：  超级用户存放在admin数据库中(在MongoDB的初始情况下，">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MongoDB 认证权限管理">
+<meta property="og:url" content="http://www.toberoot.com/database/nosql/booboo_mongodb/03-MongoDB%E8%AE%A4%E8%AF%81%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="虽然认证和 授权 关系非常紧密，认证和授权是两个不同的概念。  认证是用来识别用户的身份 授权控制已经认证的用户使用资源和行为的权限。  本节初步了解和熟悉MongoDB的认证和权限，官方3.4版本安全参考文献 认证认证简介MongoDB中的用户分为超级用户(super user)和普通的数据库用户(database user)：  超级用户存放在admin数据库中(在MongoDB的初始情况下，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.864Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:26.072Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">MongoDB 认证权限管理</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/nosql/booboo_mongodb/03-MongoDB认证权限管理.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><p>虽然认证和&nbsp;授权&nbsp;关系非常紧密，认证和授权是两个不同的概念。</p>
+<ul>
+<li>认证是用来识别用户的身份</li>
+<li>授权控制已经认证的用户使用资源和行为的权限。</li>
+</ul>
+<p>本节初步了解和熟悉MongoDB的认证和权限，官方<a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/security.html">3.4版本安全参考文献</a></p>
+<h2 id="认证" class="article-heading"><a href="#认证" class="headerlink" title="认证"></a>认证<a class="article-anchor" href="#认证" aria-hidden="true"></a></h2><h3 id="认证简介" class="article-heading"><a href="#认证简介" class="headerlink" title="认证简介"></a>认证简介<a class="article-anchor" href="#认证简介" aria-hidden="true"></a></h3><p>MongoDB中的用户分为超级用户(super user)和普通的数据库用户(database user)：</p>
+<ul>
+<li>超级用户存放在admin数据库中(在MongoDB的初始情况下，admin数据库默认是空的)，这种用户拥有最大权限，可以对所有数据库进行任意操作；</li>
+<li>数据库用户则是存放在另外的数据库中，这种用户只能访问自己的数据库。所有的用户信息都存放在自己数据库的system.users表中。</li>
+</ul>
+<p>具体的方法见MongoDB官方文档。</p>
+<h3 id="启动认证的一般流程" class="article-heading"><a href="#启动认证的一般流程" class="headerlink" title="启动认证的一般流程"></a>启动认证的一般流程<a class="article-anchor" href="#启动认证的一般流程" aria-hidden="true"></a></h3><hr>
+<p>初始化安装情况下是没有开通认证的。</p>
+<h4 id="1-不带访问控制的启动服务" class="article-heading"><a href="#1-不带访问控制的启动服务" class="headerlink" title="1.不带访问控制的启动服务"></a>1.不带访问控制的启动服务<a class="article-anchor" href="#1-不带访问控制的启动服务" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd /alidata/mongodb</span><br><span class="line">bash mongodb.server start</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="2-连接实例" class="article-heading"><a href="#2-连接实例" class="headerlink" title="2.连接实例"></a>2.连接实例<a class="article-anchor" href="#2-连接实例" aria-hidden="true"></a></h4><p><code>mongo --port 27017</code></p>
+<h4 id="3-创建超级账户" class="article-heading"><a href="#3-创建超级账户" class="headerlink" title="3.创建超级账户"></a>3.创建超级账户<a class="article-anchor" href="#3-创建超级账户" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use admin</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.createUser(</span></span><br><span class="line">  {</span><br><span class="line">    user: "myUserAdmin",</span><br><span class="line">    pwd: "abc123",</span><br><span class="line">    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]</span><br><span class="line">  }</span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="4-带访问控制重新启动实例" class="article-heading"><a href="#4-带访问控制重新启动实例" class="headerlink" title="4.带访问控制重新启动实例"></a>4.带访问控制重新启动实例<a class="article-anchor" href="#4-带访问控制重新启动实例" aria-hidden="true"></a></h4><p>修改配置文件后重启</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim /alidata/mongodb/conf/mongodb27017.conf</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">http://www.mongoing.com/docs/reference/configuration-options.html#security.authorization</span></span><br><span class="line">security:</span><br><span class="line">    authorization=enabled</span><br><span class="line">bash /alidata/mongodb/mongodb.server restart</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="5-连接并认证超级账户" class="article-heading"><a href="#5-连接并认证超级账户" class="headerlink" title="5.连接并认证超级账户"></a>5.连接并认证超级账户<a class="article-anchor" href="#5-连接并认证超级账户" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第一种方法连接前认证——使用 -u -p --authenticationDatabase 数据库名</span></span><br><span class="line">mongo --port 27017 -u "myUserAdmin" -p "abc123" --authenticationDatabase "admin"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第二种方法连接后认证，在mongo shell中使用 db.auth(&lt;username&gt;</span></span><br><span class="line">mongo --port 27017</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use admin</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.auth(<span class="string">"myUserAdmin"</span>, <span class="string">"abc123"</span> )</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="6-根据开发要求创建其他用户" class="article-heading"><a href="#6-根据开发要求创建其他用户" class="headerlink" title="6.根据开发要求创建其他用户"></a>6.根据开发要求创建其他用户<a class="article-anchor" href="#6-根据开发要求创建其他用户" aria-hidden="true"></a></h4><p>一旦成功认证了超级用户，就可以通过<code>db.createUser() </code>命令以及<code>内置或者用户自定义的角色（权限）</code>来创建其他用户</p>
+<p>而<code>myUserAdmin</code>用户的权限只能管理用户和角色（权限）</p>
+<p>接下来我们创建一个新用户<code>myTest</code>用户给<code>test</code>数据库，并且对<code>test</code>数据库拥有读写权限<code>readWrite role</code>，对<code>reporting</code>数据库有读的权限<code>read role</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">use test</span><br><span class="line">db.createUser(</span><br><span class="line">  {</span><br><span class="line">    user: "myTester",</span><br><span class="line">    pwd: "xyz123",</span><br><span class="line">    roles: [ { role: "readWrite", db: "test" },</span><br><span class="line">             { role: "read", db: "reporting" } ]</span><br><span class="line">  }</span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="7-用myTester用户连接和认证" class="article-heading"><a href="#7-用myTester用户连接和认证" class="headerlink" title="7.用myTester用户连接和认证"></a>7.用myTester用户连接和认证<a class="article-anchor" href="#7-用myTester用户连接和认证" aria-hidden="true"></a></h4><p>在连接前认证</p>
+<p>Start a mongo shell with the -u <username>, -p <password>, and the –authenticationDatabase <database> command line options:</database></password></username></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mongo --port 27017 -u "myTester" -p "xyz123" --authenticationDatabase "test"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在连接后认证</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">连接</span></span><br><span class="line">mongo --port 27017</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">认证</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use <span class="built_in">test</span></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.auth(<span class="string">"myTester"</span>, <span class="string">"xyz123"</span> )</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">插入一个集合</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.foo.insert( { x: 1, y: 1 } )</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看reporting数据库的集合信息</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use reporting</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.a.find()</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="删除用户" class="article-heading"><a href="#删除用户" class="headerlink" title="删除用户"></a>删除用户<a class="article-anchor" href="#删除用户" aria-hidden="true"></a></h3><blockquote>
+<p>记住所有对认证的操作，都需要到对应的认证库中进行操作即可。</p>
+</blockquote>
+<p>删除用户的操作如下：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use <span class="built_in">test</span></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.system.users.remove({user:<span class="string">"myTester"</span>})</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="更新用户" class="article-heading"><a href="#更新用户" class="headerlink" title="更新用户"></a>更新用户<a class="article-anchor" href="#更新用户" aria-hidden="true"></a></h3><p>修改密码和角色</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use <span class="built_in">test</span></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.updateUser(<span class="string">'myTester'</span>,{user:<span class="string">'myTester'</span>,<span class="built_in">pwd</span>:<span class="string">'admin'</span>,roles:[{role:<span class="string">'read'</span>,db:<span class="string">'test'</span>}]})</span></span><br><span class="line"><span class="meta prompt_">&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="权限" class="article-heading"><a href="#权限" class="headerlink" title="权限"></a>权限<a class="article-anchor" href="#权限" aria-hidden="true"></a></h2><h3 id="重点说明" class="article-heading"><a href="#重点说明" class="headerlink" title="重点说明"></a>重点说明<a class="article-anchor" href="#重点说明" aria-hidden="true"></a></h3><ul>
+<li><code>Read</code>：允许用户读取指定数据库</li>
+<li><code>readWrite</code>：允许用户读写指定数据库</li>
+<li><code>dbAdmin</code>：允许用户在指定数据库中执行管理函数，如索引创建、删除，查看统计或访问<code>system.profile</code></li>
+<li><code>userAdmin</code>：允许用户向<code>system.users</code>集合写入，可以找指定数据库里创建、删除和管理用户</li>
+<li><code>clusterAdmin</code>：只在<code>admin</code>数据库中可用，赋予用户所有分片和复制集相关函数的管理权限。</li>
+<li><code>readAnyDatabase</code>：只在admin数据库中可用，赋予用户所有数据库的读权限</li>
+<li><code>readWriteAnyDatabas</code>：只在<code>admin</code>数据库中可用，赋予用户所有数据库的读写权限</li>
+<li><code>userAdminAnyDatabase</code>：只在<code>admin</code>数据库中可用，赋予用户所有数据库的<code>userAdmin</code>权限</li>
+<li><code>dbAdminAnyDatabase</code>：只在<code>admin</code>数据库中可用，赋予用户所有数据库的<code>dbAdmin</code>权限。</li>
+<li><code>root</code>：只在<code>admin</code>数据库中可用。超级账号，超级权限</li>
+</ul>
+<h3 id="内置角色（权限）" class="article-heading"><a href="#内置角色（权限）" class="headerlink" title="内置角色（权限）"></a>内置角色（权限）<a class="article-anchor" href="#内置角色（权限）" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">Built-In Roles（内置角色）：</span><br><span class="line">  1. 数据库用户角色：read、readWrite;</span><br><span class="line">  2. 数据库管理角色：dbAdmin、dbOwner、userAdmin；</span><br><span class="line">  3. 集群管理角色：clusterAdmin、clusterManager、clusterMonitor、hostManager；</span><br><span class="line">  4. 备份恢复角色：backup、restore；</span><br><span class="line">  5. 所有数据库角色：readAnyDatabase、readWriteAnyDatabase、userAdminAnyDatabase、dbAdminAnyDatabase</span><br><span class="line">  6. 超级用户角色：root</span><br><span class="line">  // 这里还有几个角色间接或直接提供了系统超级用户的访问（dbOwner 、userAdmin、userAdminAnyDatabase）</span><br><span class="line">  7. 内部角色：__system</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><p>在MongoDB中，用户和权限有以下特性：</p>
+<ol>
+<li>数据库是由超级用户来创建的，一个数据库可以包含多个用户，一个用户只能在一个数据库下，不同数据库中的用户可以同名；</li>
+<li>如果在 admin 数据库中不存在用户，即使 mongod 启动时添加了 –auth参数，此时不进行任何认证还是可以做任何操作；</li>
+<li>在 admin 数据库创建的用户具有超级权限，可以对 MongoDB 系统内的任何数据库的数据对象进行操作；</li>
+<li>特定数据库比如 test1 下的用户 test_user1，不能够访问其他数据库 test2，但是可以访问本数据库下其他用户创建的数据；</li>
+<li>不同数据库中同名的用户不能够登录其他数据库。比如数据库 test1 和 test2 都有用户 test_user，以 test_user 登录 test1 后,不能够登录到 test2 进行数据库操作</li>
+</ol>
+<h2 id="课堂练习" class="article-heading"><a href="#课堂练习" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习" aria-hidden="true"></a></h2><h3 id="1-创建超级用户project-root，拥有管理所有数据库的账户和管理所有数据库的权限" class="article-heading"><a href="#1-创建超级用户project-root，拥有管理所有数据库的账户和管理所有数据库的权限" class="headerlink" title="1. 创建超级用户project_root，拥有管理所有数据库的账户和管理所有数据库的权限"></a>1. 创建超级用户project_root，拥有管理所有数据库的账户和管理所有数据库的权限<a class="article-anchor" href="#1-创建超级用户project-root，拥有管理所有数据库的账户和管理所有数据库的权限" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装mongodb3.2.16</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">无认证启动服务</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">通过客户端登陆</span></span><br><span class="line">[root@sh_01 ~]# mongo</span><br><span class="line">MongoDB shell version: 3.2.16</span><br><span class="line">connecting to: test</span><br><span class="line">Server has startup warnings:</span><br><span class="line">2018-07-20T17:00:10.204+0800 I CONTROL  [initandlisten] ** WARNING: You are running this process as the root user, which is not recommended.</span><br><span class="line">2018-07-20T17:00:10.204+0800 I CONTROL  [initandlisten]</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use admin</span></span><br><span class="line">switched to db admin</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">var info = {}</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">info.user = <span class="string">'project_root'</span></span></span><br><span class="line">project_root</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">info.pwd = <span class="string">'uplooking'</span></span></span><br><span class="line">uplooking</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">info.roles = [{role:<span class="string">'userAdminAnyDatabase'</span>,db:<span class="string">'admin'</span>},{role:<span class="string">'dbAdminAnyDatabase'</span>,db:<span class="string">'admin'</span>}]</span></span><br><span class="line">[</span><br><span class="line">	{</span><br><span class="line">		"role" : "userAdminAnyDatabase",</span><br><span class="line">		"db" : "admin"</span><br><span class="line">	},</span><br><span class="line">	{</span><br><span class="line">		"role" : "dbAdminAnyDatabase",</span><br><span class="line">		"db" : "admin"</span><br><span class="line">	}</span><br><span class="line">]</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.createUser(info)</span></span><br><span class="line">Successfully added user: {</span><br><span class="line">	"user" : "project_root",</span><br><span class="line">	"roles" : [</span><br><span class="line">		{</span><br><span class="line">			"role" : "userAdminAnyDatabase",</span><br><span class="line">			"db" : "admin"</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"role" : "dbAdminAnyDatabase",</span><br><span class="line">			"db" : "admin"</span><br><span class="line">		}</span><br><span class="line">	]</span><br><span class="line">}</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.system.users.find()</span></span><br><span class="line">{ "_id" : "admin.project_root", "user" : "project_root", "db" : "admin", "credentials" : { "SCRAM-SHA-1" : { "iterationCount" : 10000, "salt" : "RFqvJ3Qqcida/liGCwVlxw==", "storedKey" : "UoU3899FEBYiCMicsXC/dA9bonI=", "serverKey" : "zZiljnXV3ZK+bHfYG+JDoBV3Ovs=" } }, "roles" : [ { "role" : "userAdminAnyDatabase", "db" : "admin" }, { "role" : "dbAdminAnyDatabase", "db" : "admin" } ] }</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="2-开启认证服务后通过project-root用户登陆并认证" class="article-heading"><a href="#2-开启认证服务后通过project-root用户登陆并认证" class="headerlink" title="2. 开启认证服务后通过project_root用户登陆并认证"></a>2. 开启认证服务后通过project_root用户登陆并认证<a class="article-anchor" href="#2-开启认证服务后通过project-root用户登陆并认证" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改配置文件</span></span><br><span class="line">[root@sh_01 ~]# vim /alidata/mongodb/conf/mongodb27017.conf</span><br><span class="line">security:</span><br><span class="line"> authorization: enabled</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重启服务</span></span><br><span class="line">[root@sh_01 ~]# bash /alidata/mongodb/mongodb.server restart</span><br><span class="line">killing process with pid: 17902</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">登陆mongodb</span></span><br><span class="line">[root@sh_01 ~]# mongo</span><br><span class="line">MongoDB shell version: 3.2.16</span><br><span class="line">connecting to: test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">认证用户</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use admin</span></span><br><span class="line">switched to db admin</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.auth(<span class="string">'project_root'</span>,<span class="string">'uplooking'</span>)</span></span><br><span class="line">1</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-建立一个test库的数据库管理账号test-admin" class="article-heading"><a href="#3-建立一个test库的数据库管理账号test-admin" class="headerlink" title="3. 建立一个test库的数据库管理账号test_admin"></a>3. 建立一个test库的数据库管理账号test_admin<a class="article-anchor" href="#3-建立一个test库的数据库管理账号test-admin" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash">&gt; use <span class="built_in">test</span></span></span><br><span class="line">switched to db test</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">var info = {}</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">info.user = <span class="string">'test_admin'</span></span></span><br><span class="line">test_admin</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">info.pwd = <span class="string">'uplooking'</span></span></span><br><span class="line">uplooking</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">info.roles = [{role:<span class="string">'dbadmin'</span>,db:<span class="string">'test'</span>}]</span></span><br><span class="line">[ { "role" : "dbadmin", "db" : "test" } ]</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">info.roles = [{role:<span class="string">'dbAdmin'</span>,db:<span class="string">'test'</span>}]</span></span><br><span class="line">[ { "role" : "dbAdmin", "db" : "test" } ]</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.createUser(info)</span></span><br><span class="line">Successfully added user: {</span><br><span class="line">	"user" : "test_admin",</span><br><span class="line">	"roles" : [</span><br><span class="line">		{</span><br><span class="line">			"role" : "dbAdmin",</span><br><span class="line">			"db" : "test"</span><br><span class="line">		}</span><br><span class="line">	]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="4-建立一个test库的开发账号test-dev，拥有读写权限" class="article-heading"><a href="#4-建立一个test库的开发账号test-dev，拥有读写权限" class="headerlink" title="4.建立一个test库的开发账号test_dev，拥有读写权限"></a>4.建立一个test库的开发账号test_dev，拥有读写权限<a class="article-anchor" href="#4-建立一个test库的开发账号test-dev，拥有读写权限" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use <span class="built_in">test</span></span></span><br><span class="line">switched to db test</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">var info = {}</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">info.user = <span class="string">'test_dev'</span></span></span><br><span class="line">test_dev</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">info.pwd = <span class="string">'uplooking'</span></span></span><br><span class="line">uplooking</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">info.roles = [{role:<span class="string">'readWrite'</span>, db:<span class="string">'test'</span>}]</span></span><br><span class="line">[ { "role" : "readWrite", "db" : "test" } ]</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.createUser(info)</span></span><br><span class="line">Successfully added user: {</span><br><span class="line">	"user" : "test_dev",</span><br><span class="line">	"roles" : [</span><br><span class="line">		{</span><br><span class="line">			"role" : "readWrite",</span><br><span class="line">			"db" : "test"</span><br><span class="line">		}</span><br><span class="line">	]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="5-验证所有的账号权限是否如官方文档所表述的" class="article-heading"><a href="#5-验证所有的账号权限是否如官方文档所表述的" class="headerlink" title="5. 验证所有的账号权限是否如官方文档所表述的"></a>5. 验证所有的账号权限是否如官方文档所表述的<a class="article-anchor" href="#5-验证所有的账号权限是否如官方文档所表述的" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">1. project_root用户拥有管理用户的权限，从2~4题已经可以验证</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">2. project_root用户拥有管理数据库的权限</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use admin</span></span><br><span class="line">switched to db admin</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.auth(<span class="string">'project_root'</span>,<span class="string">'uplooking'</span>)</span></span><br><span class="line">1</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use <span class="built_in">test</span></span></span><br><span class="line">switched to db test</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.t1.find()</span></span><br><span class="line">Error: error: {</span><br><span class="line">	"ok" : 0,</span><br><span class="line">	"errmsg" : "not authorized on test to execute command { find: \"t1\", filter: {} }",</span><br><span class="line">	"code" : 13</span><br><span class="line">}</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.t1.insert({<span class="string">'id'</span>:1})</span></span><br><span class="line">WriteResult({</span><br><span class="line">	"writeError" : {</span><br><span class="line">		"code" : 13,</span><br><span class="line">		"errmsg" : "not authorized on test to execute command { insert: \"t1\", documents: [ { _id: ObjectId('5b51a960e6ef33d11bb6b95b'), id: 1.0 } ], ordered: true }"</span><br><span class="line">	}</span><br><span class="line">})</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.system.profile.find()</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use admin</span></span><br><span class="line">switched to db admin</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.system.profile.find()</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.logout()</span></span><br><span class="line">{ "ok" : 1 }</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">project_root用户拥有管理所有数据库的权限，因此可以查看所有数据库下的system.profile；但是没有对该库表的读写权限</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">3. test_admin拥有对<span class="built_in">test</span>库的数据库管理权限</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use <span class="built_in">test</span></span></span><br><span class="line">switched to db test</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.auth(<span class="string">'test_admin'</span>,<span class="string">'uplooking'</span>)</span></span><br><span class="line">1</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.system.profile.find()</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.t1.find(0</span></span><br><span class="line">... )</span><br><span class="line">Error: error: {</span><br><span class="line">	"ok" : 0,</span><br><span class="line">	"errmsg" : "not authorized on test to execute command { find: \"t1\", filter: {} }",</span><br><span class="line">	"code" : 13</span><br><span class="line">}</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.t1.find()</span></span><br><span class="line">Error: error: {</span><br><span class="line">	"ok" : 0,</span><br><span class="line">	"errmsg" : "not authorized on test to execute command { find: \"t1\", filter: {} }",</span><br><span class="line">	"code" : 13</span><br><span class="line">}</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.logout()</span></span><br><span class="line">{ "ok" : 1 }</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只对系统表有权限，对普通的表没有任何权限</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">4. test_dev拥有对<span class="built_in">test</span>库的读写权限</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">use <span class="built_in">test</span></span></span><br><span class="line">switched to db test</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.auth(<span class="string">'test_dev'</span>,<span class="string">'uplooking'</span>)</span></span><br><span class="line">1</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.t1.insert({<span class="built_in">id</span>:1})</span></span><br><span class="line">WriteResult({ "nInserted" : 1 })</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.t1.find()</span></span><br><span class="line">{ "_id" : ObjectId("5b51ac4fe6ef33d11bb6b95c"), "id" : 1 }</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.system.profile.find()</span></span><br><span class="line">Error: error: {</span><br><span class="line">	"ok" : 0,</span><br><span class="line">	"errmsg" : "not authorized on test to execute command { find: \"system.profile\", filter: {} }",</span><br><span class="line">	"code" : 13</span><br><span class="line">}</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只对普通的表有读写权限，对系统表是没有任何权限的。</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="6-如果忘记了认证管理权限用户（超级用户）的认证信息，目前只有普通用户的权限，需求是新增一个新的用户。" class="article-heading"><a href="#6-如果忘记了认证管理权限用户（超级用户）的认证信息，目前只有普通用户的权限，需求是新增一个新的用户。" class="headerlink" title="6. 如果忘记了认证管理权限用户（超级用户）的认证信息，目前只有普通用户的权限，需求是新增一个新的用户。"></a>6. 如果忘记了认证管理权限用户（超级用户）的认证信息，目前只有普通用户的权限，需求是新增一个新的用户。<a class="article-anchor" href="#6-如果忘记了认证管理权限用户（超级用户）的认证信息，目前只有普通用户的权限，需求是新增一个新的用户。" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">1. 修改配置文件去除认证功能</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">2. 新增一个新的用户</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">3. 新增一个超级权限用户</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">4. 开启认证重启</span></span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:26.072Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A4%E8%AF%81"><span class="toc-text">认证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A4%E8%AF%81%E7%AE%80%E4%BB%8B"><span class="toc-text">认证简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E8%AE%A4%E8%AF%81%E7%9A%84%E4%B8%80%E8%88%AC%E6%B5%81%E7%A8%8B"><span class="toc-text">启动认证的一般流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%8D%E5%B8%A6%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E7%9A%84%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="toc-text">1.不带访问控制的启动服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%BF%9E%E6%8E%A5%E5%AE%9E%E4%BE%8B"><span class="toc-text">2.连接实例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%88%9B%E5%BB%BA%E8%B6%85%E7%BA%A7%E8%B4%A6%E6%88%B7"><span class="toc-text">3.创建超级账户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%B8%A6%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E9%87%8D%E6%96%B0%E5%90%AF%E5%8A%A8%E5%AE%9E%E4%BE%8B"><span class="toc-text">4.带访问控制重新启动实例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E8%BF%9E%E6%8E%A5%E5%B9%B6%E8%AE%A4%E8%AF%81%E8%B6%85%E7%BA%A7%E8%B4%A6%E6%88%B7"><span class="toc-text">5.连接并认证超级账户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E6%A0%B9%E6%8D%AE%E5%BC%80%E5%8F%91%E8%A6%81%E6%B1%82%E5%88%9B%E5%BB%BA%E5%85%B6%E4%BB%96%E7%94%A8%E6%88%B7"><span class="toc-text">6.根据开发要求创建其他用户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E7%94%A8myTester%E7%94%A8%E6%88%B7%E8%BF%9E%E6%8E%A5%E5%92%8C%E8%AE%A4%E8%AF%81"><span class="toc-text">7.用myTester用户连接和认证</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E7%94%A8%E6%88%B7"><span class="toc-text">删除用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0%E7%94%A8%E6%88%B7"><span class="toc-text">更新用户</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90"><span class="toc-text">权限</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E8%AF%B4%E6%98%8E"><span class="toc-text">重点说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E7%BD%AE%E8%A7%92%E8%89%B2%EF%BC%88%E6%9D%83%E9%99%90%EF%BC%89"><span class="toc-text">内置角色（权限）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0"><span class="toc-text">课堂练习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%88%9B%E5%BB%BA%E8%B6%85%E7%BA%A7%E7%94%A8%E6%88%B7project-root%EF%BC%8C%E6%8B%A5%E6%9C%89%E7%AE%A1%E7%90%86%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E8%B4%A6%E6%88%B7%E5%92%8C%E7%AE%A1%E7%90%86%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%9D%83%E9%99%90"><span class="toc-text">1. 创建超级用户project_root，拥有管理所有数据库的账户和管理所有数据库的权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BC%80%E5%90%AF%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1%E5%90%8E%E9%80%9A%E8%BF%87project-root%E7%94%A8%E6%88%B7%E7%99%BB%E9%99%86%E5%B9%B6%E8%AE%A4%E8%AF%81"><span class="toc-text">2. 开启认证服务后通过project_root用户登陆并认证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AAtest%E5%BA%93%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E8%B4%A6%E5%8F%B7test-admin"><span class="toc-text">3. 建立一个test库的数据库管理账号test_admin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AAtest%E5%BA%93%E7%9A%84%E5%BC%80%E5%8F%91%E8%B4%A6%E5%8F%B7test-dev%EF%BC%8C%E6%8B%A5%E6%9C%89%E8%AF%BB%E5%86%99%E6%9D%83%E9%99%90"><span class="toc-text">4.建立一个test库的开发账号test_dev，拥有读写权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E9%AA%8C%E8%AF%81%E6%89%80%E6%9C%89%E7%9A%84%E8%B4%A6%E5%8F%B7%E6%9D%83%E9%99%90%E6%98%AF%E5%90%A6%E5%A6%82%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E6%89%80%E8%A1%A8%E8%BF%B0%E7%9A%84"><span class="toc-text">5. 验证所有的账号权限是否如官方文档所表述的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%A6%82%E6%9E%9C%E5%BF%98%E8%AE%B0%E4%BA%86%E8%AE%A4%E8%AF%81%E7%AE%A1%E7%90%86%E6%9D%83%E9%99%90%E7%94%A8%E6%88%B7%EF%BC%88%E8%B6%85%E7%BA%A7%E7%94%A8%E6%88%B7%EF%BC%89%E7%9A%84%E8%AE%A4%E8%AF%81%E4%BF%A1%E6%81%AF%EF%BC%8C%E7%9B%AE%E5%89%8D%E5%8F%AA%E6%9C%89%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E7%9A%84%E6%9D%83%E9%99%90%EF%BC%8C%E9%9C%80%E6%B1%82%E6%98%AF%E6%96%B0%E5%A2%9E%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84%E7%94%A8%E6%88%B7%E3%80%82"><span class="toc-text">6. 如果忘记了认证管理权限用户（超级用户）的认证信息，目前只有普通用户的权限，需求是新增一个新的用户。</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>冷备-物理备份恢复-离线冷备 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-03-%E5%86%B7%E5%A4%87-%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E7%A6%BB%E7%BA%BF%E5%86%B7%E5%A4%87">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-03-%E5%86%B7%E5%A4%87-%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E7%A6%BB%E7%BA%BF%E5%86%B7%E5%A4%87" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2019.11.20 BoobooWei     冷备-物理备份恢复-离线冷备 备份数据库物理文件 一般步骤 有哪些待备份的数据库物理文件？   离线冷备-物理文件的一般步骤 1 创建备份目录 2 准备停库脚本 3 准备启动脚本 4 通过执行SQL语句拼接拷贝文件的命令 5 准备备份脚本 6 修改脚本权限 7 运行备份脚本   通过离线冷备的物理文件进行恢复的一般步骤 1 根据之前的备份脚本，自">
+<meta property="og:type" content="website">
+<meta property="og:title" content="冷备-物理备份恢复-离线冷备">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-03-%E5%86%B7%E5%A4%87-%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E7%A6%BB%E7%BA%BF%E5%86%B7%E5%A4%87">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2019.11.20 BoobooWei     冷备-物理备份恢复-离线冷备 备份数据库物理文件 一般步骤 有哪些待备份的数据库物理文件？   离线冷备-物理文件的一般步骤 1 创建备份目录 2 准备停库脚本 3 准备启动脚本 4 通过执行SQL语句拼接拷贝文件的命令 5 准备备份脚本 6 修改脚本权限 7 运行备份脚本   通过离线冷备的物理文件进行恢复的一般步骤 1 根据之前的备份脚本，自">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.766Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:49.697Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">冷备-物理备份恢复-离线冷备</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/E-数据库备份与恢复-03-冷备-物理备份恢复-离线冷备.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2019.11.20 BoobooWei</p>
+</blockquote>
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#%E5%86%B7%E5%A4%87-%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E7%A6%BB%E7%BA%BF%E5%86%B7%E5%A4%87">冷备-物理备份恢复-离线冷备</a><ul>
+<li><a href="#%E5%A4%87%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%BA%93%E7%89%A9%E7%90%86%E6%96%87%E4%BB%B6">备份数据库物理文件</a><ul>
+<li><a href="#%E4%B8%80%E8%88%AC%E6%AD%A5%E9%AA%A4">一般步骤</a></li>
+<li><a href="#%E6%9C%89%E5%93%AA%E4%BA%9B%E5%BE%85%E5%A4%87%E4%BB%BD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93%E7%89%A9%E7%90%86%E6%96%87%E4%BB%B6">有哪些待备份的数据库物理文件？</a></li>
+</ul>
+</li>
+<li><a href="#%E7%A6%BB%E7%BA%BF%E5%86%B7%E5%A4%87-%E7%89%A9%E7%90%86%E6%96%87%E4%BB%B6%E7%9A%84%E4%B8%80%E8%88%AC%E6%AD%A5%E9%AA%A4">离线冷备-物理文件的一般步骤</a><ul>
+<li><a href="#1-%E5%88%9B%E5%BB%BA%E5%A4%87%E4%BB%BD%E7%9B%AE%E5%BD%95">1 创建备份目录</a></li>
+<li><a href="#2-%E5%87%86%E5%A4%87%E5%81%9C%E5%BA%93%E8%84%9A%E6%9C%AC">2 准备停库脚本</a></li>
+<li><a href="#3-%E5%87%86%E5%A4%87%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC">3 准备启动脚本</a></li>
+<li><a href="#4-%E9%80%9A%E8%BF%87%E6%89%A7%E8%A1%8Csql%E8%AF%AD%E5%8F%A5%E6%8B%BC%E6%8E%A5%E6%8B%B7%E8%B4%9D%E6%96%87%E4%BB%B6%E7%9A%84%E5%91%BD%E4%BB%A4">4 通过执行SQL语句拼接拷贝文件的命令</a></li>
+<li><a href="#5-%E5%87%86%E5%A4%87%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC">5 准备备份脚本</a></li>
+<li><a href="#6-%E4%BF%AE%E6%94%B9%E8%84%9A%E6%9C%AC%E6%9D%83%E9%99%90">6 修改脚本权限</a></li>
+<li><a href="#7-%E8%BF%90%E8%A1%8C%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC">7 运行备份脚本</a></li>
+</ul>
+</li>
+<li><a href="#%E9%80%9A%E8%BF%87%E7%A6%BB%E7%BA%BF%E5%86%B7%E5%A4%87%E7%9A%84%E7%89%A9%E7%90%86%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8C%E6%81%A2%E5%A4%8D%E7%9A%84%E4%B8%80%E8%88%AC%E6%AD%A5%E9%AA%A4">通过<code>离线冷备的物理文件</code>进行恢复的一般步骤</a><ul>
+<li><a href="#1-%E6%A0%B9%E6%8D%AE%E4%B9%8B%E5%89%8D%E7%9A%84%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E6%81%A2%E5%A4%8D%E8%84%9A%E6%9C%ACrtsh">1 根据之前的备份脚本，自动生成恢复脚本<code>rt.sh</code></a></li>
+<li><a href="#2-%E6%89%A7%E8%A1%8C%E6%81%A2%E5%A4%8D%E8%84%9A%E6%9C%AC">2. 执行恢复脚本</a></li>
+</ul>
+</li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E5%AE%9E%E8%B7%B5">操作实践</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B501-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%A6%BB%E7%BA%BF%E5%86%B7%E5%A4%87-%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD">实践01-创建一个离线冷备-物理备份</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B502-%E6%A8%A1%E6%8B%9F%E6%95%85%E9%9A%9C%E5%90%8E%E8%BF%9B%E8%A1%8C%E6%81%A2%E5%A4%8D">实践02-模拟故障后进行恢复</a></li>
+</ul>
+</li>
+<li><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E8%84%9A%E6%9C%AC">自动化脚本</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h2 id="备份数据库物理文件" class="article-heading"><a href="#备份数据库物理文件" class="headerlink" title="备份数据库物理文件"></a>备份数据库物理文件<a class="article-anchor" href="#备份数据库物理文件" aria-hidden="true"></a></h2><h3 id="一般步骤" class="article-heading"><a href="#一般步骤" class="headerlink" title="一般步骤"></a>一般步骤<a class="article-anchor" href="#一般步骤" aria-hidden="true"></a></h3><p><code>一停二拷三启动</code></p>
+<p>由于备份时需要停库，所以数据库服务不可用，属于离线冷备份：<code>offline backup</code></p>
+<h3 id="有哪些待备份的数据库物理文件？" class="article-heading"><a href="#有哪些待备份的数据库物理文件？" class="headerlink" title="有哪些待备份的数据库物理文件？"></a>有哪些待备份的数据库物理文件？<a class="article-anchor" href="#有哪些待备份的数据库物理文件？" aria-hidden="true"></a></h3><ul>
+<li>口令文件<code>$ORACLE_HOME/dbs/orapw$ORACLE_SID</code></li>
+<li>参数文件<code>$ORACLE_HOME/dbs/init$ORACLE_SID.ora</code>和<code>$ORACLE_HOME/dbs/spfile$ORACLE_SID.ora</code></li>
+<li>控制文件<code>select name from v$controlfile</code></li>
+<li>数据文件<code>select name from v$datafile;</code></li>
+<li>日志文件<code>select member from v$logfile</code>;</li>
+</ul>
+<h2 id="离线冷备-物理文件的一般步骤" class="article-heading"><a href="#离线冷备-物理文件的一般步骤" class="headerlink" title="离线冷备-物理文件的一般步骤"></a>离线冷备-物理文件的一般步骤<a class="article-anchor" href="#离线冷备-物理文件的一般步骤" aria-hidden="true"></a></h2><h3 id="1-创建备份目录" class="article-heading"><a href="#1-创建备份目录" class="headerlink" title="1 创建备份目录"></a>1 创建备份目录<a class="article-anchor" href="#1-创建备份目录" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /home/oracle/coldbk</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="2-准备停库脚本" class="article-heading"><a href="#2-准备停库脚本" class="headerlink" title="2 准备停库脚本"></a>2 准备停库脚本<a class="article-anchor" href="#2-准备停库脚本" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vi /home/oracle/coldbk/shut.txt</span><br><span class="line">-------------------------------</span><br><span class="line">conn / as sysdba</span><br><span class="line">shutdown immediate</span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line">-------------------------------</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-准备启动脚本" class="article-heading"><a href="#3-准备启动脚本" class="headerlink" title="3 准备启动脚本"></a>3 准备启动脚本<a class="article-anchor" href="#3-准备启动脚本" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vi /home/oracle/coldbk/start.txt</span><br><span class="line">-------------------------------</span><br><span class="line">conn / as sysdba</span><br><span class="line">startup</span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line">-------------------------------</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="4-通过执行SQL语句拼接拷贝文件的命令" class="article-heading"><a href="#4-通过执行SQL语句拼接拷贝文件的命令" class="headerlink" title="4 通过执行SQL语句拼接拷贝文件的命令"></a>4 通过执行SQL语句拼接拷贝文件的命令<a class="article-anchor" href="#4-通过执行SQL语句拼接拷贝文件的命令" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="string">'cp -v '</span><span class="operator">||</span>name<span class="operator">||</span><span class="string">' /home/oracle/coldbk/'</span></span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">(<span class="keyword">select</span> name <span class="keyword">from</span> v$controlfile</span><br><span class="line"><span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line"><span class="keyword">select</span> name <span class="keyword">from</span> v$datafile</span><br><span class="line"><span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">member</span> <span class="keyword">from</span> v$logfile);</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="5-准备备份脚本" class="article-heading"><a href="#5-准备备份脚本" class="headerlink" title="5 准备备份脚本"></a>5 准备备份脚本<a class="article-anchor" href="#5-准备备份脚本" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vi /home/oracle/coldbk/bk.sh</span><br><span class="line">-----------------------------------------------------------------------</span><br><span class="line">sqlplus /nolog @/home/oracle/coldbk/shut.txt</span><br><span class="line"><span class="built_in">cp</span> -v <span class="variable">$ORACLE_HOME</span>/dbs/orapw<span class="variable">$ORACLE_SID</span> /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v <span class="variable">$ORACLE_HOME</span>/dbs/spfile<span class="variable">$ORACLE_SID</span>.ora /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v <span class="variable">$ORACLE_HOME</span>/dbs/init<span class="variable">$ORACLE_SID</span>.ora /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/control01.ctl /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/control02.ctl /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/system01.dbf /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/sysaux01.dbf /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/undotbs01.dbf /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/users01.dbf /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/example01.dbf /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/tbs010.dbf /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo03.<span class="built_in">log</span> /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo02.<span class="built_in">log</span> /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo01.<span class="built_in">log</span> /home/oracle/coldbk/</span><br><span class="line">sqlplus /nolog @/home/oracle/coldbk/start.txt</span><br><span class="line">-----------------------------------------------------------------------</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="6-修改脚本权限" class="article-heading"><a href="#6-修改脚本权限" class="headerlink" title="6 修改脚本权限"></a>6 修改脚本权限<a class="article-anchor" href="#6-修改脚本权限" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">chmod</span> +x /home/oracle/coldbk/bk.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="7-运行备份脚本" class="article-heading"><a href="#7-运行备份脚本" class="headerlink" title="7 运行备份脚本"></a>7 运行备份脚本<a class="article-anchor" href="#7-运行备份脚本" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">bash /home/oracle/coldbk/bk.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="通过离线冷备的物理文件进行恢复的一般步骤" class="article-heading"><a href="#通过离线冷备的物理文件进行恢复的一般步骤" class="headerlink" title="通过离线冷备的物理文件进行恢复的一般步骤"></a>通过<code>离线冷备的物理文件</code>进行恢复的一般步骤<a class="article-anchor" href="#通过离线冷备的物理文件进行恢复的一般步骤" aria-hidden="true"></a></h2><ol>
+<li>停库</li>
+<li>清数据</li>
+<li>导入备份文件</li>
+<li>启动数据库</li>
+<li>检查</li>
+</ol>
+<h3 id="1-根据之前的备份脚本，自动生成恢复脚本rt-sh" class="article-heading"><a href="#1-根据之前的备份脚本，自动生成恢复脚本rt-sh" class="headerlink" title="1 根据之前的备份脚本，自动生成恢复脚本rt.sh"></a>1 根据之前的备份脚本，自动生成恢复脚本<code>rt.sh</code><a class="article-anchor" href="#1-根据之前的备份脚本，自动生成恢复脚本rt-sh" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sed -n <span class="string">'1p'</span> bk.sh &gt; rt.sh</span><br><span class="line">grep -v <span class="string">'sqlplus'</span> bk.sh | awk <span class="string">'{split($3,i,"/");print $1,$2,$4i[length(i)],$3}'</span> &gt;&gt; rt.sh</span><br><span class="line">sed -n <span class="string">'$p'</span> bk.sh &gt;&gt; rt.sh</span><br><span class="line"><span class="built_in">chmod</span> a+x rt.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="2-执行恢复脚本" class="article-heading"><a href="#2-执行恢复脚本" class="headerlink" title="2. 执行恢复脚本"></a>2. 执行恢复脚本<a class="article-anchor" href="#2-执行恢复脚本" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">bash rt.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="操作实践" class="article-heading"><a href="#操作实践" class="headerlink" title="操作实践"></a>操作实践<a class="article-anchor" href="#操作实践" aria-hidden="true"></a></h2><h3 id="实践01-创建一个离线冷备-物理备份" class="article-heading"><a href="#实践01-创建一个离线冷备-物理备份" class="headerlink" title="实践01-创建一个离线冷备-物理备份"></a>实践01-创建一个离线冷备-物理备份<a class="article-anchor" href="#实践01-创建一个离线冷备-物理备份" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest ~]$ <span class="built_in">mkdir</span> /home/oracle/coldbk</span><br><span class="line">[oracle@oratest ~]$ <span class="built_in">cd</span> coldbk/</span><br><span class="line">[oracle@oratest coldbk]$ ll</span><br><span class="line">total 0</span><br><span class="line">[oracle@oratest coldbk]$ <span class="built_in">cat</span> &gt; shut.txt &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">&gt; conn / as sysdba</span></span><br><span class="line"><span class="string">&gt; shutdown immediate</span></span><br><span class="line"><span class="string">&gt; exit</span></span><br><span class="line"><span class="string">&gt; ENDF</span></span><br><span class="line">[oracle@oratest coldbk]$ ll</span><br><span class="line">total 4</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 41 Nov 23 19:17 shut.txt</span><br><span class="line">[oracle@oratest coldbk]$ <span class="built_in">cat</span> &gt; start.txt &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">&gt; conn / as sysdba</span></span><br><span class="line"><span class="string">&gt; startup</span></span><br><span class="line"><span class="string">&gt; exit</span></span><br><span class="line"><span class="string">&gt; ENDF</span></span><br><span class="line">[oracle@oratest coldbk]$ ll</span><br><span class="line">total 8</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 41 Nov 23 19:17 shut.txt</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 30 Nov 23 19:18 start.txt</span><br><span class="line"></span><br><span class="line">[oracle@oratest ~]$ sqlplus / as sysdba</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.4.0 Production on Sat Nov 23 19:11:11 2019</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2013, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Connected to:</span><br><span class="line">Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span><br><span class="line">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> <span class="string">'cp -v '</span>||name||<span class="string">' /home/oracle/coldbk/'</span></span><br><span class="line">  2  from (</span><br><span class="line">  3  <span class="keyword">select</span> name from v<span class="variable">$controlfile</span></span><br><span class="line">  4  union all</span><br><span class="line">  5  <span class="keyword">select</span> name from v<span class="variable">$datafile</span></span><br><span class="line">  6  union all</span><br><span class="line">  7  <span class="keyword">select</span> member from v<span class="variable">$logfile</span></span><br><span class="line">  8  );</span><br><span class="line"></span><br><span class="line"><span class="string">'CP-V'</span>||NAME||<span class="string">'/HOME/ORACLE/COLDBK/'</span></span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line"><span class="built_in">cp</span> -v /u01/app/oracle/product/11.2.0.4/dbs/cntrlBOOBOO.dbf /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /u01/app/oracle/oradata/BOOBOO/system01.dbf /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /u01/app/oracle/oradata/BOOBOO/sysaux01.dbf /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /u01/app/oracle/oradata/BOOBOO/undotbs01.dbf /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /u01/app/oracle/oradata/BOOBOO/users01.dbf /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /u01/app/oracle/oradata/BOOBOO/redo01a.<span class="built_in">log</span> /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /u01/app/oracle/oradata/BOOBOO/redo01b.<span class="built_in">log</span> /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /u01/app/oracle/oradata/BOOBOO/redo02a.<span class="built_in">log</span> /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /u01/app/oracle/oradata/BOOBOO/redo02b.<span class="built_in">log</span> /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /u01/app/oracle/oradata/BOOBOO/redo03a.<span class="built_in">log</span> /home/oracle/coldbk/</span><br><span class="line"><span class="built_in">cp</span> -v /u01/app/oracle/oradata/BOOBOO/redo03b.<span class="built_in">log</span> /home/oracle/coldbk/</span><br><span class="line"></span><br><span class="line">11 rows selected.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[oracle@oratest coldbk]$ <span class="built_in">cat</span> &gt; bk.sh &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">&gt; sqlplus /nolog @/home/oracle/coldbk/shut.txt</span></span><br><span class="line"><span class="string">&gt; cp -v $ORACLE_HOME/dbs/orapw$ORACLE_SID /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v $ORACLE_HOME/dbs/init$ORACLE_SID.ora /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v /u01/app/oracle/product/11.2.0.4/dbs/cntrlBOOBOO.dbf /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v /u01/app/oracle/oradata/BOOBOO/system01.dbf /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v /u01/app/oracle/oradata/BOOBOO/sysaux01.dbf /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v /u01/app/oracle/oradata/BOOBOO/undotbs01.dbf /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v /u01/app/oracle/oradata/BOOBOO/users01.dbf /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v /u01/app/oracle/oradata/BOOBOO/redo01a.log /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v /u01/app/oracle/oradata/BOOBOO/redo01b.log /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v /u01/app/oracle/oradata/BOOBOO/redo02a.log /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v /u01/app/oracle/oradata/BOOBOO/redo02b.log /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v /u01/app/oracle/oradata/BOOBOO/redo03a.log /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; cp -v /u01/app/oracle/oradata/BOOBOO/redo03b.log /home/oracle/coldbk/</span></span><br><span class="line"><span class="string">&gt; sqlplus /nolog @/home/oracle/coldbk/start.txt</span></span><br><span class="line"><span class="string">&gt; ENDF</span></span><br><span class="line">[oracle@oratest coldbk]$ ll</span><br><span class="line">total 12</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 1065 Nov 23 19:22 bk.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall   41 Nov 23 19:17 shut.txt</span><br><span class="line">-rw-r--r-- 1 oracle oinstall   30 Nov 23 19:18 start.txt</span><br><span class="line">[oracle@oratest coldbk]$ <span class="built_in">chmod</span> +x /home/oracle/coldbk/bk.sh</span><br><span class="line">[oracle@oratest coldbk]$ bash bk.sh</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.4.0 Production on Sat Nov 23 19:22:53 2019</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2013, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Connected.</span><br><span class="line">Database closed.</span><br><span class="line">Database dismounted.</span><br><span class="line">ORACLE instance shut down.</span><br><span class="line">Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span><br><span class="line">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span><br><span class="line">`/u01/app/oracle/product/11.2.0.4/dbs/orapwBOOBOO<span class="string">' -&gt; `/home/oracle/coldbk/orapwBOOBOO'</span></span><br><span class="line">`/u01/app/oracle/product/11.2.0.4/dbs/spfileBOOBOO.ora<span class="string">' -&gt; `/home/oracle/coldbk/spfileBOOBOO.ora'</span></span><br><span class="line">`/u01/app/oracle/product/11.2.0.4/dbs/initBOOBOO.ora<span class="string">' -&gt; `/home/oracle/coldbk/initBOOBOO.ora'</span></span><br><span class="line">`/u01/app/oracle/product/11.2.0.4/dbs/cntrlBOOBOO.dbf<span class="string">' -&gt; `/home/oracle/coldbk/cntrlBOOBOO.dbf'</span></span><br><span class="line">`/u01/app/oracle/oradata/BOOBOO/system01.dbf<span class="string">' -&gt; `/home/oracle/coldbk/system01.dbf'</span></span><br><span class="line">`/u01/app/oracle/oradata/BOOBOO/sysaux01.dbf<span class="string">' -&gt; `/home/oracle/coldbk/sysaux01.dbf'</span></span><br><span class="line">`/u01/app/oracle/oradata/BOOBOO/undotbs01.dbf<span class="string">' -&gt; `/home/oracle/coldbk/undotbs01.dbf'</span></span><br><span class="line">`/u01/app/oracle/oradata/BOOBOO/users01.dbf<span class="string">' -&gt; `/home/oracle/coldbk/users01.dbf'</span></span><br><span class="line">`/u01/app/oracle/oradata/BOOBOO/redo01a.<span class="built_in">log</span><span class="string">' -&gt; `/home/oracle/coldbk/redo01a.log'</span></span><br><span class="line">`/u01/app/oracle/oradata/BOOBOO/redo01b.<span class="built_in">log</span><span class="string">' -&gt; `/home/oracle/coldbk/redo01b.log'</span></span><br><span class="line">`/u01/app/oracle/oradata/BOOBOO/redo02a.<span class="built_in">log</span><span class="string">' -&gt; `/home/oracle/coldbk/redo02a.log'</span></span><br><span class="line">`/u01/app/oracle/oradata/BOOBOO/redo02b.<span class="built_in">log</span><span class="string">' -&gt; `/home/oracle/coldbk/redo02b.log'</span></span><br><span class="line">`/u01/app/oracle/oradata/BOOBOO/redo03a.<span class="built_in">log</span><span class="string">' -&gt; `/home/oracle/coldbk/redo03a.log'</span></span><br><span class="line">`/u01/app/oracle/oradata/BOOBOO/redo03b.<span class="built_in">log</span><span class="string">' -&gt; `/home/oracle/coldbk/redo03b.log'</span></span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.4.0 Production on Sat Nov 23 19:24:41 2019</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2013, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Connected to an idle instance.</span><br><span class="line">ORACLE instance started.</span><br><span class="line"></span><br><span class="line">Total System Global Area  229683200 bytes</span><br><span class="line">Fixed Size		    2251936 bytes</span><br><span class="line">Variable Size		  171967328 bytes</span><br><span class="line">Database Buffers	   50331648 bytes</span><br><span class="line">Redo Buffers		    5132288 bytes</span><br><span class="line">Database mounted.</span><br><span class="line">Database opened.</span><br><span class="line">Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span><br><span class="line">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="实践02-模拟故障后进行恢复" class="article-heading"><a href="#实践02-模拟故障后进行恢复" class="headerlink" title="实践02-模拟故障后进行恢复"></a>实践02-模拟故障后进行恢复<a class="article-anchor" href="#实践02-模拟故障后进行恢复" aria-hidden="true"></a></h3><p><code>awk</code>命令测试</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest coldbk]$ grep -v <span class="string">'sqlplus'</span> bk.sh | awk <span class="string">'{split($3,i,"/");print $1,$2,$4i[length(i)],$3}'</span></span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/orapwBOOBOO /u01/app/oracle/product/11.2.0.4/dbs/orapwBOOBOO</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/spfileBOOBOO.ora /u01/app/oracle/product/11.2.0.4/dbs/spfileBOOBOO.ora</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/initBOOBOO.ora /u01/app/oracle/product/11.2.0.4/dbs/initBOOBOO.ora</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/cntrlBOOBOO.dbf /u01/app/oracle/product/11.2.0.4/dbs/cntrlBOOBOO.dbf</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/system01.dbf /u01/app/oracle/oradata/BOOBOO/system01.dbf</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/sysaux01.dbf /u01/app/oracle/oradata/BOOBOO/sysaux01.dbf</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/undotbs01.dbf /u01/app/oracle/oradata/BOOBOO/undotbs01.dbf</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/users01.dbf /u01/app/oracle/oradata/BOOBOO/users01.dbf</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo01a.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo01a.<span class="built_in">log</span></span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo01b.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo01b.<span class="built_in">log</span></span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo02a.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo02a.<span class="built_in">log</span></span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo02b.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo02b.<span class="built_in">log</span></span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo03a.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo03a.<span class="built_in">log</span></span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo03b.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo03b.<span class="built_in">log</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>恢复过程</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest coldbk]$ sed -n <span class="string">'1p'</span> bk.sh &gt; rt.sh</span><br><span class="line">[oracle@oratest coldbk]$ grep -v <span class="string">'sqlplus'</span> bk.sh | awk <span class="string">'{split($3,i,"/");print $1,$2,$4i[length(i)],$3}'</span> &gt;&gt; rt.sh</span><br><span class="line">[oracle@oratest coldbk]$ sed -n <span class="string">'$p'</span> bk.sh &gt;&gt; rt.sh</span><br><span class="line">[oracle@oratest coldbk]$ <span class="built_in">chmod</span> a+x rt.sh</span><br><span class="line">[oracle@oratest coldbk]$ ll</span><br><span class="line">total 2006184</span><br><span class="line">-rwxr-xr-x 1 oracle oinstall      1111 Nov 23 19:28 bk.sh</span><br><span class="line">-rw-r----- 1 oracle oinstall   9519104 Nov 23 19:23 cntrlBOOBOO.dbf</span><br><span class="line">-rw-r--r-- 1 oracle oinstall        39 Nov 23 19:23 initBOOBOO.ora</span><br><span class="line">-rw-r----- 1 oracle oinstall      1536 Nov 23 19:23 orapwBOOBOO</span><br><span class="line">-rw-r----- 1 oracle oinstall 104858112 Nov 23 19:24 redo01a.log</span><br><span class="line">-rw-r----- 1 oracle oinstall 104858112 Nov 23 19:24 redo01b.log</span><br><span class="line">-rw-r----- 1 oracle oinstall 104858112 Nov 23 19:24 redo02a.log</span><br><span class="line">-rw-r----- 1 oracle oinstall 104858112 Nov 23 19:24 redo02b.log</span><br><span class="line">-rw-r----- 1 oracle oinstall 104858112 Nov 23 19:24 redo03a.log</span><br><span class="line">-rw-r----- 1 oracle oinstall 104858112 Nov 23 19:24 redo03b.log</span><br><span class="line">-rwxr-xr-x 1 oracle oinstall      1281 Nov 23 19:55 rt.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall        41 Nov 23 19:17 shut.txt</span><br><span class="line">-rw-r----- 1 oracle oinstall      1536 Nov 23 19:23 spfileBOOBOO.ora</span><br><span class="line">-rw-r--r-- 1 oracle oinstall        30 Nov 23 19:18 start.txt</span><br><span class="line">-rw-r----- 1 oracle oinstall 340795392 Nov 23 19:23 sysaux01.dbf</span><br><span class="line">-rw-r----- 1 oracle oinstall 340795392 Nov 23 19:23 system01.dbf</span><br><span class="line">-rw-r----- 1 oracle oinstall 209723392 Nov 23 19:23 undotbs01.dbf</span><br><span class="line">-rw-r----- 1 oracle oinstall 524296192 Nov 23 19:24 users01.dbf</span><br><span class="line">[oracle@oratest coldbk]$ <span class="built_in">cat</span> rt.sh</span><br><span class="line">sqlplus /nolog @/home/oracle/coldbk/shut.txt</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/orapwBOOBOO /u01/app/oracle/product/11.2.0.4/dbs/orapwBOOBOO</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/spfileBOOBOO.ora /u01/app/oracle/product/11.2.0.4/dbs/spfileBOOBOO.ora</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/initBOOBOO.ora /u01/app/oracle/product/11.2.0.4/dbs/initBOOBOO.ora</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/cntrlBOOBOO.dbf /u01/app/oracle/product/11.2.0.4/dbs/cntrlBOOBOO.dbf</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/system01.dbf /u01/app/oracle/oradata/BOOBOO/system01.dbf</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/sysaux01.dbf /u01/app/oracle/oradata/BOOBOO/sysaux01.dbf</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/undotbs01.dbf /u01/app/oracle/oradata/BOOBOO/undotbs01.dbf</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/users01.dbf /u01/app/oracle/oradata/BOOBOO/users01.dbf</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo01a.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo01a.<span class="built_in">log</span></span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo01b.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo01b.<span class="built_in">log</span></span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo02a.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo02a.<span class="built_in">log</span></span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo02b.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo02b.<span class="built_in">log</span></span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo03a.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo03a.<span class="built_in">log</span></span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/coldbk/redo03b.<span class="built_in">log</span> /u01/app/oracle/oradata/BOOBOO/redo03b.<span class="built_in">log</span></span><br><span class="line">sqlplus /nolog @/home/oracle/coldbk/start.txt</span><br><span class="line">[oracle@oratest coldbk]$ bash rt.sh</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.4.0 Production on Sat Nov 23 19:59:53 2019</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2013, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Connected.</span><br><span class="line">Database closed.</span><br><span class="line">Database dismounted.</span><br><span class="line">ORACLE instance shut down.</span><br><span class="line">Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span><br><span class="line">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span><br><span class="line">`/home/oracle/coldbk/orapwBOOBOO<span class="string">' -&gt; `/u01/app/oracle/product/11.2.0.4/dbs/orapwBOOBOO'</span></span><br><span class="line">`/home/oracle/coldbk/spfileBOOBOO.ora<span class="string">' -&gt; `/u01/app/oracle/product/11.2.0.4/dbs/spfileBOOBOO.ora'</span></span><br><span class="line">`/home/oracle/coldbk/initBOOBOO.ora<span class="string">' -&gt; `/u01/app/oracle/product/11.2.0.4/dbs/initBOOBOO.ora'</span></span><br><span class="line">`/home/oracle/coldbk/cntrlBOOBOO.dbf<span class="string">' -&gt; `/u01/app/oracle/product/11.2.0.4/dbs/cntrlBOOBOO.dbf'</span></span><br><span class="line">`/home/oracle/coldbk/system01.dbf<span class="string">' -&gt; `/u01/app/oracle/oradata/BOOBOO/system01.dbf'</span></span><br><span class="line">`/home/oracle/coldbk/sysaux01.dbf<span class="string">' -&gt; `/u01/app/oracle/oradata/BOOBOO/sysaux01.dbf'</span></span><br><span class="line">`/home/oracle/coldbk/undotbs01.dbf<span class="string">' -&gt; `/u01/app/oracle/oradata/BOOBOO/undotbs01.dbf'</span></span><br><span class="line">`/home/oracle/coldbk/users01.dbf<span class="string">' -&gt; `/u01/app/oracle/oradata/BOOBOO/users01.dbf'</span></span><br><span class="line">`/home/oracle/coldbk/redo01a.<span class="built_in">log</span><span class="string">' -&gt; `/u01/app/oracle/oradata/BOOBOO/redo01a.log'</span></span><br><span class="line">`/home/oracle/coldbk/redo01b.<span class="built_in">log</span><span class="string">' -&gt; `/u01/app/oracle/oradata/BOOBOO/redo01b.log'</span></span><br><span class="line">`/home/oracle/coldbk/redo02a.<span class="built_in">log</span><span class="string">' -&gt; `/u01/app/oracle/oradata/BOOBOO/redo02a.log'</span></span><br><span class="line">`/home/oracle/coldbk/redo02b.<span class="built_in">log</span><span class="string">' -&gt; `/u01/app/oracle/oradata/BOOBOO/redo02b.log'</span></span><br><span class="line">`/home/oracle/coldbk/redo03a.<span class="built_in">log</span><span class="string">' -&gt; `/u01/app/oracle/oradata/BOOBOO/redo03a.log'</span></span><br><span class="line">`/home/oracle/coldbk/redo03b.<span class="built_in">log</span><span class="string">' -&gt; `/u01/app/oracle/oradata/BOOBOO/redo03b.log'</span></span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.4.0 Production on Sat Nov 23 20:01:19 2019</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2013, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Connected to an idle instance.</span><br><span class="line">ORACLE instance started.</span><br><span class="line"></span><br><span class="line">Total System Global Area  229683200 bytes</span><br><span class="line">Fixed Size		    2251936 bytes</span><br><span class="line">Variable Size		  171967328 bytes</span><br><span class="line">Database Buffers	   50331648 bytes</span><br><span class="line">Redo Buffers		    5132288 bytes</span><br><span class="line">Database mounted.</span><br><span class="line">Database opened.</span><br><span class="line">Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span><br><span class="line">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>检查验证</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest coldbk]$ sqlplus / as sysdba</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.4.0 Production on Sat Nov 23 20:02:18 2019</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2013, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Connected to:</span><br><span class="line">Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span><br><span class="line">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> open_mode from v<span class="variable">$database</span>;</span><br><span class="line"></span><br><span class="line">OPEN_MODE</span><br><span class="line">--------------------</span><br><span class="line">READ WRITE</span><br><span class="line"></span><br><span class="line">SQL&gt; conn scott/tiger</span><br><span class="line">Connected.</span><br><span class="line">SQL&gt; <span class="keyword">select</span> * from tab;</span><br><span class="line"></span><br><span class="line">TNAME			       TABTYPE	CLUSTERID</span><br><span class="line">------------------------------ ------- ----------</span><br><span class="line">BONUS			       TABLE</span><br><span class="line">DEPT			       TABLE</span><br><span class="line">EMP			       TABLE</span><br><span class="line">SALGRADE		       TABLE</span><br><span class="line">T02			       TABLE</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> *from t02;</span><br><span class="line"></span><br><span class="line">	 X Y</span><br><span class="line">---------- --------------------</span><br><span class="line">         1 中国</span><br><span class="line">	 2 巴西</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="自动化脚本" class="article-heading"><a href="#自动化脚本" class="headerlink" title="自动化脚本"></a>自动化脚本<a class="article-anchor" href="#自动化脚本" aria-hidden="true"></a></h2><p><a href="scripts/AutoGetColdBackupScripts.sh">自动生成离线冷备物理文件脚本</a></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest backup_scripts]$ <span class="built_in">pwd</span></span><br><span class="line">/home/oracle/backup_scripts</span><br><span class="line">[oracle@oratest backup_scripts]$ ll</span><br><span class="line">total 4</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 1832 Nov 23 23:08 AutoGetColdBackupScripts.sh</span><br><span class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; <span class="string">HEAD</span></span><br><span class="line"><span class="string">[oracle@oratest backup_scripts]$ bash AutoGetColdBackupScripts.sh</span></span><br><span class="line"><span class="string">=======</span></span><br><span class="line"><span class="string">[oracle@oratest backup_scripts]$ bash AutoGetColdBackupScripts.sh</span></span><br><span class="line"><span class="string">&gt;&gt;&gt;&gt;&gt;&gt;&gt; bd110fe0aeb2e625f17b5a1b0917463b970870c7</span></span><br><span class="line"><span class="string">指定备份目录 [ default /home/oracle/coldbk] :</span></span><br><span class="line"><span class="string">备份目录为：/home/oracle/coldbk</span></span><br><span class="line"><span class="string">指定备份子目录 [默认为当前的年月日时分秒] :</span></span><br><span class="line"><span class="string">备份子目录为：20191123230946</span></span><br><span class="line"><span class="string">开始生成脚本，请按回车键</span></span><br><span class="line"><span class="string">/home/oracle/coldbk/20191123230946目录创建	OK</span></span><br><span class="line"><span class="string">离线冷备-物理文件备份脚本生成	OK</span></span><br><span class="line"><span class="string">查看脚本：ll /home/oracle/coldbk/bk.sh</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[oracle@oratest backup_scripts]$ cat /home/oracle/coldbk/bk.sh</span></span><br><span class="line"><span class="string">sqlplus /nolog @/home/oracle/coldbk/shut.txt</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/product/11.2.0.4/dbs/orapwBOOBOO /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/product/11.2.0.4/dbs/spfileBOOBOO.ora /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/product/11.2.0.4/dbs/initBOOBOO.ora /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/product/11.2.0.4/dbs/cntrlBOOBOO.dbf /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/oradata/BOOBOO/system01.dbf /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/oradata/BOOBOO/sysaux01.dbf /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/oradata/BOOBOO/undotbs01.dbf /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/oradata/BOOBOO/users01.dbf /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/oradata/BOOBOO/redo01a.log /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/oradata/BOOBOO/redo01b.log /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/oradata/BOOBOO/redo02a.log /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/oradata/BOOBOO/redo02b.log /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/oradata/BOOBOO/redo03a.log /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">cp -v /u01/app/oracle/oradata/BOOBOO/redo03b.log /home/oracle/coldbk/20191123230946</span></span><br><span class="line"><span class="string">sqlplus /nolog @/home/oracle/coldbk/start.txt</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[oracle@oratest coldbk]$ bash bk.sh</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">SQL*Plus: Release 11.2.0.4.0 Production on Sat Nov 23 23:10:44 2019</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Copyright (c) 1982, 2013, Oracle.  All rights reserved.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Connected.</span></span><br><span class="line"><span class="string">Database closed.</span></span><br><span class="line"><span class="string">Database dismounted.</span></span><br><span class="line"><span class="string">ORACLE instance shut down.</span></span><br><span class="line"><span class="string">Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span></span><br><span class="line"><span class="string">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span></span><br><span class="line"><span class="string">`/u01/app/oracle/product/11.2.0.4/dbs/orapwBOOBOO' -&gt; `/home/oracle/coldbk/20191123230946/orapwBOOBOO'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/product/11.2.0.4/dbs/spfileBOOBOO.ora' -&gt; `/home/oracle/coldbk/20191123230946/spfileBOOBOO.ora'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/product/11.2.0.4/dbs/initBOOBOO.ora' -&gt; `/home/oracle/coldbk/20191123230946/initBOOBOO.ora'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/product/11.2.0.4/dbs/cntrlBOOBOO.dbf' -&gt; `/home/oracle/coldbk/20191123230946/cntrlBOOBOO.dbf'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/oradata/BOOBOO/system01.dbf' -&gt; `/home/oracle/coldbk/20191123230946/system01.dbf'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/oradata/BOOBOO/sysaux01.dbf' -&gt; `/home/oracle/coldbk/20191123230946/sysaux01.dbf'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/oradata/BOOBOO/undotbs01.dbf' -&gt; `/home/oracle/coldbk/20191123230946/undotbs01.dbf'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/oradata/BOOBOO/users01.dbf' -&gt; `/home/oracle/coldbk/20191123230946/users01.dbf'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/oradata/BOOBOO/redo01a.log' -&gt; `/home/oracle/coldbk/20191123230946/redo01a.log'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/oradata/BOOBOO/redo01b.log' -&gt; `/home/oracle/coldbk/20191123230946/redo01b.log'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/oradata/BOOBOO/redo02a.log' -&gt; `/home/oracle/coldbk/20191123230946/redo02a.log'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/oradata/BOOBOO/redo02b.log' -&gt; `/home/oracle/coldbk/20191123230946/redo02b.log'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/oradata/BOOBOO/redo03a.log' -&gt; `/home/oracle/coldbk/20191123230946/redo03a.log'</span></span><br><span class="line"><span class="string">`/u01/app/oracle/oradata/BOOBOO/redo03b.log' -&gt; `/home/oracle/coldbk/20191123230946/redo03b.log'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">SQL*Plus: Release 11.2.0.4.0 Production on Sat Nov 23 23:12:02 2019</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Copyright (c) 1982, 2013, Oracle.  All rights reserved.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Connected to an idle instance.</span></span><br><span class="line"><span class="string">ORACLE instance started.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Total System Global Area  229683200 bytes</span></span><br><span class="line"><span class="string">Fixed Size		    2251936 bytes</span></span><br><span class="line"><span class="string">Variable Size		  171967328 bytes</span></span><br><span class="line"><span class="string">Database Buffers	   50331648 bytes</span></span><br><span class="line"><span class="string">Redo Buffers		    5132288 bytes</span></span><br><span class="line"><span class="string">Database mounted.</span></span><br><span class="line"><span class="string">Database opened.</span></span><br><span class="line"><span class="string">Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span></span><br><span class="line"><span class="string">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span></span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:49.697Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%BA%93%E7%89%A9%E7%90%86%E6%96%87%E4%BB%B6"><span class="toc-text">备份数据库物理文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E8%88%AC%E6%AD%A5%E9%AA%A4"><span class="toc-text">一般步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E5%93%AA%E4%BA%9B%E5%BE%85%E5%A4%87%E4%BB%BD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93%E7%89%A9%E7%90%86%E6%96%87%E4%BB%B6%EF%BC%9F"><span class="toc-text">有哪些待备份的数据库物理文件？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A6%BB%E7%BA%BF%E5%86%B7%E5%A4%87-%E7%89%A9%E7%90%86%E6%96%87%E4%BB%B6%E7%9A%84%E4%B8%80%E8%88%AC%E6%AD%A5%E9%AA%A4"><span class="toc-text">离线冷备-物理文件的一般步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%88%9B%E5%BB%BA%E5%A4%87%E4%BB%BD%E7%9B%AE%E5%BD%95"><span class="toc-text">1 创建备份目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%87%86%E5%A4%87%E5%81%9C%E5%BA%93%E8%84%9A%E6%9C%AC"><span class="toc-text">2 准备停库脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%87%86%E5%A4%87%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC"><span class="toc-text">3 准备启动脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%80%9A%E8%BF%87%E6%89%A7%E8%A1%8CSQL%E8%AF%AD%E5%8F%A5%E6%8B%BC%E6%8E%A5%E6%8B%B7%E8%B4%9D%E6%96%87%E4%BB%B6%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="toc-text">4 通过执行SQL语句拼接拷贝文件的命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%87%86%E5%A4%87%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC"><span class="toc-text">5 准备备份脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E4%BF%AE%E6%94%B9%E8%84%9A%E6%9C%AC%E6%9D%83%E9%99%90"><span class="toc-text">6 修改脚本权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E8%BF%90%E8%A1%8C%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC"><span class="toc-text">7 运行备份脚本</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E7%A6%BB%E7%BA%BF%E5%86%B7%E5%A4%87%E7%9A%84%E7%89%A9%E7%90%86%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8C%E6%81%A2%E5%A4%8D%E7%9A%84%E4%B8%80%E8%88%AC%E6%AD%A5%E9%AA%A4"><span class="toc-text">通过离线冷备的物理文件进行恢复的一般步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A0%B9%E6%8D%AE%E4%B9%8B%E5%89%8D%E7%9A%84%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC%EF%BC%8C%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E6%81%A2%E5%A4%8D%E8%84%9A%E6%9C%ACrt-sh"><span class="toc-text">1 根据之前的备份脚本，自动生成恢复脚本rt.sh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%89%A7%E8%A1%8C%E6%81%A2%E5%A4%8D%E8%84%9A%E6%9C%AC"><span class="toc-text">2. 执行恢复脚本</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E5%AE%9E%E8%B7%B5"><span class="toc-text">操作实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B501-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%A6%BB%E7%BA%BF%E5%86%B7%E5%A4%87-%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD"><span class="toc-text">实践01-创建一个离线冷备-物理备份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B502-%E6%A8%A1%E6%8B%9F%E6%95%85%E9%9A%9C%E5%90%8E%E8%BF%9B%E8%A1%8C%E6%81%A2%E5%A4%8D"><span class="toc-text">实践02-模拟故障后进行恢复</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E8%84%9A%E6%9C%AC"><span class="toc-text">自动化脚本</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>备份的概念 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-00-%E5%A4%87%E4%BB%BD%E7%9A%84%E6%A6%82%E5%BF%B5">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-00-%E5%A4%87%E4%BB%BD%E7%9A%84%E6%A6%82%E5%BF%B5" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2019.11.17 BoobooWei  [TOC]  为什么要备份服务器维护的工作永远都有一个不变的主题,那就是备份。正所谓,手里有粮,心里不慌。从事数据库相关工作一样永远都不要忘记一个重点:备份。因为,有了备份,我们就什么都不怕。出了任何问题(当然,我们善意的希望永远不要出什么问题),只要我们手上有完整的备份,那就有机会恢复回来。  2017年 1 月 31 日晚上恐怕是知名程序源码代管服">
+<meta property="og:type" content="website">
+<meta property="og:title" content="备份的概念">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-00-%E5%A4%87%E4%BB%BD%E7%9A%84%E6%A6%82%E5%BF%B5">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2019.11.17 BoobooWei  [TOC]  为什么要备份服务器维护的工作永远都有一个不变的主题,那就是备份。正所谓,手里有粮,心里不慌。从事数据库相关工作一样永远都不要忘记一个重点:备份。因为,有了备份,我们就什么都不怕。出了任何问题(当然,我们善意的希望永远不要出什么问题),只要我们手上有完整的备份,那就有机会恢复回来。  2017年 1 月 31 日晚上恐怕是知名程序源码代管服">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.764Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:48.255Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">备份的概念</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/E-数据库备份与恢复-00-备份的概念.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2019.11.17 BoobooWei</p>
+</blockquote>
+<p>[TOC]</p>
+<hr>
+<h3 id="为什么要备份" class="article-heading"><a href="#为什么要备份" class="headerlink" title="为什么要备份"></a>为什么要备份<a class="article-anchor" href="#为什么要备份" aria-hidden="true"></a></h3><p>服务器维护的工作永远都有一个不变的主题,那就是备份。正所谓,手里有粮,心里不慌。从事数据库相关工作一样永远都不要忘记一个重点:备份。因为,有了备份,我们就什么都不怕。出了任何问题(当然,我们善意的希望永远不要出什么问题),只要我们手上有完整的备份,那就有机会恢复回来。</p>
+<p><img src="pic/e-01.jpg"></p>
+<p>2017年 1 月 31 日晚上恐怕是知名程序源码代管服务网站 GitLab 最长的一夜，因为一位工程师的疏忽造成大量资料流失，而又发现所有备份方案都无效而崩溃。</p>
+<p><img src="pic/e-02.png"></p>
+<p>300GB 的资料被删到只剩下 4.5GB。而最后一个潜在可用的备份是 6 小时前手动操作的，一时之间连网站都连不进去了。根据该公司 Google docs 的维护纪录在最新的讯息提到：“这个事件影响了网站数据库（包括 issue 问题和 merge requests 合并请求），但不影响 git repos（git 版本管控档案库和 wiki 服务）。”</p>
+<p>由于不是所有资料都遗失了，所以对用户来说还是稍感安慰，但是该文件在“遇到的问题”（Problems Encountered）小节里，最后总结：</p>
+<p>“因此，换句话说，部署的 5 个不同备份／还原技术中，没有一个能可靠地工作或第一时间还原回来，我们只能从 6 小时前有效的备份还原。”</p>
+<p>亡羊补牢为时不晚，GitLab 展现诚意以 YouTube 直播与 Twitter 将讯息公诸于网络，但是看来 GitLab 必须非常努力，才能挽回客户与投资者对该公司的信心。对其他依赖资讯科技的公司而言，相信这也是很好的借镜。</p>
+<p><img src="pic/e-03.jpg"></p>
+<p>2017-01-14 炉石传说罕见数据库事故！丢失30%数据，时间经纬如下：</p>
+<ul>
+<li>1月14日15:20开始，数据库由于供电异常中断，数据损坏。</li>
+<li>接着数据库带病工作2天。</li>
+<li>1月16日凌晨开始进行修复维护。</li>
+<li>1月17日下午，维护时间超过30小时，数据“修复”失败，丢失数据超过30%，接着发出故障公告。</li>
+</ul>
+<p><img src="pic/e-04.jpeg"></p>
+<p><strong>真实的原因到底是什么？</strong></p>
+<p>嗯。其实你肯定看不到真实原因了，我只是在告诉你架构和维护的基本知识。</p>
+<p>我们从几个不同的角度来解读这个问题。</p>
+<p>老杨是运维界的老司机，而据了解涉及的库可能是Oracle，我们来看看从这个角度来分析，问题可能在哪些地方。</p>
+<p>同时有双机热备+异地容灾，当然还应该有备份（哦，公告里说，备份数据也损坏了！），数据还是丢了30%，这又中了墨菲定律！</p>
+<p><strong>那么这个架构的问题在哪里？</strong></p>
+<p>从我的经验来看，这本身的架构有问题：</p>
+<ol>
+<li>备份几乎应该是假的！別懵，难道你家的所有数据库最近3个月做过恢复演练么？没有做过，就有可能是假的！书到用时方恨少，数据要恢复时方恨没有做演练！</li>
+<li>双机热备（或者是RAC）+异地容灾，对于一个想当然的情况来说，是可以的。但是，在16年的Salesforce文章中我就提过，你还是图样图森破了。你至少应该再搭建个DG，延时应用。如果你真做了就不可能丢失30%数据！</li>
+</ol>
+<p>绝大部分的供电突然中断，导致的数据库故障，都是相对容易能解决的。极端情况下，可能要丢一部分数据，但绝不至于30%。</p>
+<p>那么，唯一的可能原因，就是人为误操作了！</p>
+<p>炉石传说这样的数据库架构，在银行、在运营商、在保险公司，并不少见。但是，如果这样的30%数据丢失，在任何一个这样的公司里，恐怕不只是DBA、运维负责人会没有年终奖，公司总裁都得下课吧！</p>
+<p>———摘自《 <a target="_blank" rel="noopener" href="https://blog.csdn.net/sunhuaqiang1/article/details/54628834">漫谈程序员(二十)炉石传说罕见数据库事故！丢失30%数据，疑似误操作？</a> 》</p>
+<h3 id="备份的分类" class="article-heading"><a href="#备份的分类" class="headerlink" title="备份的分类"></a>备份的分类<a class="article-anchor" href="#备份的分类" aria-hidden="true"></a></h3><ol>
+<li>分类：冷备（俗称备份）、热备（俗称冗余）、异地灾备</li>
+<li>冷备（俗称备份）的分类：<ul>
+<li>物理备份、逻辑备份</li>
+<li>完全备份、增量备份、差异备份</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>在线（热）备份、温备份、离线（冷）备份</li>
+</ul>
+<h4 id="什么是俗称的“备份”" class="article-heading"><a href="#什么是俗称的“备份”" class="headerlink" title="什么是俗称的“备份”"></a>什么是俗称的“备份”<a class="article-anchor" href="#什么是俗称的“备份”" aria-hidden="true"></a></h4><blockquote>
+<p>俗称的备份，在学术分类上称为“冷备”</p>
+<p>俗称的冗余，在学术分类上称为“热备”，例如双机热备</p>
+</blockquote>
+<p>备份已经成为所有DBA的必修科目，到底什么是备份恢复呢？简单的讲：备份，就是把数据保存一份备用；恢复，就是把保存的数据还原回去。</p>
+<p>当服务器出现故障需要修复，或者数据破坏需要恢复，又比如系统宕机、硬件损坏、用户错误删除数据等场景，都是需要借用备份才能执行恢复。</p>
+<p>备份是备份，冗余是冗余。概念不一样，备份是将数据以隔离的方式保存，将备份的数据放在其他地方，原来的数据被上修改，备份的数据不会变更。也就是说备份出来的数据不会因为原数据的改变而改变，这样就比较安全。但是备份的缺点是，他不是瞬间还原，备份在还原过程中是有耗时的，他不是瞬间还原，例如，我们有几百个G的文件要还原回去，慢慢拷吧，几个小时。冗余不一样，他是热备，能够瞬间恢复。主服务器/从服务器，主服务器坏掉，从服务器就顶上工作，所以冗余在可用性上来讲，恢复的速度上来讲，比备份来的快，但是冗余有他的缺点，备份有他的优点，比如我们作主从同步，主服务器和从服务器数据都一样的，如果主服务器上有人错删了一个表，我们把这种操作称为误操作，那么从服务器也会发生误操作，所以呢，冗余不能解决人为的误操作，而备份可以解决。冗余他能解决硬件故障，但是误操作无法解决，备份不是瞬间还原，但是既可以解决硬件故障又能解决误操作，他们各有优劣点，而真实的线上生产环境是两种方法一起使用，既有冗余环境，又有周期性备份，管理员要周期性地进行备份，同时有多台服务器作冗余。</p>
+<table>
+<thead>
+<tr>
+<th align="left">备份</th>
+<th align="left">定义</th>
+<th align="left">优点</th>
+<th align="left">缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">备份（冷备）</td>
+<td align="left">将数据以隔离的方式保存</td>
+<td align="left">解决硬件故障，误操作</td>
+<td align="left">不是瞬间还原</td>
+</tr>
+<tr>
+<td align="left">冗余（热备）</td>
+<td align="left">人为地增加重复部分，其目的是用来对原本的单一部分进行备份，以达到增强其安全性的目的,构建冗余的环境</td>
+<td align="left">恢复速度快</td>
+<td align="left">解决硬件故障，误操作无法解决</td>
+</tr>
+</tbody></table>
+<h5 id="冷备的两大要素" class="article-heading"><a href="#冷备的两大要素" class="headerlink" title="冷备的两大要素"></a>冷备的两大要素<a class="article-anchor" href="#冷备的两大要素" aria-hidden="true"></a></h5><p>实际上有两类一致性需要考虑：数据一致性和文件一致性。</p>
+<ul>
+<li>数据一致性：备份数据在指定时间点一致</li>
+<li>文件一致性：确保文件在磁盘上一致</li>
+<li>服务可用性：数据库是否可以读写，既能读也能写才是服务可用。</li>
+</ul>
+<p>当我们在备份数据的时候，如果有人在修改表的内容，那么我们备份出来的数据可能就会有问题，备份出来的数据可能不是我们要的时间点。比如我需要将4点这个状态的数据备份，从4点开始备份一直到5点结束，在这个过程中，有人在4.30修改一个数据，假设是将A员工的工资从4000改为5000，那么我们最后备份出来的数据到底是几点的状态就未知了。如果4.30的时候已经备份过A员工了，那么我们备份出来的A员工的工资就还是4000；如果4.30的时候还没有备份到A员工，那么我们最后备份出来的A员工的工资就变成5000了。这就是数据不一致的情况，那么我们如何来保证数据一致呢？</p>
+<h4 id="逻辑备份和物理备份" class="article-heading"><a href="#逻辑备份和物理备份" class="headerlink" title="逻辑备份和物理备份"></a>逻辑备份和物理备份<a class="article-anchor" href="#逻辑备份和物理备份" aria-hidden="true"></a></h4><p>逻辑备份包含逻辑数据，例如表和存储过程。您可以使用Oracle数据泵将逻辑数据导出到二进制文件，然后可以将其导入数据库。数据泵命令行客户端，<code>expdp</code>并<code>impdp</code>使用<code>DBMS_DATAPUMP</code>和<code>DBMS_METADATA</code>PL/SQL包。</p>
+<p>物理备份是用于存储和恢复数据库的物理文件的副本。这些文件包括数据文件，控制文件和存档的重做日志。最终，每个物理备份都是将数据库信息存储到另一个位置的文件副本，无论是在磁盘上还是在磁带等脱机存储介质上。</p>
+<p>物理备份是任何合理的备份和恢复策略的基础。在许多情况下，逻辑备份是对物理备份的有用补充，但如果没有物理备份，逻辑备份不足以防止数据丢失。</p>
+<h4 id="完全备份、增量备份、差异备份" class="article-heading"><a href="#完全备份、增量备份、差异备份" class="headerlink" title="完全备份、增量备份、差异备份"></a>完全备份、增量备份、差异备份<a class="article-anchor" href="#完全备份、增量备份、差异备份" aria-hidden="true"></a></h4><p>当数据量很庞大时，一个常见的策略是做定期的增量或差异备份。他们之间的区别有点容易让人混淆，所以先来澄清这两个术语：</p>
+<p>差异备份，是对自上次全备份后所有改变的部分而做的备份；<br>增量备份，是从任意类型的上次备份后所有修改做的备份；</p>
+<p>例如，假设每周日做一个全备份。在周一，对自周日以来所有的改变做一个差异备份。在周二，就有两个选择：备份自周日以来所有的改变（差异），或只别分自周一后所有的改变（增量）。</p>
+<p>增量和差异备份都是部分备份：它们一般不包含完整的数据集，因为某些数据几乎肯定没有改变。部分备份对减少服务器开销、备份时间及备份空间而言都很合适。尽管某些部分备份并不会真正减少服务器的开销。例如Percona XtraBackup和MySQL Enterprise Backup，仍然会扫描服务器上的所有数据块，因而并不会节约太多的开销，但它们确实会减少一定量的备份时间和大量用于压缩的CPU时间，当然也会减少磁盘空间使用。</p>
+<p>不要因为会用高级备份技术而自负，解决方案越复杂，面临的风险也越大。要注意分析隐藏的危险，如果多次迭代备份紧密地耦合在一起，则只要其中的一次迭代备份有损坏，就可能导致所有的备份都无效。</p>
+<p>增量备份的缺点包括增加恢复复杂性，额外的风险，以及更长的恢复时间。如果可以做全备，考虑到简便性，我们建议尽量做全备。</p>
+<p>不管如何，还是需要经常做全备份——建议至少一周一次。你肯定不希望使用一个月的所有增量备份来进行恢复。即使一周也还是有很多的工作和风险的。</p>
+<h4 id="在线（热）备份、温备份、离线（冷）备份" class="article-heading"><a href="#在线（热）备份、温备份、离线（冷）备份" class="headerlink" title="在线（热）备份、温备份、离线（冷）备份"></a>在线（热）备份、温备份、离线（冷）备份<a class="article-anchor" href="#在线（热）备份、温备份、离线（冷）备份" aria-hidden="true"></a></h4><p>如果可能，关闭Oracle做备份是最简单最安全的，也是所有获取一致性副本的方法中最好的，而且损坏或不一致的风险最小。</p>
+<p>尽管如此，让服务器停机的代价可能比看起来要更昂贵。即使能最小化停机时间，在高负载和高数据量下关闭和重启Oracle也可能要花很长一段时间。因此，必须要设计不需要生产服务器停机的备份。即便如此，由于一致性的需要，对服务器进行在线备份仍然会有明显的服务中断。</p>
+<ul>
+<li>离线（冷）备份:备份过程中，服务中断</li>
+<li>温备份：备份过程中，只能读不能写</li>
+<li>在线（热）备份：备份过程中，服务正常使用</li>
+</ul>
+<h3 id="冷备和恢复的工具" class="article-heading"><a href="#冷备和恢复的工具" class="headerlink" title="冷备和恢复的工具"></a>冷备和恢复的工具<a class="article-anchor" href="#冷备和恢复的工具" aria-hidden="true"></a></h3><ul>
+<li>exp/imp</li>
+<li>expdp/impdp</li>
+<li>RMAN</li>
+</ul>
+<h3 id="热备的架构" class="article-heading"><a href="#热备的架构" class="headerlink" title="热备的架构"></a>热备的架构<a class="article-anchor" href="#热备的架构" aria-hidden="true"></a></h3><h3 id="异地灾备的架构" class="article-heading"><a href="#异地灾备的架构" class="headerlink" title="异地灾备的架构"></a>异地灾备的架构<a class="article-anchor" href="#异地灾备的架构" aria-hidden="true"></a></h3></body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:48.255Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%A4%87%E4%BB%BD"><span class="toc-text">为什么要备份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-text">备份的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%BF%97%E7%A7%B0%E7%9A%84%E2%80%9C%E5%A4%87%E4%BB%BD%E2%80%9D"><span class="toc-text">什么是俗称的“备份”</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%B7%E5%A4%87%E7%9A%84%E4%B8%A4%E5%A4%A7%E8%A6%81%E7%B4%A0"><span class="toc-text">冷备的两大要素</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E5%92%8C%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD"><span class="toc-text">逻辑备份和物理备份</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E5%85%A8%E5%A4%87%E4%BB%BD%E3%80%81%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD%E3%80%81%E5%B7%AE%E5%BC%82%E5%A4%87%E4%BB%BD"><span class="toc-text">完全备份、增量备份、差异备份</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%EF%BC%88%E7%83%AD%EF%BC%89%E5%A4%87%E4%BB%BD%E3%80%81%E6%B8%A9%E5%A4%87%E4%BB%BD%E3%80%81%E7%A6%BB%E7%BA%BF%EF%BC%88%E5%86%B7%EF%BC%89%E5%A4%87%E4%BB%BD"><span class="toc-text">在线（热）备份、温备份、离线（冷）备份</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%B7%E5%A4%87%E5%92%8C%E6%81%A2%E5%A4%8D%E7%9A%84%E5%B7%A5%E5%85%B7"><span class="toc-text">冷备和恢复的工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%83%AD%E5%A4%87%E7%9A%84%E6%9E%B6%E6%9E%84"><span class="toc-text">热备的架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E5%9C%B0%E7%81%BE%E5%A4%87%E7%9A%84%E6%9E%B6%E6%9E%84"><span class="toc-text">异地灾备的架构</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

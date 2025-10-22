@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>MySQL-5.6.20-二进制安装 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.6_install">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.6_install" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="之前一直是用rpm包直接安装，今天用二进制包解压安装（不需要源码编译），在学会安装的基础上，写出shell自动化安装脚本     server ip    mastera 172.25.0.11   masterb 172.25.0.12   安装二进制的mysql5.6事先规划好数据目录，binlog，pid，临时目录等路径    mysql 软件架构    数据目录 &#x2F;data&amp;#">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MySQL-5.6.20-二进制安装">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.6_install">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="之前一直是用rpm包直接安装，今天用二进制包解压安装（不需要源码编译），在学会安装的基础上，写出shell自动化安装脚本     server ip    mastera 172.25.0.11   masterb 172.25.0.12   安装二进制的mysql5.6事先规划好数据目录，binlog，pid，临时目录等路径    mysql 软件架构    数据目录 &#x2F;data&amp;#">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.813Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:13.901Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">MySQL-5.6.20-二进制安装</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/dba_mysql/tec/mysql_5.6_install.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>之前一直是用rpm包直接安装，今天用二进制包解压安装（不需要源码编译），在学会安装的基础上，写出shell自动化安装脚本</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">server</th>
+<th align="left">ip</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">mastera</td>
+<td align="left">172.25.0.11</td>
+</tr>
+<tr>
+<td align="left">masterb</td>
+<td align="left">172.25.0.12</td>
+</tr>
+</tbody></table>
+<h2 id="安装二进制的mysql5-6" class="article-heading"><a href="#安装二进制的mysql5-6" class="headerlink" title="安装二进制的mysql5.6"></a>安装二进制的mysql5.6<a class="article-anchor" href="#安装二进制的mysql5-6" aria-hidden="true"></a></h2><p>事先规划好数据目录，binlog，pid，临时目录等路径</p>
+<table>
+<thead>
+<tr>
+<th align="left">mysql</th>
+<th align="left">软件架构</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">数据目录</td>
+<td align="left">/data/mysql/data</td>
+</tr>
+<tr>
+<td align="left">binlog目录</td>
+<td align="left">/data/mysql/log-data</td>
+</tr>
+<tr>
+<td align="left">pid文件</td>
+<td align="left">/data/tmp</td>
+</tr>
+<tr>
+<td align="left">临时目录</td>
+<td align="left">/data1/tmp/</td>
+</tr>
+</tbody></table>
+<p>以上目录所属者和所属组都需要为mysql.mysql</p>
+<h2 id="详细步骤" class="article-heading"><a href="#详细步骤" class="headerlink" title="详细步骤"></a>详细步骤<a class="article-anchor" href="#详细步骤" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# tar -xf mysql-5.6.20-linux-glibc2.5-x86_64.tar.gz</span><br><span class="line">[root@mastera0 ~]# cd mysql-5.6.20-linux-glibc2.5-x86_64</span><br><span class="line">[root@mastera0 mysql-5.6.20-linux-glibc2.5-x86_64]# ls</span><br><span class="line">bin  COPYING  data  docs  include  INSTALL-BINARY  lib  man  mysql-test  README  scripts  share  sql-bench  support-files</span><br><span class="line">[root@mastera0 mysql-5.6.20-linux-glibc2.5-x86_64]# cat INSTALL-BINARY</span><br><span class="line">... ...</span><br><span class="line"> To install and use a MySQL binary distribution, the basic command</span><br><span class="line">   sequence looks like this:</span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash">groupadd mysql</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash">useradd -r -g mysql mysql</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash"><span class="built_in">cd</span> /usr/local</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash">tar zxvf /path/to/mysql-VERSION-OS.tar.gz</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash"><span class="built_in">ln</span> -s full-path-to-mysql-VERSION-OS mysql</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash"><span class="built_in">cd</span> mysql</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash"><span class="built_in">chown</span> -R mysql .</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash"><span class="built_in">chgrp</span> -R mysql .</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash">scripts/mysql_install_db --user=mysql</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash"><span class="built_in">chown</span> -R root .</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash"><span class="built_in">chown</span> -R mysql data</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash">bin/mysqld_safe --user=mysql &amp;</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Next <span class="built_in">command</span> is optional</span></span><br><span class="line"><span class="meta prompt_">shell&gt; </span><span class="language-bash"><span class="built_in">cp</span> support-files/mysql.server /etc/init.d/mysql.server</span></span><br><span class="line">... ...</span><br><span class="line"></span><br><span class="line">[root@mastera0 mysql-5.6.20-linux-glibc2.5-x86_64]# groupadd mysql</span><br><span class="line">[root@mastera0 mysql-5.6.20-linux-glibc2.5-x86_64]# cd ..</span><br><span class="line">[root@mastera0 ~]# useradd -r -g mysql mysql</span><br><span class="line">[root@mastera0 ~]# cd /usr/local</span><br><span class="line">[root@mastera0 local]# mv /root/mysql-5.6.20-linux-glibc2.5-x86_64 .</span><br><span class="line">[root@mastera0 local]# ls</span><br><span class="line">bin  games    lib    libexec                             sbin   src</span><br><span class="line">etc  include  lib64  mysql-5.6.20-linux-glibc2.5-x86_64  share</span><br><span class="line">[root@mastera0 local]# ln -s mysql-5.6.20-linux-glibc2.5-x86_64 mysql</span><br><span class="line">[root@mastera0 local]# ll mysql</span><br><span class="line">lrwxrwxrwx.  1 root root   34 Dec 11 12:20 mysql -&gt; mysql-5.6.20-linux-glibc2.5-x86_64</span><br><span class="line">[root@mastera0 mysql]# cd mysql</span><br><span class="line">[root@mastera0 mysql]# mkdir /data/mysql/data -p</span><br><span class="line">[root@mastera0 mysql]# chown mysql. /data/mysql/data</span><br><span class="line">[root@mastera0 mysql]# chown mysql. /data/mysql/data -R</span><br><span class="line">[root@mastera0 mysql]# ll -d /data/mysql/data</span><br><span class="line">drwxr-xr-x. 2 mysql mysql 4096 Dec 11 12:24 /data/mysql/data</span><br><span class="line">[root@mastera0 mysql]# scripts/mysql_install_db --user=mysql --datadir=/data/mysql/data --basedir=/usr/local/mysql</span><br><span class="line"></span><br><span class="line">[root@mastera0 mysql]# ll /data/mysql/data</span><br><span class="line">total 110604</span><br><span class="line">-rw-rw----. 1 mysql mysql 12582912 Dec 11 12:28 ibdata1</span><br><span class="line">-rw-rw----. 1 mysql mysql 50331648 Dec 11 12:28 ib_logfile0</span><br><span class="line">-rw-rw----. 1 mysql mysql 50331648 Dec 11 12:28 ib_logfile1</span><br><span class="line">drwx------. 2 mysql mysql     4096 Dec 11 12:28 mysql</span><br><span class="line">drwx------. 2 mysql mysql     4096 Dec 11 12:28 performance_schema</span><br><span class="line">drwx------. 2 mysql mysql     4096 Dec 11 12:28 test</span><br><span class="line">[root@mastera0 mysql]# cp /mnt/mysql/my.cnf /etc/my.cnf</span><br><span class="line">[root@mastera0 mysql]# vim /etc/my.cnf</span><br><span class="line">[client]</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">如果不认识这个参数会忽略</span></span><br><span class="line">loose-default-character-set=utf8</span><br><span class="line">loose-prompt='\u@\h:\p [\d]&gt;'</span><br><span class="line">socket=/tmp/mysql.sock</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">basedir = /usr/local/mysql</span><br><span class="line">datadir = /data/mysql/data</span><br><span class="line">user=mysql</span><br><span class="line">port = 3306</span><br><span class="line">socket=/tmp/mysql.sock</span><br><span class="line">pid-file=/data/tmp/mysql.pid</span><br><span class="line">tmpdir=/data1/tmp</span><br><span class="line">character_set_server=utf8</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">skip</span></span><br><span class="line">skip-external_locking=1</span><br><span class="line">skip-name-resolve=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">AB replication</span></span><br><span class="line">server-id = 1</span><br><span class="line">log-bin = /data/mysql/log-data/mastera</span><br><span class="line">binlog_format=row</span><br><span class="line">max_binlog_cache_size=2000M</span><br><span class="line">max_binlog_size=1G</span><br><span class="line">sync_binlog=1</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">expire_logs_days=7</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">semi_sync</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">rpl_semi_sync_master_enabled=1</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">rpl_semi_sync_master_timeout=1000</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@mastera0 mysql]# pwd</span><br><span class="line">/usr/local/mysql</span><br><span class="line">[root@mastera0 mysql]# cp support-files/mysql.server /etc/init.d/mysql.server</span><br><span class="line">[root@mastera0 mysql]# echo export PATH=$PATH:/usr/local/mysql/support-files/ &gt;&gt; /etc/bashrc</span><br></pre></td></tr></tbody></table></figure>
+
+<p>同样去安装masterb slavea</p>
+<h2 id="脚本实现自动安装MySQL" class="article-heading"><a href="#脚本实现自动安装MySQL" class="headerlink" title="脚本实现自动安装MySQL"></a>脚本实现自动安装MySQL<a class="article-anchor" href="#脚本实现自动安装MySQL" aria-hidden="true"></a></h2><p>如果需要同时安装10台甚至1000台，通过脚本来完成一定是极好的！</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">auto_install_mysql_5.6.20</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">参数设置</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--binpos=指定mysql二进制安装包的位置</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--basedir=指定mysql安装位置</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--datadir=指定mysql数据存放位置</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--binlogdir=指定mysqlbinlog存放位置</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--piddir=指定mysql进程存放位置</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--tmpdir=指定mysql临时文件位置</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--<span class="built_in">help</span> 查看帮助</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">eg. auto_install_mysql_5.6.20 --binpos=/tmp/mysql.tar.gz --datadir=/data/mysql/data --basedir=/usr/local/mysql</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">遍历位置参数，获取对应的参数值</span></span><br><span class="line">for i in ${@}</span><br><span class="line">do</span><br><span class="line">	case ${i%=*} in</span><br><span class="line">	--binpos)</span><br><span class="line">			binpos=${i#*=};;</span><br><span class="line">	--basedir)</span><br><span class="line">			basedir=${i#*=};;</span><br><span class="line">	--datadir)</span><br><span class="line">			datadir=${i#*=};;</span><br><span class="line">	--binlogdir)</span><br><span class="line">			binlogdir=${i#*=};;</span><br><span class="line">	--piddir)</span><br><span class="line">			piddir=${i#*=};;</span><br><span class="line">	--tmpdir)</span><br><span class="line">			tmpdir=${i#*=};;</span><br><span class="line">	esac</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">TAR(){</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">解压mysql二进制安装包到指定mysql安装位置</span></span><br><span class="line">tar -xf $binpos -C /tmp &amp;&gt; /dev/null</span><br><span class="line">rpm=${binpos##*/}</span><br><span class="line">rm -r $basedir</span><br><span class="line">mkdir $basedir -p</span><br><span class="line">mv /tmp/${rpm%.tar.gz}/* $basedir</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">ADD_user_dir(){</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建mysql用户和组</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建数据目录，二进制日志存放路径，临时目录，pid目录</span></span><br><span class="line">useradd mysql &amp;&gt; /dev/null</span><br><span class="line">for i in $datadir $binlogdir $piddir $tmpdir;do</span><br><span class="line">	rm -r $i</span><br><span class="line">	mkdir $i -p &amp;&gt; /dev/null</span><br><span class="line">	chown -R mysql:mysql $i</span><br><span class="line">done</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">INIT(){</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">通过脚本生成初始化数据</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">basedir/scripts/mysql_install_db --user=mysql --datadir=<span class="variable">$datadir</span> --basedir=<span class="variable">$basedir</span></span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">CONF(){</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取服务器IP地址的主机位，用作server-id的值</span></span><br><span class="line">serverid=`ifconfig|grep -A 1 eno|tail -n 1|awk '{print $2}'|awk -F '.' '{print $4}'`</span><br><span class="line"></span><br><span class="line">cat &gt; /etc/my.cnf &lt;&lt; ENDF</span><br><span class="line">[client]</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">如果不认识这个参数会忽略</span></span><br><span class="line">loose-default-character-set=utf8</span><br><span class="line">loose-prompt='\u@\h:\p [\d]&gt;'</span><br><span class="line">socket=/tmp/mysql.sock</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">basedir = $basedir</span><br><span class="line">datadir = $datadir</span><br><span class="line">user=mysql</span><br><span class="line">port = 3306</span><br><span class="line">socket=/tmp/mysql.sock</span><br><span class="line">pid-file=$piddir/mysql.pid</span><br><span class="line">tmpdir=$tmpdir</span><br><span class="line">character_set_server=utf8</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">skip</span></span><br><span class="line">skip-external_locking=1</span><br><span class="line">skip-name-resolve=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">AB replication</span></span><br><span class="line">server-id = $serverid</span><br><span class="line">log-bin = $binlogdir/`hostname|awk -F . '{print $1}'`</span><br><span class="line">binlog_format=row</span><br><span class="line">max_binlog_cache_size=2000M</span><br><span class="line">max_binlog_size=1G</span><br><span class="line">sync_binlog=1</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">expire_logs_days=7</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">semi_sync</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">rpl_semi_sync_master_enabled=1</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">rpl_semi_sync_master_timeout=1000</span></span><br><span class="line">ENDF</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将数据库服务启动脚本复制到/etc/init.d/</span></span><br><span class="line">cp $basedir/support-files/mysql.server /etc/init.d/mysql</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改PATH路径，将mysql相关命令所在目录加入</span></span><br><span class="line">echo export PATH=$PATH:$basedir/bin/ &gt;&gt; /etc/bashrc</span><br><span class="line">source /etc/bashrc</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">Main(){</span><br><span class="line">TAR</span><br><span class="line">ADD_user_dir</span><br><span class="line">INIT</span><br><span class="line">CONF</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">Main</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>将脚本和mysql二进制安装文件复制到masterb，并执行脚本，实现自动安装</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@masterb ~]# ./auto_install_mysql_5.6.20.sh --binpos=/software/mysql-5.6.20-linux-glibc2.5-x86_64.tar.gz --basedir=/usr/local/mysql --datadir=/data/mysql/data --binlogdir=/data/mysql/binlog --piddir=/data/mysql/pid --tmpdir=/data/mysql/tmp</span><br><span class="line">rm: cannot remove ‘/usr/local/mysql’: No such file or directory</span><br><span class="line">rm: cannot remove ‘/data/mysql/data’: No such file or directory</span><br><span class="line">rm: cannot remove ‘/data/mysql/binlog’: No such file or directory</span><br><span class="line">rm: cannot remove ‘/data/mysql/pid’: No such file or directory</span><br><span class="line">rm: cannot remove ‘/data/mysql/tmp’: No such file or directory</span><br><span class="line">WARNING: The host 'masterb.uplooking.com' could not be looked up with /usr/local/mysql/bin/resolveip.</span><br><span class="line">This probably means that your libc libraries are not 100 % compatible</span><br><span class="line">with this binary MySQL version. The MySQL daemon, mysqld, should work</span><br><span class="line">normally with the exception that host name resolving will not work.</span><br><span class="line">This means that you should use IP addresses instead of hostnames</span><br><span class="line">when specifying MySQL privileges !</span><br><span class="line"></span><br><span class="line">Installing MySQL system tables...2017-02-23 14:57:25 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: Using atomics to ref count buffer pool pages</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: The InnoDB memory heap is disabled</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: Memory barrier is not used</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: Compressed tables use zlib 1.2.3</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: Using Linux native AIO</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: Not using CPU crc32 instructions</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: Initializing buffer pool, size = 128.0M</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: Completed initialization of buffer pool</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: The first specified data file ./ibdata1 did not exist: a new database to be created!</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: Setting file ./ibdata1 size to 12 MB</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: Database physically writes the file full: wait...</span><br><span class="line">2017-02-23 14:57:26 2836 [Note] InnoDB: Setting log file ./ib_logfile101 size to 48 MB</span><br><span class="line">2017-02-23 14:57:29 2836 [Note] InnoDB: Setting log file ./ib_logfile1 size to 48 MB</span><br><span class="line">2017-02-23 14:57:31 2836 [Note] InnoDB: Renaming log file ./ib_logfile101 to ./ib_logfile0</span><br><span class="line">2017-02-23 14:57:31 2836 [Warning] InnoDB: New log files created, LSN=45781</span><br><span class="line">2017-02-23 14:57:31 2836 [Note] InnoDB: Doublewrite buffer not found: creating new</span><br><span class="line">2017-02-23 14:57:31 2836 [Note] InnoDB: Doublewrite buffer created</span><br><span class="line">2017-02-23 14:57:31 2836 [Note] InnoDB: 128 rollback segment(s) are active.</span><br><span class="line">2017-02-23 14:57:31 2836 [Warning] InnoDB: Creating foreign key constraint system tables.</span><br><span class="line">2017-02-23 14:57:31 2836 [Note] InnoDB: Foreign key constraint system tables created</span><br><span class="line">2017-02-23 14:57:31 2836 [Note] InnoDB: Creating tablespace and datafile system tables.</span><br><span class="line">2017-02-23 14:57:31 2836 [Note] InnoDB: Tablespace and datafile system tables created.</span><br><span class="line">2017-02-23 14:57:31 2836 [Note] InnoDB: Waiting for purge to start</span><br><span class="line">2017-02-23 14:57:31 2836 [Note] InnoDB: 5.6.20 started; log sequence number 0</span><br><span class="line">2017-02-23 14:57:31 2836 [Note] Binlog end</span><br><span class="line">2017-02-23 14:57:31 2836 [Note] InnoDB: FTS optimize thread exiting.</span><br><span class="line">2017-02-23 14:57:32 2836 [Note] InnoDB: Starting shutdown...</span><br><span class="line">2017-02-23 14:57:33 2836 [Note] InnoDB: Shutdown completed; log sequence number 1625977</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">Filling help tables...2017-02-23 14:57:33 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).</span><br><span class="line">2017-02-23 14:57:33 2858 [Note] InnoDB: Using atomics to ref count buffer pool pages</span><br><span class="line">2017-02-23 14:57:33 2858 [Note] InnoDB: The InnoDB memory heap is disabled</span><br><span class="line">2017-02-23 14:57:33 2858 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins</span><br><span class="line">2017-02-23 14:57:33 2858 [Note] InnoDB: Memory barrier is not used</span><br><span class="line">2017-02-23 14:57:33 2858 [Note] InnoDB: Compressed tables use zlib 1.2.3</span><br><span class="line">2017-02-23 14:57:33 2858 [Note] InnoDB: Using Linux native AIO</span><br><span class="line">2017-02-23 14:57:33 2858 [Note] InnoDB: Not using CPU crc32 instructions</span><br><span class="line">2017-02-23 14:57:33 2858 [Note] InnoDB: Initializing buffer pool, size = 128.0M</span><br><span class="line">2017-02-23 14:57:34 2858 [Note] InnoDB: Completed initialization of buffer pool</span><br><span class="line">2017-02-23 14:57:34 2858 [Note] InnoDB: Highest supported file format is Barracuda.</span><br><span class="line">2017-02-23 14:57:34 2858 [Note] InnoDB: 128 rollback segment(s) are active.</span><br><span class="line">2017-02-23 14:57:34 2858 [Note] InnoDB: Waiting for purge to start</span><br><span class="line">2017-02-23 14:57:34 2858 [Note] InnoDB: 5.6.20 started; log sequence number 1625977</span><br><span class="line">2017-02-23 14:57:34 2858 [Note] Binlog end</span><br><span class="line">2017-02-23 14:57:34 2858 [Note] InnoDB: FTS optimize thread exiting.</span><br><span class="line">2017-02-23 14:57:34 2858 [Note] InnoDB: Starting shutdown...</span><br><span class="line">2017-02-23 14:57:36 2858 [Note] InnoDB: Shutdown completed; log sequence number 1625987</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">To start mysqld at boot time you have to copy</span><br><span class="line">support-files/mysql.server to the right place for your system</span><br><span class="line"></span><br><span class="line">PLEASE REMEMBER TO SET A PASSWORD FOR THE MySQL root USER !</span><br><span class="line">To do so, start the server, then issue the following commands:</span><br><span class="line"></span><br><span class="line">  /usr/local/mysql/bin/mysqladmin -u root password 'new-password'</span><br><span class="line">  /usr/local/mysql/bin/mysqladmin -u root -h masterb.uplooking.com password 'new-password'</span><br><span class="line"></span><br><span class="line">Alternatively you can run:</span><br><span class="line"></span><br><span class="line">  /usr/local/mysql/bin/mysql_secure_installation</span><br><span class="line"></span><br><span class="line">which will also give you the option of removing the test</span><br><span class="line">databases and anonymous user created by default.  This is</span><br><span class="line">strongly recommended for production servers.</span><br><span class="line"></span><br><span class="line">See the manual for more instructions.</span><br><span class="line"></span><br><span class="line">You can start the MySQL daemon with:</span><br><span class="line"></span><br><span class="line">  cd . ; /usr/local/mysql/bin/mysqld_safe &amp;</span><br><span class="line"></span><br><span class="line">You can test the MySQL daemon with mysql-test-run.pl</span><br><span class="line"></span><br><span class="line">  cd mysql-test ; perl mysql-test-run.pl</span><br><span class="line"></span><br><span class="line">Please report any problems at http://bugs.mysql.com/</span><br><span class="line"></span><br><span class="line">The latest information about MySQL is available on the web at</span><br><span class="line"></span><br><span class="line">  http://www.mysql.com</span><br><span class="line"></span><br><span class="line">Support MySQL by buying support/licenses at http://shop.mysql.com</span><br><span class="line"></span><br><span class="line">New default config file was created as /usr/local/mysql/my.cnf and</span><br><span class="line">will be used by default by the server when you start it.</span><br><span class="line">You may edit this file to change server settings</span><br><span class="line">[root@masterb ~]# ll /data/mysql</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x. 2 mysql mysql   6 Feb 23 14:57 binlog</span><br><span class="line">drwxr-xr-x. 5 mysql mysql 104 Feb 23 14:57 data</span><br><span class="line">drwxr-xr-x. 2 mysql mysql   6 Feb 23 14:57 pid</span><br><span class="line">drwxr-xr-x. 2 mysql mysql   6 Feb 23 14:57 tmp</span><br><span class="line">[root@masterb ~]# ll /data/mysql/data</span><br><span class="line">total 110600</span><br><span class="line">-rw-rw----. 1 mysql mysql 12582912 Feb 23 14:57 ibdata1</span><br><span class="line">-rw-rw----. 1 mysql mysql 50331648 Feb 23 14:57 ib_logfile0</span><br><span class="line">-rw-rw----. 1 mysql mysql 50331648 Feb 23 14:57 ib_logfile1</span><br><span class="line">drwx------. 2 mysql mysql     4096 Feb 23 14:57 mysql</span><br><span class="line">drwx------. 2 mysql mysql     4096 Feb 23 14:57 performance_schema</span><br><span class="line">drwx------. 2 mysql mysql        6 Feb 23 14:57 test</span><br><span class="line">[root@masterb ~]# ll /data/mysql/binlog</span><br><span class="line">total 0</span><br><span class="line">[root@masterb ~]# ll /data/mysql/pid</span><br><span class="line">total 0</span><br><span class="line">[root@masterb ~]# ll /data/mysql/tmp</span><br><span class="line">total 0</span><br><span class="line">[root@masterb ~]# cat /etc/my.cnf</span><br><span class="line">[client]</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">如果不认识这个参数会忽略</span></span><br><span class="line">loose-default-character-set=utf8</span><br><span class="line">loose-prompt='\u@\h:\p [\d]&gt;'</span><br><span class="line">socket=/tmp/mysql.sock</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">basedir = /usr/local/mysql</span><br><span class="line">datadir = /data/mysql/data</span><br><span class="line">user=mysql</span><br><span class="line">port = 3306</span><br><span class="line">socket=/tmp/mysql.sock</span><br><span class="line">pid-file=/data/mysql/pid/mysql.pid</span><br><span class="line">tmpdir=/data/mysql/tmp</span><br><span class="line">character_set_server=utf8</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">skip</span></span><br><span class="line">skip-external_locking=1</span><br><span class="line">skip-name-resolve=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">AB replication</span></span><br><span class="line">server-id = 12</span><br><span class="line">log-bin = /data/mysql/binlog/masterb</span><br><span class="line">binlog_format=row</span><br><span class="line">max_binlog_cache_size=2000M</span><br><span class="line">max_binlog_size=1G</span><br><span class="line">sync_binlog=1</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">expire_logs_days=7</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">semi_sync</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">rpl_semi_sync_master_enabled=1</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">rpl_semi_sync_master_timeout=1000</span></span><br><span class="line"></span><br><span class="line">[root@masterb ~]# service mysql start</span><br><span class="line">Starting MySQL.............. SUCCESS!</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><p>相对于rpm包安装，二进制安装稍复杂一点，但只需要实现规划好basedir、datadir、binlogdir、tmpdir等路径即可</p>
+<p>另需要注意给mysql使用的相关目录的权限为mysql:mysql</p>
+<p>还有就是，如果已经安装过其他版本的数据库，记得卸载干净了。</p>
+<h2 id="拓展" class="article-heading"><a href="#拓展" class="headerlink" title="拓展"></a>拓展<a class="article-anchor" href="#拓展" aria-hidden="true"></a></h2><p>试着安装5.7.17和8.0版本</p>
+<p>5.6的初始化脚本与5.7存放位置不同，并且从5.7开始不建议使用mysql_install_db，而是使用: mysqld –initialize</p>
+<p><code>$basedir/bin/mysql_install_db</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera mysql]# /usr/local/mysql/bin/mysql_install_db --user=mysql --datadir=/data/mysql/data --basedir=/usr/local/mysql</span><br><span class="line">2017-02-23 17:13:55 [WARNING] mysql_install_db is deprecated. Please consider switching to mysqld --initialize</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在默认初始化后，记得将目录权限修改，此处我没有另外去指定数据目录，而是使用默认配置，都放在basedir中</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera data]# mysqld --initialize</span><br><span class="line">2017-02-23T09:25:26.955095Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).</span><br><span class="line">2017-02-23T09:25:29.898671Z 0 [Warning] InnoDB: New log files created, LSN=45790</span><br><span class="line">2017-02-23T09:25:30.432274Z 0 [Warning] InnoDB: Creating foreign key constraint system tables.</span><br><span class="line">2017-02-23T09:25:30.651188Z 0 [Warning] No existing UUID has been found, so we assume that this is the first time that this server has been started. Generating a new UUID: 0516b717-f9aa-11e6-a392-000c29a023bc.</span><br><span class="line">2017-02-23T09:25:30.690310Z 0 [Warning] Gtid table is not ready to be used. Table 'mysql.gtid_executed' cannot be opened.</span><br><span class="line">2017-02-23T09:25:30.720824Z 1 [Note] A temporary password is generated for root@localhost: o2O&lt;!d)Tkjyu</span><br><span class="line"></span><br><span class="line">[root@mastera mysql]# ll  /usr/local/mysql</span><br><span class="line">total 48</span><br><span class="line">drwxr-xr-x.  2 mysql mysql  4096 Feb 23 15:49 bin</span><br><span class="line">-rw-r--r--.  1 mysql mysql 17987 Nov 28 21:32 COPYING</span><br><span class="line">drwxr-x---.  5 root  root   4096 Feb 23 17:28 data</span><br><span class="line">drwxr-xr-x.  2 mysql mysql    52 Feb 23 15:49 docs</span><br><span class="line">drwxr-xr-x.  3 mysql mysql  4096 Feb 23 15:48 include</span><br><span class="line">drwxr-xr-x.  5 mysql mysql  4096 Feb 23 15:49 lib</span><br><span class="line">drwxr-xr-x.  4 mysql mysql    28 Feb 23 15:48 man</span><br><span class="line">-rw-r--r--.  1 mysql mysql  2478 Nov 28 21:32 README</span><br><span class="line">drwxr-xr-x. 28 mysql mysql  4096 Feb 23 15:49 share</span><br><span class="line">drwxr-xr-x.  2 mysql mysql  4096 Feb 23 17:04 support-files</span><br><span class="line">[root@mastera mysql]# chown mysql. /usr/local/mysql -R</span><br><span class="line">[root@mastera mysql]# service mysql start</span><br><span class="line">Starting MySQL...Logging to '/usr/local/mysql/data/mastera.uplooking.com.err'.</span><br><span class="line">......... SUCCESS!</span><br></pre></td></tr></tbody></table></figure>
+
+<p>5.7之后初始化状态有密码，需要修改后才可使用</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera mysql]# mysqladmin -uroot -p'o2O&lt;!d)Tkjyu' password '(Uploo00king)'</span><br><span class="line">mysqladmin: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">Warning: Since password will be sent to server in plain text, use ssl connection to ensure password safety.</span><br><span class="line">[root@mastera mysql]# mysql -uroot -p'(Uploo00king)' -e "show databases"</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+--------------------+</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:13.901Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84mysql5-6"><span class="toc-text">安装二进制的mysql5.6</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E6%AD%A5%E9%AA%A4"><span class="toc-text">详细步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%84%9A%E6%9C%AC%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E5%AE%89%E8%A3%85MySQL"><span class="toc-text">脚本实现自动安装MySQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%93%E5%B1%95"><span class="toc-text">拓展</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

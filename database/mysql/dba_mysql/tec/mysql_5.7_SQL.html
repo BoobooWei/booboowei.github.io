@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>MySQL 5.7 SQL语句练习 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.7_SQL">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.7_SQL" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="练习sql语句，不经常用就容易忘记哦！  练习环境如下：    环境 说明    OS rhel7.2   database MySQL 5.7.17   练习环境搭建[root@mastera ~]# ls &#x2F;softwareemployees_db-full-1.0.6.tar.bz2  mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz  mysql_scr">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MySQL 5.7 SQL语句练习">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.7_SQL">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="练习sql语句，不经常用就容易忘记哦！  练习环境如下：    环境 说明    OS rhel7.2   database MySQL 5.7.17   练习环境搭建[root@mastera ~]# ls &#x2F;softwareemployees_db-full-1.0.6.tar.bz2  mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz  mysql_scr">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.814Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:18.557Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">MySQL 5.7 SQL语句练习</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/dba_mysql/tec/mysql_5.7_SQL.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>练习sql语句，不经常用就容易忘记哦！</p>
+</blockquote>
+<p>练习环境如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">环境</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">OS</td>
+<td align="left">rhel7.2</td>
+</tr>
+<tr>
+<td align="left">database</td>
+<td align="left">MySQL 5.7.17</td>
+</tr>
+</tbody></table>
+<h2 id="练习环境搭建" class="article-heading"><a href="#练习环境搭建" class="headerlink" title="练习环境搭建"></a>练习环境搭建<a class="article-anchor" href="#练习环境搭建" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera ~]# ls /software</span><br><span class="line">employees_db-full-1.0.6.tar.bz2  mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz  mysql_scripts.zip</span><br><span class="line">[root@mastera ~]# unzip /software/mysql_scripts.zip -d /software</span><br><span class="line">Archive:  /software/mysql_scripts.zip</span><br><span class="line">  inflating: /software/create.sql</span><br><span class="line">  inflating: /software/populate.sql</span><br><span class="line">[root@mastera ~]# ls /software</span><br><span class="line">create.sql                       mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz  populate.sql</span><br><span class="line">employees_db-full-1.0.6.tar.bz2  mysql_scripts.zip</span><br><span class="line">[root@mastera ~]# mysql -uroot -p'(Uploo00king)' -e 'create database booboo'</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">[root@mastera ~]# mysql -uroot -p'(Uploo00king)' booboo &lt; /software/create.sql</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">[root@mastera ~]# mysql -uroot -p'(Uploo00king)' booboo &lt; /software/populate.sql</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="SQL-数据类型" class="article-heading"><a href="#SQL-数据类型" class="headerlink" title="SQL 数据类型"></a>SQL 数据类型<a class="article-anchor" href="#SQL-数据类型" aria-hidden="true"></a></h2><ul>
+<li>所谓建表：就是声明列的过程</li>
+<li>数据是以文件的形式存放在硬盘（或内存）</li>
+<li>列：不同的列类型占的空间不一样</li>
+<li>选列的原则：够用，又不浪费</li>
+</ul>
+<p>列的类型分为：数值型、字符型、日期/时间型</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">st=&gt;start: 建表</span><br><span class="line">i=&gt;inputoutput: 数据类型</span><br><span class="line">cond1=&gt;condition: 数值</span><br><span class="line">cond2=&gt;condition: 字符串</span><br><span class="line">cond3=&gt;condition: 时间日期</span><br><span class="line">o1=&gt;inputoutput: 整数|浮点数|定点数|bit</span><br><span class="line">o2=&gt;inputoutput: char|set|json</span><br><span class="line">o3=&gt;inputoutput: date|time|year</span><br><span class="line"></span><br><span class="line">e=&gt;end</span><br><span class="line">st-&gt;i-&gt;cond1</span><br><span class="line">cond1(yes)-&gt;o1-&gt;e</span><br><span class="line">cond1(no)-&gt;cond2</span><br><span class="line">cond2(yes)-&gt;o2-&gt;e</span><br><span class="line">cond2(no)-&gt;cond3</span><br><span class="line">cond3(yes)-&gt;o3-&gt;e</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="数值型" class="article-heading"><a href="#数值型" class="headerlink" title="数值型"></a>数值型<a class="article-anchor" href="#数值型" aria-hidden="true"></a></h3><p>数值型分为整数（6）、定点数（2）、浮点数（3）、bit（1）</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">st=&gt;start: 数值型</span><br><span class="line">i=&gt;inputoutput: 分类</span><br><span class="line">cond1=&gt;condition: 整数</span><br><span class="line">cond2=&gt;condition: 定点数</span><br><span class="line">cond3=&gt;condition: 浮点数</span><br><span class="line">cond4=&gt;condition: bit</span><br><span class="line">o1=&gt;inputoutput: int</span><br><span class="line">o2=&gt;inputoutput: decimal|numeric</span><br><span class="line">o3=&gt;inputoutput: float|double</span><br><span class="line">o4=&gt;inputoutput: bit</span><br><span class="line">e=&gt;end</span><br><span class="line">st-&gt;i-&gt;cond1</span><br><span class="line">cond1(yes)-&gt;o1-&gt;e</span><br><span class="line">cond1(no)-&gt;cond2</span><br><span class="line">cond2(yes)-&gt;o2-&gt;e</span><br><span class="line">cond2(no)-&gt;cond3</span><br><span class="line">cond3(yes)-&gt;o3-&gt;e</span><br><span class="line">cond3(no)-&gt;cond4</span><br><span class="line">cond4(yes)-&gt;o4-&gt;e</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="整数" class="article-heading"><a href="#整数" class="headerlink" title="整数"></a>整数<a class="article-anchor" href="#整数" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>字节</th>
+<th>位</th>
+<th>无符号</th>
+<th>有符号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>tinyint</td>
+<td>1</td>
+<td>8</td>
+<td>0 ~ 2^8-1</td>
+<td>-2^7 ~ 2^7-1</td>
+</tr>
+<tr>
+<td>smallint</td>
+<td>2</td>
+<td>16</td>
+<td>0 ~ 2^16-1</td>
+<td>-2^15 ~ 2^15-1</td>
+</tr>
+<tr>
+<td>mediumint</td>
+<td>3</td>
+<td>24</td>
+<td>0 ~ 2^24-1</td>
+<td>-2^23 ~ 2^23-1</td>
+</tr>
+<tr>
+<td>int</td>
+<td>4</td>
+<td>32</td>
+<td>0 ~ 2^32-1</td>
+<td>-2^31 ~ 2^31-1</td>
+</tr>
+<tr>
+<td>bigint</td>
+<td>8</td>
+<td>64</td>
+<td>0 ~ 2^64-1</td>
+<td>-2^63 ~ 2^63-1</td>
+</tr>
+</tbody></table>
+<p><strong>数学推算</strong></p>
+<blockquote>
+<p>tinyint 微小的列类型，1字节，由开发人员规定的字节数</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">[0][0][0][0][0][0][0][0]--&gt;</span><span class="language-bash">[1][1][1][1][1][1][1][1]</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果表示正数</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">2^0 + 2^1 + 2^3 + ... + 2^7 = 2^8 - 1 = 255	0 ~ 255</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果表示负数，可以用最高位来标识符号位，1代表-，0代表+</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">2^0 + 2^1 + 2^3 + ... + 2^6 = 2^7 - 1 =127 	-128 ~ 127（只有后7位表示绝对值，最高位表示的是符号。其中+0和-0是一样的，所以可以用来表示-128）</span><br></pre></td></tr></tbody></table></figure>
+
+<ol>
+<li><code>unsigned</code>属性决定，有该属性则表示无符号位，无则表示有符号位</li>
+<li><code>zerofill</code>属性决定，是否补0，并自动为该列添加UNSIGNED属性</li>
+<li><code>M</code>属性决定，存在补0时，补0的位数</li>
+<li><code>default</code>属性，声明默认值</li>
+<li><code>not null</code>属性，不为空</li>
+</ol>
+<h4 id="浮点型" class="article-heading"><a href="#浮点型" class="headerlink" title="浮点型"></a>浮点型<a class="article-anchor" href="#浮点型" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>字节</th>
+<th>位</th>
+<th>无符号</th>
+<th>有符号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>float(M,D)</td>
+<td>4</td>
+<td>32</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>real(M,D)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Double precision(M,D)</td>
+<td>8</td>
+<td>64</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li>M 精度（总位数，不包含小数点） 取值范围为0~255。FLOAT只保证6位有效数字的准确性，所以FLOAT(M,D)中，M&lt;=6时，数字通常是准确的。如果M和D都有范围后的处理同decimal。</li>
+<li>D 标度（小数位）取值范围为0~30，同时必须&lt;=M。double只保证16位有效数字的准确性，所以DOUBLE(M,D)中，M&lt;=16时，数字通常是准确有明确定义，其超出范围后的处理同decimal。</li>
+</ul>
+<h4 id="定点型" class="article-heading"><a href="#定点型" class="headerlink" title="定点型"></a>定点型<a class="article-anchor" href="#定点型" aria-hidden="true"></a></h4><p><strong>numeric(M,D) decimal(M,D)</strong></p>
+<p>其中M表示十进制数字总的个数，D表示小数点后面数字的位数</p>
+<p>例如 <code>decimal(5,2)</code>的取值范围为999.99 ~ 999.99。</p>
+<ul>
+<li>如果存储时，整数部分超出了范围（如上面的例子中，添加数值为1000.01），MySql就会报错,不允许存这样的值。</li>
+<li>如果存储时，小数点部分若超出范围，就分以下情况：</li>
+</ul>
+<ol>
+<li>若四舍五入后，整数部分没有超出范围，则只警告，但能成功操作并四舍五入删除多余的小数位后保存。如999.994实际被保存若四舍五入后，整数部分超出范围，则MySql报错，并拒绝处理。如999.995和999.995都会报错。</li>
+<li>M的默认取值为10，D默认取值为0。如果创建表时，某字段定义为decimal类型不带任何参数，等同于decimal(10,0)。带一个参数时M的取值范围为1~65，取0时会被设为默认值，超出范围会报错。</li>
+<li>D的取值范围为0~30，而且必须&lt;=M，超出范围会报错。</li>
+</ol>
+<p>所以，很显然，当M=65，D=0时，可以取得最大和最小值。</p>
+<p><strong>浮点和定点字节是固定的，一般是4个或者8个字节</strong></p>
+<h4 id="BIT" class="article-heading"><a href="#BIT" class="headerlink" title="BIT"></a>BIT<a class="article-anchor" href="#BIT" aria-hidden="true"></a></h4><ul>
+<li>BIT数据类型可用来保存位字段值。BIT(M)类型允许存储M位值。M范围为1~64，默认为1。</li>
+<li>BIT其实就是存入二进制的值，类似010110。</li>
+</ul>
+<ol>
+<li>如果存入一个BIT类型的值，位数少于M值，则左补0.</li>
+<li>如果存入一个BIT类型的值，位数多于M值，MySQL的操作取决于此时有效的SQL模式：</li>
+<li>如果模式未设置，MySQL将值裁剪到范围的相应端点，并保存裁减好的值。</li>
+<li>如果模式设置为traditional(“严格模式”)，超出范围的值将被拒绝并提示错误，并且根据SQL标准插入会失败。</li>
+</ol>
+<h3 id="字符型" class="article-heading"><a href="#字符型" class="headerlink" title="字符型"></a>字符型<a class="article-anchor" href="#字符型" aria-hidden="true"></a></h3><blockquote>
+<p><strong>字符</strong></p>
+</blockquote>
+<ul>
+<li>1个英文字符 = 1位 = 8 字节</li>
+<li>1个中文字符 = 2位 = 18字节 (utf8)</li>
+</ul>
+<h4 id="字符串" class="article-heading"><a href="#字符串" class="headerlink" title="字符串"></a>字符串<a class="article-anchor" href="#字符串" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>宽度</th>
+<th>可存字符</th>
+<th>实存字符</th>
+<th>实占空间</th>
+<th>利用率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>char</td>
+<td>M</td>
+<td>M</td>
+<td>i</td>
+<td>M</td>
+<td>i/M&lt;=100%</td>
+</tr>
+<tr>
+<td>varchar</td>
+<td>M</td>
+<td>M</td>
+<td>i</td>
+<td>i 字符 + ( 1~2 ) 字节</td>
+<td>i/i 字符 + ( 1~2 ) 字节 &lt; 100%</td>
+</tr>
+</tbody></table>
+<p><strong>区别</strong>：</p>
+<ol>
+<li><p>char：定长，char(M)，M代表宽度，即可容纳的字符数 M ~ [ 0 , 255] 约2W~6W个字符，受字符集影响</p>
+</li>
+<li><p>varchar：变长，varchar(M)，M代表宽度，即可容纳的字符数</p>
+</li>
+<li><p>定长速度比变长快</p>
+</li>
+<li><p>变长能够保留末尾空格，而定长会忽略</p>
+<p><strong>选择原则</strong></p>
+<ol>
+<li><em>空间效率</em>—— 例如：四字成语 char(4)；个人微博140字 varchar(140)</li>
+<li><em>速度</em> ——例如：用户名 char(n)</li>
+</ol>
+<p>​</p>
+</li>
+</ol>
+<h4 id="二进制字符" class="article-heading"><a href="#二进制字符" class="headerlink" title="二进制字符"></a>二进制字符<a class="article-anchor" href="#二进制字符" aria-hidden="true"></a></h4><p>BINARY和VARBINARY类型类似于CHAR和VARCHAR类型，但是不同的是，它们存储的不是字符字符串，而是二进制串。<strong>所以它们没排序和比较基于列值字节的数值值。</strong></p>
+<p>当保存BINARY值时，在它们右边填充0x00(零字节)值以达到指定长度。取值时不删除尾部的字节。比较时所有字节很重要（因为空的，0x00&lt;空格），包括ORDER BY和DISTINCT操作。比如插入’a ‘会变成’a \0’。</p>
+<p>对于VARBINARY，插入时不填充字符，选择时不裁剪字节。比较时所有字节很重要。</p>
+<p>当类型为BINARY的字段为主键时，应考虑上面介绍的存储方式。</p>
+<h4 id="文本" class="article-heading"><a href="#文本" class="headerlink" title="文本"></a>文本<a class="article-anchor" href="#文本" aria-hidden="true"></a></h4><blockquote>
+<p>字符文本——tinytext|mediumtext|text|longtext<br>二进制文本——tinyblob|mediumblob|blob|longblob</p>
+</blockquote>
+<p>BLOB列被视为二进制字符串。TEXT列被视为字符字符串，类似CHAR和BINARY。<br>在TEXT或BLOB列的存储或检索过程中，不存在大小写转换。</p>
+<p>BLOB和TEXT在以下几个方面不同于VARBINARY和VARCHAR：</p>
+<ol>
+<li>当保存或检索BLOB和TEXT列的值时不删除尾部空格。(这与VARBINARY和VARCHAR列相同）。</li>
+<li>比较时将用空格对TEXT进行扩充以适合比较的对象，正如CHAR和VARCHAR。</li>
+<li>对于BLOB和TEXT列的索引，必须指定索引前缀的长度。对于CHAR和VARCHAR，前缀长度是可选的。</li>
+<li>BLOB和TEXT列不能有默认值。</li>
+</ol>
+<p>MySQL Connector/ODBC将BLOB值定义为LONGVARBINARY，将TEXT值定义为LONGVARCHAR。</p>
+<p>BLOB或TEXT对象的最大大小由其类型确定，但在客户端和服务器之间实际可以传递的最大值由可用内存数量和通信缓存区大小确更改max_allowed_packet变量的值更改消息缓存区的大小，但必须同时修改服务器和客户端程序。</p>
+<p>每个BLOB或TEXT值分别由内部分配的对象表示。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>字节</th>
+<th>位</th>
+<th>长度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>tiny</td>
+<td>1</td>
+<td>8</td>
+<td>0 ~ 2^8-1</td>
+</tr>
+<tr>
+<td>blob/text</td>
+<td>2</td>
+<td>16</td>
+<td>0 ~ 2^16-1</td>
+</tr>
+<tr>
+<td>medium</td>
+<td>3</td>
+<td>24</td>
+<td>0 ~ 2^24-1</td>
+</tr>
+<tr>
+<td>log</td>
+<td>4</td>
+<td>32</td>
+<td>0 ~ 2^32-1</td>
+</tr>
+</tbody></table>
+<h4 id="ENUM" class="article-heading"><a href="#ENUM" class="headerlink" title="ENUM"></a>ENUM<a class="article-anchor" href="#ENUM" aria-hidden="true"></a></h4><p>MySQL中的ENUM是一个字符串对象，其值来自表创建时在列规定中显式枚举的一列值。</p>
+<p>可以插入空字符串””和NULL：</p>
+<ul>
+<li>如果你将一个非法值插入ENUM(也就是说，允许的值列之外的字符串)，将插入空字符串以作为特殊错误值。该字符串与“普通”空字符串有数值值0。*如果将ENUM列声明为允许NULL，NULL值则为该列的一个有效值，并且默认值为NULL。如果ENUM列被声明为NOT NULL，其默的第1个元素。</li>
+</ul>
+<p><strong>值的索引规则如下：</strong></p>
+<ul>
+<li>来自列规定的允许的值列中的值从1开始编号。</li>
+<li>空字符串错误值的索引值是0。所以，可以使用下面的SELECT语句来找出分配了非法ENUM值的行：<code>mysql&gt; SELECT * FROM tbl_enum_col=0;</code></li>
+<li>NULL值的索引是NULL。</li>
+</ul>
+<p>NUM最多可以有65,535(2^16-1)个元素。当创建表时，ENUM成员值的尾部空格将自动被删除。</p>
+<h4 id="SET" class="article-heading"><a href="#SET" class="headerlink" title="SET"></a>SET<a class="article-anchor" href="#SET" aria-hidden="true"></a></h4><p>SET是一个字符串对象，可以有零或多个值，其值来自表创建时规定的允许的一列值。指定包括多个SET成员的SET列值时各成员之开。例如，指定为<code>SET('one', 'two') NOT NULL</code>的列可以有下面的任何值：</p>
+<ul>
+<li>‘’</li>
+<li>‘one’</li>
+<li>‘two’</li>
+<li>‘one,two’</li>
+</ul>
+<p><em>SET最多可以设置64个值。创建表时，SET成员值的尾部空格将自动被删除。检索时，保存在SET列的值使用列定义中所使用的大小</em><br><em>MySQL用数字保存SET值，所保存值的低阶位对应第1个SET成员。如果在数值上下文中检索一个SET值，检索的值的位设置对应组员。</em></p>
+<table>
+<thead>
+<tr>
+<th>set</th>
+<th>二进制</th>
+<th>十进制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>‘a’</td>
+<td>0001</td>
+<td>1</td>
+</tr>
+<tr>
+<td>‘b’</td>
+<td>0010</td>
+<td>2</td>
+</tr>
+<tr>
+<td>‘c’</td>
+<td>0100</td>
+<td>4</td>
+</tr>
+<tr>
+<td>‘d’</td>
+<td>1000</td>
+<td>8</td>
+</tr>
+</tbody></table>
+<p><strong>实际应用场景：可以作为权限管理</strong></p>
+<h4 id="JSON" class="article-heading"><a href="#JSON" class="headerlink" title="JSON"></a>JSON<a class="article-anchor" href="#JSON" aria-hidden="true"></a></h4><h2 id="SQL-DDL-练习" class="article-heading"><a href="#SQL-DDL-练习" class="headerlink" title="SQL DDL 练习"></a>SQL DDL 练习<a class="article-anchor" href="#SQL-DDL-练习" aria-hidden="true"></a></h2><ol>
+<li>创建库db1</li>
+<li>修改db1的字符编码为utf8</li>
+<li>删除库db1</li>
+<li>创建库uplooking</li>
+<li>创建表student，有id_student （主键）和name列</li>
+<li>创建表teachers，有id_teacher （主键）和name列</li>
+<li>创建表t1，有id（主键，自增）和values列</li>
+<li>重命名表student为students</li>
+<li>给student表新增id_teacher列</li>
+<li>给teachers表新增age列</li>
+<li>给teachers表删除age列</li>
+<li>给students表添加外键id_teacher列</li>
+<li>删除t1表</li>
+<li>创建库db1</li>
+<li>删除库db1</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">create database db1;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">alter database db1 character <span class="built_in">set</span> utf8;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">show create database db1;</span></span><br><span class="line">+----------+--------------------------------------------------------------+</span><br><span class="line">| Database | Create Database                                              |</span><br><span class="line">+----------+--------------------------------------------------------------+</span><br><span class="line">| db1      | CREATE DATABASE `db1` /*!40100 DEFAULT CHARACTER SET utf8 */ |</span><br><span class="line">+----------+--------------------------------------------------------------+</span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">drop database db1;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">create database uplooking;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">use uplooking</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">create table uplooking.student (id_student int primary key ,name varchar(20) );</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">create table uplooking.teachers (id_teacher int primary key ,name varchar(20));</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">create table t1 (<span class="built_in">id</span> int primary key auto_increment,name varchar(10));</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">rename table student to students;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">alter table students add id_teacher int;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">alter table teachers add age int;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">alter table teachers drop column age;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">alter table students add constraint fy_students_teachers foreign key (id_teacher) references teachers (id_teacher);</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">drop table t1;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">create database db1;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">drop database db1;</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="SQL-DML-练习" class="article-heading"><a href="#SQL-DML-练习" class="headerlink" title="SQL DML 练习"></a>SQL DML 练习<a class="article-anchor" href="#SQL-DML-练习" aria-hidden="true"></a></h2><ol>
+<li><p>插入以下数据到teachers表中</p>
+<table>
+<thead>
+<tr>
+<th>id_teacher</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Booboo</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Kevin</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Mark</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>插入以下数据到students表中：</p>
+<table>
+<thead>
+<tr>
+<th>id_student</th>
+<th>name</th>
+<th>id_teacher</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>superman</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>batman</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>wonderwoman</td>
+<td>1</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<p>​</p>
+<ol start="3">
+<li>修改teachers表中id_teacher列为3的name列的值为John</li>
+<li>修改students表中name列为batman并且id_teacher为1的行，将name改为leo</li>
+<li>修改students表中id_teacher=1或者id_teacher=2的行，将id_teacher改为3</li>
+<li>删除students表中id_student=3的行</li>
+<li>删除students表和teachers表中所有的行</li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:18.557Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">练习环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">SQL 数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E5%9E%8B"><span class="toc-text">数值型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B4%E6%95%B0"><span class="toc-text">整数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%AE%E7%82%B9%E5%9E%8B"><span class="toc-text">浮点型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E7%82%B9%E5%9E%8B"><span class="toc-text">定点型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BIT"><span class="toc-text">BIT</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E5%9E%8B"><span class="toc-text">字符型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-text">字符串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AD%97%E7%AC%A6"><span class="toc-text">二进制字符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E6%9C%AC"><span class="toc-text">文本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ENUM"><span class="toc-text">ENUM</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SET"><span class="toc-text">SET</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JSON"><span class="toc-text">JSON</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL-DDL-%E7%BB%83%E4%B9%A0"><span class="toc-text">SQL DDL 练习</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL-DML-%E7%BB%83%E4%B9%A0"><span class="toc-text">SQL DML 练习</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

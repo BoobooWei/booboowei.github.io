@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Shell Scripts | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/0_linux_base/booboo_bash_shell_scripts/00_shell_variables">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/0_linux_base/booboo_bash_shell_scripts/00_shell_variables" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="教学环境介绍 client rhel7.2 172.25.0.10 server rhel7.2 172.25.0.11  如果真的想走IT这条路，想真正管理好你的主机，那么学习自动化管理工具Shell Scripts 非常重要！ 就是将一些命令放在一起去执行，并且不需要编译就能执行，很方便，所以在日常工作中可以用shell scripts来简化我们的管理。可以但到我们linux中，很多服务的启">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Shell Scripts">
+<meta property="og:url" content="http://www.toberoot.com/linux/0_linux_base/booboo_bash_shell_scripts/00_shell_variables">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="教学环境介绍 client rhel7.2 172.25.0.10 server rhel7.2 172.25.0.11  如果真的想走IT这条路，想真正管理好你的主机，那么学习自动化管理工具Shell Scripts 非常重要！ 就是将一些命令放在一起去执行，并且不需要编译就能执行，很方便，所以在日常工作中可以用shell scripts来简化我们的管理。可以但到我们linux中，很多服务的启">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.995Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:28.557Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Shell Scripts</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/0_linux_base/booboo_bash_shell_scripts/00_shell_variables.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><hr>
+<h2 id="教学环境介绍" class="article-heading"><a href="#教学环境介绍" class="headerlink" title="教学环境介绍"></a>教学环境介绍<a class="article-anchor" href="#教学环境介绍" aria-hidden="true"></a></h2><ul>
+<li>client rhel7.2 172.25.0.10</li>
+<li>server rhel7.2 172.25.0.11</li>
+</ul>
+<p>如果真的想走IT这条路，想真正管理好你的主机，那么学习自动化管理工具Shell Scripts 非常重要！</p>
+<p>就是将一些命令放在一起去执行，并且不需要编译就能执行，很方便，所以在日常工作中可以用shell scripts来简化我们的管理。可以但到我们linux中，很多服务的启动都是透过shell脚本来启动的。</p>
+<p>如果你不会脚本，那么服务器出问题的时候，真的会求助无门，所以好好地学习吧！</p>
+<h2 id="shell-简介" class="article-heading"><a href="#shell-简介" class="headerlink" title="shell 简介"></a>shell 简介<a class="article-anchor" href="#shell-简介" aria-hidden="true"></a></h2><h3 id="什么是-shell" class="article-heading"><a href="#什么是-shell" class="headerlink" title="什么是 shell"></a>什么是 shell<a class="article-anchor" href="#什么是-shell" aria-hidden="true"></a></h3><p>Shell 是一个命令解释器 , 是人与操作系统之间的桥梁。</p>
+<p><img src="pic/03.png" alt="03.png"></p>
+<p>我们平时无论任何操作 , 最终都要操作硬件 , 比如输入一个字符 “ a ”, 那么信号 首先会从键盘传递到主板 , 通过主板总线传递到内存 ,CPU, 显卡等 , 最终经过显卡的运 算完成后在屏幕的某个位置 , 显示一个特定字体的字符 “a ”, 这一整个过程可以说是 不断的和硬件打交道了 , 但是如果让人去发送这些硬件操作码显然不适合 , 因为这不是人干 的事 , 所以我们有了操作系统 , 操作系统通过加载一定的硬件驱动 , 从而控制硬件 , 操作硬 件 , 那剩下的事就是如何和操作系统通信了 , 对于普通的系统管理员来说 , 这也是一件非常 困难的事 , 为了方便人和操作系统沟通 , 我们开发了 shell 。</p>
+<p>Shell 可以将我们平时运行的一些指令解释给操作系统执行 , 方便管理员操作系统。 而 Shell 的脚本其实是一种命令的堆积 , 我们将所有需要执行的命令 , 以从上至下的方 式写在一个文件当中 , 交给 shell 去自动解释执行。</p>
+<h3 id="shell-历史" class="article-heading"><a href="#shell-历史" class="headerlink" title="shell 历史"></a>shell 历史<a class="article-anchor" href="#shell-历史" aria-hidden="true"></a></h3><p>在 AT&amp;T 的 Dennis Ritchie 和 Ken Thompson 设计 UNIXTM 的时候 , 他们想要为 用户创建一种与他们的新系统交流的方法。 那时的操作系统带有命令解释器。命令解释器接受用户的命令 , 然后解释它们 , 因而计 算机可以使用这些命令。</p>
+<p>但是 Ritchie 和 Thompson 想要的不只是这些功能 , 他们想提供比当时的命令解释器 具备更优异功能的工具。这导致了 Bourne shell( 通称为 sh) 的开发 , 由 S.R. Bourne 创 建。自从 Bourne shell 的创建 , 其它 shell 也被一一开发 , 如 C shell(csh) 和 Korn shell(ksh) 。</p>
+<p>当自由软件基金会想寻求一种免费的 shell, 开发者们开始致力于 Bourne shell 以及当 时其它 shell 中某些很受欢迎的功能背后的语言。</p>
+<p>这个开发结果是 Bourne Again Shell, 或称 bash 。虽然你的 Red Hat Linux 包括几 种不同的 shell,bash 是为互动用户提供的默认 shell 。</p>
+<h3 id="常见的-shell" class="article-heading"><a href="#常见的-shell" class="headerlink" title="常见的 shell"></a>常见的 shell<a class="article-anchor" href="#常见的-shell" aria-hidden="true"></a></h3><ul>
+<li>Bourne shell 即 sh:AT&amp;T 贝尔实验室编写的一个交换式的命令解释器。</li>
+<li>C Shell :Bill Joy 于 20 世纪 80 年代早期开发。为了让用户更容易的使用 , 他把语法 结构变成了 C 语言风格。它新增了命令历史、别名、文件名替换、作业控制等功能。</li>
+<li>korn shell (ksh) 是一个 Unix shell 。它由贝尔实验室的 David Korn 在二十世纪八十 年代早期编写。它完全向上兼容 Bourne shell 并包含了 C shell 的很多特性。</li>
+<li>Bourne-Again Shell: bash 是一个为 GNU 项目编写的 Unix shell 。它的名字是一 系列缩写 :Bourne-Again SHell — 这是关于 Bourne shell(sh) 的一个双关语 (Bourne again / born again) 。 Bourne shell 是一个早期的重要 shell, 由 Stephen Bourne 在 1978 年前后编写 , 并同 Version 7 Unix 一起发布。 bash 则在1987 年由 Brian Fox 创造。 在 1990 年 ,Chet Ramey 成为了主要的维护者。 bash 是大多数 Linux 系统以及 Mac OS X v10.4 默认的 shell, 它能运行于大多数 Unix 风格的操作系统之上 , 甚至被移植到了 MicrosoftWindows 上的 Cygwin 和 MSYS 系统中 , 以实现 windows 的 POSIX 虚拟接口。此外 , 它也被 DJGPP 项目移植到了 MS- DOS 上。</li>
+<li>POSIX shell :POSIX shell 与 Korn shell 非常的相似 , 当前提供 POSIX shell 的最 大卖主是 Hewlett-Packard 。</li>
+</ul>
+<h3 id="为什么-Shell" class="article-heading"><a href="#为什么-Shell" class="headerlink" title="为什么 Shell"></a>为什么 Shell<a class="article-anchor" href="#为什么-Shell" aria-hidden="true"></a></h3><ul>
+<li>解决重复操作的作业。</li>
+<li>节约时间 , 提高工作效率。</li>
+<li>功能强大 , 使用简单。</li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 1.查看系统当中合法的shell</span></span><br><span class="line"><span class="built_in">cat</span> /etc/shells</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># /etc/shells: valid login shells</span></span><br><span class="line">    /bin/sh</span><br><span class="line">    /bin/dash</span><br><span class="line">    /bin/bash</span><br><span class="line">    /bin/rbash</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 2.修改用户登录时使用的shell程序</span></span><br><span class="line">useradd batman</span><br><span class="line">chsh -s /bin/sh batman</span><br><span class="line">grep batman /etc/passwd</span><br></pre></td></tr></tbody></table></figure>
+
+<pre><code>useradd: Permission denied.
+useradd: cannot lock /etc/passwd; try again later.
+chsh: user 'batman' does not exist
+</code></pre>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 3.用户的登录流程</span></span><br><span class="line"></span><br><span class="line">![01](pic/01.png)</span><br><span class="line"></span><br><span class="line"><span class="comment">## 对于所有的用户HISTSIZE 500 ，对于root用户HISTSIZE 1000</span></span><br><span class="line">/etc/profile start</span><br><span class="line">/etc/profile end</span><br><span class="line"></span><br><span class="line">~/.bash_profile start</span><br><span class="line">~/.bashrc start</span><br><span class="line">/etc/bashrc start</span><br><span class="line"></span><br><span class="line">/etc/bashrc end</span><br><span class="line">~/.bashrc end</span><br><span class="line">~/.bash_profile end</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="shell的变量功能" class="article-heading"><a href="#shell的变量功能" class="headerlink" title="shell的变量功能"></a>shell的变量功能<a class="article-anchor" href="#shell的变量功能" aria-hidden="true"></a></h2><h3 id="什么是变量" class="article-heading"><a href="#什么是变量" class="headerlink" title="什么是变量"></a>什么是变量<a class="article-anchor" href="#什么是变量" aria-hidden="true"></a></h3><ul>
+<li>让一个特定的字符代表不固定的内容，有点像y=ax+b,y就是变量，</li>
+<li>用简单的字眼来代替比较复杂或者容易变动的数据，好处就是方便！</li>
+</ul>
+<p>比如系统中的MAIL和USER变量，根据当前登陆的用户而变化</p>
+<ul>
+<li>对脚本的用处——例如ule考试的评分脚本，根据你们的机器号的不同，去检测不同的学生考试成绩</li>
+</ul>
+<h3 id="变量的设置、查看和取消-echo-unset" class="article-heading"><a href="#变量的设置、查看和取消-echo-unset" class="headerlink" title="变量的设置、查看和取消 echo unset"></a>变量的设置、查看和取消 echo unset<a class="article-anchor" href="#变量的设置、查看和取消-echo-unset" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">      查看	echo ${MAIL}</span><br><span class="line">	echo $MAIL</span><br><span class="line">设置	变量名=变量的内容</span><br><span class="line">		myname=booboo</span><br><span class="line">		myname="booboo wei"</span><br><span class="line">	注意事项</span><br><span class="line">		变量命名规则：</span><br><span class="line">			1.由数字，字母，下划线_组成</span><br><span class="line">			2.不能以数字开头</span><br><span class="line">			3.字母区分大小写，大小写敏感</span><br><span class="line">		变量内容若有空格，可以使用单引号或者双引号</span><br><span class="line">			双引号保留特殊字符原有属性</span><br><span class="line">			单引号特殊字符变一般字符（纯文本）</span><br><span class="line">			也可使用\跳脱字符将特殊字符变成一般字符</span><br><span class="line">		`指令`或$(指令)可以将指令的结果变成变量内容</span><br><span class="line">取消	unset 变量名</span><br><span class="line">		unset myname</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="课堂练习" class="article-heading"><a href="#课堂练习" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习" aria-hidden="true"></a></h4><pre><code>		1. 设置变量myname=superman并查看变量的值；
+		2. 设置变量myname1=I am superman
+			myname2="I am superman"
+			myname3='I am superman'并查看所有变量的值；
+		3. 设置两个变量分别为name1="$myname is myname"和name2='$myname is myname';并查看变量的值；
+		4. 设置变量kernel的值为当前系统的内核版本号；
+		5. 设置变量num的值为/etc/目录下所有以.conf结尾的文件的总数；
+		6. 取消练习中的有所变量。
+</code></pre>
+<p><img src="pic/02.png" alt="02"></p>
+<h3 id="变量内容的删除和替换" class="article-heading"><a href="#变量内容的删除和替换" class="headerlink" title="变量内容的删除和替换"></a>变量内容的删除和替换<a class="article-anchor" href="#变量内容的删除和替换" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">变量设定方式		说明</span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">{变量#关键词}		若变量内容从头开始的数据符合『关键词』,则将符合的最短数据删除</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">{变量##关键词} 		若变量内容从头开始的数据符合『关键词』,则将符合的最长数据删除</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">{变量%关键词} 		若变量内容从尾向前的数据符合『关键词』,则将符合的最短数据删除</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">{变量%%关键词}		若变量内容从尾向前的数据符合『关键词』,则将符合的最长数据删除</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">{变量/旧字符串/新字符串} 	若变量内容符合『旧字符串』则『第一个旧字符串会被新字符串替换』</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">{变量//旧字符串/新字符串}	若变量内容符合『旧字符串』则『全部的旧字符串会被新字符串替换』</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="课堂练习-1" class="article-heading"><a href="#课堂练习-1" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习-1" aria-hidden="true"></a></h4><ol>
+<li>设置变量path=${PATH} 并查看；</li>
+<li>设置变量path=/batman/bin:${path}:/superman/bin 并查看；</li>
+<li>读取变量的时候将/batman/bin:及第一个冒号及之前的删除；</li>
+<li>读取变量的时候将最后一个冒号及之前的都删除；</li>
+<li>读取变量的时候将:/superman/bin及最后一个冒号及之后的删除；</li>
+<li>读取变量的时候将第一个冒号及之后的都删除；</li>
+<li>读取变量的时候将第一个sbin替换成SBIN；</li>
+<li>读取变量的时候将所有的sbin替换成SBIN；</li>
+<li>取消练习中的path变量。</li>
+</ol>
+<h3 id="变量的分类：局部变量和全局变量-env-set-export" class="article-heading"><a href="#变量的分类：局部变量和全局变量-env-set-export" class="headerlink" title="变量的分类：局部变量和全局变量 env set export"></a>变量的分类：局部变量和全局变量 env set export<a class="article-anchor" href="#变量的分类：局部变量和全局变量-env-set-export" aria-hidden="true"></a></h3><ul>
+<li><pre><code>      分类标准	变量是否会被子程序所继续引用；局部变量不会；全局变量会
+</code></pre>
+</li>
+<li><pre><code>	env 	列出目前shell环境下的所有全局变量
+</code></pre>
+</li>
+<li><pre><code>	set 	查看所有变量，包括环境变量和局部变量
+</code></pre>
+</li>
+<li><pre><code>	export	将局部变量转成全局变量	export myname
+</code></pre>
+</li>
+</ul>
+<h4 id="课堂练习-2" class="article-heading"><a href="#课堂练习-2" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习-2" aria-hidden="true"></a></h4><pre><code>		1. 打开一个终端bash，查看该终端的pid号；
+		2. 设置本地变量justice1="this is local"并查看;
+		3. 设置环境变量justice2="this is env"并查看;
+		4. 打开子终端bash，查看该终端的pid号和ppid号；
+		5. 在子终端中分别查看变量justice1和justice2的值；
+</code></pre>
+<h3 id="变量读取、数组与宣告-read-array-declare" class="article-heading"><a href="#变量读取、数组与宣告-read-array-declare" class="headerlink" title="变量读取、数组与宣告 read array declare"></a>变量读取、数组与宣告 read array declare<a class="article-anchor" href="#变量读取、数组与宣告-read-array-declare" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">read	从键盘读取数据存入变量</span><br><span class="line">	read -p "plz input yourname:" -t 30 name 按下回车输入变量name的值，会等待30s结束</span><br><span class="line">array</span><br><span class="line">	数组的设定	A[0]=1;A[1]=2;A[2]=3</span><br><span class="line">			A=(1 2 3)</span><br><span class="line">			A=(1 2 3 [50]=4)</span><br><span class="line">			A=(1 2 3 [50]=4 5)</span><br><span class="line">	数组的读取	echo ${A[0]}</span><br><span class="line">			echo ${A[@]}</span><br><span class="line">			echo ${A[*]}</span><br><span class="line">			* 代表的是一次取出所有的值 ,@ 代表依次取值</span><br><span class="line">				for i in "$A[@]";do echo $i;done</span><br><span class="line">				for i in "$A[*]";do echo $i;done</span><br><span class="line">declare</span><br><span class="line">	declare 参数</span><br><span class="line">		-a 将变量看成数组</span><br><span class="line">		-i 将变量看成整数</span><br><span class="line">		-r 使变量只读</span><br><span class="line">	x=1</span><br><span class="line">	y=2</span><br><span class="line">	sum=$(($x+$y))</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="课堂练习-3" class="article-heading"><a href="#课堂练习-3" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习-3" aria-hidden="true"></a></h4><pre><code>		1. 用read命令从键盘读取num变量的值，提示语句为“请输入你的机器号：”，限时间20s；
+		2. 设置数组S 第一位为1，第二位为2，第三十位为4，第三十一位为5，读取数组所有的值，读取数组第二位；
+		3. 设置变量x=1，y=2，变量sum=$x+$y，查看sum的值；
+		4. 宣告变量x为整数型值为1，变量y为整数型值为2,变量sum为整数型=$x+$y，查看sum的值；
+</code></pre>
+<h2 id="数据流重导向redirection" class="article-heading"><a href="#数据流重导向redirection" class="headerlink" title="数据流重导向redirection"></a>数据流重导向redirection<a class="article-anchor" href="#数据流重导向redirection" aria-hidden="true"></a></h2><h3 id="何谓数据流重导向" class="article-heading"><a href="#何谓数据流重导向" class="headerlink" title="何谓数据流重导向"></a>何谓数据流重导向<a class="article-anchor" href="#何谓数据流重导向" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">指令执行后的结果有：</span><br><span class="line">          exit    命令执行是否正确的返回值?	0正确；！0错误		简称	代码	符号</span><br><span class="line">          return	命令执行输出的正确信息	standard output		    stdout	1	&gt;或者&gt;&gt;</span><br><span class="line">			命令执行输出的错误信息	standard error output	stderr	2	2&gt;或者2&gt;&gt;</span><br><span class="line">指令执行前的输入：		命令执行输入的信息		standard in		stdin	0	&lt;或者&lt;&lt;</span><br><span class="line"></span><br><span class="line">用法总结</span><br><span class="line"><span class="meta prompt_">	1&gt; </span><span class="language-bash">:以覆盖的方法将『正确的数据』输出到指定的文件中；</span></span><br><span class="line"><span class="meta prompt_">	1&gt;</span><span class="language-bash">&gt;:以追加的方法将『正确的数据』输出到指定的文件中；</span></span><br><span class="line"><span class="meta prompt_">	2&gt; </span><span class="language-bash">:以覆盖的方法将『错误的数据』输出到指定的文件中；</span></span><br><span class="line"><span class="meta prompt_">	2&gt;</span><span class="language-bash">&gt;:以追加的方法将『错误的数据』输出到指定的文件中；</span></span><br><span class="line"></span><br><span class="line">cat	从键盘读取数据存入文件</span><br><span class="line">	cat &gt; /tmp/catfile 以ctrl+d结束</span><br><span class="line">	cat &gt; /tmp/catfile &lt; /tmp/passwd</span><br><span class="line">	cat &gt; /tmp/catfile &lt;&lt; ENDF</span><br><span class="line">	standard in</span><br><span class="line">	ENDF===&gt;结束提示符</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="课堂练习-4" class="article-heading"><a href="#课堂练习-4" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习-4" aria-hidden="true"></a></h4><pre><code>		1. 查看系统/目录下的所有文件名和属性，并记录到/tmp/file文件中；
+		2. 查看系统/var/目录下的所有文件名和属性，并追加记录到/tmp/file文件中；
+		3. 切换到student用户，在/home目录下查找文件名为.bashrc的文件是否存在；
+		4. 切换到student用户，在/home目录下查找文件名为.bashrc的文件，将该命令执行输出的正确信息显示到屏幕上，将该命令执行输出的错误信息放到黑洞/dev/null中；
+		5. 切换到student用户，在/home目录下查找文件名为.bashrc的文件，将该命令执行输出的正确信息保存到/tmp/stdout文件中并查看，将该命令执行输出的错误信息放到黑洞/dev/null中；
+		6. 切换到student用户，在/home目录下查找文件名为.bashrc的文件，将该命令执行输出的正确信息保存到/tmp/stdout文件中，将该命令执行输出的错误信息保存到/tmp/stderr文件中，并查看；
+		7. 切换到student用户，在/home目录下查找文件名为.bashrc的文件，将该命令执行输出的所有信息（正确和错误）都保存到/tmp/all中，并查看；
+		8. 使用cat命令从键盘读取数据helloword并覆盖/tmp/catfile文件；
+		9. 使用cat命令将/etc/passwd/的内容覆盖/tmp/catfile文件；
+		10. 使用cat命令从键盘读取数据helloword并覆盖/tmp/catfile文件，以结束提示符的方式结束；
+</code></pre>
+<h3 id="命令执行的判断依据" class="article-heading"><a href="#命令执行的判断依据" class="headerlink" title="命令执行的判断依据 ; &amp;&amp; ||"></a>命令执行的判断依据 ; &amp;&amp; ||<a class="article-anchor" href="#命令执行的判断依据" aria-hidden="true"></a></h3><ul>
+<li><pre><code>CMD1 &amp;&amp; CMD2 	如果前一个命令 (CMD1) 能够正确被执行 , 则执行后一个命令 (CMD2)
+</code></pre>
+</li>
+<li><pre><code>CMD1 || CMD2 	如果前一个命令 (CMD1) 被正确执行 , 则不执行后一个命令 (CMD2), 如果前一个命令(CMD1) 执行错误 , 则执行后一个命令 (CMD2).
+</code></pre>
+</li>
+<li><pre><code>CMD1 ; CMD2	命令之间没有关系，从第一个开始执行，不管是否正确执行都会去执行第二个命令
+</code></pre>
+</li>
+</ul>
+<h4 id="课堂实验" class="article-heading"><a href="#课堂实验" class="headerlink" title="课堂实验"></a>课堂实验<a class="article-anchor" href="#课堂实验" aria-hidden="true"></a></h4><pre><code>		1. 创建目录/tmp/cmd,如果创建成功那么就再创建一个目录/tmp/cmd/cdm1;
+		2. 创建目录/tmp/cmd,如果创建失败，那么就再船舰一个目录/tmp/cmd/cmd2;
+		3. 不管目录/tmp/cmd是否创建成功，都会去再创建一个目录/tmp/tmpcmd;
+</code></pre>
+<h3 id="管道命令pipe" class="article-heading"><a href="#管道命令pipe" class="headerlink" title="管道命令pipe"></a>管道命令pipe<a class="article-anchor" href="#管道命令pipe" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">   #</span><span class="language-bash">截取 grep <span class="built_in">cut</span></span></span><br><span class="line">	grep bash$ /etc/passwd</span><br><span class="line">	cut -d : -f 3 /etc/passwd</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">排序 <span class="built_in">sort</span> <span class="built_in">uniq</span></span></span><br><span class="line">	sort -t: -k3 -n /etc/passwd</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">统计 <span class="built_in">wc</span></span></span><br><span class="line">	wc -l /etc/passwd</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">替换 xargs</span></span><br><span class="line">	find /sbin/ -perm +7000|wc -l</span><br><span class="line">	find /sbin/ -perm +7000|xargs wc -l</span><br><span class="line"></span><br><span class="line">	课堂练习：</span><br><span class="line">	1.找出/sbin/目录下有特殊权限的文件，并统计每个文件的行数</span><br><span class="line">	2.找出/sbin/目录下有特殊权限的文件，并统计有几个</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">减号 -</span></span><br><span class="line">	课堂练习：</span><br><span class="line">	1.将/home目录打包压缩后解压到/tmp目录</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="shell下的特殊符号" class="article-heading"><a href="#shell下的特殊符号" class="headerlink" title="shell下的特殊符号"></a>shell下的特殊符号<a class="article-anchor" href="#shell下的特殊符号" aria-hidden="true"></a></h3><pre><code>#	注释符
+\	跳脱符
+|	管道
+;	连续指令的下达
+~	家目录
+$	取用变量符
+&amp;	进程控制后台运行
+!	逻辑运算非
+/	根目录
+&gt;,&gt;&gt;	数据流重导向 输出
+&lt;,&lt;&lt;	数据流重导向 输入
+''	特殊字符失效
+""	特殊字符有效
+``	命令执行的结果
+{}	命令的组合
+</code></pre>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:28.557Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%99%E5%AD%A6%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D"><span class="toc-text">教学环境介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell-%E7%AE%80%E4%BB%8B"><span class="toc-text">shell 简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-shell"><span class="toc-text">什么是 shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shell-%E5%8E%86%E5%8F%B2"><span class="toc-text">shell 历史</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84-shell"><span class="toc-text">常见的 shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-Shell"><span class="toc-text">为什么 Shell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell%E7%9A%84%E5%8F%98%E9%87%8F%E5%8A%9F%E8%83%BD"><span class="toc-text">shell的变量功能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%98%E9%87%8F"><span class="toc-text">什么是变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E7%9A%84%E8%AE%BE%E7%BD%AE%E3%80%81%E6%9F%A5%E7%9C%8B%E5%92%8C%E5%8F%96%E6%B6%88-echo-unset"><span class="toc-text">变量的设置、查看和取消 echo unset</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0"><span class="toc-text">课堂练习</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%86%85%E5%AE%B9%E7%9A%84%E5%88%A0%E9%99%A4%E5%92%8C%E6%9B%BF%E6%8D%A2"><span class="toc-text">变量内容的删除和替换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0-1"><span class="toc-text">课堂练习</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E7%9A%84%E5%88%86%E7%B1%BB%EF%BC%9A%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E5%92%8C%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F-env-set-export"><span class="toc-text">变量的分类：局部变量和全局变量 env set export</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0-2"><span class="toc-text">课堂练习</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E8%AF%BB%E5%8F%96%E3%80%81%E6%95%B0%E7%BB%84%E4%B8%8E%E5%AE%A3%E5%91%8A-read-array-declare"><span class="toc-text">变量读取、数组与宣告 read array declare</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0-3"><span class="toc-text">课堂练习</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%E9%87%8D%E5%AF%BC%E5%90%91redirection"><span class="toc-text">数据流重导向redirection</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%95%E8%B0%93%E6%95%B0%E6%8D%AE%E6%B5%81%E9%87%8D%E5%AF%BC%E5%90%91"><span class="toc-text">何谓数据流重导向</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0-4"><span class="toc-text">课堂练习</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%9A%84%E5%88%A4%E6%96%AD%E4%BE%9D%E6%8D%AE"><span class="toc-text">命令执行的判断依据 ; &amp;&amp; ||</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E5%AE%9E%E9%AA%8C"><span class="toc-text">课堂实验</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E9%81%93%E5%91%BD%E4%BB%A4pipe"><span class="toc-text">管道命令pipe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shell%E4%B8%8B%E7%9A%84%E7%89%B9%E6%AE%8A%E7%AC%A6%E5%8F%B7"><span class="toc-text">shell下的特殊符号</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

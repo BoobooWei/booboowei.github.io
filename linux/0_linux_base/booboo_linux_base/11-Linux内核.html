@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Linux内核 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/11-Linux%E5%86%85%E6%A0%B8">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/11-Linux%E5%86%85%E6%A0%B8" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="WHERE内核与内核模块在哪里呢?内核模块都有哪些呢?下面的表中都列出来了:  内核 &#x2F;boot&#x2F;vmlinuz-version 内核解压缩所需 RAM Disk &#x2F;boot&#x2F;initrd-version 内核模块 &#x2F;lib&#x2F;modules&#x2F;$(uname -r)&#x2F;kernel  WHAT开机时,内核第一任务就是驱动硬">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Linux内核">
+<meta property="og:url" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/11-Linux%E5%86%85%E6%A0%B8">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="WHERE内核与内核模块在哪里呢?内核模块都有哪些呢?下面的表中都列出来了:  内核 &#x2F;boot&#x2F;vmlinuz-version 内核解压缩所需 RAM Disk &#x2F;boot&#x2F;initrd-version 内核模块 &#x2F;lib&#x2F;modules&#x2F;$(uname -r)&#x2F;kernel  WHAT开机时,内核第一任务就是驱动硬">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.018Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:53.692Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Linux内核</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/0_linux_base/booboo_linux_base/11-Linux内核.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h2 id="WHERE" class="article-heading"><a href="#WHERE" class="headerlink" title="WHERE"></a>WHERE<a class="article-anchor" href="#WHERE" aria-hidden="true"></a></h2><p>内核与内核模块在哪里呢?内核模块都有哪些呢?下面的表中都列出来了:</p>
+<ul>
+<li>内核 /boot/vmlinuz-version</li>
+<li>内核解压缩所需 RAM Disk /boot/initrd-version</li>
+<li>内核模块 /lib/modules/$(uname -r)/kernel</li>
+</ul>
+<h3 id="WHAT" class="article-heading"><a href="#WHAT" class="headerlink" title="WHAT"></a>WHAT<a class="article-anchor" href="#WHAT" aria-hidden="true"></a></h3><p>开机时,内核第一任务就是驱动硬件,激活机器。相关的驱动模块放在 <code>/lib/modules/$(uname -r)/</code> 目录下,下面以 rhel6 为例,看看该目录下都有些什么:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel6 ~]# ls /lib/modules/2.6.32-431.el6.x86_64</span><br><span class="line">build</span><br><span class="line">modules.dep</span><br><span class="line">modules.networking modules.usbmap</span><br><span class="line">extra</span><br><span class="line">modules.dep.bin</span><br><span class="line">modules.ofmap</span><br><span class="line">source</span><br><span class="line">kernel</span><br><span class="line">modules.drm</span><br><span class="line">modules.order</span><br><span class="line">updates</span><br><span class="line">modules.alias</span><br><span class="line">modules.ieee1394map modules.pcimap</span><br><span class="line">vdso</span><br><span class="line">modules.alias.bin modules.inputmap modules.seriomap weak-updates</span><br><span class="line">modules.block</span><br><span class="line">modules.isapnpmap modules.symbols</span><br><span class="line">modules.ccwmap modules.modesetting modules.symbols.bin</span><br><span class="line">[root@rhel6 ~]# ls /lib/modules/2.6.32-431.el6.x86_64/kernel/</span><br><span class="line">arch crypto drivers fs kernel lib mm net sound</span><br><span class="line">[root@rhel6 ~]# ls /lib/modules/2.6.32-431.el6.x86_64/kernel/drivers/</span><br><span class="line">acpi</span><br><span class="line">cpufreq hid</span><br><span class="line">leds</span><br><span class="line">net</span><br><span class="line">rtc</span><br><span class="line">vhost</span><br><span class="line">ata</span><br><span class="line">crypto hv</span><br><span class="line">md</span><br><span class="line">parport scsi video</span><br><span class="line">atm</span><br><span class="line">dca</span><br><span class="line">hwmon</span><br><span class="line">media pci</span><br><span class="line">serial virtio</span><br><span class="line">auxdisplay dma</span><br><span class="line">i2c</span><br><span class="line">memstick pcmcia ssb</span><br><span class="line">watchdog</span><br><span class="line">bcma</span><br><span class="line">edac idle</span><br><span class="line">message platform staging xen</span><br><span class="line">block</span><br><span class="line">firewire ieee802154 mfd</span><br><span class="line">power</span><br><span class="line">target</span><br><span class="line">bluetooth firmware infiniband misc</span><br><span class="line">pps</span><br><span class="line">uio</span><br><span class="line">cdrom</span><br><span class="line">gpio</span><br><span class="line">input</span><br><span class="line">mmc</span><br><span class="line">ptp</span><br><span class="line">usb</span><br><span class="line">char</span><br><span class="line">gpu</span><br><span class="line">isdn</span><br><span class="line">mtd</span><br><span class="line">regulator uwb</span><br><span class="line">[root@rhel6 ~]# ls /lib/modules/2.6.32-431.el6.x86_64/kernel/drivers/net</span><br><span class="line">3c59x.ko dl2k.ko</span><br><span class="line">macvtap.ko</span><br><span class="line">pppox.ko</span><br><span class="line">sunhme.ko</span><br><span class="line">8139cp.ko dnet.ko</span><br><span class="line">mdio.ko</span><br><span class="line">ppp_synctty.ko tehuti.ko</span><br></pre></td></tr></tbody></table></figure>
+
+<p>/lib/modules/2.6.32-431.el6.x86_64/kernel/ 该目录下的文件解释</p>
+<ul>
+<li>arch 与硬件平台有关的项目 , 例如 CPU 的等级等等 ;</li>
+<li>crypto 内核所支持的加密的技术 , 例如 md5 、 des 等等 ;</li>
+<li>drivers 硬件的驱动程序 , 例如显示适配器、网络卡、 PCI 相关硬件</li>
+<li>fs 内核所支持的 filesystems , 例如 ext4, vfat, reiserfs, nfs 等等 ;</li>
+<li>kernel 内核的程序、内核状态、线程、程序的排程 (schedule) 、程序的 signle 等</li>
+<li>lib 函式库</li>
+<li>mm 内存单元有关的各项数据</li>
+<li>net 与网络有关的各项协议数据,还有防火墙模块</li>
+<li>sound 音效有关的各项模块2 内核模块的相依性: depmod</li>
+</ul>
+<h3 id="moudules-dep-文件" class="article-heading"><a href="#moudules-dep-文件" class="headerlink" title="moudules.dep 文件"></a>moudules.dep 文件<a class="article-anchor" href="#moudules-dep-文件" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel6 etc]# head /lib/modules/$(uname -r)/modules.dep</span><br><span class="line">kernel/arch/x86/kernel/cpu/mcheck/mce-inject.ko:</span><br><span class="line">kernel/arch/x86/kernel/cpu/cpufreq/powernow-k8.ko: kernel/drivers/cpufreq/freq_table.ko</span><br><span class="line">kernel/arch/x86/kernel/cpu/cpufreq/mperf.ko</span><br><span class="line">kernel/arch/x86/kernel/cpu/cpufreq/mperf.ko:</span><br><span class="line">kernel/arch/x86/kernel/cpu/cpufreq/acpi-cpufreq.ko: kernel/drivers/cpufreq/freq_table.ko</span><br><span class="line">kernel/arch/x86/kernel/cpu/cpufreq/mperf.ko</span><br><span class="line">kernel/arch/x86/kernel/cpu/cpufreq/pcc-cpufreq.ko:</span><br><span class="line">kernel/arch/x86/kernel/cpu/cpufreq/speedstep-lib.ko:</span><br><span class="line">kernel/arch/x86/kernel/cpu/cpufreq/p4-clockmod.ko: kernel/drivers/cpufreq/freq_table.ko</span><br><span class="line">kernel/arch/x86/kernel/cpu/cpufreq/speedstep-lib.ko</span><br><span class="line">kernel/arch/x86/kernel/cpu/cpufreq/intel_pstate.ko:</span><br><span class="line">kernel/arch/x86/kernel/test_nx.ko:</span><br><span class="line">kernel/arch/x86/kernel/microcode.ko:</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="depmod-命令" class="article-heading"><a href="#depmod-命令" class="headerlink" title="depmod 命令"></a>depmod 命令<a class="article-anchor" href="#depmod-命令" aria-hidden="true"></a></h3><p>depmod [-Ane]</p>
+<p>选项与参数 :</p>
+<ul>
+<li>-A : 不加任何参数时 , depmod 会主动的去分析目前内核的模块 , 并且重新写入<code>/lib/modules/$(uname -r)/modules.dep</code> 当中更新。若加入 -A 参数时 , 则 depmod 会去搜寻比 modules.dep 内还要新的模块,若找到新模块则</li>
+<li>-n : 不写入 modules.dep , 而是将结果输出到屏幕上 (standard out);</li>
+<li>-e : 显示出目前已加载的不可执行的模块名称</li>
+</ul>
+<h3 id="depmod-实验" class="article-heading"><a href="#depmod-实验" class="headerlink" title="depmod 实验"></a>depmod 实验<a class="article-anchor" href="#depmod-实验" aria-hidden="true"></a></h3><p>假设已经做好一个网卡驱动程序 , 档名为 a.ko, 请更新内核的相依性。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel6 ~]# cp a.ko /lib/modules/2.6.32-</span><br><span class="line">431.el6.x86_64/kernel/drivers/net</span><br><span class="line">[root@rhel6 ~]# depmod3 内核模块的观察: lsmod, modinfo</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="lsmod-命令" class="article-heading"><a href="#lsmod-命令" class="headerlink" title="lsmod 命令"></a>lsmod 命令<a class="article-anchor" href="#lsmod-命令" aria-hidden="true"></a></h3><p>作用:显示出目前已经存在于内核当中的模块 , 显示的内容包括 :</p>
+<ol>
+<li>模块名称 (Module);</li>
+<li>模块的大小 (size);</li>
+<li>此模块是否被其他模块所使用 (Used by) 。</li>
+</ol>
+<h3 id="modinfo-命令" class="article-heading"><a href="#modinfo-命令" class="headerlink" title="modinfo 命令"></a>modinfo 命令<a class="article-anchor" href="#modinfo-命令" aria-hidden="true"></a></h3><p>用法:</p>
+<p>modinfo [-adln] [module_name|filename]</p>
+<p>选项与参数 :</p>
+<ul>
+<li>-a : 仅列出作者名称 ;</li>
+<li>-d : 仅列出该 modules 的说明 (description);</li>
+<li>-l : 仅列出授权 (license);</li>
+<li>-n : 仅列出该模块的详细路径。</li>
+</ul>
+<h3 id="内核模块的观察实验" class="article-heading"><a href="#内核模块的观察实验" class="headerlink" title="内核模块的观察实验"></a>内核模块的观察实验<a class="article-anchor" href="#内核模块的观察实验" aria-hidden="true"></a></h3><p>首先查看目前已存在于内核中的模块,随便选择一个模块并查看该模块的详细信息。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel6 ~]# [root@rhel6 ~]# lsmod</span><br><span class="line">Module</span><br><span class="line">Size</span><br><span class="line">Used by</span><br><span class="line">autofs4 26513 3</span><br><span class="line">8021q 25349 0</span><br><span class="line">garp</span><br><span class="line">7152</span><br><span class="line">1 8021q</span><br><span class="line">[root@rhel6 ~]# modinfo autofs4</span><br><span class="line">filename:</span><br><span class="line">/lib/modules/2.6.32-</span><br><span class="line">431.el6.x86_64/kernel/fs/autofs4/autofs4.ko</span><br><span class="line">license: GPL</span><br><span class="line">srcversion: 948FC9C8D4043379272927C</span><br><span class="line">depends:</span><br><span class="line">vermagic:</span><br><span class="line">2.6.32-431.el6.x86_64 SMP mod_unload modversions</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="内核模块的加载与移除-insmod-modprobe-rmmod" class="article-heading"><a href="#内核模块的加载与移除-insmod-modprobe-rmmod" class="headerlink" title="内核模块的加载与移除:insmod, modprobe, rmmod"></a>内核模块的加载与移除:insmod, modprobe, rmmod<a class="article-anchor" href="#内核模块的加载与移除-insmod-modprobe-rmmod" aria-hidden="true"></a></h2><p>modprobe 加载模块会主动去搜寻 modules.dep 的内容 , 先解决模块的相依性后 , 再决定需要加载的模块有哪些,很方便; insmod 则完全由使用者自行加载一个完整文件名的模块 , 不会主动分析模块相依性</p>
+<h3 id="insmod-命令" class="article-heading"><a href="#insmod-命令" class="headerlink" title="insmod 命令"></a>insmod 命令<a class="article-anchor" href="#insmod-命令" aria-hidden="true"></a></h3><p>insmod [/full/path/module_name] [parameters]</p>
+<h3 id="modprobe-命令" class="article-heading"><a href="#modprobe-命令" class="headerlink" title="modprobe 命令"></a>modprobe 命令<a class="article-anchor" href="#modprobe-命令" aria-hidden="true"></a></h3><p>modprobe [-lcfr] module_name</p>
+<p>选项与参数 :</p>
+<ul>
+<li>-c : 列出目前系统所有的模块 !( 更详细的代号对应表 )</li>
+<li>-l : 列出目前在 /lib/modules/<code>uname -r</code>/kernel 当中的所有模块完整文件 名 ;</li>
+<li>-f : 强制加载该模块 ;</li>
+<li>-r : 类似 rmmod , 移除某个模块</li>
+</ul>
+<h3 id="rmmod-命令" class="article-heading"><a href="#rmmod-命令" class="headerlink" title="rmmod 命令"></a>rmmod 命令<a class="article-anchor" href="#rmmod-命令" aria-hidden="true"></a></h3><p>rmmod [-fw] module_name</p>
+<p>选项与参数 :</p>
+<ul>
+<li>-f : 强制将该模块移除掉 , 不管是否正被使用 ;</li>
+<li>-w : 若该模块正被使用 , 则等该模块被使用完毕后 , 再移除</li>
+</ul>
+<h3 id="内核模块的加载与移除实验" class="article-heading"><a href="#内核模块的加载与移除实验" class="headerlink" title="内核模块的加载与移除实验"></a>内核模块的加载与移除实验<a class="article-anchor" href="#内核模块的加载与移除实验" aria-hidden="true"></a></h3><p>加载模块;查看该模块是否已成功加载,并查看详细信息;移除该模块。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel6 net]# modprobe dnet</span><br><span class="line">[root@rhel6 net]# modinfo dnet</span><br><span class="line">filename:</span><br><span class="line">/lib/modules/2.6.32-431.el6.x86_64/kernel/drivers/net/dnet.ko</span><br><span class="line">author:</span><br><span class="line">Ilya Yanok &lt;yanok@emcraft.com&gt;, Matteo Vit &lt;matteo.vit@dave.eu&gt;</span><br><span class="line">description: Dave DNET Ethernet driver</span><br><span class="line">license:</span><br><span class="line">GPL</span><br><span class="line">srcversion: 9D532980E04E93088A9DFC1</span><br><span class="line">depends:</span><br><span class="line">vermagic:</span><br><span class="line">2.6.32-431.el6.x86_64 SMP mod_unload modversions</span><br><span class="line">[root@rhel6 net]# lsmod | grep dnet</span><br><span class="line">dnet</span><br><span class="line">16103 0</span><br><span class="line">[root@rhel6 net]# rmmod dnet</span><br><span class="line">[root@rhel6 net]# lsmod | grep dnet</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="内核模块的额外参数设定-etc-modprobe-d-conf" class="article-heading"><a href="#内核模块的额外参数设定-etc-modprobe-d-conf" class="headerlink" title="内核模块的额外参数设定:/etc/modprobe.d/*.conf"></a>内核模块的额外参数设定:/etc/modprobe.d/*.conf<a class="article-anchor" href="#内核模块的额外参数设定-etc-modprobe-d-conf" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel6 ~]# ls /etc/modprobe.d/</span><br><span class="line">anaconda.conf dist-alsa.conf dist-oss.conf</span><br><span class="line">blacklist.conf dist.conf</span><br><span class="line">openfwwf.conf</span><br><span class="line">[root@rhel6 ~]# cat /etc/modprobe.d/dist.conf</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">default modutils aliases</span></span><br><span class="line">alias binfmt-204 binfmt_aout</span><br><span class="line">alias binfmt-263 binfmt_aout</span><br><span class="line">alias binfmt-264 binfmt_aout</span><br><span class="line">alias binfmt-267 binfmt_aout</span><br><span class="line">alias binfmt-387 binfmt_aout</span><br><span class="line">alias block-major-1-* rd</span><br><span class="line">alias block-major-3-* ide-probe-mod</span><br><span class="line">alias block-major-8-* sd_mod</span><br><span class="line">alias block-major-9-* md</span><br><span class="line">alias block-major-11-* sr_mod</span><br><span class="line">alias block-major-13-* xd</span><br><span class="line">alias block-major-15-* cdu31a</span><br><span class="line">alias block-major-16-* gscd</span><br><span class="line">alias block-major-17-* optcd</span><br><span class="line">alias block-major-18-* sjcd</span><br><span class="line">alias block-major-20-* mcdx</span><br><span class="line">alias block-major-22-* ide-probe-mod</span><br><span class="line">alias block-major-23-* mcd</span><br><span class="line">alias block-major-24-* sonycd535</span><br><span class="line">alias block-major-25-* sbpcd</span><br><span class="line">alias block-major-26-* sbpcd</span><br><span class="line">alias block-major-27-* sbpcd</span><br><span class="line">alias block-major-29-* aztcd</span><br><span class="line">alias block-major-32-* cm206</span><br><span class="line">alias block-major-33-* ide-probe-mod</span><br><span class="line">alias block-major-34-* ide-probe-mod</span><br><span class="line">alias block-major-37-* ide-tape</span><br><span class="line">alias block-major-44-* ftl</span><br><span class="line">alias block-major-46-* pcd</span><br><span class="line">alias block-major-47-* pf</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="内核升级" class="article-heading"><a href="#内核升级" class="headerlink" title="内核升级"></a>内核升级<a class="article-anchor" href="#内核升级" aria-hidden="true"></a></h2><h3 id="源码编译" class="article-heading"><a href="#源码编译" class="headerlink" title="源码编译"></a>源码编译<a class="article-anchor" href="#源码编译" aria-hidden="true"></a></h3><p>Linux 内核官网 <a target="_blank" rel="noopener" href="https://www.kernel.org/">https://www.kernel.org/</a> 提供的是源码,需要编译使用。</p>
+<p><img src="pic/44.png" alt="44"></p>
+<p>Linux 内核版本有两种 : 稳定版和开发版 ,Linux 内核版本号由 3 个数字组成 :r.x.y</p>
+<ul>
+<li>r: 主版本号</li>
+<li>x: 次版本号 , 偶数表示稳定版本 ; 奇数表示开发中版本。</li>
+<li>y: 修订版本号 , 表示修改的次数</li>
+</ul>
+<p>去 <a target="_blank" rel="noopener" href="http://www.kernel.org/">http://www.kernel.org</a> 首页 , 可以看到有 stable, longterm 等版本 ,longterm 是比stable 更稳定的版本 , 会长时间更新。</p>
+<p>源码编译不做要求。</p>
+<h3 id="rpm-包安装" class="article-heading"><a href="#rpm-包安装" class="headerlink" title="rpm 包安装"></a>rpm 包安装<a class="article-anchor" href="#rpm-包安装" aria-hidden="true"></a></h3><p>在工作中应该去操作系统的发行公司的官网下载已经编译好的内核。我们使用的是红帽的,那么就去红帽的官网 <a target="_blank" rel="noopener" href="https://www.redhat.com/en/global/china">https://www.redhat.com/en/global/china</a></p>
+<p>这里使用一个免费的源 ELRepo 源</p>
+<p><img src="pic/45.png" alt="45"></p>
+<h4 id="rhel6-5-内核升级-——-yum-方式-有网" class="article-heading"><a href="#rhel6-5-内核升级-——-yum-方式-有网" class="headerlink" title="rhel6.5 内核升级 —— yum 方式(有网)"></a>rhel6.5 内核升级 —— yum 方式(有网)<a class="article-anchor" href="#rhel6-5-内核升级-——-yum-方式-有网" aria-hidden="true"></a></h4><p>在 yum 的 ELRepo 源中 , 选择 kernel-lt-3.10.102-1.el6.elrepo.x86_64.rpm 这个版<br>本。</p>
+<p><img src="pic/46.png" alt="46"></p>
+<p>重新启动后的 grub 界面</p>
+<p><img src="pic/47.png" alt="47"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">[#</span><span class="language-bash">1#root@rhel6 ~]#<span class="built_in">uname</span> -r</span></span><br><span class="line">3.10.102-1.el6.elrepo.x86_64</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="rhel7-2-内核升级-——-本地-rpm-安装-没网" class="article-heading"><a href="#rhel7-2-内核升级-——-本地-rpm-安装-没网" class="headerlink" title="rhel7.2 内核升级 —— 本地 rpm 安装(没网)"></a>rhel7.2 内核升级 —— 本地 rpm 安装(没网)<a class="article-anchor" href="#rhel7-2-内核升级-——-本地-rpm-安装-没网" aria-hidden="true"></a></h4><p>此处是在 <a target="_blank" rel="noopener" href="http://rpm.pbone.net/">http://rpm.pbone.net</a> 上下载的,实际工作中应该到红帽官网下载。</p>
+<p><img src="pic/48.png" alt="48"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# ls</span><br><span class="line">anaconda-ks.cfg Downloads</span><br><span class="line">Music Templates</span><br><span class="line">Desktop</span><br><span class="line">initial-setup-ks.cfg</span><br><span class="line">Pictures Videos</span><br><span class="line">Documents</span><br><span class="line">kernel-lt-3.10.102-1.el6.elrepo.x86_64.rpm Public</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看但前系统内核版本</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# uname -r</span><br><span class="line">3.10.0-123.el7.x86_64</span><br></pre></td></tr></tbody></table></figure>
+
+<p>安装新内核并保留原内核</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# rpm -ivh kernel-lt-3.10.102-1.el6.elrepo.x86_64.rpm</span><br><span class="line">Preparing...</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">################################ [100%]</span></span></span><br><span class="line">Updating / installing...</span><br><span class="line">1:kernel-lt-3.10.102-1.el6.elrepo ################################# [100%]</span><br><span class="line">[root@rhel7 ~]# cd /boot/grub2/</span><br><span class="line">[root@rhel7 grub2]# ll /etc/grub2.cfg</span><br><span class="line">lrwxrwxrwx. 1 root root 22 Jul 2 2015 /etc/grub2.cfg -&gt; ../boot/grub2/grub.cfg</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看当前默认启动内核</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 grub2]# grub2-editenv list</span><br><span class="line">saved_entry=Red Hat Enterprise Linux Linux, with Linux 3.10.0-123.el7.x86_64</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看配置文件中有几个启动项</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 grub2]# grep "menuentry" /boot/grub2/grub.cfg</span><br><span class="line">if [ x"${feature_menuentry_id}" = xy ]; then</span><br><span class="line">menuentry_id_option="--id"</span><br><span class="line">menuentry_id_option=""</span><br><span class="line">export menuentry_id_option</span><br><span class="line">menuentry 'Red Hat Enterprise Linux Server (3.10.102-1.el6.elrepo.x86_64) 7.0 (Maipo)' --class red</span><br><span class="line">--class gnu-linux --class gnu --class os --unrestricted $menuentry_id_option 'gnulinux-3.10.0-</span><br><span class="line">123.el7.x86_64-advanced-5220f38d-edd6-45e5-a257-f1e9e6c80b4e' {</span><br><span class="line">menuentry 'Red Hat Enterprise Linux Server, with Linux 3.10.0-123.el7.x86_64' --class red --class</span><br><span class="line">gnu-linux --class gnu --class os --unrestricted $menuentry_id_option 'gnulinux-3.10.0-</span><br><span class="line">123.el7.x86_64-advanced-5220f38d-edd6-45e5-a257-f1e9e6c80b4e' {</span><br><span class="line">menuentry 'Red Hat Enterprise Linux Server, with Linux 0-rescue-14d17f362db9498eaa56aac326570c37' --class red --class gnu-linux --class gnu --class os</span><br><span class="line">--unrestricted $menuentry_id_option 'gnulinux-0-rescue-14d17f362db9498eaa56aac326570c37-</span><br><span class="line">advanced-5220f38d-edd6-45e5-a257-f1e9e6c80b4e' {</span><br></pre></td></tr></tbody></table></figure>
+
+<p>设置默认启动内核</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 grub2]# grub2-set-default 'Red Hat Enterprise Linux Server (3.10.102-</span><br><span class="line">1.el6.elrepo.x86_64) 7.0 (Maipo)'</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看当前默认启动内核</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 grub2]# grub2-editenv list</span><br><span class="line">saved_entry=Red Hat Enterprise Linux Server (3.10.102-1.el6.elrepo.x86_64) 7.0 (Maipo)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>更新一下配置 , 让新的内核启动生效</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 grub2]# grub2-mkconfig -o /boot/grub2/grub.cfg</span><br><span class="line">Generating grub configuration file ...</span><br><span class="line">Found linux image: /boot/vmlinuz-3.10.102-1.el6.elrepo.x86_64</span><br><span class="line">Found initrd image: /boot/initramfs-3.10.102-1.el6.elrepo.x86_64.img</span><br><span class="line">Found linux image: /boot/vmlinuz-3.10.0-123.el7.x86_64</span><br><span class="line">Found initrd image: /boot/initramfs-3.10.0-123.el7.x86_64.img</span><br><span class="line">Found linux image: /boot/vmlinuz-0-rescue-14d17f362db9498eaa56aac326570c37</span><br><span class="line">Found initrd image: /boot/initramfs-0-rescue-14d17f362db9498eaa56aac326570c37.img</span><br><span class="line">done</span><br></pre></td></tr></tbody></table></figure>
+
+<p>重新启动</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 grub2]# reboot</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看当前内核版本</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# uname -r</span><br><span class="line">3.10.102-1.el6.elrepo.x86_64</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Linux-内核作业" class="article-heading"><a href="#Linux-内核作业" class="headerlink" title="Linux 内核作业"></a>Linux 内核作业<a class="article-anchor" href="#Linux-内核作业" aria-hidden="true"></a></h2><ol>
+<li>到共享当中下载 linux 内核 kernel-lt-3.10.102-1.el6.elrepo.x86_64.rpm</li>
+<li>rhel6.5 进行内核升级,保留原内核</li>
+<li>rhel7.2 进行内核升级,保留原内核</li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:53.692Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#WHERE"><span class="toc-text">WHERE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WHAT"><span class="toc-text">WHAT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#moudules-dep-%E6%96%87%E4%BB%B6"><span class="toc-text">moudules.dep 文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#depmod-%E5%91%BD%E4%BB%A4"><span class="toc-text">depmod 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#depmod-%E5%AE%9E%E9%AA%8C"><span class="toc-text">depmod 实验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lsmod-%E5%91%BD%E4%BB%A4"><span class="toc-text">lsmod 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#modinfo-%E5%91%BD%E4%BB%A4"><span class="toc-text">modinfo 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E7%9A%84%E8%A7%82%E5%AF%9F%E5%AE%9E%E9%AA%8C"><span class="toc-text">内核模块的观察实验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E7%9A%84%E5%8A%A0%E8%BD%BD%E4%B8%8E%E7%A7%BB%E9%99%A4-insmod-modprobe-rmmod"><span class="toc-text">内核模块的加载与移除:insmod, modprobe, rmmod</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#insmod-%E5%91%BD%E4%BB%A4"><span class="toc-text">insmod 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#modprobe-%E5%91%BD%E4%BB%A4"><span class="toc-text">modprobe 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rmmod-%E5%91%BD%E4%BB%A4"><span class="toc-text">rmmod 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E7%9A%84%E5%8A%A0%E8%BD%BD%E4%B8%8E%E7%A7%BB%E9%99%A4%E5%AE%9E%E9%AA%8C"><span class="toc-text">内核模块的加载与移除实验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E7%9A%84%E9%A2%9D%E5%A4%96%E5%8F%82%E6%95%B0%E8%AE%BE%E5%AE%9A-etc-modprobe-d-conf"><span class="toc-text">内核模块的额外参数设定:&#x2F;etc&#x2F;modprobe.d&#x2F;*.conf</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E5%8D%87%E7%BA%A7"><span class="toc-text">内核升级</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91"><span class="toc-text">源码编译</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rpm-%E5%8C%85%E5%AE%89%E8%A3%85"><span class="toc-text">rpm 包安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rhel6-5-%E5%86%85%E6%A0%B8%E5%8D%87%E7%BA%A7-%E2%80%94%E2%80%94-yum-%E6%96%B9%E5%BC%8F-%E6%9C%89%E7%BD%91"><span class="toc-text">rhel6.5 内核升级 —— yum 方式(有网)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rhel7-2-%E5%86%85%E6%A0%B8%E5%8D%87%E7%BA%A7-%E2%80%94%E2%80%94-%E6%9C%AC%E5%9C%B0-rpm-%E5%AE%89%E8%A3%85-%E6%B2%A1%E7%BD%91"><span class="toc-text">rhel7.2 内核升级 —— 本地 rpm 安装(没网)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux-%E5%86%85%E6%A0%B8%E4%BD%9C%E4%B8%9A"><span class="toc-text">Linux 内核作业</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Raft-Understandable Distributed Consensus | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/tidb/01_raft%E5%8D%8F%E8%AE%AE%E7%90%86%E8%A7%A3">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/tidb/01_raft%E5%8D%8F%E8%AE%AE%E7%90%86%E8%A7%A3" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="EnglishWhat is Distributed Consensus?an exampleLet’s start with an example… Let’s say we have a single node system.For this example, you can think of our node as a database server that stores a singl">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Raft-Understandable Distributed Consensus">
+<meta property="og:url" content="http://www.toberoot.com/database/tidb/01_raft%E5%8D%8F%E8%AE%AE%E7%90%86%E8%A7%A3">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="EnglishWhat is Distributed Consensus?an exampleLet’s start with an example… Let’s say we have a single node system.For this example, you can think of our node as a database server that stores a singl">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.800Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:11.313Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../docs/" class="main-nav-link">Hexo</a><a href="../../news/" class="main-nav-link">News</a><a href="../../api/" class="main-nav-link">MySQL8.0</a><a href="../../database/" class="main-nav-link">Database</a><a href="../../linux/" class="main-nav-link">Linux</a><a href="../../cloud/" class="main-nav-link">Cloud</a><a href="../../singapore/" class="main-nav-link">Singapore</a><a href="../../amy/" class="main-nav-link">AMY</a><a href="../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Raft-Understandable Distributed Consensus</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/tidb/01_raft协议理解.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><p><img src="pic/raft-07.png"></p>
+<h1 id="English" class="article-heading"><a href="#English" class="headerlink" title="English"></a>English<a class="article-anchor" href="#English" aria-hidden="true"></a></h1><h2 id="What-is-Distributed-Consensus" class="article-heading"><a href="#What-is-Distributed-Consensus" class="headerlink" title="What is Distributed Consensus?"></a>What is Distributed Consensus?<a class="article-anchor" href="#What-is-Distributed-Consensus" aria-hidden="true"></a></h2><h3 id="an-example" class="article-heading"><a href="#an-example" class="headerlink" title="an example"></a>an example<a class="article-anchor" href="#an-example" aria-hidden="true"></a></h3><p>Let’s start with an example…</p>
+<p>Let’s say we have a single node system.For this example, you can think of our node as a database server that stores a single value. We also have a client that can send a value to the server. Coming to agreement, or <em>consensus</em>, on that value is easy with one node. But how do we come to consensus if we have multiple nodes? That’s the problem of <strong>distributed consensus</strong>.</p>
+<img src="pic/raft-00.png" style="zoom:50%;">
+
+<p><strong>Raft</strong> is a protocol for implementing distributed consensus.</p>
+<h3 id="how-it-works" class="article-heading"><a href="#how-it-works" class="headerlink" title="how it works"></a>how it works<a class="article-anchor" href="#how-it-works" aria-hidden="true"></a></h3><p>Let’s look at a high level overview of how it works.</p>
+<h4 id="3-states" class="article-heading"><a href="#3-states" class="headerlink" title="3 states"></a>3 states<a class="article-anchor" href="#3-states" aria-hidden="true"></a></h4><p>A node can be in 1 of 3 states:</p>
+<ul>
+<li><p>The <em>Follower</em> state</p>
+</li>
+<li><p>The <em>Candidate</em> state</p>
+</li>
+<li><p>The <em>Leader</em> state</p>
+</li>
+</ul>
+<p>All our nodes start in the follower state. If followers don’t hear from a leader then they can become a candidate. The candidate then requests votes from other nodes. Nodes will reply with their vote. The candidate becomes the leader if it gets votes from a majority of nodes. This process is called <strong>Leader Election</strong>.</p>
+<p>All changes to the system now go through the leader. Each change is added as an entry in the node’s log. This log entry is currently uncommitted so it won’t update the node’s value. To commit the entry the node first replicates it to the follower nodes then the leader waits until a majority of nodes have written the entry.</p>
+<p>The entry is now committed on the leader node and the node state is “5”. The leader then notifies the followers that the entry is committed.</p>
+<p><img src="pic/raft-01.png"></p>
+<p>The cluster has now come to consensus about the system state. This process is called <strong>Log Replication</strong>.</p>
+<h4 id="Leader-Election" class="article-heading"><a href="#Leader-Election" class="headerlink" title="Leader Election"></a>Leader Election<a class="article-anchor" href="#Leader-Election" aria-hidden="true"></a></h4><p>In Raft there are two timeout settings which control elections.</p>
+<ul>
+<li><p><strong>the election timeout</strong></p>
+</li>
+<li><p><strong>the heartbeat timeout</strong></p>
+</li>
+</ul>
+<h5 id="Leader-Election-process" class="article-heading"><a href="#Leader-Election-process" class="headerlink" title="Leader Election process"></a>Leader Election process<a class="article-anchor" href="#Leader-Election-process" aria-hidden="true"></a></h5><p>Leader Election process：</p>
+<p><img src="pic/raft-02.png"></p>
+<ul>
+<li>The election timeout is the amount of time a follower waits until becoming a candidate.</li>
+<li>The election timeout is randomized to be between 150ms and 300ms.</li>
+<li>After the election timeout the follower becomes a candidate and starts a new <em>election term</em>…and sends out <em>Request Vote</em> messages to other nodes.</li>
+<li>If the receiving node hasn’t voted yet in this term then it votes for the candidate and the node resets its election timeout.</li>
+<li>Once a candidate has a majority of votes it becomes leader.</li>
+<li>The leader begins sending out <em>Append Entries</em> messages to its followers.</li>
+<li>These messages are sent in intervals specified by the heartbeat timeout.</li>
+<li>Followers then respond to each <em>Append Entries</em> message.</li>
+<li>This election term will continue until a follower stops receiving heartbeats and becomes a candidate.</li>
+</ul>
+<h5 id="Stop-Leader-Node" class="article-heading"><a href="#Stop-Leader-Node" class="headerlink" title="Stop Leader Node"></a>Stop Leader Node<a class="article-anchor" href="#Stop-Leader-Node" aria-hidden="true"></a></h5><p>让我们停止领导节点，观察重新选举的过程。</p>
+<ul>
+<li><p>Node B is now leader of term 2.</p>
+</li>
+<li><p>Requiring a majority of votes guarantees that only one leader can be elected per term.</p>
+</li>
+</ul>
+<h5 id="Occur-a-split-vote" class="article-heading"><a href="#Occur-a-split-vote" class="headerlink" title="Occur a split vote"></a>Occur a split vote<a class="article-anchor" href="#Occur-a-split-vote" aria-hidden="true"></a></h5><p>If two nodes become candidates at the same time then a split vote can occur. Let’s take a look at a split vote example…</p>
+<p><img src="pic/raft-03.png"></p>
+<ul>
+<li><p>Two nodes both start an election for the same term and each reaches a single follower node before the other.</p>
+</li>
+<li><p>Now each candidate has 2 votes and can receive no more for this term.</p>
+</li>
+<li><p>The nodes will wait for a new election and try again.</p>
+</li>
+<li><p>Node A received a majority of votes in term 5 so it becomes leader.</p>
+</li>
+</ul>
+<h4 id="Log-Replication" class="article-heading"><a href="#Log-Replication" class="headerlink" title="Log Replication"></a>Log Replication<a class="article-anchor" href="#Log-Replication" aria-hidden="true"></a></h4><p>Once we have a leader elected we need to replicate all changes to our system to all nodes.</p>
+<p>This is done by using the same <em>Append Entries</em> message that was used for heartbeats.</p>
+<h5 id="Log-Replication-process" class="article-heading"><a href="#Log-Replication-process" class="headerlink" title="Log Replication process"></a>Log Replication process<a class="article-anchor" href="#Log-Replication-process" aria-hidden="true"></a></h5><p>Let’s walk through the process.</p>
+<p><img src="pic/raft-04.png"></p>
+<ul>
+<li>First a client sends a change to the leader.</li>
+<li>The change is appended to the leader’s log, then the change is sent to the followers on the next heartbeat.</li>
+<li>An entry is committed once a majority of followers acknowledge it and a response is sent to the client.</li>
+<li>Now let’s send a command to increment the value by “2”.</li>
+<li>Our system value is now updated to “7”.</li>
+</ul>
+<h5 id="network-partitions" class="article-heading"><a href="#network-partitions" class="headerlink" title="network partitions"></a>network partitions<a class="article-anchor" href="#network-partitions" aria-hidden="true"></a></h5><p>Raft can even stay consistent in the face of network partitions.</p>
+<p><img src="pic/raft-05.png"></p>
+<ul>
+<li>Let’s add a partition to separate A &amp; B from C, D &amp; E.</li>
+<li>Because of our partition we now have two leaders in different terms.</li>
+<li>Let’s add another client and try to update both leaders.</li>
+<li>One client will try to set the value of node B to “3”.</li>
+<li>Node B cannot replicate to a majority so its log entry stays uncommitted.</li>
+<li>The other client will try to set the value of node D to “8”.</li>
+<li>This will succeed because it can replicate to a majority.</li>
+</ul>
+<p>Now let’s heal the network partition.</p>
+<img src="pic/raft-06.png" style="zoom:50%;">
+
+<ul>
+<li>Node B will see the higher election term and step down.</li>
+<li>Both nodes A &amp; B will roll back their uncommitted entries and match the new leader’s log.</li>
+<li>Our log is now consistent across our cluster.</li>
+</ul>
+<h2 id="For-more-information" class="article-heading"><a href="#For-more-information" class="headerlink" title="For more information"></a>For more information<a class="article-anchor" href="#For-more-information" aria-hidden="true"></a></h2><h3 id="The-Raft-Paper" class="article-heading"><a href="#The-Raft-Paper" class="headerlink" title="The Raft Paper"></a><a target="_blank" rel="noopener" href="https://raft.github.io/raft.pdf">The Raft Paper</a><a class="article-anchor" href="#The-Raft-Paper" aria-hidden="true"></a></h3><h3 id="Raft-Web-Site" class="article-heading"><a href="#Raft-Web-Site" class="headerlink" title="Raft Web Site"></a><a target="_blank" rel="noopener" href="http://raftconsensus.github.io/">Raft Web Site</a><a class="article-anchor" href="#Raft-Web-Site" aria-hidden="true"></a></h3><h1 id="中文" class="article-heading"><a href="#中文" class="headerlink" title="中文"></a>中文<a class="article-anchor" href="#中文" aria-hidden="true"></a></h1><h2 id="什么是分布式一致？" class="article-heading"><a href="#什么是分布式一致？" class="headerlink" title="什么是分布式一致？"></a>什么是分布式一致？<a class="article-anchor" href="#什么是分布式一致？" aria-hidden="true"></a></h2><h3 id="一个例子" class="article-heading"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子<a class="article-anchor" href="#一个例子" aria-hidden="true"></a></h3><p>让我们从一个例子开始学习。</p>
+<p>假设我们有一个单节点系统，在此示例中，我们可以将节点看成存储单个值的数据库服务器，我们还有一个可以将值发送到服务器的客户端。一个节点就很容易就该值达成协议或<em>一致</em>。但是，如果我们有多个节点，我们如何达成一致？这就是<strong>分布式一致</strong>的问题。</p>
+<img src="pic/raft-00.png" style="zoom:50%;">
+
+<p><strong>Raft</strong> 是用于实施 <strong>分布式一致</strong> 的<strong>协议</strong>。</p>
+<h3 id="工作原理" class="article-heading"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理<a class="article-anchor" href="#工作原理" aria-hidden="true"></a></h3><p>让我们看一下它的工作原理。</p>
+<h4 id="三种节点状态" class="article-heading"><a href="#三种节点状态" class="headerlink" title="三种节点状态"></a>三种节点状态<a class="article-anchor" href="#三种节点状态" aria-hidden="true"></a></h4><ul>
+<li>跟随状态</li>
+<li>候选状态</li>
+<li>领导状态</li>
+</ul>
+<p>所有的节点都以跟随状态开始；如果跟随节点没有收到领导节点的信息，那么他们可以成为候选节点；然后候选节点向其他节点请求投票，其他节点将投票表决；如果候选节点从多数节点中获得选票，它将成为领导节点；这个过程称为 <strong>领导节点选举</strong>。</p>
+<p><img src="pic/raft-01.png"></p>
+<p>系统的所有变更都是通过领导节点进行；当前的变更是未提交的状态，因此不会更新节点的值；领导节点将每次的变更记录到节点日志中，并同步给跟随节点；领导节点开始等待跟随节点的反馈，直到大多数节点都写了该记录并反馈给领导节点；领导节点收到反馈后提交变更，并通知跟随节点；跟随节点收到领导节点的提交信息后，也进行提交；此时集群已就系统状态达成一致。这个过程称为 <strong>日志复制</strong>。</p>
+<blockquote>
+<p>① 接收客户端变更请求 –&gt; 记录日志 –&gt; 同步日志 –&gt; 等待反馈 –&gt;与随节点达成一致 –&gt; 提交变更并通知跟随节点 –&gt; 反馈客户端</p>
+<p>② 接收客户端变更请求 –&gt; 记录日志 –&gt; 同步日志 –&gt; 等待反馈 –&gt; 未与随节点达成一致 –&gt; 回滚变更并通知跟随节点 –&gt; 反馈客户端</p>
+</blockquote>
+<h4 id="领导节点选举" class="article-heading"><a href="#领导节点选举" class="headerlink" title="领导节点选举"></a>领导节点选举<a class="article-anchor" href="#领导节点选举" aria-hidden="true"></a></h4><p>在 Raft 协议中，有两个超时设置可控制选举过程：</p>
+<ul>
+<li><strong>选举超时</strong>：跟随节点成为候选节点之前要等待的时间，被随机分配在150毫秒至300毫秒之间。</li>
+<li><strong>心跳超时</strong></li>
+</ul>
+<h5 id="初次选举的情况" class="article-heading"><a href="#初次选举的情况" class="headerlink" title="初次选举的情况"></a>初次选举的情况<a class="article-anchor" href="#初次选举的情况" aria-hidden="true"></a></h5><p>选举过程如下：</p>
+<p><img src="pic/raft-02.png"></p>
+<p>① 选举超时后，跟随节点成为候选节点并开始新的<strong>选举任期</strong> ，为自己投票并将<strong>请求投票</strong>消息发送到其他节点。</p>
+<p>② 如果接收节点在这个选举任期中还没有投票，那么它将投票给候选节点，并且节点重置其选举超时时间。</p>
+<p>③ 一旦候选节点获得多数票，它就会成为领导节点。</p>
+<p>④ 领导节点开始向其关注者发送 <strong>追加记录</strong> 消息。这些消息以 <strong>心跳超时</strong> 指定的时间间隔发送。</p>
+<p>⑤ 跟随者响应每个<strong>追加记录</strong> 消息。</p>
+<p>⑥ 此选举任期将持续到追随者停止接收心跳并成为候选人为止。</p>
+<h5 id="领导节点故障后的情况" class="article-heading"><a href="#领导节点故障后的情况" class="headerlink" title="领导节点故障后的情况"></a>领导节点故障后的情况<a class="article-anchor" href="#领导节点故障后的情况" aria-hidden="true"></a></h5><p>让我们停止领导节点A，继续观察选举的过程。</p>
+<p>① 节点B现在是任期2的候选节点。</p>
+<p>② 候选节点需要获得多数节点的投票，才可以保证每个任期内只选出一位领导节点。</p>
+<p>③ 此时节点B获得自己和节点C的投票，成为新的领导节点。</p>
+<h5 id="拆分表决的情况" class="article-heading"><a href="#拆分表决的情况" class="headerlink" title="拆分表决的情况"></a>拆分表决的情况<a class="article-anchor" href="#拆分表决的情况" aria-hidden="true"></a></h5><p>如果两个节点同时成为候选节点，则可能发生拆分表决的情况。让我们一起来看一个例子：</p>
+<p><img src="pic/raft-03.png"></p>
+<ul>
+<li>两个节点都开始以相同的任期4进行选举</li>
+<li>每个都先到达一个跟随者节点。</li>
+<li>现在，每位候选人都有2票，并且在这个任期中将无法获得更多选票</li>
+<li>开启新一轮的选举</li>
+<li>节点B在第5届中获得了多数选票，因此成为领导节点。</li>
+</ul>
+<h4 id="日志复制" class="article-heading"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制<a class="article-anchor" href="#日志复制" aria-hidden="true"></a></h4><h5 id="网络正常的情况" class="article-heading"><a href="#网络正常的情况" class="headerlink" title="网络正常的情况"></a>网络正常的情况<a class="article-anchor" href="#网络正常的情况" aria-hidden="true"></a></h5><p>一旦我们开始选举领导节点，就需要将系统所有的变化复制到所有节点。通过使用与心跳相同的 <strong>追加记录</strong>消息来完成此操作。</p>
+<p>让我们逐步完成该过程：</p>
+<p><img src="pic/raft-04.png"></p>
+<ul>
+<li>首先，客户将请求 <code>set 5</code> 发送给领导节点。</li>
+<li>然后在下一次心跳时将变更记录发送给跟随节点。</li>
+<li>一旦大多数追随节点认可，领导节点便提交该记录。</li>
+<li>然后将响应发送给客户端。</li>
+<li>现在，让我们发送一条命令，将值增加 <strong>2</strong> <code>add 2</code>。</li>
+<li>我们的系统值现在更新为<code>7</code>。</li>
+</ul>
+<h5 id="网络分区的情况" class="article-heading"><a href="#网络分区的情况" class="headerlink" title="网络分区的情况"></a>网络分区的情况<a class="article-anchor" href="#网络分区的情况" aria-hidden="true"></a></h5><p>面对网络分区，Raft 也可以保持一致。</p>
+<p>构建不一致场景：</p>
+<p><img src="pic/raft-05.png"></p>
+<ul>
+<li>让我们添加一个分区以将 A＆B 与 C，D＆E 分开。</li>
+<li>由于我们的分区，我们现在有两个领导节点，他们使用不同的任期，分别是 <code>Term 1</code> 和 <code>Term 3</code>。</li>
+<li>让我们添加另一个客户端，并尝试更新两个领导节点。</li>
+<li>一个客户端将尝试将节点B的值设置为 <code>3</code>，节点B无法复制给多数的节点，因此其日志记录保持未提交的状态。</li>
+<li>另一个客户端将尝试将节点D的值设置为 <code>8</code>，因为它可以复制到大多数节点，因此将成功提交。</li>
+</ul>
+<p>修复网络分区：</p>
+<ul>
+<li>节点B将看到比自己高的选举任期编号<code>Term 3</code>，因此退出领导状态。</li>
+<li>节点A和B都将回滚其未提交的记录并匹配新领导节点的日志。</li>
+<li>现在，我们的日志在整个集群中恢复一致了。</li>
+</ul>
+<img src="pic/raft-06.png" style="zoom:50%;">
+
+<h2 id="更多的信息" class="article-heading"><a href="#更多的信息" class="headerlink" title="更多的信息"></a>更多的信息<a class="article-anchor" href="#更多的信息" aria-hidden="true"></a></h2><h3 id="Raft-论文" class="article-heading"><a href="#Raft-论文" class="headerlink" title="Raft 论文"></a><a target="_blank" rel="noopener" href="https://raft.github.io/raft.pdf">Raft 论文</a><a class="article-anchor" href="#Raft-论文" aria-hidden="true"></a></h3><h3 id="Raft-官网" class="article-heading"><a href="#Raft-官网" class="headerlink" title="Raft 官网"></a><a target="_blank" rel="noopener" href="http://raftconsensus.github.io/">Raft 官网</a><a class="article-anchor" href="#Raft-官网" aria-hidden="true"></a></h3></body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:11.313Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#English"><span class="toc-text">English</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#What-is-Distributed-Consensus"><span class="toc-text">What is Distributed Consensus?</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#an-example"><span class="toc-text">an example</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#how-it-works"><span class="toc-text">how it works</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-states"><span class="toc-text">3 states</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Leader-Election"><span class="toc-text">Leader Election</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Leader-Election-process"><span class="toc-text">Leader Election process</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Stop-Leader-Node"><span class="toc-text">Stop Leader Node</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Occur-a-split-vote"><span class="toc-text">Occur a split vote</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Log-Replication"><span class="toc-text">Log Replication</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Log-Replication-process"><span class="toc-text">Log Replication process</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#network-partitions"><span class="toc-text">network partitions</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#For-more-information"><span class="toc-text">For more information</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#The-Raft-Paper"><span class="toc-text">The Raft Paper</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Raft-Web-Site"><span class="toc-text">Raft Web Site</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%AD%E6%96%87"><span class="toc-text">中文</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%EF%BC%9F"><span class="toc-text">什么是分布式一致？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="toc-text">一个例子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-text">工作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E8%8A%82%E7%82%B9%E7%8A%B6%E6%80%81"><span class="toc-text">三种节点状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%86%E5%AF%BC%E8%8A%82%E7%82%B9%E9%80%89%E4%B8%BE"><span class="toc-text">领导节点选举</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%9D%E6%AC%A1%E9%80%89%E4%B8%BE%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-text">初次选举的情况</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%A2%86%E5%AF%BC%E8%8A%82%E7%82%B9%E6%95%85%E9%9A%9C%E5%90%8E%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-text">领导节点故障后的情况</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8B%86%E5%88%86%E8%A1%A8%E5%86%B3%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-text">拆分表决的情况</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E5%A4%8D%E5%88%B6"><span class="toc-text">日志复制</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E6%AD%A3%E5%B8%B8%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-text">网络正常的情况</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%88%86%E5%8C%BA%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-text">网络分区的情况</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E5%A4%9A%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-text">更多的信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Raft-%E8%AE%BA%E6%96%87"><span class="toc-text">Raft 论文</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Raft-%E5%AE%98%E7%BD%91"><span class="toc-text">Raft 官网</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../docs/" class="mobile-nav-link">Hexo</a><a href="../../news/" class="mobile-nav-link">News</a><a href="../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../database/" class="mobile-nav-link">Database</a><a href="../../linux/" class="mobile-nav-link">Linux</a><a href="../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../amy/" class="mobile-nav-link">AMY</a><a href="../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../js/lang_select.js"></script>
+
+
+<script src="../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

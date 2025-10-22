@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践5:管理网络 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/05-ConfiguringtheOracleNetworkEnvironment-%E7%AE%A1%E7%90%86%E7%BD%91%E7%BB%9C">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/05-ConfiguringtheOracleNetworkEnvironment-%E7%AE%A1%E7%90%86%E7%BD%91%E7%BB%9C" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 5: Configuring the Oracle Network Environment 2020.01.29 BoobooWei    实践5:管理网络&emsp;实践5:概览&emsp;实践5-1:配置Oracle网络以访问另一个数据库&emsp;&emsp;Overview&emsp;&emsp;Task&emsp;&emsp;Practice&amp;">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践5:管理网络">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/05-ConfiguringtheOracleNetworkEnvironment-%E7%AE%A1%E7%90%86%E7%BD%91%E7%BB%9C">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 5: Configuring the Oracle Network Environment 2020.01.29 BoobooWei    实践5:管理网络&emsp;实践5:概览&emsp;实践5-1:配置Oracle网络以访问另一个数据库&emsp;&emsp;Overview&emsp;&emsp;Task&emsp;&emsp;Practice&amp;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.750Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:54.162Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践5:管理网络</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/05-ConfiguringtheOracleNetworkEnvironment-管理网络.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p><strong>Practices for Lesson 5: Configuring the Oracle Network Environment</strong></p>
+<p>2020.01.29 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:0 updateOnSave:1 -->
+
+<p><a href="#%E5%AE%9E%E8%B7%B55%E7%AE%A1%E7%90%86%E7%BD%91%E7%BB%9C">实践5:管理网络</a><br> <a href="#%E5%AE%9E%E8%B7%B55%E6%A6%82%E8%A7%88">实践5:概览</a><br> <a href="#%E5%AE%9E%E8%B7%B55-1%E9%85%8D%E7%BD%AEoracle%E7%BD%91%E7%BB%9C%E4%BB%A5%E8%AE%BF%E9%97%AE%E5%8F%A6%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93">实践5-1:配置Oracle网络以访问另一个数据库</a><br>  <a href="#overview">Overview</a><br>  <a href="#task">Task</a><br>  <a href="#practice">Practice</a><br>  <a href="#knowledgepoint">KnowledgePoint</a><br> <a href="#%E5%AE%9E%E8%B7%B55-2%E5%88%9B%E5%BB%BA%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%9B%91%E5%90%AC">实践5-2:创建另一个监听</a><br>  <a href="#overview">Overview</a><br>  <a href="#task">Task</a><br>  <a href="#practice">Practice</a><br>  <a href="#knowledgepoint">KnowledgePoint</a><br>   <a href="#%E5%85%B3%E4%BA%8E%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7">关于网络工具</a><br>   <a href="#%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">网络配置文件</a><br> <a href="#%E5%AE%9E%E8%B7%B55-3%E9%85%8D%E7%BD%AEoracle%E7%BD%91%E7%BB%9C%E4%BB%A5%E8%AE%BF%E9%97%AEpdb%E6%95%B0%E6%8D%AE%E5%BA%93">实践5-3:配置Oracle网络以访问PDB数据库</a><br>  <a href="#overview">Overview</a><br>  <a href="#task">Task</a><br>  <a href="#practice">Practice</a></p>
+<!-- /MDTOC -->
+
+<h2 id="实践5-概览" class="article-heading"><a href="#实践5-概览" class="headerlink" title="实践5:概览"></a>实践5:概览<a class="article-anchor" href="#实践5-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 5: Overview</p>
+<p>In this practice, you configure connectivity between your machine and a database on one of your classmate’s machines. You also configure and test an additional listener.</p>
+<p><strong>Note:</strong> This practice is entirely for educational purposes and no future practices rely on successful completion of this practice.</p>
+<p>在此实践中，您将配置您的计算机与某个同学计算机上的数据库之间的连接。您还可以配置和测试一个额外的监听器。<br>注意:这个练习完全是为了教育目的，未来的练习不依赖于这个练习的成功完成。</p>
+<h2 id="实践5-1-配置Oracle网络以访问另一个数据库" class="article-heading"><a href="#实践5-1-配置Oracle网络以访问另一个数据库" class="headerlink" title="实践5-1:配置Oracle网络以访问另一个数据库"></a>实践5-1:配置Oracle网络以访问另一个数据库<a class="article-anchor" href="#实践5-1-配置Oracle网络以访问另一个数据库" aria-hidden="true"></a></h2><p>Practice 5-1: Configuring the Oracle Network to Access Another Database</p>
+<h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><p>Configure your network environment so that you can connect to a partner’s orcl database. Use local naming and create a new network service name called testorcl that maps to your partner’s orcl database. Test your network changes by attempting to connect to your partner’s database by using the testorcl service name.</p>
+<h3 id="Task" class="article-heading"><a href="#Task" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task" aria-hidden="true"></a></h3><ol>
+<li>Make a copy of your <strong>tnsnames.ora</strong> file. It is in your database <strong>$ORACLE_HOME/network/admin</strong> directory.</li>
+<li>Use Oracle Net Manager (<strong>netmgr</strong>) to create the testorcl net service name on your machine.</li>
+<li>Test your changes to the network configuration by using SQL*Plus. Enter <strong>system@testorcl</strong> and then enter <strong>oracle_4U</strong> when prompted for the password. Select the INSTANCE_NAME and HOST_NAME columns from the V$INSTANCE view to view information about the host.</li>
+</ol>
+<h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><p>配置网络环境，以便可以连接到合作伙伴的orcl数据库。使用本地命名并创建一个名为testorcl的新网络服务名称，该名称映射到您的合作伙伴的orcl数据库。通过使用testorcl服务名称尝试连接到合作伙伴的数据库来测试网络更改。</p>
+<ol>
+<li><p>复制文件<code>tnsnames.ora</code>，该文件所在目录为<code>$ORACLE_HOME/network/admin</code></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oracle01 ~]$ <span class="built_in">cd</span> <span class="variable">$ORACLE_HOME</span>/network/admin</span><br><span class="line">[oracle@oracle01 admin]$ <span class="built_in">pwd</span></span><br><span class="line">/u01/app/oracle/product/12.2.0/db_1/network/admin</span><br><span class="line">[oracle@oracle01 admin]$ ll</span><br><span class="line">total 16</span><br><span class="line">-rw-r-----. 1 oracle oinstall  343 Sep 22 17:02 listener.ora</span><br><span class="line">drwxr-xr-x. 2 oracle oinstall   64 Sep 22 14:58 samples</span><br><span class="line">-rw-r--r--. 1 oracle oinstall 1441 Aug 28  2015 shrept.lst</span><br><span class="line">-rw-r-----. 1 oracle oinstall  198 Sep 22 17:02 sqlnet.ora</span><br><span class="line">-rw-r-----. 1 oracle oinstall  430 Nov  3 19:42 tnsnames.ora</span><br><span class="line">[oracle@oracle01 admin]$ <span class="built_in">cp</span> tnsnames.ora tnsnames.old</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用Oracle 网络管理工具 <code>netmgr</code>创建 <code>testorcl</code> 网络服务。</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>窗口</th>
+<th>选择/值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>bash界面切换到oracle用户</td>
+<td><strong>$ netmgr</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Net Manager navigation pane</td>
+<td>Expand <strong>Local</strong>.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td></td>
+<td>Select <strong>Service Naming</strong>.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td></td>
+<td>Expand <strong>Service Naming</strong>.</td>
+</tr>
+<tr>
+<td>e.</td>
+<td></td>
+<td>Click the green plus sign to launch the net service name wizard.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Net Service Name Wizard: Welcome</td>
+<td>Enter Service Name: <strong>testorcl</strong> Click <strong>Next</strong>.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>Net Service Name Wizard:…Protocol</td>
+<td>Select <strong>TCP/IP (Internet Protocol).</strong> Click <strong>Next</strong>.</td>
+</tr>
+<tr>
+<td>h.</td>
+<td>Net Service Name Wizard:…Protocol Settings</td>
+<td>Enter Host Name: ** <strong>address&gt;</strong> Enter Port Number: <strong>1521</strong> Click <strong>Next</strong>.</td>
+</tr>
+<tr>
+<td>i.</td>
+<td>Net Service Name Wizard:…Service</td>
+<td>Enter Service: <strong>orcl</strong> Click <strong>Next</strong>.</td>
+</tr>
+<tr>
+<td>j.</td>
+<td>Net Service Name Wizard:…Test</td>
+<td>Click <strong>Test</strong>.</td>
+</tr>
+<tr>
+<td>k.</td>
+<td>Connection Test</td>
+<td>Connection Test was successful Click <strong>Close</strong>.</td>
+</tr>
+<tr>
+<td>l.</td>
+<td>Net Service Name Wizard:…Test</td>
+<td>Click <strong>Finish</strong>.</td>
+</tr>
+<tr>
+<td>m.</td>
+<td>Oracle Net Manager</td>
+<td>Click <strong>File</strong> &gt; <strong>Save Network Configuration</strong> Click <strong>File</strong> &gt; <strong>Exit</strong></td>
+</tr>
+</tbody></table>
+<p><img src="pic/0501.png"></p>
+<p><img src="pic/0502.png" alt="0502"></p>
+<p><img src="pic/0503.png" alt="0503"></p>
+<p><img src="pic/0504.png" alt="0504"></p>
+<p><img src="pic/0507.png" alt="0507"></p>
+<p><img src="pic/0506.png" alt="0506"></p>
+<p><img src="pic/0508.png" alt="0508"></p>
+<p><img src="pic/0509.png" alt="0509"></p>
+</li>
+<li><p>通过 SQL*Plus 测试网络配置。输入 <strong>system@testorcl</strong> 密码为 <strong>oracle_4U</strong> 。从 V$INSTANCE 视图中查询实例名称和主机名。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">sqlplus <span class="keyword">system</span><span class="variable">@oracle</span><span class="variable">@testorcl</span></span><br><span class="line"><span class="operator">&gt;</span> <span class="keyword">select</span> instance_name,host_name <span class="keyword">from</span> v$instance;</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3><p>客户机为了和服务器连接，必须先和服务器上的监听进程联络。ORACLE通过<code>tnsnames.ora</code>文件中的连接描述符来说明连接信息。一般<code>tnsnames.ora</code> 是建立在<strong>客户机</strong>上的。如果是客户机/服务器结构，整个网络上只有一台机器安装了ORACLE数据库服务器，那么只需在每个要访问ORACLE服务器的客户机上定义该文件，在服务器上无需定义。但是，如果网络上有多台机器均安装了ORACLE数据库服务器，并且服务器之间有数据共享的要求，那么在每台服务器上都必须定义该文件。</p>
+<h2 id="实践5-2-创建另一个监听" class="article-heading"><a href="#实践5-2-创建另一个监听" class="headerlink" title="实践5-2:创建另一个监听"></a>实践5-2:创建另一个监听<a class="article-anchor" href="#实践5-2-创建另一个监听" aria-hidden="true"></a></h2><p>Practice 5-2: Creating an Alternative Listener</p>
+<h3 id="Overview-1" class="article-heading"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-1" aria-hidden="true"></a></h3><p>In this practice, you create a second listener named LISTENER2 by using Oracle Net Manager.</p>
+<h3 id="Task-1" class="article-heading"><a href="#Task-1" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-1" aria-hidden="true"></a></h3><ol>
+<li>Create a new listener called <strong>LISTENER2</strong>. Use port <strong>1561</strong> for this listener. Use Oracle Net Manager (<strong>netmgr</strong>) to create the new listener.</li>
+<li>Create a Service Name for both listeners by using Oracle Net Manager.</li>
+<li>Start the <strong>LISTENER2</strong> listener by using the listener control utility.</li>
+<li>Configure the database to register with both listeners. Alter the <strong>LOCAL_LISTENER</strong><br>initialization parameter.</li>
+<li>Check the status of the new listener and test the new listener.</li>
+<li>You can now stop the new <strong>LISTENER2</strong> listener because you do not need it for the remainder of the course.</li>
+<li>Reset the <strong>LOCAL_LISTENER</strong> initialization parameter to the default value.</li>
+</ol>
+<h3 id="Practice-1" class="article-heading"><a href="#Practice-1" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-1" aria-hidden="true"></a></h3><ol>
+<li>使用Oracle网络管理工具 <code>netmgr</code> 创建一个新监听 <code>LISTENER2</code> ，监听端口为 <code>1561</code>。</li>
+</ol>
+<p><img src="pic/0510.png" alt="0510"></p>
+<p><img src="pic/0511.png" alt="0511"></p>
+<p><img src="pic/0512.png" alt="0512"></p>
+<p><img src="pic/0513.png" alt="0513"></p>
+<ol start="2">
+<li>使用Oracle网络管理工具 <code>netmgr</code> 创建一个新服务名 <code>LISTENER2</code>。</li>
+</ol>
+<p><img src="pic/0516.png" alt="0516"></p>
+<ol start="3">
+<li>启动新监听 <code>LISTENER2</code>。</li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">lsnrctl start LISTENER2</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>通过修改参数 <code>LOCAL_LISTENER</code> 配置数据库的注册新监听。</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">parameter</span> local_listener;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">SYSTEM</span> <span class="keyword">SET</span> LOCAL_LISTENER<span class="operator">=</span>LISTENER2,LISTENER_BOOBOO <span class="keyword">SCOPE</span><span class="operator">=</span><span class="keyword">BOTH</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">System</span> altered.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">show</span> <span class="keyword">parameter</span> local_listener;</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">local_listener			     string	 LISTENER2, LISTENER_BOOBOO</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span>exit</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="5">
+<li>检查新监听 <code>LISTENER2</code> 的状态，测试新监听。</li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">lsnrctl status LISTENER2</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="6">
+<li>停止新监听 <code>LISTENER2</code>。</li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">lsnrctl stop LISTENER2</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="7">
+<li>重制参数 <code>LOCAL_LISTENER</code> 到默认值。</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">system</span> reset local_listener <span class="keyword">scope</span><span class="operator">=</span>spfile;</span><br><span class="line">shutdown immediate</span><br><span class="line">startup</span><br><span class="line"><span class="keyword">show</span> paramter local_listener;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># 将参数改为默认值</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">alter</span> <span class="keyword">system</span> reset local_listener <span class="keyword">scope</span><span class="operator">=</span>spfile;</span><br><span class="line"></span><br><span class="line"><span class="keyword">System</span> altered.</span><br><span class="line"></span><br><span class="line"># 关闭数据库实例</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span>shutdown immediate;</span><br><span class="line">Database closed.</span><br><span class="line">Database dismounted.</span><br><span class="line">ORACLE instance shut down.</span><br><span class="line"></span><br><span class="line"># 启动数据库实例</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span>startup</span><br><span class="line">ORACLE instance started.</span><br><span class="line"></span><br><span class="line">Total <span class="keyword">System</span> <span class="keyword">Global</span> Area  <span class="number">855638016</span> bytes</span><br><span class="line">Fixed Size		    <span class="number">8798504</span> bytes</span><br><span class="line">Variable Size		  <span class="number">327159512</span> bytes</span><br><span class="line">Database Buffers	  <span class="number">515899392</span> bytes</span><br><span class="line">Redo Buffers		    <span class="number">3780608</span> bytes</span><br><span class="line">Database mounted.</span><br><span class="line">Database opened.</span><br><span class="line"></span><br><span class="line"># 查看参数</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">show</span> <span class="keyword">parameter</span> local_listener;</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">local_listener			     string</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span>exit</span><br><span class="line">Disconnected <span class="keyword">from</span> Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 查看新增监听listener2，看到无服务</span><br><span class="line">[oracle<span class="variable">@oracle01</span> <span class="operator">~</span>]$ lsnrctl status listener2</span><br><span class="line"></span><br><span class="line">LSNRCTL <span class="keyword">for</span> Linux: Version <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> Production <span class="keyword">on</span> <span class="number">31</span><span class="operator">-</span>JAN<span class="number">-2020</span> <span class="number">00</span>:<span class="number">32</span>:<span class="number">57</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1991</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line">Connecting <span class="keyword">to</span> (DESCRIPTION<span class="operator">=</span>(ADDRESS<span class="operator">=</span>(PROTOCOL<span class="operator">=</span>TCP)(HOST<span class="operator">=</span>oracle01)(PORT<span class="operator">=</span><span class="number">1561</span>)))</span><br><span class="line">STATUS <span class="keyword">of</span> the LISTENER</span><br><span class="line"><span class="comment">------------------------</span></span><br><span class="line">Alias                     LISTENER2</span><br><span class="line">Version                   TNSLSNR <span class="keyword">for</span> Linux: Version <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> Production</span><br><span class="line"><span class="keyword">Start</span> <span class="type">Date</span>                <span class="number">30</span><span class="operator">-</span>JAN<span class="number">-2020</span> <span class="number">23</span>:<span class="number">27</span>:<span class="number">27</span></span><br><span class="line">Uptime                    <span class="number">0</span> days <span class="number">1</span> hr. <span class="number">5</span> min. <span class="number">29</span> sec</span><br><span class="line">Trace Level               off</span><br><span class="line">Security                  <span class="keyword">ON</span>: <span class="keyword">Local</span> OS Authentication</span><br><span class="line">SNMP                      OFF</span><br><span class="line">Listener <span class="keyword">Parameter</span> File   <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>product<span class="operator">/</span><span class="number">12.2</span><span class="number">.0</span><span class="operator">/</span>db_1<span class="operator">/</span>network<span class="operator">/</span>admin<span class="operator">/</span>listener.ora</span><br><span class="line">Listener Log File         <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>diag<span class="operator">/</span>tnslsnr<span class="operator">/</span>oracle01<span class="operator">/</span>listener2<span class="operator">/</span>alert<span class="operator">/</span>log.xml</span><br><span class="line">Listening Endpoints Summary...</span><br><span class="line">  (DESCRIPTION<span class="operator">=</span>(ADDRESS<span class="operator">=</span>(PROTOCOL<span class="operator">=</span>tcp)(HOST<span class="operator">=</span>ol7<span class="number">-122.</span>localdomain)(PORT<span class="operator">=</span><span class="number">1561</span>)))</span><br><span class="line">  (DESCRIPTION<span class="operator">=</span>(ADDRESS<span class="operator">=</span>(PROTOCOL<span class="operator">=</span>ipc)(KEY<span class="operator">=</span>EXTPROC1561)))</span><br><span class="line">The listener supports <span class="keyword">no</span> services</span><br><span class="line">The command completed successfully</span><br><span class="line"></span><br><span class="line"># 将新监听的服务名注册到数据库实例</span><br><span class="line">[oracle<span class="variable">@oracle01</span> <span class="operator">~</span>]$ sqlplus <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Fri Jan <span class="number">31</span> <span class="number">00</span>:<span class="number">33</span>:<span class="number">01</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span>:</span><br><span class="line">Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">ALTER</span> <span class="keyword">SYSTEM</span> <span class="keyword">SET</span> LOCAL_LISTENER<span class="operator">=</span>LISTENER2,LISTENER_BOOBOO <span class="keyword">SCOPE</span><span class="operator">=</span><span class="keyword">BOTH</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">System</span> altered.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">show</span> <span class="keyword">parameter</span> local_listener;</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">local_listener			     string	 LISTENER2, LISTENER_BOOBOO</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span>exit</span><br><span class="line">Disconnected <span class="keyword">from</span> Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"></span><br><span class="line"># 再次查看新监听服务时，正常</span><br><span class="line">[oracle<span class="variable">@oracle01</span> <span class="operator">~</span>]$ lsnrctl status listener2</span><br><span class="line"></span><br><span class="line">LSNRCTL <span class="keyword">for</span> Linux: Version <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> Production <span class="keyword">on</span> <span class="number">31</span><span class="operator">-</span>JAN<span class="number">-2020</span> <span class="number">00</span>:<span class="number">33</span>:<span class="number">30</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1991</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line">Connecting <span class="keyword">to</span> (DESCRIPTION<span class="operator">=</span>(ADDRESS<span class="operator">=</span>(PROTOCOL<span class="operator">=</span>TCP)(HOST<span class="operator">=</span>oracle01)(PORT<span class="operator">=</span><span class="number">1561</span>)))</span><br><span class="line">STATUS <span class="keyword">of</span> the LISTENER</span><br><span class="line"><span class="comment">------------------------</span></span><br><span class="line">Alias                     LISTENER2</span><br><span class="line">Version                   TNSLSNR <span class="keyword">for</span> Linux: Version <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> Production</span><br><span class="line"><span class="keyword">Start</span> <span class="type">Date</span>                <span class="number">30</span><span class="operator">-</span>JAN<span class="number">-2020</span> <span class="number">23</span>:<span class="number">27</span>:<span class="number">27</span></span><br><span class="line">Uptime                    <span class="number">0</span> days <span class="number">1</span> hr. <span class="number">6</span> min. <span class="number">2</span> sec</span><br><span class="line">Trace Level               off</span><br><span class="line">Security                  <span class="keyword">ON</span>: <span class="keyword">Local</span> OS Authentication</span><br><span class="line">SNMP                      OFF</span><br><span class="line">Listener <span class="keyword">Parameter</span> File   <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>product<span class="operator">/</span><span class="number">12.2</span><span class="number">.0</span><span class="operator">/</span>db_1<span class="operator">/</span>network<span class="operator">/</span>admin<span class="operator">/</span>listener.ora</span><br><span class="line">Listener Log File         <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>diag<span class="operator">/</span>tnslsnr<span class="operator">/</span>oracle01<span class="operator">/</span>listener2<span class="operator">/</span>alert<span class="operator">/</span>log.xml</span><br><span class="line">Listening Endpoints Summary...</span><br><span class="line">  (DESCRIPTION<span class="operator">=</span>(ADDRESS<span class="operator">=</span>(PROTOCOL<span class="operator">=</span>tcp)(HOST<span class="operator">=</span>ol7<span class="number">-122.</span>localdomain)(PORT<span class="operator">=</span><span class="number">1561</span>)))</span><br><span class="line">  (DESCRIPTION<span class="operator">=</span>(ADDRESS<span class="operator">=</span>(PROTOCOL<span class="operator">=</span>ipc)(KEY<span class="operator">=</span>EXTPROC1561)))</span><br><span class="line">  (DESCRIPTION<span class="operator">=</span>(ADDRESS<span class="operator">=</span>(PROTOCOL<span class="operator">=</span>tcps)(HOST<span class="operator">=</span>ol7<span class="number">-122.</span>localdomain)(PORT<span class="operator">=</span><span class="number">5500</span>))(Security<span class="operator">=</span>(my_wallet_directory<span class="operator">=</span><span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>admin<span class="operator">/</span>booboo<span class="operator">/</span>xdb_wallet))(Presentation<span class="operator">=</span>HTTP)(Session<span class="operator">=</span>RAW))</span><br><span class="line">  (DESCRIPTION<span class="operator">=</span>(ADDRESS<span class="operator">=</span>(PROTOCOL<span class="operator">=</span>tcp)(HOST<span class="operator">=</span>ol7<span class="number">-122.</span>localdomain)(PORT<span class="operator">=</span><span class="number">5505</span>))(Presentation<span class="operator">=</span>HTTP)(Session<span class="operator">=</span>RAW))</span><br><span class="line">Services Summary...</span><br><span class="line">Service "96710507bcb024c7e0553ce49b3eaf97" has <span class="number">1</span> instance(s).</span><br><span class="line">  Instance "booboo", status READY, has <span class="number">1</span> handler(s) <span class="keyword">for</span> this service...</span><br><span class="line">Service "96710c6c558f2859e0553ce49b3eaf97" has <span class="number">1</span> instance(s).</span><br><span class="line">  Instance "booboo", status READY, has <span class="number">1</span> handler(s) <span class="keyword">for</span> this service...</span><br><span class="line">Service "96711442bf1f28abe0553ce49b3eaf97" has <span class="number">1</span> instance(s).</span><br><span class="line">  Instance "booboo", status READY, has <span class="number">1</span> handler(s) <span class="keyword">for</span> this service...</span><br><span class="line">Service "96711b8e377f28d4e0553ce49b3eaf97" has <span class="number">1</span> instance(s).</span><br><span class="line">  Instance "booboo", status READY, has <span class="number">1</span> handler(s) <span class="keyword">for</span> this service...</span><br><span class="line">Service "booboo" has <span class="number">1</span> instance(s).</span><br><span class="line">  Instance "booboo", status READY, has <span class="number">1</span> handler(s) <span class="keyword">for</span> this service...</span><br><span class="line">Service "boobooXDB" has <span class="number">1</span> instance(s).</span><br><span class="line">  Instance "booboo", status READY, has <span class="number">1</span> handler(s) <span class="keyword">for</span> this service...</span><br><span class="line">Service "booboopdb1" has <span class="number">1</span> instance(s).</span><br><span class="line">  Instance "booboo", status READY, has <span class="number">1</span> handler(s) <span class="keyword">for</span> this service...</span><br><span class="line">Service "booboopdb2" has <span class="number">1</span> instance(s).</span><br><span class="line">  Instance "booboo", status READY, has <span class="number">1</span> handler(s) <span class="keyword">for</span> this service...</span><br><span class="line">Service "booboopdb3" has <span class="number">1</span> instance(s).</span><br><span class="line">  Instance "booboo", status READY, has <span class="number">1</span> handler(s) <span class="keyword">for</span> this service...</span><br><span class="line">Service "booboopdb4" has <span class="number">1</span> instance(s).</span><br><span class="line">  Instance "booboo", status READY, has <span class="number">1</span> handler(s) <span class="keyword">for</span> this service...</span><br><span class="line">The command completed successfully</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="KnowledgePoint-1" class="article-heading"><a href="#KnowledgePoint-1" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-1" aria-hidden="true"></a></h3><p>Oracle Net Listener是在数据库服务器上运行的独立进程。它接收传入的客户端连接请求，并管理这些请求到数据库服务器的流量。了解如何配置侦听器以接受客户端连接。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/configuring-and-administering-oracle-net-listener.html#GUID-A3263EB4-C3F2-4529-ABC2-ADE749114D33">Oracle Net Listener概述</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/configuring-and-administering-oracle-net-listener.html#GUID-A7F49477-1F13-49E7-9B23-9A50A4627862">配置动态服务注册</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/configuring-and-administering-oracle-net-listener.html#GUID-E3D471CD-0528-42CF-8F44-43AD3A18EDA5">在安装过程中配置Oracle Net Listener</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/configuring-and-administering-oracle-net-listener.html#GUID-AFD99154-6F3B-492E-A90B-F65E25356880">定制Oracle Net Listener配置</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/configuring-and-administering-oracle-net-listener.html#GUID-F23E3733-0A34-4488-AE23-23A9FE65BC85">管理侦听器</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/configuring-and-administering-oracle-net-listener.html#GUID-63F36312-FDA8-4B20-B8E1-4949AD55707A">了解侦听器重定向</a></li>
+</ul>
+<h4 id="关于网络工具" class="article-heading"><a href="#关于网络工具" class="headerlink" title="关于网络工具"></a>关于网络工具<a class="article-anchor" href="#关于网络工具" aria-hidden="true"></a></h4><p><strong>使用用户界面工具</strong></p>
+<p>Oracle Net Services提供了可帮助您执行配置和管理任务的工具。本节包含以下主题：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/managing-oracle-net-services.html#GUID-697E4B64-854C-49BB-B287-C2B4C57F987F">使用Oracle Enterprise Manager Cloud Control配置Oracle Net Services</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/managing-oracle-net-services.html#GUID-2294BF67-B05F-44A2-9584-6CF0855A0F56">使用Oracle Net Manager配置Oracle Net Services</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/managing-oracle-net-services.html#GUID-B3CC9C4B-BE5E-45C0-85F7-8DF36ABF14C1">决定何时使用Oracle Enterprise Manager Cloud Control和Oracle Net Manager</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/managing-oracle-net-services.html#GUID-D8861C13-A525-4A57-97FD-BD8F2DC5A662">使用Oracle Net Configuration Assistant配置网络组件</a></li>
+</ul>
+<h4 id="网络配置文件" class="article-heading"><a href="#网络配置文件" class="headerlink" title="网络配置文件"></a>网络配置文件<a class="article-anchor" href="#网络配置文件" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th align="left">配置文件</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>tnsnames.ora</code></td>
+<td align="left">该文件主要位于客户端上，包含映射到<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/glossary.html#GUID-1662D2D4-17E4-4C1B-8150-0A9AC1588932"><strong>连接描述符</strong></a> s的<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/glossary.html#GUID-D52448C2-3D8F-47E6-9AF7-66AEEEB3DB77"><strong>网络服务名称</strong></a>。该文件用于<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/glossary.html#GUID-9CCDDCF7-CC56-47B7-A472-36CE6C902B69"><strong>本地命名</strong></a>方法。</td>
+</tr>
+<tr>
+<td align="left"><code>sqlnet.ora</code></td>
+<td align="left">位于客户端和数据库服务器计算机上，此文件可能包括以下内容：客户端域追加到不合格的服务名称或网络服务名称客户端解析名称时应使用的命名方法顺序记录和跟踪功能以使用连接路线外部命名参数Oracle安全性参数数据库访问控制参数</td>
+</tr>
+<tr>
+<td align="left"><code>listener.ora</code></td>
+<td align="left">位于数据库服务器上的用于<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/netag/glossary.html#GUID-4F56FD1C-0AE2-448C-8F90-1A4A92AAC04A"><strong>侦听器的</strong></a>此配置文件可能包括以下内容：协议地址，它正在接受连接请求正在监听的数据库和非数据库服务侦听器使用的控制参数</td>
+</tr>
+<tr>
+<td align="left"><code>cman.ora</code></td>
+<td align="left">该配置文件位于运行Oracle Connection Manager的计算机上，包括以下组件：监听端点访问控制规则列表参数清单每个Oracle Connection Manager配置都封装在单个名称-值（NV）字符串中，该字符串由前面的组件组成。</td>
+</tr>
+</tbody></table>
+<h2 id="实践5-3-配置Oracle网络以访问PDB数据库" class="article-heading"><a href="#实践5-3-配置Oracle网络以访问PDB数据库" class="headerlink" title="实践5-3:配置Oracle网络以访问PDB数据库"></a>实践5-3:配置Oracle网络以访问PDB数据库<a class="article-anchor" href="#实践5-3-配置Oracle网络以访问PDB数据库" aria-hidden="true"></a></h2><h3 id="Overview-2" class="article-heading"><a href="#Overview-2" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-2" aria-hidden="true"></a></h3><p>通过本实践掌握新建服务名用于访问pdb数据库的配置方法。</p>
+<h3 id="Task-2" class="article-heading"><a href="#Task-2" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-2" aria-hidden="true"></a></h3><ol>
+<li>Make a copy of your <strong>tnsnames.ora</strong> file. It is in your database <strong>$ORACLE_HOME/network/admin</strong> directory.</li>
+<li>Use Oracle Net Manager (<strong>netmgr</strong>) to create the booboopdb1 net service name on your machine.</li>
+<li>Test your changes to the network configuration by using SQL*Plus. Enter <strong>scott/tiger@booboopdb</strong>.</li>
+</ol>
+<h3 id="Practice-2" class="article-heading"><a href="#Practice-2" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-2" aria-hidden="true"></a></h3><p>配置网络环境，以便可以连接到PDB数据库 <code>booboopdb1</code>。使用本地命名并创建一个名为booboopdb1的新网络服务名称，该名称映射到PDB的booboopdb1数据库。通过使用booboopdb1服务名称连接pdb数据库。</p>
+<ol>
+<li>使用Oracle 网络管理工具 <code>netmgr</code>创建 <code>booboopdb1</code> 网络服务。</li>
+</ol>
+<p><img src="pic/0517.png" alt="0517"></p>
+<ol start="2">
+<li>通过使用<code>booboopdb1</code> 服务名称连接PDB数据库。</li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sqlplus scott/tiger@booboopdb1</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行结果：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@oracle01</span> admin]$ sqlplus scott<span class="operator">/</span>tiger<span class="variable">@booboopdb1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Fri Jan <span class="number">31</span> <span class="number">00</span>:<span class="number">44</span>:<span class="number">55</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line"><span class="keyword">Last</span> Successful login <span class="type">time</span>: Thu Jan <span class="number">30</span> <span class="number">2020</span> <span class="number">23</span>:<span class="number">46</span>:<span class="number">00</span> <span class="operator">+</span><span class="number">08</span>:<span class="number">00</span></span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span>:</span><br><span class="line">Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"></span><br><span class="line">SCOTT<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">select</span> tname <span class="keyword">from</span> tab;</span><br><span class="line"></span><br><span class="line">TNAME</span><br><span class="line"><span class="comment">----------------------------------------------------------------------------------------------------</span></span><br><span class="line">BONUS</span><br><span class="line">DEPT</span><br><span class="line">EMP</span><br><span class="line">EMPTEST</span><br><span class="line">SALGRADE</span><br><span class="line">T02</span><br><span class="line"></span><br><span class="line"><span class="number">6</span> <span class="keyword">rows</span> selected.</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:54.162Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B55-%E6%A6%82%E8%A7%88"><span class="toc-text">实践5:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B55-1-%E9%85%8D%E7%BD%AEOracle%E7%BD%91%E7%BB%9C%E4%BB%A5%E8%AE%BF%E9%97%AE%E5%8F%A6%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">实践5-1:配置Oracle网络以访问另一个数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B55-2-%E5%88%9B%E5%BB%BA%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%9B%91%E5%90%AC"><span class="toc-text">实践5-2:创建另一个监听</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-1"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-1"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-1"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-1"><span class="toc-text">KnowledgePoint</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7"><span class="toc-text">关于网络工具</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">网络配置文件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B55-3-%E9%85%8D%E7%BD%AEOracle%E7%BD%91%E7%BB%9C%E4%BB%A5%E8%AE%BF%E9%97%AEPDB%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">实践5-3:配置Oracle网络以访问PDB数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-2"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-2"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-2"><span class="toc-text">Practice</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

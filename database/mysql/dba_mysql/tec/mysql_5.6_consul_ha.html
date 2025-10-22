@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>MySQL consul 高可用 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.6_consul_ha">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.6_consul_ha" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Consul是用于分布式系统中服务发现和配置，如果mysql主从架构中，主服务器器当机，Consul就不会再将请求发送到这台机器，这里用作MySQL的自动故障转移工具。  整体架构图   主机名 ip地址 监听端口 其他    mastera 172.25.0.11 3306 mysql服务器   masterb 172.25.0.12 3306 mysql服务器   foundation0 1">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MySQL consul 高可用">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.6_consul_ha">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Consul是用于分布式系统中服务发现和配置，如果mysql主从架构中，主服务器器当机，Consul就不会再将请求发送到这台机器，这里用作MySQL的自动故障转移工具。  整体架构图   主机名 ip地址 监听端口 其他    mastera 172.25.0.11 3306 mysql服务器   masterb 172.25.0.12 3306 mysql服务器   foundation0 1">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.802Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:13.891Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">MySQL consul 高可用</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/dba_mysql/tec/mysql_5.6_consul_ha.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>Consul是用于分布式系统中服务发现和配置，如果mysql主从架构中，主服务器器当机，Consul就不会再将请求发送到这台机器，这里用作MySQL的自动故障转移工具。</p>
+</blockquote>
+<h1 id="整体架构图" class="article-heading"><a href="#整体架构图" class="headerlink" title="整体架构图"></a>整体架构图<a class="article-anchor" href="#整体架构图" aria-hidden="true"></a></h1><table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>ip地址</th>
+<th>监听端口</th>
+<th>其他</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mastera</td>
+<td>172.25.0.11</td>
+<td>3306</td>
+<td>mysql服务器</td>
+</tr>
+<tr>
+<td>masterb</td>
+<td>172.25.0.12</td>
+<td>3306</td>
+<td>mysql服务器</td>
+</tr>
+<tr>
+<td>foundation0</td>
+<td>172.25.254.250</td>
+<td>8600</td>
+<td>consul服务器</td>
+</tr>
+</tbody></table>
+<p><img src="pic/2.png"></p>
+<h1 id="MySQL-AB-复制" class="article-heading"><a href="#MySQL-AB-复制" class="headerlink" title="MySQL AB 复制"></a>MySQL AB 复制<a class="article-anchor" href="#MySQL-AB-复制" aria-hidden="true"></a></h1><h2 id="单主从步骤" class="article-heading"><a href="#单主从步骤" class="headerlink" title="单主从步骤"></a>单主从步骤<a class="article-anchor" href="#单主从步骤" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">主服务器</span></span><br><span class="line">1）修改配置文件重启服务</span><br><span class="line">   server-id=1</span><br><span class="line">log-bin=/var/lib/mysql-log/mastera</span><br><span class="line">log-slave-update</span><br><span class="line">2）授权从机</span><br><span class="line">grant replication slave to slave@172.25.0.12 identified by 'uplooking';</span><br><span class="line">flush privileges;</span><br><span class="line">3）初始化数据一致</span><br><span class="line">mysqldump -u -p -A --master-data=2 &gt; /data/mysql.all.sql</span><br><span class="line">传输给从机器</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从服务</span></span><br><span class="line">1）install</span><br><span class="line">2）修改配置文件</span><br><span class="line">server-id=2</span><br><span class="line">log-bin=/var/lib/mysql-log/masterb</span><br><span class="line">log-slave-update</span><br><span class="line">3）初始化数据一致	导入全备数据</span><br><span class="line">4）&gt; change master master_host='172.25.0.11'</span><br><span class="line">		master_user='slave'</span><br><span class="line">		master_password='uplooking'</span><br><span class="line">		master_log_file=''</span><br><span class="line">		master_log_pos=''</span><br><span class="line"><span class="meta prompt_">5)&gt; </span><span class="language-bash">start slave;</span></span><br><span class="line"><span class="meta prompt_">6)&gt; </span><span class="language-bash">show slave status\G;</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="详细配置" class="article-heading"><a href="#详细配置" class="headerlink" title="详细配置"></a>详细配置<a class="article-anchor" href="#详细配置" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 主服务器</span></span></span><br><span class="line"></span><br><span class="line">[root@mastera0 mysql]# vim /etc/my.cnf</span><br><span class="line">[root@mastera0 mysql]# grep -v '^#' /etc/my.cnf|grep -v '^$'</span><br><span class="line">[mysqld]</span><br><span class="line">datadir=/var/lib/mysql</span><br><span class="line">socket=/var/lib/mysql/mysql.sock</span><br><span class="line">symbolic-links=0</span><br><span class="line">server-id=1</span><br><span class="line">log-bin=/var/lib/mysql-log/mastera</span><br><span class="line">log-slave-update</span><br><span class="line">[mysqld_safe]</span><br><span class="line">log-error=/var/log/mariadb/mariadb.log</span><br><span class="line">pid-file=/var/run/mariadb/mariadb.pid</span><br><span class="line">!includedir /etc/my.cnf.d</span><br><span class="line"></span><br><span class="line">[root@mastera0 mysql]# systemctl restart mariadb</span><br><span class="line">[root@mastera0 mysql]# mysql -uroot -puplooking</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 2</span><br><span class="line">Server version: 5.5.44-MariaDB-log MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; grant replication slave on *.* to slave@'172.25.0.12' identified by 'uplooking';</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; \q</span><br><span class="line">Bye</span><br><span class="line">[root@mastera0 mysql]# mysqldump -uroot -puplooking -A --single-transaction --master-data=2 --flush-logs &gt; /tmp/mysql.91.sql</span><br><span class="line">[root@mastera0 mysql]# scp /tmp/mysql.91.sql root@172.25.0.12:/tmp</span><br><span class="line">The authenticity of host \'172.25.0.12 (172.25.0.12)\' can\'t be established.</span><br><span class="line">ECDSA key fingerprint is 91:2b:bd:df:0e:17:da:a0:f6:01:ff:5b:09:50:e8:ad.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br><span class="line">Warning: Permanently added '172.25.0.12' (ECDSA) to the list of known hosts.</span><br><span class="line">root@172.25.0.12\'s password:</span><br><span class="line">mysql.91.sql                                                      100%  505KB 504.7KB/s   00:00</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 从服务器</span></span></span><br><span class="line">[root@masterb0 ~]# yum install -y mariadb-server</span><br><span class="line">[root@masterb0 ~]# vi /etc/my.cnf</span><br><span class="line">	server-id=2</span><br><span class="line">	log-bin=/var/lib/mysql-log/masterb</span><br><span class="line">	log-slave-update</span><br><span class="line">[root@masterb0 ~]# systemctl start mariadb</span><br><span class="line">[root@masterb0 ~]# mysql &lt; /tmp/mysql.91.sql</span><br><span class="line">[root@masterb0 ~]# mysql</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 3</span><br><span class="line">Server version: 5.5.44-MariaDB MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; \q</span><br><span class="line">Bye</span><br><span class="line">[root@masterb0 ~]# mysql</span><br><span class="line">ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)</span><br><span class="line">[root@masterb0 ~]# mysql -uroot -puplooking</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 5</span><br><span class="line">Server version: 5.5.44-MariaDB MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; change master to master_host='172.25.0.11',master_user='slave',master_password='uplooking',master_log_file='mastera.000028',MASTER_LOG_POS=245;</span><br><span class="line">Query OK, 0 rows affected (0.21 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; start slave;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; show slave status\G;</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 172.25.0.11</span><br><span class="line">                  Master_User: slave</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: mastera.000028</span><br><span class="line">          Read_Master_Log_Pos: 245</span><br><span class="line">               Relay_Log_File: mariadb-relay-bin.000002</span><br><span class="line">                Relay_Log_Pos: 527</span><br><span class="line">        Relay_Master_Log_File: mastera.000028</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB:</span><br><span class="line">          Replicate_Ignore_DB:</span><br><span class="line">           Replicate_Do_Table:</span><br><span class="line">       Replicate_Ignore_Table:</span><br><span class="line">      Replicate_Wild_Do_Table:</span><br><span class="line">  Replicate_Wild_Ignore_Table:</span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error:</span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 245</span><br><span class="line">              Relay_Log_Space: 823</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File:</span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File:</span><br><span class="line">           Master_SSL_CA_Path:</span><br><span class="line">              Master_SSL_Cert:</span><br><span class="line">            Master_SSL_Cipher:</span><br><span class="line">               Master_SSL_Key:</span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error:</span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error:</span><br><span class="line">  Replicate_Ignore_Server_Ids:</span><br><span class="line">             Master_Server_Id: 1</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">ERROR: No query specified</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt;</span><br><span class="line">MariaDB [(none)]&gt; select * from db1.t1;</span><br><span class="line">+-----+</span><br><span class="line">| id  |</span><br><span class="line">+-----+</span><br><span class="line">|   3 |</span><br><span class="line">|   4 |</span><br><span class="line">|   5 |</span><br><span class="line">|   6 |</span><br><span class="line">|   7 |</span><br><span class="line">|   8 |</span><br><span class="line">|   9 |</span><br><span class="line">|  10 |</span><br><span class="line">|  11 |</span><br><span class="line">|  12 |</span><br><span class="line">|  13 |</span><br><span class="line">|  14 |</span><br><span class="line">| 100 |</span><br><span class="line">| 101 |</span><br><span class="line">| 102 |</span><br><span class="line">| 103 |</span><br><span class="line">| 777 |</span><br><span class="line">+-----+</span><br><span class="line">17 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; \q</span><br><span class="line">Bye</span><br></pre></td></tr></tbody></table></figure>
+
+<p>至此单主从配置完毕。</p>
+<h1 id="consul-配置高可用" class="article-heading"><a href="#consul-配置高可用" class="headerlink" title="consul 配置高可用"></a>consul 配置高可用<a class="article-anchor" href="#consul-配置高可用" aria-hidden="true"></a></h1><p>虽然利用mysql ab+keepalived能实现mysql高可用的方案，但是由于keepalived的应用场景有限，比如它的核心协议VRRP只能工作在局域网内，不能工作在局域网外（网间、广域网），而且在网络不受自己控制时基本不能用，除非设定好的VIP是供局域网使用。因此特别是在云计算环境中，使用云主机（例如阿里云ECS等）就不能用keepalived，因此只能寻找一个可替代keepalived的解决方案来替代它。**Consul作为服务注册、服务发现的最佳选择，无疑可以很好的替代keepalived。**利用consul的DNS Interface为上层应用提供MySQL（master的IP或者master宕机后slave的IP）。</p>
+<h2 id="安装consul" class="article-heading"><a href="#安装consul" class="headerlink" title="安装consul"></a>安装consul<a class="article-anchor" href="#安装consul" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">install consul</span></span><br><span class="line">[root@ToBeRoot ~]# mkdir /usr/local/consul/data -p</span><br><span class="line">[root@ToBeRoot ~]# mkdir /usr/local/consul/config</span><br><span class="line">[root@ToBeRoot ~]# ls</span><br><span class="line">consul_0.8.5_linux_386.zip  dx_1.txt  dx_2.txt  foo  foo.sh  test</span><br><span class="line">[root@ToBeRoot ~]# unzip consul_0.8.5_linux_386.zip</span><br><span class="line">Archive:  consul_0.8.5_linux_386.zip</span><br><span class="line">  inflating: consul</span><br><span class="line">[root@ToBeRoot ~]# ls</span><br><span class="line">consul  consul_0.8.5_linux_386.zip  dx_1.txt  dx_2.txt  foo  foo.sh  test</span><br><span class="line">[root@ToBeRoot ~]# mv consul /bin</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="修改配置文件" class="article-heading"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件<a class="article-anchor" href="#修改配置文件" aria-hidden="true"></a></h2><p>mysql.json配置如下</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">{</span><br><span class="line">    "services": [</span><br><span class="line">        {</span><br><span class="line">	    "id":"mysqlnode1",</span><br><span class="line">            "name": "mysql",</span><br><span class="line">            "tags": [</span><br><span class="line">                "master"</span><br><span class="line">            ],</span><br><span class="line">            "address": "172.25.0.11",</span><br><span class="line">            "port": 3306,</span><br><span class="line">    	    "checks": [</span><br><span class="line">            {</span><br><span class="line">              "script": "bash /usr/local/consul/mysqltest.sh 172.25.0.11",</span><br><span class="line">              "interval": "5s"</span><br><span class="line">            }</span><br><span class="line">          ]</span><br><span class="line">        },</span><br><span class="line">        {</span><br><span class="line">	    "id":"mysqlnode2",</span><br><span class="line">            "name": "mysql",</span><br><span class="line">            "tags": [</span><br><span class="line">                "master"</span><br><span class="line">            ],</span><br><span class="line">            "address": "172.25.0.12",</span><br><span class="line">            "port": 3306,</span><br><span class="line">    	    "checks": [</span><br><span class="line">            {</span><br><span class="line">              "script": "bash /usr/local/consul/mysqltest.sh 172.25.0.12",</span><br><span class="line">              "interval": "5s"</span><br><span class="line">            }</span><br><span class="line">          ]</span><br><span class="line">        }</span><br><span class="line">    ]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>json脚本的含义：</strong></p>
+<ol>
+<li><code>name</code>是consul为mysql服务提供的域名为<code>mysql.service.consul</code>；</li>
+<li><code>id</code>是节点名称；</li>
+<li><code>address</code>是节点对应的ip地址；</li>
+<li><code>port</code>是节点服务监听端口号；</li>
+<li><code>checks</code>是校验脚本，会按照脚本中指定的<code>interval</code>的值去执行，例如这里设定每5秒执行一次；</li>
+<li><code>script</code>脚本，consul判断脚本如果退出值为2则检测不通过，退出值为0则通过检测，通过检测的节点会被输出ip和监听端口；</li>
+<li><code>bash /usr/local/consul/mysqltest.sh 172.25.0.12</code> 具体解释如下。</li>
+</ol>
+<p>其中调用的mysqltest.sh脚本如下</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">mysqladmin -utest -puplooking -h $1 ping | grep "mysqld is alive" &amp;&gt; /dev/null; a=`echo $?`</span><br><span class="line">mysql -utest -puplooking -h $1 -e "show slave status\G" | grep slave &amp;&gt; /dev/null; b=`echo $?`</span><br><span class="line">mysql -utest -puplooking -h $1 -e "show slave status\G" | grep "error reconnecting to master" &amp;&gt; /dev/null ; c=`echo $?`</span><br><span class="line">if [ $a -eq 0 ] &amp;&amp; ([ $b -ne 0 ] || [ $c -eq 0 ])</span><br><span class="line">then</span><br><span class="line">	if [ $c -eq 0 ]</span><br><span class="line">	then</span><br><span class="line">		mysql -utest -puplooking -h $1 -e 'stop slave;reset slave all'</span><br><span class="line">		mysql -utest -puplooking -h $1 -e 'show master status'| awk '{if (NR==2) print $1,$2}' &gt; /usr/local/consul/mysql.txt</span><br><span class="line">	fi</span><br><span class="line">        exit 0</span><br><span class="line">else</span><br><span class="line">        exit 2</span><br><span class="line">fi</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>脚本解释：</strong></p>
+<ol>
+<li><p>判断A：节点的mysqld进程是否alive，如果alive则，变量a=0，否则a!=0；</p>
+</li>
+<li><p>判断B：节点的mysql是否是slave，如果是slave则，变量b=0，否则b!=0；</p>
+</li>
+<li><p>判断C：节点是否是slave并且master已经宕掉，如果是则，变量c=0，否则c!=0；</p>
+</li>
+<li><p>如果节点满足 条件A，并且 条件B和条件C 任意满足一个，则</p>
+<ul>
+<li>1）判断是否满足条件C；<ul>
+<li>如果是则当前的情况为主服务器已宕机，我们需要停止从服务器去同步主的数据<code>stop slave</code>，清空从机的slave配置<code>reset slave all</code>；并记录从机器当前的日志号和position号，为重建主从做准备；</li>
+</ul>
+</li>
+<li>2）退出值为0，让该节点被consul检测通过；</li>
+</ul>
+<p>否则，退出值为2，让其不被consul检测通过。</p>
+</li>
+</ol>
+<h2 id="启动consul服务" class="article-heading"><a href="#启动consul服务" class="headerlink" title="启动consul服务"></a>启动consul服务<a class="article-anchor" href="#启动consul服务" aria-hidden="true"></a></h2><p>指定consul的配置文件所在目录，并将标准输出重定向到指定的文件中，作为日志记录。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">nohup consul agent -dev  -config-dir=/usr/local/consul/config &amp;&gt; /usr/local/consul/consul.log &amp;</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="DNS-转发" class="article-heading"><a href="#DNS-转发" class="headerlink" title="DNS 转发"></a>DNS 转发<a class="article-anchor" href="#DNS-转发" aria-hidden="true"></a></h1><p>consul默认使用8600端口进行解析，如果向让consul是53号端口，需要使用bind、dnsmasq或者iptables来绑定consul。具体操作参考<a target="_blank" rel="noopener" href="https://www.consul.io/docs/guides/forwarding.html">官方文档</a></p>
+<p>以下用dnsmasq实现。</p>
+<p><em>注意开启dnsmasq时需要注意当前是否有进程占用53号端口。</em></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@foundation0 ~]# echo "server=/consul/127.0.0.1#8600" &gt; /etc/dnsmasq.d/10-consul</span><br><span class="line"></span><br><span class="line">[root@foundation0 ~]# systemctl start dnsmasq</span><br><span class="line">[root@foundation0 ~]# systemctl status dnsmasq</span><br><span class="line">● dnsmasq.service - DNS caching server.</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/dnsmasq.service; disabled; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Thu 2017-07-06 17:51:56 CST; 5s ago</span><br><span class="line"> Main PID: 28114 (dnsmasq)</span><br><span class="line">   CGroup: /system.slice/dnsmasq.service</span><br><span class="line">           └─28114 /usr/sbin/dnsmasq -k</span><br><span class="line"></span><br><span class="line">Jul 06 17:51:56 foundation0.ilt.example.com systemd[1]: Started DNS caching server..</span><br><span class="line">Jul 06 17:51:56 foundation0.ilt.example.com systemd[1]: Starting DNS caching server....</span><br><span class="line">Jul 06 17:51:56 foundation0.ilt.example.com dnsmasq[28114]: started, version 2.66 cachesize 150</span><br><span class="line">Jul 06 17:51:56 foundation0.ilt.example.com dnsmasq[28114]: compile time options: IPv6 GNU-getopt DBus no-i18n IDN DHCP DHCPv6 no-Lua TFT...t auth</span><br><span class="line">Jul 06 17:51:56 foundation0.ilt.example.com dnsmasq[28114]: using nameserver 127.0.0.1#8600 for domain consul</span><br><span class="line">Jul 06 17:51:56 foundation0.ilt.example.com dnsmasq[28114]: reading /etc/resolv.conf</span><br><span class="line">Jul 06 17:51:56 foundation0.ilt.example.com dnsmasq[28114]: ignoring nameserver 127.0.0.1 - local interface</span><br><span class="line">Jul 06 17:51:56 foundation0.ilt.example.com dnsmasq[28114]: using nameserver 127.0.0.1#8600 for domain consul</span><br><span class="line">Jul 06 17:51:56 foundation0.ilt.example.com dnsmasq[28114]: read /etc/hosts - 2 addresses</span><br><span class="line">Hint: Some lines were ellipsized, use -l to show in full.</span><br><span class="line"></span><br><span class="line">[root@foundation0 ~]# echo "nameserver 127.0.0.1" &gt; /etc/resolv.conf</span><br><span class="line"></span><br><span class="line">[root@foundation0 ~]# dig mysql.service.consul.</span><br><span class="line"></span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.9.4-RedHat-9.9.4-29.el7 &lt;&lt;&gt;&gt; mysql.service.consul.</span><br><span class="line">;; global options: +cmd</span><br><span class="line">;; Got answer:</span><br><span class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 14261</span><br><span class="line">;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1</span><br><span class="line"></span><br><span class="line">;; OPT PSEUDOSECTION:</span><br><span class="line">; EDNS: version: 0, flags:; udp: 4096</span><br><span class="line">;; QUESTION SECTION:</span><br><span class="line">;mysql.service.consul.		IN	A</span><br><span class="line"></span><br><span class="line">;; ANSWER SECTION:</span><br><span class="line">mysql.service.consul.	0	IN	A	172.25.0.12</span><br><span class="line"></span><br><span class="line">;; Query time: 0 msec</span><br><span class="line">;; SERVER: 127.0.0.1#53(127.0.0.1)</span><br><span class="line">;; WHEN: Thu Jul 06 17:53:19 CST 2017</span><br><span class="line">;; MSG SIZE  rcvd: 65</span><br><span class="line"></span><br><span class="line">[root@foundation0 ~]# ping mysql.service.consul</span><br><span class="line">PING mysql.service.consul (172.25.0.12) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.25.0.12: icmp_seq=1 ttl=64 time=0.197 ms</span><br><span class="line">64 bytes from 172.25.0.12: icmp_seq=2 ttl=64 time=0.287 ms</span><br><span class="line">^C</span><br><span class="line">--- mysql.service.consul ping statistics ---</span><br><span class="line">2 packets transmitted, 2 received, 0% packet loss, time 1054ms</span><br><span class="line">rtt min/avg/max/mdev = 0.197/0.242/0.287/0.045 ms</span><br><span class="line">[root@foundation0 ~]# mysql -utest -puplooking -h mysql.service.consul</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 1346</span><br><span class="line">Server version: 5.5.44-MariaDB-log MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; select @@hostname;</span><br><span class="line">+------------+</span><br><span class="line">| @@hostname |</span><br><span class="line">+------------+</span><br><span class="line">| slave      |</span><br><span class="line">+------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; exit</span><br><span class="line">Bye</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="测试" class="article-heading"><a href="#测试" class="headerlink" title="测试"></a>测试<a class="article-anchor" href="#测试" aria-hidden="true"></a></h1><ol>
+<li>域名解析<code>dig mysql.service.consul.</code></li>
+<li>mysql客户端连接数据库服务器 <code>mysql -utest -puplooking -h mysql.service.consul </code>，连接的是mysqlnode1</li>
+<li>mysqlnode1宕机后，consul会将解析改为mysqlnode2 ，并清除从机的配置为修复做准备</li>
+<li>手动完成主从修复，mysqlnode2为master，mysqlnode1为slave</li>
+<li>mysqlnode2宕机后，consul会将解析改为mysqlnode1，并清除从机的配置为修复做准备</li>
+<li>手动完成主从修复，mysqlnode1为master，mysqlnode2为slave</li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:13.891Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">整体架构图</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL-AB-%E5%A4%8D%E5%88%B6"><span class="toc-text">MySQL AB 复制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E4%B8%BB%E4%BB%8E%E6%AD%A5%E9%AA%A4"><span class="toc-text">单主从步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E9%85%8D%E7%BD%AE"><span class="toc-text">详细配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#consul-%E9%85%8D%E7%BD%AE%E9%AB%98%E5%8F%AF%E7%94%A8"><span class="toc-text">consul 配置高可用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85consul"><span class="toc-text">安装consul</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">修改配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8consul%E6%9C%8D%E5%8A%A1"><span class="toc-text">启动consul服务</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DNS-%E8%BD%AC%E5%8F%91"><span class="toc-text">DNS 转发</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95"><span class="toc-text">测试</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

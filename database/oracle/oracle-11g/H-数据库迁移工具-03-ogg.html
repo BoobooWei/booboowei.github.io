@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>数据库迁移工具 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/H-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%81%E7%A7%BB%E5%B7%A5%E5%85%B7-03-ogg">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/H-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%81%E7%A7%BB%E5%B7%A5%E5%85%B7-03-ogg" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="#################A库数据同步到B库#################A库（172.25.0.10）--&gt; B库（172.25.12.11）:～～～～～～～～～～～A库与B库都要归档模式:～～～～～～～～～～～shut immediatestartup mountalter database archivelog;alter database open;～～～～～～～～～～～">
+<meta property="og:type" content="website">
+<meta property="og:title" content="数据库迁移工具">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/H-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%81%E7%A7%BB%E5%B7%A5%E5%85%B7-03-ogg">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="#################A库数据同步到B库#################A库（172.25.0.10）--&gt; B库（172.25.12.11）:～～～～～～～～～～～A库与B库都要归档模式:～～～～～～～～～～～shut immediatestartup mountalter database archivelog;alter database open;～～～～～～～～～～～">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.780Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:50.332Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">数据库迁移工具</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/H-数据库迁移工具-03-ogg.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">################</span></span><br><span class="line"><span class="comment">#A库数据同步到B库#</span></span><br><span class="line"><span class="comment">################</span></span><br><span class="line">A库（172.25.0.10）--&gt; B库（172.25.12.11）:</span><br><span class="line">～～～～～～～～～～～</span><br><span class="line">A库与B库都要归档模式:</span><br><span class="line">～～～～～～～～～～～</span><br><span class="line">shut immediate</span><br><span class="line">startup mount</span><br><span class="line">alter database archivelog;</span><br><span class="line">alter database open;</span><br><span class="line"></span><br><span class="line">～～～～～～～～～～～～～～～～～</span><br><span class="line">A库与B库都要打开追加日志数据模式:</span><br><span class="line">～～～～～～～～～～～～～～～～～</span><br><span class="line">alter database add supplemental <span class="built_in">log</span> data;</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> SUPPLEMENTAL_LOG_DATA_MIN from v<span class="variable">$database</span>;</span><br><span class="line"></span><br><span class="line">SUPPLEME</span><br><span class="line">--------</span><br><span class="line">YES</span><br><span class="line"></span><br><span class="line">～～～～～～～～～～～～～～～～</span><br><span class="line">A库与B库都要打开force logging:</span><br><span class="line">～～～～～～～～～～～～～～～～</span><br><span class="line">禁止数据源一方使用nologging加速insert</span><br><span class="line">alter database force logging;</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> force_logging from v<span class="variable">$database</span>;</span><br><span class="line"></span><br><span class="line">FOR</span><br><span class="line">---</span><br><span class="line">YES</span><br><span class="line"></span><br><span class="line">～～～～～～～～～～～～～～～</span><br><span class="line">A库与B库都要创建ogg的管理用户:</span><br><span class="line">～～～～～～～～～～～～～～～</span><br><span class="line">grant</span><br><span class="line">connect,</span><br><span class="line">resource,</span><br><span class="line">unlimited tablespace,</span><br><span class="line"><span class="keyword">select</span> any dictionary,</span><br><span class="line"><span class="keyword">select</span> any table,</span><br><span class="line">insert any table,</span><br><span class="line">update any table,</span><br><span class="line">delete any table,</span><br><span class="line">alter any table,</span><br><span class="line">flashback any table</span><br><span class="line">to ggs</span><br><span class="line">identified by ggs;</span><br><span class="line"></span><br><span class="line">grant  execute on dbms_flashback to ggs;</span><br><span class="line">grant execute on utl_file to ggs;</span><br><span class="line"></span><br><span class="line">～～～～～～～～～～～～～～～～～</span><br><span class="line">A库与B库都要安装对应版本的ogg软件:</span><br><span class="line">～～～～～～～～～～～～～～～～～</span><br><span class="line">scp ogg112101_fbo_ggs_Linux_x64_ora11g_64bit.zip oracle@172.25.0.10:/home/oracle/</span><br><span class="line"></span><br><span class="line"><span class="built_in">mkdir</span> -p /home/oracle/insogg/</span><br><span class="line">unzip /home/oracle/ogg112101_fbo_ggs_Linux_x64_ora11g_64bit.zip -d /home/oracle/insogg/</span><br><span class="line"></span><br><span class="line"><span class="built_in">mkdir</span> -p /home/oracle/ogg/</span><br><span class="line">tar -xvf /home/oracle/insogg/fbo_ggs_Linux_x64_ora11g_64bit.tar -C /home/oracle/ogg</span><br><span class="line"></span><br><span class="line">～～～～～～～～～～～</span><br><span class="line">在环境变标量中增加ogg:</span><br><span class="line">～～～～～～～～～～～</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$ORACLE_HOME</span>/bin:/home/oracle/ogg:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$ORACLE_HOME</span>/lib:/home/oracle/ogg:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##########################################</span></span><br><span class="line">A库与B库，进入ogg安装目录，创建ogg需要的子目录：</span><br><span class="line"><span class="comment">##########################################</span></span><br><span class="line"><span class="built_in">cd</span> /home/oracle/ogg</span><br><span class="line">ggsci</span><br><span class="line">GGSCI (install0.example.com) 1&gt; create subdirs</span><br><span class="line"></span><br><span class="line">Creating subdirectories under current directory /home/oracle/ogg</span><br><span class="line"></span><br><span class="line">Parameter files                /home/oracle/ogg/dirprm: already exists</span><br><span class="line">Report files                   /home/oracle/ogg/dirrpt: created</span><br><span class="line">Checkpoint files               /home/oracle/ogg/dirchk: created</span><br><span class="line">Process status files           /home/oracle/ogg/dirpcs: created</span><br><span class="line">SQL script files               /home/oracle/ogg/dirsql: created</span><br><span class="line">Database definitions files     /home/oracle/ogg/dirdef: created</span><br><span class="line">Extract data files             /home/oracle/ogg/dirdat: created</span><br><span class="line">Temporary files                /home/oracle/ogg/dirtmp: created</span><br><span class="line">Stdout files                   /home/oracle/ogg/dirout: created</span><br><span class="line"><span class="comment">#########################################################################</span></span><br><span class="line">在A库准备测试用的表：</span><br><span class="line">create table scott.e01 as <span class="keyword">select</span> * from scott.emp;</span><br><span class="line">alter table scott.e01 add constraint pk_e01_empno primary key (empno);</span><br><span class="line"></span><br><span class="line">将A库的表导入到B库：</span><br><span class="line">exp scott/tiger tables=e01 file=e01.dmp</span><br><span class="line">scp e01.dmp oracle@172.25.0.11:/home/oracle</span><br><span class="line">imp scott/tiger file=e01.dmp full=y</span><br><span class="line"></span><br><span class="line">授予scott用户dba角色:</span><br><span class="line">grant dba to scott;</span><br><span class="line"></span><br><span class="line">在A库ogg中添加需要同步的表：</span><br><span class="line">GGSCI (oracle0.example.com) 1&gt; dblogin userid ggs,password ggs</span><br><span class="line">GGSCI (oracle0.example.com) 2&gt; add trandata scott.e01</span><br><span class="line">GGSCI (oracle0.example.com) 3&gt; info trandata scott.e01</span><br><span class="line"><span class="comment">#################################################################</span></span><br><span class="line">A库与B库都要配置ogg的核心管理进程（manager）</span><br><span class="line">vi /home/oracle/ogg/dirprm/mgr.prm</span><br><span class="line">---------------------------------------------</span><br><span class="line">port 7788</span><br><span class="line">userid ggs,password ggs</span><br><span class="line">autorestart extract *,waitminutes 2,retries 5</span><br><span class="line">---------------------------------------------</span><br><span class="line"><span class="comment">#################################################################</span></span><br><span class="line">在源和目标都要端添加checkpoint表:</span><br><span class="line">配置全局参数文件</span><br><span class="line">vi /home/oracle/ogg/GLOBALS</span><br><span class="line">--------------------------------</span><br><span class="line">checkpointtable ggs.checkpoint</span><br><span class="line">--------------------------------</span><br><span class="line"></span><br><span class="line">GGSCI (oracle0.example.com) 1&gt; dblogin userid ggs, password ggs</span><br><span class="line">GGSCI (oracle0.example.com) 2&gt; add checkpointtable ggs.checkpoint</span><br><span class="line"><span class="comment">#################################################################</span></span><br><span class="line">在A库配置抽取进程：</span><br><span class="line">编辑配置文件</span><br><span class="line">vi /home/oracle/ogg/dirprm/ext1.prm</span><br><span class="line">----------------------------------------------</span><br><span class="line">extract ext1</span><br><span class="line">userid ggs,password ggs</span><br><span class="line">rmthost 172.25.0.10,mgrport 7788</span><br><span class="line">exttrail /home/oracle/ogg/dirdat/ea</span><br><span class="line">tranlogoptions excludeuser ggs</span><br><span class="line">setenv(ORACLE_SID=orcl)</span><br><span class="line">setenv(NLS_LANG=AMERICAN_AMERICA.WE8MSWIN1252)</span><br><span class="line">dynamicresolution</span><br><span class="line">table scott.e01;</span><br><span class="line">----------------------------------------------</span><br><span class="line">添加抽取进程</span><br><span class="line">GGSCI (oracle0.example.com) 2&gt; add extract ext1, tranlog, begin now</span><br><span class="line">添加抽取进程的生成文件</span><br><span class="line">GGSCI (oracle0.example.com) 3&gt; add exttrail /home/oracle/ogg/dirdat/ea,extract ext1</span><br><span class="line"></span><br><span class="line">在A库配置投递进程：</span><br><span class="line">vi /home/oracle/ogg/dirprm/pump1.prm</span><br><span class="line">----------------------------------------------</span><br><span class="line">EXTRACT pump1</span><br><span class="line">USERID scott, PASSWORD tiger</span><br><span class="line">RMTHOST 172.25.0.11, MGRPORT 7788</span><br><span class="line">RMTTRAIL /home/oracle/ogg/dirdat/pa</span><br><span class="line">TABLE scott.e01;</span><br><span class="line">----------------------------------------------</span><br><span class="line">在源端增加投递进程</span><br><span class="line">GGSCI (oracle0.example.com) 4&gt; add extract pump1,exttrailsource /home/oracle/ogg/dirdat/ea , begin now</span><br><span class="line">增加投递到远程的文件</span><br><span class="line">GGSCI (oracle0.example.com) 5&gt; add rmttrail /home/oracle/ogg/dirdat/pa ,extract pump1</span><br><span class="line"></span><br><span class="line">在B库配置复制进程：</span><br><span class="line">配置目标端的复制进程:</span><br><span class="line">vi /home/oracle/ogg/dirprm/rep1.prm</span><br><span class="line">----------------------------------------------------</span><br><span class="line">replicat rep1</span><br><span class="line">userid ggs,password ggs</span><br><span class="line">assumetargetdefs</span><br><span class="line">discardfile /home/oracle/ogg/dirdat/rep1.dsc,append</span><br><span class="line">MAP scott.e01, TARGET scott.e01;</span><br><span class="line">----------------------------------------------------</span><br><span class="line">增加复制进程</span><br><span class="line">GGSCI (install0.example.com) 2&gt; add replicat rep1,exttrail /home/oracle/ogg/dirdat/pa , nodbcheckpoint</span><br><span class="line"><span class="comment">############################################</span></span><br><span class="line">所有需要的参数文件都配置完成，按照顺序启动各个进程:</span><br><span class="line">1.启动A库的管理进程</span><br><span class="line">start mgr</span><br><span class="line">2.启动B库的管理进程</span><br><span class="line">start mgr</span><br><span class="line">3.启动B库的复制进程</span><br><span class="line">start rep1</span><br><span class="line">4.启动A库的抽取进程</span><br><span class="line">start ext1</span><br><span class="line">5.启动A库的投递进程</span><br><span class="line">start pump1</span><br><span class="line"><span class="comment">########################################################################################</span></span><br><span class="line">总结:A库和B库都需要管理进程，都需要检查点表</span><br><span class="line">A库:抽取进程【ext1】--&gt; 抽取文件（源节点）【ea】--&gt; 投递进程【pump1】--&gt;投递文件（目标节点）【pa】</span><br><span class="line">B库:复制进程【rep1】--&gt; 源投递过来的文件【pa】</span><br><span class="line"><span class="comment">########################################################################################</span></span><br><span class="line">增加DDL支持:</span><br><span class="line">需要禁止recyclebin：</span><br><span class="line">alter system <span class="built_in">set</span> recyclebin=off scope=spfile;</span><br><span class="line">startup force</span><br><span class="line">purge dba_recyclebin;</span><br><span class="line">A库进入ogg目录再启动sqlplus：</span><br><span class="line"><span class="built_in">cd</span> /home/oracle/ogg</span><br><span class="line">sqlplus / as sysdba</span><br><span class="line"></span><br><span class="line">A库运行脚本1：SQL&gt; @marker_setup.sql</span><br><span class="line">A库运行脚本2：SQL&gt; @ddl_setup.sql</span><br><span class="line"></span><br><span class="line">11.2.0.4 bug:</span><br><span class="line">alter trigger sys.ggs_ddl_trigger_before <span class="built_in">disable</span>;</span><br><span class="line">grant create table,create sequence to ggs;</span><br><span class="line">alter trigger sys.ggs_ddl_trigger_before <span class="built_in">enable</span>;</span><br><span class="line"></span><br><span class="line">A库运行脚本3：SQL&gt; @role_setup.sql</span><br><span class="line">A库运行脚本4：SQL&gt; grant GGS_GGSUSER_ROLE TO ggs;</span><br><span class="line">A库运行脚本5：SQL&gt; @ddl_enable.sql</span><br><span class="line"></span><br><span class="line">修改A库抽取进程的配置文件</span><br><span class="line">vi /home/oracle/ogg/dirprm/ext1.prm</span><br><span class="line">----------------------------------------------</span><br><span class="line">extract ext1</span><br><span class="line">userid ggs,password ggs</span><br><span class="line">rmthost 172.25.0.10,mgrport 7788</span><br><span class="line">exttrail /home/oracle/ogg/dirdat/ea</span><br><span class="line">tranlogoptions excludeuser ggs</span><br><span class="line">setenv(ORACLE_SID=orcl)</span><br><span class="line">setenv(NLS_LANG=AMERICAN_AMERICA.WE8MSWIN1252)</span><br><span class="line">dynamicresolution</span><br><span class="line">ddl include all</span><br><span class="line">ddloptions addtrandata</span><br><span class="line">table scott.*;</span><br><span class="line">----------------------------------------------</span><br><span class="line"></span><br><span class="line">修改A库投递进程配置文件：</span><br><span class="line">vi /home/oracle/ogg/dirprm/pump1.prm</span><br><span class="line">----------------------------------------------</span><br><span class="line">EXTRACT pump1</span><br><span class="line">USERID scott, PASSWORD tiger</span><br><span class="line">RMTHOST 172.25.0.11, MGRPORT 7788</span><br><span class="line">RMTTRAIL /home/oracle/ogg/dirdat/pa</span><br><span class="line">TABLE scott.*;</span><br><span class="line">----------------------------------------------</span><br><span class="line"></span><br><span class="line">修改B库复制进程的配置文件</span><br><span class="line">vi /home/oracle/ogg/dirprm/rep1.prm</span><br><span class="line">----------------------------------------------------</span><br><span class="line">replicat rep1</span><br><span class="line">userid ggs,password ggs</span><br><span class="line">assumetargetdefs</span><br><span class="line">discardfile /home/oracle/ogg/dirdat/rep1.dsc,append</span><br><span class="line">ddl include mapped</span><br><span class="line">ddlerror default ignore retryop</span><br><span class="line">MAP scott.*, TARGET scott.*;</span><br><span class="line">----------------------------------------------------</span><br><span class="line"></span><br><span class="line">停止A库抽取进程和复制进程</span><br><span class="line">停止B库复制进程</span><br><span class="line">启动A库抽取进程和复制进程</span><br><span class="line">启动B库复制进程</span><br><span class="line"><span class="comment">########################################################################################</span></span><br><span class="line">双向复制:</span><br><span class="line">B库:抽取进程【ext2】--&gt; 抽取文件（源节点）【eb】--&gt; 投递进程【pump2】--&gt;投递文件（目标节点）【pb】</span><br><span class="line">A库:复制进程【rep2】--&gt;源投递过来的文件【pb】</span><br><span class="line"><span class="comment">########################################################################################</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:50.332Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

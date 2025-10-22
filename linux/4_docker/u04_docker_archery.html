@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Docker 部署 Archery | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/4_docker/u04_docker_archery">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/4_docker/u04_docker_archery" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="什么是Archery？Archery是archer的分支项目，定位于SQL审核查询平台，旨在提升DBA的工作效率，支持多数据库的SQL上线和查询，同时支持丰富的MySQL运维功能，所有功能都兼容手机端操作。 Archery 官网           文档 | FAQ | Releases 系统体验在线体验    账号 密码    archer archer   安装 Archery安装 Docke">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Docker 部署 Archery">
+<meta property="og:url" content="http://www.toberoot.com/linux/4_docker/u04_docker_archery">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="什么是Archery？Archery是archer的分支项目，定位于SQL审核查询平台，旨在提升DBA的工作效率，支持多数据库的SQL上线和查询，同时支持丰富的MySQL运维功能，所有功能都兼容手机端操作。 Archery 官网           文档 | FAQ | Releases 系统体验在线体验    账号 密码    archer archer   安装 Archery安装 Docke">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.064Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:04.379Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../docs/" class="main-nav-link">Hexo</a><a href="../../news/" class="main-nav-link">News</a><a href="../../api/" class="main-nav-link">MySQL8.0</a><a href="../../database/" class="main-nav-link">Database</a><a href="../../linux/" class="main-nav-link">Linux</a><a href="../../cloud/" class="main-nav-link">Cloud</a><a href="../../singapore/" class="main-nav-link">Singapore</a><a href="../../amy/" class="main-nav-link">AMY</a><a href="../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Docker 部署 Archery</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/4_docker/u04_docker_archery.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h1 id="什么是Archery？" class="article-heading"><a href="#什么是Archery？" class="headerlink" title="什么是Archery？"></a>什么是Archery？<a class="article-anchor" href="#什么是Archery？" aria-hidden="true"></a></h1><p>Archery是<a target="_blank" rel="noopener" href="https://github.com/jly8866/archer">archer</a>的分支项目，定位于SQL审核查询平台，旨在提升DBA的工作效率，支持多数据库的SQL上线和查询，同时支持丰富的MySQL运维功能，所有功能都兼容手机端操作。</p>
+<h2 id="Archery-官网" class="article-heading"><a href="#Archery-官网" class="headerlink" title="Archery 官网"></a><a target="_blank" rel="noopener" href="https://archerydms.com/">Archery 官网</a><a class="article-anchor" href="#Archery-官网" aria-hidden="true"></a></h2><p><a target="_blank" rel="noopener" href="https://gitee.com/rtttte/Archery"><img src="https://camo.githubusercontent.com/cd15d499f18958f241e4b3fad674ec4cc6c609db8f80d8d21ee1527534d8666c/68747470733a2f2f67697465652e636f6d2f7274747474652f417263686572792f62616467652f737461722e7376673f7468656d653d677670" alt="star"></a> <a target="_blank" rel="noopener" href="https://travis-ci.org/hhyo/Archery"><img src="https://camo.githubusercontent.com/55ab6c9a2f820b088e44a0f12e7c886d6c51d119be55114c8977f92158c6874a/68747470733a2f2f7472617669732d63692e6f72672f6868796f2f417263686572792e7376673f6272616e63683d6d6173746572" alt="Build Status"></a> <a target="_blank" rel="noopener" href="https://github.com/hhyo/archery/releases/"><img src="https://camo.githubusercontent.com/34101a0678a8563a141d07446914ac8618f22efa35aac054fb6b521d14f7d7d8/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f72656c656173652f6868796f2f617263686572792e737667" alt="Release"></a> <a target="_blank" rel="noopener" href="https://codecov.io/gh/hhyo/archery"><img src="https://camo.githubusercontent.com/c9b1f70e174cc5dd2055574e1f6fc3c85e843d3f9af263c3cfd021d49fea73ea/68747470733a2f2f636f6465636f762e696f2f67682f6868796f2f617263686572792f6272616e63682f6d61737465722f67726170682f62616467652e737667" alt="codecov"></a> <a target="_blank" rel="noopener" href="https://app.codacy.com/app/hhyo/Archery?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hhyo/Archery&amp;utm_campaign=Badge_Grade_Dashboard"><img src="https://camo.githubusercontent.com/db59b93b6c48193bed49259ee8e69c549f0a1cc60e0947dc3ae267c1077c0d06/68747470733a2f2f6170692e636f646163792e636f6d2f70726f6a6563742f62616467652f47726164652f3934653835383765353037663435363561316561356561323166643934633332" alt="Codacy Badge"></a> <a target="_blank" rel="noopener" href="https://img.shields.io/pypi/pyversions/django/"><img src="https://camo.githubusercontent.com/a66b4ae684ecc107849914cb2f06698e9608757ec65af240543cfc16b9b53c61/68747470733a2f2f696d672e736869656c64732e696f2f707970692f707976657273696f6e732f646a616e676f" alt="version"></a> <a target="_blank" rel="noopener" href="https://docs.djangoproject.com/zh-hans/3.1/"><img src="https://camo.githubusercontent.com/f65085dd24765b7e88fa88ecea41ce71289f22b4abeb2b07ebfda219520bb022/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646a616e676f2d332e312d627269676874677265656e2e737667" alt="version"></a> <a target="_blank" rel="noopener" href="https://hub.docker.com/r/hhyo/archery/"><img src="https://camo.githubusercontent.com/9c5cac1e8430d55c93ff98a9b6bc7994ae2384f29a6917b0048edde9a77bab8e/68747470733a2f2f696d672e736869656c64732e696f2f646f636b65722f70756c6c732f6868796f2f617263686572792e737667" alt="docker_pulls"></a> <a target="_blank" rel="noopener" href="http://hits.dwyl.io/hhyo/hhyo/Archery"><img src="https://camo.githubusercontent.com/a64dd455244b30b7e6368c6e9a53ffc850ae2b520bf9197fd01d795b0169b843/687474703a2f2f686974732e6477796c2e696f2f6868796f2f6868796f2f417263686572792e737667" alt="HitCount"></a> <a target="_blank" rel="noopener" href="http://github.com/hhyo/archery/blob/master/LICENSE"><img src="https://camo.githubusercontent.com/2a2157c971b7ae1deb8eb095799440551c33dcf61ea3d965d86b496a5a65df55/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4c6963656e73652d417061636865253230322e302d626c75652e737667" alt="License"></a> <a target="_blank" rel="noopener" href="https://996.icu/"><img src="https://camo.githubusercontent.com/88df9d1c7282f11e7579ce56f585ea096ddad3b44e6d3a90e59f6b2968118466/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c696e6b2d3939362e6963752d7265642e737667" alt="996.icu"></a></p>
+<p><a target="_blank" rel="noopener" href="https://archerydms.com/">文档</a> | <a target="_blank" rel="noopener" href="https://github.com/hhyo/archery/wiki/FAQ">FAQ</a> | <a target="_blank" rel="noopener" href="https://github.com/hhyo/archery/releases/">Releases</a></p>
+<h2 id="系统体验" class="article-heading"><a href="#系统体验" class="headerlink" title="系统体验"></a>系统体验<a class="article-anchor" href="#系统体验" aria-hidden="true"></a></h2><p><a target="_blank" rel="noopener" href="https://demo.archerydms.com/">在线体验</a></p>
+<table>
+<thead>
+<tr>
+<th>账号</th>
+<th>密码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>archer</td>
+<td>archer</td>
+</tr>
+</tbody></table>
+<h1 id="安装-Archery" class="article-heading"><a href="#安装-Archery" class="headerlink" title="安装 Archery"></a>安装 Archery<a class="article-anchor" href="#安装-Archery" aria-hidden="true"></a></h1><h2 id="安装-Docker" class="article-heading"><a href="#安装-Docker" class="headerlink" title="安装 Docker"></a>安装 Docker<a class="article-anchor" href="#安装-Docker" aria-hidden="true"></a></h2><p>CentOS 7 (使用yum进行安装)</p>
+<blockquote>
+<p>step 1: 安装必要的一些系统工具</p>
+</blockquote>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> yum install -y yum-utils device-mapper-persistent-data lvm2</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Step 2: 添加软件源信息</p>
+</blockquote>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br><span class="line"><span class="built_in">cat</span> /etc/yum.repos.d/centos.repo</span><br><span class="line">[centos7]</span><br><span class="line">name=<span class="string">'centos'</span></span><br><span class="line">baseurl=<span class="string">'http://mirror.centos.org/centos/7/os/x86_64/'</span></span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line"></span><br><span class="line">[centos7-extra]</span><br><span class="line">name=<span class="string">'centos extra'</span></span><br><span class="line">baseurl=<span class="string">'http://mirror.centos.org/centos/7/extras/x86_64/'</span></span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Step 3: 更新并安装Docker-CE</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">sudo yum makecache fast</span><br><span class="line">sudo yum list docker-ce --showduplicates | sort -r</span><br><span class="line">sudo yum -y install pigz container-selinux</span><br><span class="line">sudo yum -y install docker-ce</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Step 4: 开启Docker服务</p>
+</blockquote>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl  start docker</span><br><span class="line">docker run hello-world</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="安装-docker-compose" class="article-heading"><a href="#安装-docker-compose" class="headerlink" title="安装 docker-compose"></a>安装 docker-compose<a class="article-anchor" href="#安装-docker-compose" aria-hidden="true"></a></h2><p>Compose 是用于定义和运行多容器 Docker 应用程序的工具。通过 Compose，您可以使用 YML 文件来配置应用程序需要的所有服务。然后，使用一个命令，就可以从 YML 文件配置中创建并启动所有服务。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">curl -L <span class="string">"https://github.com/docker/compose/releases/download/1.24.1/docker-compose-<span class="subst">$(uname -s)</span>-<span class="subst">$(uname -m)</span>"</span> -o /usr/local/bin/docker-compose</span><br><span class="line"><span class="built_in">chmod</span> +x /usr/local/bin/docker-compose</span><br><span class="line"><span class="built_in">ln</span> -s /usr/local/bin/docker-compose /usr/bin/docker-compose</span><br><span class="line">docker-compose --version</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="docker-部署-Archery" class="article-heading"><a href="#docker-部署-Archery" class="headerlink" title="docker 部署 Archery"></a>docker 部署 Archery<a class="article-anchor" href="#docker-部署-Archery" aria-hidden="true"></a></h2><p>下载 <a target="_blank" rel="noopener" href="https://github.com/hhyo/archery/releases/">Releases</a>文件，解压后进入docker-compose文件夹</p>
+<p><img src="pic/archery01.png"></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">docker-compose -f docker-compose.yml up -d</span><br><span class="line"></span><br><span class="line"><span class="comment"># 表结构初始化</span></span><br><span class="line">docker <span class="built_in">exec</span> -ti archery /bin/bash</span><br><span class="line"><span class="built_in">cd</span> /opt/archery</span><br><span class="line"><span class="built_in">source</span> /opt/venv4archery/bin/activate</span><br><span class="line">python3 manage.py makemigrations sql</span><br><span class="line">python3 manage.py migrate</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据初始化</span></span><br><span class="line">python3 manage.py dbshell&lt;sql/fixtures/auth_group.sql</span><br><span class="line">python3 manage.py dbshell&lt;src/init_sql/mysql_slow_query_review.sql</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建管理用户</span></span><br><span class="line">python3 manage.py createsuperuser</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启服务</span></span><br><span class="line"><span class="comment"># docker restart archery</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 日志查看和问题排查</span></span><br><span class="line"><span class="comment"># docker logs archery -f --tail=10</span></span><br><span class="line"><span class="comment"># logs/archery.log</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="登陆-Archery" class="article-heading"><a href="#登陆-Archery" class="headerlink" title="登陆 Archery"></a>登陆 Archery<a class="article-anchor" href="#登陆-Archery" aria-hidden="true"></a></h2><p><a target="_blank" rel="noopener" href="http://127.0.0.1:9123/">http://127.0.0.1:9123/</a></p>
+<p><img src="pic/archery02.png"></p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:04.379Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFArchery%EF%BC%9F"><span class="toc-text">什么是Archery？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Archery-%E5%AE%98%E7%BD%91"><span class="toc-text">Archery 官网</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E4%BD%93%E9%AA%8C"><span class="toc-text">系统体验</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Archery"><span class="toc-text">安装 Archery</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Docker"><span class="toc-text">安装 Docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-docker-compose"><span class="toc-text">安装 docker-compose</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#docker-%E9%83%A8%E7%BD%B2-Archery"><span class="toc-text">docker 部署 Archery</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BB%E9%99%86-Archery"><span class="toc-text">登陆 Archery</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../docs/" class="mobile-nav-link">Hexo</a><a href="../../news/" class="mobile-nav-link">News</a><a href="../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../database/" class="mobile-nav-link">Database</a><a href="../../linux/" class="mobile-nav-link">Linux</a><a href="../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../amy/" class="mobile-nav-link">AMY</a><a href="../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../js/lang_select.js"></script>
+
+
+<script src="../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

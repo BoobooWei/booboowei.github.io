@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>PXE 网络无人值守安装 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/0_linux_base/booboo_middle_service/01-pxe">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/0_linux_base/booboo_middle_service/01-pxe" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="网络无人值守安装作用常见的引导有开机引导和光驱引导以及U盘引导，但是在我们生产环境里不会一台一台装，都是希望使用之用批量安装的方式，解决的方案就是使用网络方式安装，实现批量化的操作。 流程简介1）DHCP：用以分配ip地址 2）预启动施行环境（PXE）：通过网卡引导计算机 3）PXELINUX：提供引导文件及内核等文件 4）kickstart文件：提供安装介质  DHCP 部署DHCP 简介DHC">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PXE 网络无人值守安装">
+<meta property="og:url" content="http://www.toberoot.com/linux/0_linux_base/booboo_middle_service/01-pxe">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="网络无人值守安装作用常见的引导有开机引导和光驱引导以及U盘引导，但是在我们生产环境里不会一台一台装，都是希望使用之用批量安装的方式，解决的方案就是使用网络方式安装，实现批量化的操作。 流程简介1）DHCP：用以分配ip地址 2）预启动施行环境（PXE）：通过网卡引导计算机 3）PXELINUX：提供引导文件及内核等文件 4）kickstart文件：提供安装介质  DHCP 部署DHCP 简介DHC">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.001Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:54.958Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">PXE 网络无人值守安装</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/0_linux_base/booboo_middle_service/01-pxe.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h1 id="网络无人值守安装" class="article-heading"><a href="#网络无人值守安装" class="headerlink" title="网络无人值守安装"></a>网络无人值守安装<a class="article-anchor" href="#网络无人值守安装" aria-hidden="true"></a></h1><h3 id="作用" class="article-heading"><a href="#作用" class="headerlink" title="作用"></a>作用<a class="article-anchor" href="#作用" aria-hidden="true"></a></h3><p>常见的引导有开机引导和光驱引导以及U盘引导，但是在我们生产环境里不会一台一台装，都是希望使用之用批量安装的方式，解决的方案就是使用网络方式安装，实现批量化的操作。</p>
+<h3 id="流程简介" class="article-heading"><a href="#流程简介" class="headerlink" title="流程简介"></a>流程简介<a class="article-anchor" href="#流程简介" aria-hidden="true"></a></h3><p>1）DHCP：用以分配ip地址</p>
+<p>2）预启动施行环境（PXE）：通过网卡引导计算机</p>
+<p>3）PXELINUX：提供引导文件及内核等文件</p>
+<p>4）kickstart文件：提供安装介质</p>
+<p><img src="pxe/1.png"></p>
+<h3 id="DHCP-部署" class="article-heading"><a href="#DHCP-部署" class="headerlink" title="DHCP 部署"></a>DHCP 部署<a class="article-anchor" href="#DHCP-部署" aria-hidden="true"></a></h3><h4 id="DHCP-简介" class="article-heading"><a href="#DHCP-简介" class="headerlink" title="DHCP 简介"></a>DHCP 简介<a class="article-anchor" href="#DHCP-简介" aria-hidden="true"></a></h4><p>DHCP是DynamicHostConfigurationProtocol的缩写。</p>
+<p>它的前身是BOOTP。BOOTP原本是用于无盘主机连接的网络上面的：网络主机使用BOOTROM而不是磁盘起动并连接上网络﹐BOOTP则可以自动地为那些主机设定TCP/IP环境。但BOOTP有一个缺点：在设定前须事先获得客户端的硬件MAC地址，而且与IP的对应是静态的。换而言之，BOOTP非常缺乏”动态性”，若在有限的IP资源环境中，BOOTP的一对一的对应关系会造成非常大的浪费。DHCP可以看作是BOOTP的增强版本﹐它分为两个部份：服务器端和客户端。所有的IP地址设定资料都由DHCP服务器集中管理﹐并负责处理客户端的DHCP要求；而客户端则会使用从服务器分配下来的IP环境资料。比较起BOOTP，DHCP透过“租约”的概念，有效且动态的分配客户端的TCP/IP设定，而且作为兼容考量，DHCP也完全照顾了BOOTPClient 的需求。</p>
+<p>当DHCP 客户端第一次登录网络的时候，也就是客户发现本机上没有任何 IP 资料，它会向网络发出一个 DHCPDISCOVER封包。因为客户端还不知道自己属于哪一个网络，所以封包的来源位址会为 0.0.0.0 ，而目的位址则为 255.255.255.255 ，然后再附上DHCPDISCOVER 的信息，向网络进行广播。 当 DHCP 服务器监听到客户端发出的DHCPDISCOVER 广播后，它会从那些还没有租出的IP地址范围内按一定顺序选出一个IP 地址 ，连同其它TCP/IP 设置，回应给客户端一个DHCPOFFER 封包。由于客户端在开始的时候还没有 IP 位址，所以在其DHCPDISCOVER 封包内会带有其MAC 地址信息，并且有一个 XID 编号来辨别该封包，DHCP 服务器回应的DHCPOFFER封包则会根据这些资料传递给要求租约的客户。根据服务器端的设置，DHCPOFFER封包会包含一个租约期限的信息。如果客户端收到网络上多台DHCP 服务器的回应，只会挑选其中一个DHCPOFFER(通常是最先抵达的那个)，并且会向网络发送一个DHCPREQUEST广播封包，告诉所有DHCP 服务器它将指定接受哪一台服务器提供的 IP 地址。同时，客户端还会向网络发送一个ARP 封包，查询网络上面有没有其它机器使用该 IP 地址；如果发现该 IP 已经被占用，客户端则会送出一DHCPDECLINE 封包给 DHCP 服务器，拒绝接受其 DHCPOFFER，并重新发送 DHCPDISCOVER 信息。 当 DHCP 服务器接收到客户端的 DHCPREQUEST 之后，会向客户端发出一个DHCPACK 回应，以确认 IP 租约的正式生效，也就结束了一个完整的DHCP 工作过程。</p>
+<p><strong>注意：dhcp是不能跨物理网络的，同样，如果说同一个环境中有多个dhcp服务器，则会选择使用最先返回结果的那个dhcp服务器提供的IP地址。</strong></p>
+<p>所以在实验环境里，我们统一关闭eth0，以192.168.0.0/24网段的服务器来进行试验。</p>
+<p>基础环境配置如下：</p>
+<p>servera作为网关，serverg作为配置整体服务的服务器。</p>
+<p>1）serverg关闭eth0</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[kiosk@foundation0 Desktop]$ ssh root@172.25.0.10</span><br><span class="line">Last login: Thu Dec  8 08:02:03 2016 from 172.25.0.250</span><br><span class="line">[root@servera ~]# ssh root@192.168.0.16</span><br><span class="line">The authenticity of host '192.168.0.16 (192.168.0.16)' can't be established.</span><br><span class="line">ECDSA key fingerprint is 0b:1f:3b:13:2e:d2:10:53:4c:3d:c8:f4:86:24:d3:5e.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br><span class="line">Warning: Permanently added '192.168.0.16' (ECDSA) to the list of known hosts.</span><br><span class="line">root@192.168.0.16's password:</span><br><span class="line">Last login: Thu Dec  8 08:01:22 2016 from 172.25.0.250</span><br><span class="line">[root@serverg ~]# vim /etc/sysconfig/network-scripts/ifcfg-eth1</span><br><span class="line">DEVICE=eth1</span><br><span class="line">BOOTPROTO=static</span><br><span class="line">ONBOOT=yes</span><br><span class="line">TYPE=Ethernet</span><br><span class="line">USERCTL=yes</span><br><span class="line">IPV6INIT=no</span><br><span class="line">IPADDR=192.168.0.16</span><br><span class="line">GATEWAY=192.168.0.10</span><br><span class="line">NETMASK=255.255.255.0</span><br><span class="line">[root@serverg ~]# systemctl restart network</span><br><span class="line">[root@serverg ~]# route -n</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         192.168.0.10    0.0.0.0         UG    0      0        0 eth1</span><br><span class="line">172.25.0.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0</span><br><span class="line">192.168.0.0     0.0.0.0         255.255.255.0   U     0      0        0 eth1</span><br><span class="line">192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 eth2</span><br><span class="line">[root@serverg ~]# ifdown eth0</span><br></pre></td></tr></tbody></table></figure>
+
+<p>2）servera配置防火墙规则，让serverg访问172.25.254.250的数据包能够出去</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# vim /etc/sysctl.conf</span><br><span class="line">net.ipv4.ip_forward = 1</span><br><span class="line">[root@servera ~]# sysctl -p</span><br><span class="line">net.ipv4.ip_forward = 1</span><br><span class="line">[root@servera ~]# iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j SNAT --to-source 172.25.0.10</span><br><span class="line">[root@serverg ~]# mount 172.25.254.250:/content /mnt</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="DHCP-配置" class="article-heading"><a href="#DHCP-配置" class="headerlink" title="DHCP 配置"></a>DHCP 配置<a class="article-anchor" href="#DHCP-配置" aria-hidden="true"></a></h4><p>1）装包</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@serverg mnt]# yum -y install dhcp</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">rhel_dvd                                                 | 4.1 kB     00:00</span><br><span class="line">(1/2): rhel_dvd/group_gz                                   | 134 kB   00:00</span><br><span class="line">(2/2): rhel_dvd/primary_db                                 | 3.4 MB   00:00</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package dhcp.x86_64 12:4.2.5-36.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line"></span><br><span class="line">Dependencies Resolved</span><br><span class="line"></span><br><span class="line">================================================================================</span><br><span class="line"> Package       Arch            Version                  Repository         Size</span><br><span class="line">================================================================================</span><br><span class="line">Installing:</span><br><span class="line"> dhcp          x86_64          12:4.2.5-36.el7          rhel_dvd          510 k</span><br><span class="line"></span><br><span class="line">Transaction Summary</span><br><span class="line">================================================================================</span><br><span class="line">Install  1 Package</span><br><span class="line"></span><br><span class="line">Total download size: 510 k</span><br><span class="line">Installed size: 1.4 M</span><br><span class="line">Downloading packages:</span><br><span class="line">dhcp-4.2.5-36.el7.x86_64.rpm                               | 510 kB   00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : 12:dhcp-4.2.5-36.el7.x86_64                                  1/1</span><br><span class="line">  Verifying  : 12:dhcp-4.2.5-36.el7.x86_64                                  1/1</span><br><span class="line"></span><br><span class="line">Installed:</span><br><span class="line">  dhcp.x86_64 12:4.2.5-36.el7</span><br><span class="line"></span><br><span class="line">Complete!</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>2）dhcp的配置</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@serverg mnt]# cp /usr/share/doc/dhcp-4.2.5/dhcpd.conf.example /etc/dhcp/dhcpd.conf</span><br><span class="line">cp: overwrite ‘/etc/dhcp/dhcpd.conf’? y</span><br><span class="line">[root@serverg mnt]# vim /etc/dhcp/dhcpd.conf</span><br><span class="line">allow booting; # 定义能够pxe启动</span><br><span class="line">allow bootp; # 定义支持bootp</span><br><span class="line"></span><br><span class="line">option domain-name "pod0.example.com";</span><br><span class="line">option domain-name-servers 172.25.254.254;</span><br><span class="line">default-lease-time 600; # 租约时间</span><br><span class="line">max-lease-time 7200;</span><br><span class="line"></span><br><span class="line">log-facility local7;</span><br><span class="line"></span><br><span class="line">subnet 192.168.0.0 netmask 255.255.255.0 {</span><br><span class="line">  range 192.168.0.50 192.168.0.60;  # 地址池范围</span><br><span class="line">  option domain-name-servers 172.25.254.254;  # DNS服务器地址</span><br><span class="line">  option domain-name "pod0.example.com"; # 域名</span><br><span class="line">  option routers 192.168.0.10; # 网关</span><br><span class="line">  option broadcast-address 192.168.0.255; # 广播地址</span><br><span class="line">  default-lease-time 600; # 租约时间</span><br><span class="line">  max-lease-time 7200;</span><br><span class="line">  next-server 192.168.0.16; # tftp的服务器ip地址</span><br><span class="line">  filename "pxelinux.0"; # 下载的引导文件的名字，pxe环境的文件名字都是pxelinux.0、</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">class "foo" {</span><br><span class="line">  match if substring (option vendor-class-identifier, 0, 4) = "SUNW";</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">shared-network 224-29 {</span><br><span class="line">  subnet 10.17.224.0 netmask 255.255.255.0 {</span><br><span class="line">    option routers rtr-224.example.org;</span><br><span class="line">  }</span><br><span class="line">  subnet 10.0.29.0 netmask 255.255.255.0 {</span><br><span class="line">    option routers rtr-29.example.org;</span><br><span class="line">  }</span><br><span class="line">  pool {</span><br><span class="line">    allow members of "foo";</span><br><span class="line">    range 10.17.224.10 10.17.224.250;</span><br><span class="line">  }</span><br><span class="line">  pool {</span><br><span class="line">    deny members of "foo";</span><br><span class="line">    range 10.0.29.10 10.0.29.230;</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">[root@serverg mnt]# systemctl restart dhcpd</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="TFTP的配置" class="article-heading"><a href="#TFTP的配置" class="headerlink" title="TFTP的配置"></a>TFTP的配置<a class="article-anchor" href="#TFTP的配置" aria-hidden="true"></a></h3><p>PXE(Preboot Execution Environment)是由Intel设计的协议，它可以使计算机通过网络启动。协议分为客户端和服务器两端，PXE 客户端在网卡的ROM中，当计算机引导时BIOS把PXE客户端调入内存执行，并显示出命令菜单，经用户选择后，PXE客户端将放置在远端的操作系统通过网络下载到本地运行。PXE协议的成功运行需要解决以下两个问题：第一，IP由谁和如何分配分配;第二，客户端所需系统内核和其他文件从哪里得到。</p>
+<p>对于第一个问题，可以通过DHCP 服务解决，由DHCP 服务来给PXE 客户端分配一个IP地址，同时在配置DHCP Server时，需要增加相应的PXE特有配置。比如告诉PXE客户端所需文件到哪里找。至于第二个问题，在PXE 客户端所在的ROM中，已经存在了TFTP 客户端。PXE客户端使用TFTP 客户端，通过TFTP协议到TFTP 服务器上下载所需的文件。</p>
+<p>1）tftp的安装</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@serverg mnt]# yum -y install tftp-server</span><br><span class="line">[root@serverg mnt]# ll -d /var/lib/tftpboot/</span><br><span class="line">drwxr-xr-x. 2 root root 6 Jan 27  2014 /var/lib/tftpboot/</span><br></pre></td></tr></tbody></table></figure>
+
+<p>2）配置pxelinux.0相关文件</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@serverg mnt]# yum -y install syslinux   # pxelinux.0文件由该软件提供</span><br><span class="line">[root@serverg mnt]# cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/ # 将pxelinux.0的引导放至共享目录下。</span><br><span class="line">[root@serverg tftpboot]# mkdir pxelinux.cfg</span><br><span class="line">[root@serverg tftpboot]# cd pxelinux.cfg/</span><br><span class="line">[root@serverg pxelinux.cfg]# ls</span><br><span class="line">[root@serverg pxelinux.cfg]# touch default  # 建立pxelinux的相关配置文件，配置文件名称固定为default</span><br><span class="line">[root@serverg pxelinux.cfg]# pwd</span><br><span class="line">/var/lib/tftpboot/pxelinux.cfg</span><br><span class="line">[root@serverg pxelinux.cfg]# vim default</span><br><span class="line">default vesamenu.c32 # 提供图形界面</span><br><span class="line">timeout 60 # 超时时间</span><br><span class="line">display boot.msg # 介绍信息</span><br><span class="line">menu background splash.jpg # 背景图片</span><br><span class="line">menu title Welcome to Global Learning Services Setup! 　# 大标题</span><br><span class="line"></span><br><span class="line">label local  # 标签</span><br><span class="line">        menu label Boot from ^local drive #　标题</span><br><span class="line">        menu default　# 指定超时时间里没选标题，默认从那个标题进入</span><br><span class="line">        localhost 0xffff # 本地启动位置</span><br><span class="line"></span><br><span class="line">label install</span><br><span class="line">        menu label Install rhel7</span><br><span class="line">        kernel vmlinuz　# 内核所在位置</span><br><span class="line">        append initrd=initrd.img ks=http://192.168.0.16/myks.cfg # 指定initrd文件及后续kickstart文件所在位置</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>3）相关文件放置到/var/lib/tftpboot</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@serverg ~]# cd /mnt/rhel7.1/x86_64/dvd/isolinux</span><br><span class="line">[root@serverg isolinux]# cp boot.msg vmlinuz vesamenu.c32 initrd.img /var/lib/tftpboot/</span><br></pre></td></tr></tbody></table></figure>
+
+<p>4）启动TFTP服务端</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@serverg html]# vim /etc/xinetd.d/tftp</span><br><span class="line">service tftp</span><br><span class="line">{</span><br><span class="line">        socket_type             = dgram</span><br><span class="line">        protocol                = udp</span><br><span class="line">        wait                    = yes</span><br><span class="line">        user                    = root</span><br><span class="line">        server                  = /usr/sbin/in.tftpd</span><br><span class="line">        server_args             = -s /var/lib/tftpboot</span><br><span class="line">        disable                 = no</span><br><span class="line">        per_source              = 11</span><br><span class="line">        cps                     = 100 2</span><br><span class="line">        flags                   = IPv4</span><br><span class="line">}</span><br><span class="line">[root@serverg html]# systemctl restart xinetd</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="kickstart文件的部署" class="article-heading"><a href="#kickstart文件的部署" class="headerlink" title="kickstart文件的部署"></a>kickstart文件的部署<a class="article-anchor" href="#kickstart文件的部署" aria-hidden="true"></a></h3><p>1）编辑kickstart自动应答文件，该文件可以自己手动编辑也可通过图形化界面编辑</p>
+<p>图形化编辑工具</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@workstation ~]# yum -y install system-config-kickstart</span><br><span class="line">[root@workstation ~]# system-config-kickstart</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pxe/2.png"></p>
+<p>也可以直接修改kickstart文件</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@serverg ~]# cp anaconda-ks.cfg /var/www/html/</span><br><span class="line">[root@serverg ~]# cd /var/www/html/</span><br><span class="line">[root@serverg html]# mv anaconda-ks.cfg myks.cfg</span><br><span class="line">[root@serverg html]# vim myks.cfg</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">version=RHEL7</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">System authorization information</span></span><br><span class="line">auth --enableshadow --passalgo=sha512</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Reboot after installation</span></span><br><span class="line">reboot # 装完系统之后是否重启</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Use network installation</span></span><br><span class="line">url --url="http://192.168.0.16/dvd/"  # 网络安装介质所在位置</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Use graphical install</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">graphical</span></span><br><span class="line">text # 采用字符界面安装</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Firewall configuration</span></span><br><span class="line">firewall --enabled --service=ssh  # 防火墙的配置</span><br><span class="line">firstboot --disable</span><br><span class="line">ignoredisk --only-use=vda</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Keyboard layouts</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">old format: keyboard us</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">new format:</span></span><br><span class="line">keyboard --vckeymap=us --xlayouts='us' # 键盘的配置</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">System language</span></span><br><span class="line">lang en_US.UTF-8 # 语言制式的设置</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Network information</span></span><br><span class="line">network  --bootproto=dhcp # 网络设置</span><br><span class="line">network  --hostname=localhost.localdomain</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">repo --name=<span class="string">"Server-ResilientStorage"</span> --baseurl=http://download.eng.bos.redhat.com/rel-eng/latest-RHEL-7/compose/Server/x86_64/os//addons/ResilientStorage</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Root password</span></span><br><span class="line">rootpw --iscrypted nope</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">SELinux configuration</span></span><br><span class="line">selinux --disabled</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">System services</span></span><br><span class="line">services --disabled="kdump,rhsmcertd" --enabled="network,sshd,rsyslog,ovirt-guest-agent,chronyd"</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">System timezone</span></span><br><span class="line">timezone Asia/Shanghai --isUtc</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">System bootloader configuration</span></span><br><span class="line">bootloader --append="console=tty0 crashkernel=auto" --location=mbr --timeout=1 --boot-drive=vda</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置boot loader安装选项 --append指定内核参数 --location 设定引导记录的位置</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Clear the Master Boot Record</span></span><br><span class="line">zerombr # 清空MBR</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Partition clearing information</span></span><br><span class="line">clearpart --all --initlabel # 清空分区信息</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Disk partitioning information</span></span><br><span class="line">part / --fstype="xfs" --ondisk=vda --size=6144 # 设置根目录的分区情况</span><br><span class="line"><span class="meta prompt_">%</span><span class="language-bash">post <span class="comment"># 装完系统后执行脚本部分</span></span></span><br><span class="line">echo "redhat" | passwd --stdin root</span><br><span class="line">useradd carol</span><br><span class="line">echo "redhat" | passwd --stdin carol</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">workaround anaconda requirements</span></span><br><span class="line"><span class="meta prompt_">%</span><span class="language-bash">end</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">%</span><span class="language-bash">packages <span class="comment"># 需要安装的软件包</span></span></span><br><span class="line">@core</span><br><span class="line"><span class="meta prompt_">%</span><span class="language-bash">end</span></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>配置httpd的共享服务，将myks.cfg和安装介质放置到/var/www/html目录下</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@serverg ~]# yum -y install httpd</span><br><span class="line">[root@serverg rhel7.1]# cd /var/www/html/</span><br><span class="line">[root@serverg html]# ls</span><br><span class="line">myks.cfg</span><br><span class="line">[root@serverg html]# chown apache myks.cfg</span><br><span class="line">[root@serverg html]# mkdir dvd</span><br><span class="line">[root@serverg html]# cd /mnt/rhel7.1/x86_64/isos</span><br><span class="line">[root@serverg isos]# mount -o loop rhel-server-7.1-x86_64-dvd.iso /var/www/html/dvd/</span><br><span class="line">[root@serverg html]# systemctl restart httpd</span><br></pre></td></tr></tbody></table></figure>
+
+<p>至此，整体安装完成。</p>
+<p>打开install虚拟机测试，测试结果略</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:54.958Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E6%97%A0%E4%BA%BA%E5%80%BC%E5%AE%88%E5%AE%89%E8%A3%85"><span class="toc-text">网络无人值守安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E7%AE%80%E4%BB%8B"><span class="toc-text">流程简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DHCP-%E9%83%A8%E7%BD%B2"><span class="toc-text">DHCP 部署</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#DHCP-%E7%AE%80%E4%BB%8B"><span class="toc-text">DHCP 简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DHCP-%E9%85%8D%E7%BD%AE"><span class="toc-text">DHCP 配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TFTP%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="toc-text">TFTP的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#kickstart%E6%96%87%E4%BB%B6%E7%9A%84%E9%83%A8%E7%BD%B2"><span class="toc-text">kickstart文件的部署</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

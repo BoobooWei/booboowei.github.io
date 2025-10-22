@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>RDS高负载和查询效率低的混合场景性能优化 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/cloud/aliyun/rds/rds_lab_01">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/cloud/aliyun/rds/rds_lab_01" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="实验概述RDS MySQL 使用过程中，会遇到CPU使用率过高甚至达到100%的情况。该实验模拟生产中QPS负载高和查询效率低的混合场景，需要学生对CPU问题进行排查并优化。 该场景中RDS For MySQL CPU使用率上升原因有以下两点：  应用负载（QPS）变高 慢查询  为何慢SQL会导致CPU高呢？ 应用提交查询操作或数据修改操作时，系统需要执行大量的逻辑读操作，其中逻辑IO包含执行查">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RDS高负载和查询效率低的混合场景性能优化">
+<meta property="og:url" content="http://www.toberoot.com/cloud/aliyun/rds/rds_lab_01">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="实验概述RDS MySQL 使用过程中，会遇到CPU使用率过高甚至达到100%的情况。该实验模拟生产中QPS负载高和查询效率低的混合场景，需要学生对CPU问题进行排查并优化。 该场景中RDS For MySQL CPU使用率上升原因有以下两点：  应用负载（QPS）变高 慢查询  为何慢SQL会导致CPU高呢？ 应用提交查询操作或数据修改操作时，系统需要执行大量的逻辑读操作，其中逻辑IO包含执行查">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.095Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:51.766Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">RDS高负载和查询效率低的混合场景性能优化</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/cloud/aliyun/rds/rds_lab_01.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h1 id="实验概述" class="article-heading"><a href="#实验概述" class="headerlink" title="实验概述"></a>实验概述<a class="article-anchor" href="#实验概述" aria-hidden="true"></a></h1><p>RDS MySQL 使用过程中，会遇到CPU使用率过高甚至达到100%的情况。该实验模拟生产中QPS负载高和查询效率低的混合场景，需要学生对CPU问题进行排查并优化。</p>
+<p>该场景中RDS For MySQL CPU使用率上升原因有以下两点：</p>
+<ol>
+<li>应用负载（QPS）变高</li>
+<li>慢查询</li>
+</ol>
+<p>为何慢SQL会导致CPU高呢？</p>
+<p>应用提交查询操作或数据修改操作时，系统需要执行大量的逻辑读操作，其中逻辑IO包含执行查询所需访问表的数据行数。所以系统需要消耗大量的CPU资源以维护从存储系统读取到内存中的数据一致性。</p>
+<blockquote>
+<p>提示：大量行锁冲突、行锁等待或后台任务也有可能会导致实例的CPU使用率过高，本实验中已排除这些因素。</p>
+</blockquote>
+<p>属于 QPS 高和查询效率低的混合模式导致的 CPU 使用率高，建议从优化查询入手。</p>
+<h2 id="实验目的" class="article-heading"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的<a class="article-anchor" href="#实验目的" aria-hidden="true"></a></h2><p>完成此实验后，可以掌握的能力有：</p>
+<p>1）RDS 实例CPU问题的诊断方法。</p>
+<p>2）RDS 实例QPS负载高和查询效率低的混合场景导致的CPU问题的优化方法。</p>
+<h1 id="实验准备" class="article-heading"><a href="#实验准备" class="headerlink" title="实验准备"></a>实验准备<a class="article-anchor" href="#实验准备" aria-hidden="true"></a></h1><p>本实验需要开通的资源：开通专有网络VPC、创建 RDS MySQL 5.7 1台、开通DMS企业版、开通DAS、云监控CMS。通过以下步骤完成实验准备。</p>
+<h2 id="开通实例" class="article-heading"><a href="#开通实例" class="headerlink" title="开通实例"></a>开通实例<a class="article-anchor" href="#开通实例" aria-hidden="true"></a></h2><p>1 登录阿里云管理控制台，进入云数据库RDS实例的管理页面。</p>
+<ol>
+<li>点击 <strong>控制台url</strong> ，进入阿里云管理控制台登录界面；</li>
+<li>在阿里云登录页面，输入本实验提供的 <strong>子用户名称</strong> 和 <strong>子用户密码</strong> ，并点击 <strong>登录</strong> ；</li>
+</ol>
+<p><img src="pic/01.png" alt="屏幕快照 2020-09-09 上午10"><img src="pic/02.png" alt="屏幕快照 2020-09-09 上午10"></p>
+<ol start="3">
+<li>在阿里云管理控制台，点击顶部 <strong>产品与服务</strong> ，在弹出的下拉菜单中，依次点击 <strong>数据库 —&gt; 云数据库RDS</strong> ，进入RDS数据库的管理页面；</li>
+</ol>
+<p><img src="pic/03.png" alt="屏幕快照 2020-09-09 上午10"></p>
+<ol start="4">
+<li>购买按量付费RDS实例</li>
+<li>在 <strong>实例列表</strong> 页面中，选择 <strong>实验资源</strong> 中提供的 <strong>地域</strong>，然后在 <strong>搜索框</strong> 中，输入本 <strong>实验资源</strong> 提供的 <strong>RDS实例ID</strong> 并点击 <strong>搜索</strong>，找到本 <strong>实验资源</strong> 提供的RDS实例ID，点击 <strong>管理</strong> ，进入RDS实例的管理页面。</li>
+</ol>
+<p><img src="pic/04.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<h2 id="创建数据库账号" class="article-heading"><a href="#创建数据库账号" class="headerlink" title="创建数据库账号"></a>创建数据库账号<a class="article-anchor" href="#创建数据库账号" aria-hidden="true"></a></h2><p>创建RDS数据库账号和密码：demo_user/Demo@User</p>
+<p>1）点击左侧栏 <strong>账号管理</strong> ，右侧中心页面进入 账号管理 页面；</p>
+<p>2）点击右侧中心页面 <strong>创建账号</strong> ，创建数据库账号；</p>
+<p><img src="pic/05.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<p>3）根据命名提示，输入 <strong>数据库账号</strong> 和 <strong>密码</strong>：</p>
+<ul>
+<li>数据库账号：demo_user</li>
+<li>密码：Demo@User</li>
+<li>账号类型：普通账号</li>
+</ul>
+<p><img src="pic/06.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<p>4）完成如上操作后，点击 确定 ；</p>
+<p>5）返回 账号管理 页面，新建账号 demo_user 的状态为 <strong>激活</strong>。</p>
+<p><img src="pic/07.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<h2 id="创建数据库" class="article-heading"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库<a class="article-anchor" href="#创建数据库" aria-hidden="true"></a></h2><p>创建RDS数据库：demo_db</p>
+<p>1）点击左侧栏的 <strong>数据库管理</strong> ，进入数据库管理页面；</p>
+<p>2）在右侧的 <strong>数据库管理</strong> 页面，点击 <strong>创建数据库</strong> ，进入创建页面；</p>
+<p><img src="pic/08.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<p>3）在创建页面中，添加如下信息：</p>
+<ul>
+<li>数据库（DB）名称：根据输入框下端的命名规则 ，输入数据库名称：<strong>demo_db</strong> 。</li>
+<li>支持字符集：<strong>utf8</strong></li>
+<li>授权帐号：选择之前新建的数据库账号 <strong>demo_user</strong>。</li>
+<li>账号类型：设置为 <strong>读写</strong></li>
+</ul>
+<p><img src="pic/09.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<p>4）完成如上配置信息后，点击底部的 <strong>创建</strong> ，完成数据库的创建。</p>
+<p>5）返回数据库管理页面可以看到新建的 <strong>数据库名</strong>、<strong>数据库状态</strong>、<strong>绑定账号</strong> 等，此时数据库状态为创建中，等待1分钟左右，点击右上角的 <strong>刷新</strong> ，可以查看到数据库状态为 <strong>运行中</strong> 且 <strong>绑定账号</strong> 为新建数据库账号 <strong>demo_user</strong> 。</p>
+<p><img src="pic/10.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<h2 id="登陆DMS" class="article-heading"><a href="#登陆DMS" class="headerlink" title="登陆DMS"></a>登陆DMS<a class="article-anchor" href="#登陆DMS" aria-hidden="true"></a></h2><p>1）在 数据库管理 页面，点击 <strong>登陆数据库</strong>，登陆DMS控制台；</p>
+<p><img src="pic/11.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<p>2）在弹出的 <strong>登陆实例</strong> 对话框，检查 <strong>数据库类型、实例地区、实例ID</strong> 是否是 <strong>实验资源</strong> 中的信息，并输入之前创建的 <strong>数据库账号和密码：demo_user/Demo@User</strong> ，点击 <strong>测试连接</strong> ，通过后点击 <strong>登录</strong> ；</p>
+<p><img src="pic/12.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<p>注意：若弹出 <strong>白名单问题</strong> ，点击 <strong>设置白名单</strong> ，或者直接点击 <strong>关闭对话框</strong> 。</p>
+<p><img src="pic/13.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<h2 id="执行SQL" class="article-heading"><a href="#执行SQL" class="headerlink" title="执行SQL"></a>执行SQL<a class="article-anchor" href="#执行SQL" aria-hidden="true"></a></h2><p>执行SQL，创建表table_demo，并导入数据。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"># 创建测试表 table_demo</span><br><span class="line"># 存储过程test1会自动导入1千万行数据到table_demo表中</span><br><span class="line"># 存储过程test2和test3用于模拟高负载和慢查询的场景</span><br><span class="line">CREATE TABLE table_demo(</span><br><span class="line">id int primary key auto_increment,</span><br><span class="line">uname  varchar(20) ,</span><br><span class="line">ucreatetime  datetime  ,</span><br><span class="line">age  int(11)) DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;</span><br><span class="line"></span><br><span class="line">delimiter $</span><br><span class="line">create  procedure test1()</span><br><span class="line">begin</span><br><span class="line">declare v_cnt decimal (10)  default 0 ;</span><br><span class="line">start transaction;</span><br><span class="line">dd:loop</span><br><span class="line"></span><br><span class="line">        insert  into table_demo values</span><br><span class="line">        (null,'用户1',sysdate(),20),</span><br><span class="line">        (null,'用户2',sysdate(),20),</span><br><span class="line">        (null,'用户3',sysdate(),20),</span><br><span class="line">        (null,'用户4',sysdate(),20),</span><br><span class="line">        (null,'用户5',sysdate(),20),</span><br><span class="line">        (null,'用户6',sysdate(),20),</span><br><span class="line">        (null,'用户7',sysdate(),20),</span><br><span class="line">        (null,'用户8',sysdate(),20),</span><br><span class="line">        (null,'用户9',sysdate(),20),</span><br><span class="line">        (null,'用户0',sysdate(),20)</span><br><span class="line">                ;</span><br><span class="line">        set v_cnt = v_cnt+10 ;</span><br><span class="line">            if  v_cnt = 10000000 then leave dd;</span><br><span class="line">            end if;</span><br><span class="line">        end loop dd ;</span><br><span class="line">commit;</span><br><span class="line">end $</span><br><span class="line"></span><br><span class="line">delimiter $</span><br><span class="line">CREATE DEFINER=`demo_user`@`%` PROCEDURE `test2`()</span><br><span class="line">begin</span><br><span class="line">declare v_cnt decimal (10)  default 0 ;</span><br><span class="line">start transaction;</span><br><span class="line">dd:loop</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        insert  into table_demo values</span><br><span class="line">        (null,'用户-test',sysdate(),20);</span><br><span class="line">        select count(*) from  table_demo where uname='用户-test';</span><br><span class="line">        set v_cnt = v_cnt+1 ;</span><br><span class="line">            if  v_cnt = 10 then leave dd;</span><br><span class="line">            end if;</span><br><span class="line">        end loop dd ;</span><br><span class="line">commit;</span><br><span class="line">end $</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">delimiter $</span><br><span class="line">CREATE DEFINER=`demo_user`@`%` PROCEDURE `test3`()</span><br><span class="line">begin</span><br><span class="line">declare v_cnt decimal (10)  default 0 ;</span><br><span class="line">-- start transaction;</span><br><span class="line">dd:loop</span><br><span class="line">        select count(*) from  table_demo where uname='用户-test';</span><br><span class="line">        set v_cnt = v_cnt+1 ;</span><br><span class="line">            if  v_cnt = 1000 then leave dd;</span><br><span class="line">            end if;</span><br><span class="line">        end loop dd ;</span><br><span class="line">-- commit;</span><br><span class="line">end $</span><br><span class="line">delimiter ;</span><br><span class="line">call test1();</span><br></pre></td></tr></tbody></table></figure>
+
+<p>1）在DMS控制台的 <strong>搜索框</strong>，输入 <strong>实验资源</strong> 提供的 <strong>RDS实例ID</strong> ，并点击 <strong>搜索</strong> ，在 <strong>已登录实例</strong> ，<strong>双击 demo_db</strong>，在右侧弹出的 <strong>SQL Console</strong> 中，输入以上 <strong>SQL</strong> 并点击 <strong>执行</strong> ，可以看到有5条执行结果；</p>
+<p><img src="pic/14.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<p>2）在中间 <strong>表</strong> 部分，点击 <strong>刷新</strong> ，可以看到新创建的 <strong>table_demo表</strong> ，执行如下SQL语句，可以看到已导入 <strong>10000000</strong> 条数据；</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">SELECT COUNT(*) FROM `table_demo`</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/15.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<p>3）在中间 <strong>可编程对象</strong> 部分，可以看到 <strong>存储过程 ：test1、test2、test3</strong> ，至此实验准备已完成。</p>
+<p><img src="pic/16.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<h2 id="实验资源" class="article-heading"><a href="#实验资源" class="headerlink" title="实验资源"></a>实验资源<a class="article-anchor" href="#实验资源" aria-hidden="true"></a></h2><p><img src="pic/17.png" alt="image-20200916093650525"></p>
+<h1 id="实验步骤" class="article-heading"><a href="#实验步骤" class="headerlink" title="实验步骤"></a>实验步骤<a class="article-anchor" href="#实验步骤" aria-hidden="true"></a></h1><h2 id="配置告警规则" class="article-heading"><a href="#配置告警规则" class="headerlink" title="配置告警规则"></a>配置告警规则<a class="article-anchor" href="#配置告警规则" aria-hidden="true"></a></h2><blockquote>
+<p>通过云监控CMS为RDS配置CPU报警规则</p>
+</blockquote>
+<p>第一步： 在RDS管理控制台，进入 <strong>实例管理</strong> ，在上方选择实例所在 <strong>地域</strong>，点击左侧菜单栏的 <strong>监控与报警</strong> ，在右侧点击 <strong>报警</strong> ，可以看到目前还未设置任何报警，点击 <strong>报警规则设置</strong> ，进入云监控控制台；</p>
+<p><img src="pic/18.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<p>第二步：在报警规则页点击 <strong>创建报警规则</strong> ；</p>
+<p><img src="pic/19.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<p>若弹出如下对话框，点击 <strong>升配监控频率</strong> 。</p>
+<p><img src="pic/20.png" alt="屏幕快照 2020-09-09 上午11"></p>
+<p>在 <strong>设置报警规则</strong> 中，填写 <strong>告警规则</strong> ：</p>
+<p><strong>规则名称：CPU使用率超过80%</strong></p>
+<p><strong>规则描述：CPU使用率、1分钟周期、持续3个周期、平均值&gt;=80%</strong></p>
+<p><img src="pic/21.png" alt="img"></p>
+<p>在 <strong>通知方式</strong> ，选择 <strong>通知对象 、报警级别</strong> ，然后点击 <strong>确定</strong> 。</p>
+<p><img src="pic/22.png" alt="img"></p>
+<p>注意：若 <strong>无联系人通知组</strong> ，可在 <strong>通知方式</strong> 的 <strong>通知对象</strong> 下，点击 <strong>快速创建联系人组</strong> 进行创建；输入 <strong>组名、选择联系人</strong> ，若无联系人，可点击 <strong>新建联系人</strong> 进行创建；</p>
+<p><img src="pic/23.png" alt="img"></p>
+<p><img src="https://edu.aliyun.com/labadmin/providers/my-courses/sections/65555570b4424115a5e1471a2b2bba21/editing" alt="img"></p>
+<p>输入报警联系人信息：<strong>姓名、手机号码、邮箱、钉钉机器人</strong>（可参考文档 <strong>如何获得钉钉机器人地址</strong>），点击 <strong>保存</strong> ；创建完成报警联系人后，返回 <strong>创建报警规则</strong>，并选择创建的 <strong>报警联系人</strong> 和 <strong>联系人通知组</strong> 。</p>
+<p><img src="pic/24.png" alt="img"></p>
+<p>第三步：查看配置完成的报警规则 <strong>CPU使用率</strong> ，另外还可以配置 <strong>内存使用率、连接数使用率</strong> 等。</p>
+<p><img src="pic/25.png" alt="course-5f30f52a18234433a05002715c01db02-section-65555570b4424115a5e1471a2b2bba21-content-image-1599534340201-khl8Zc"></p>
+<h2 id="模拟CPU问题" class="article-heading"><a href="#模拟CPU问题" class="headerlink" title="模拟CPU问题"></a>模拟CPU问题<a class="article-anchor" href="#模拟CPU问题" aria-hidden="true"></a></h2><blockquote>
+<p>模拟QPS负载高和查询效率低的混合场景导致的CPU问题</p>
+</blockquote>
+<p>第一步：登陆DMS控制台，输入用户名和密码demo_user/Demo@User，访问demo_db库</p>
+<p><img src="pic/26.png" alt="img"></p>
+<p>第二步：选中 <strong>demo_db</strong> ，打开9个SQLConsole窗口，分别执行 <strong>call test2();</strong> 打开第10个SQLConsole窗口，执行 <strong>call test3();</strong></p>
+<p><img src="pic/27.png" alt="img"></p>
+<p><img src="pic/28.png" alt="img"></p>
+<p>第三步：等待执行完成，并查看 <strong>执行历史</strong></p>
+<p><img src="pic/29.png" alt="img"></p>
+<p>第四步：收到 <strong>钉钉、邮件、短信报警通知</strong></p>
+<p>（图片仅供参考，时间和名称会实验中操作时不同。）</p>
+<p>1.钉钉通知</p>
+<p><img src="pic/30.png" alt="IMG_8671"></p>
+<p>2.邮件通知</p>
+<p><img src="pic/31.png" alt="屏幕快照 2020-09-10 下午3"></p>
+<p>3.短信通知</p>
+<p><img src="pic/32.png" alt="IMG_8670"></p>
+<p>第五步：返回RDS控制台，进入 <strong>RDS实例管理</strong>，点击左侧 <strong>监控与报警</strong> ，在右侧页面点击 <strong>监控</strong> ，即可看到RDS <strong>资源监控</strong>：<strong>CPU使用率达到100%，超过80%</strong> ，模拟成功。</p>
+<p><img src="pic/33.png" alt="img"></p>
+<p>如下图所示，点击 <strong>引擎监控</strong> ，查看TPS/QPS监控图表，可以看到CPU飚高阶段 QPS变化趋势一致。如果想要有更明显的趋势，可以增加会话，例如开启30个会话执行 <strong>call test2();</strong></p>
+<p><img src="pic/34.png" alt="img"></p>
+<p>第六步：为了避免实验结束后收到报警提醒，删除实验中创建的报警联系人和报警联系组。</p>
+<ol>
+<li>返回云监控控制台，点击左侧菜单 <strong>报警服务</strong> 下的 <strong>报警联系人</strong> ，点击右侧页面的 <strong>删除</strong> ；</li>
+</ol>
+<p><img src="pic/45.png" alt="屏幕快照 2020-09-11 下午2"></p>
+<p>点击 <strong>确定</strong> ，删除实验中创建的报警联系人。</p>
+<p><img src="pic/35.png" alt="屏幕快照 2020-09-11 下午2"></p>
+<ol start="2">
+<li>点击 <strong>报警联系组</strong> ，点击 <strong>删除按钮</strong> ；</li>
+</ol>
+<p><img src="pic/36.png" alt="屏幕快照 2020-09-11 下午2"></p>
+<p>点击 <strong>确定</strong> ，删除实验中创建的报警联系组。</p>
+<p><img src="pic/37.png" alt="屏幕快照 2020-09-11 下午2"></p>
+<h2 id="诊断CPU问题" class="article-heading"><a href="#诊断CPU问题" class="headerlink" title="诊断CPU问题"></a>诊断CPU问题<a class="article-anchor" href="#诊断CPU问题" aria-hidden="true"></a></h2><blockquote class="note info"><strong class="note-title">步骤概览</strong><p>第一步：查看告警明细</p>
+<p>第二步：信息收集</p>
+<ol>
+<li>实例基础信息（规格、数据库版本等基础信息）</li>
+<li>诊断报告（资源使用率、慢查询、锁等）</li>
+<li>慢SQL详细信息（CPU飙高时段前后的慢SQL趋势，和慢SQL明细）</li>
+</ol>
+<p>第三步：SQL诊断优化</p>
+<p>第四步：总结CPU问题原因并提出解决建议</p>
+</blockquote>
+
+<h3 id="第一步：查看告警明细" class="article-heading"><a href="#第一步：查看告警明细" class="headerlink" title="第一步：查看告警明细"></a>第一步：查看告警明细<a class="article-anchor" href="#第一步：查看告警明细" aria-hidden="true"></a></h3><p>在云监控控制台，点击 <strong>报警服务</strong> ，<strong>报警历史</strong> ，在右侧找到对应的报警 <strong>实例ID</strong> ，点击右侧 <strong>图表</strong> ，进一步查看报警对象的情况。</p>
+<p><img src="pic/38.png" alt="img"></p>
+<h3 id="第二步：信息收集" class="article-heading"><a href="#第二步：信息收集" class="headerlink" title="第二步：信息收集"></a>第二步：信息收集<a class="article-anchor" href="#第二步：信息收集" aria-hidden="true"></a></h3><p>返回RDS管理控制台，点击左侧菜单栏的 <strong>基本信息</strong> ，搜集报警的RDS的基础信息，包括：<strong>实例信息、监控信息（资源监控、引擎监控）、日志</strong></p>
+<ol>
+<li>实例信息<br><img src="pic/39.png" alt="img"></li>
+</ol>
+<p>快速了解实例的基础配置，例如demo中使用的是1核1G 5G存储的RDS实例。</p>
+<ol start="2">
+<li>创建诊断报告</li>
+</ol>
+<p>点击RDS管理控制台左侧菜单 <strong>自治服务</strong> 下的 <strong>诊断报告</strong> ，在右侧页面点击 <strong>发起诊断</strong> 。</p>
+<p><img src="pic/40.png" alt="course-5f30f52a18234433a05002715c01db02-section-55d40cc875894ae4b448c337c8fac19f-content-image-1599535359080-297NXJ"></p>
+<p>根据告警可以将时间范围缩短在 2020年8月31日 13:05:35 -2020年8月31日 14:05:35 （参考 <strong>实验资源</strong> 提供的时间范围）。</p>
+<p><img src="pic/41.png" alt="img"></p>
+<p>点击确定，等待一分钟所有刷新，可以看到报告。</p>
+<p><img src="pic/42.png" alt="img"></p>
+<ol start="3">
+<li>查看报告</li>
+</ol>
+<p><img src="pic/43.png" alt="img"></p>
+<p><img src="https://edu.aliyun.com/lab/files/courses/5f30f52a18234433a05002715c01db02/sections/55d40cc875894ae4b448c337c8fac19f/content/images/course-5f30f52a18234433a05002715c01db02-section-55d40cc875894ae4b448c337c8fac19f-content-image-1599733365965-Lknlhk" alt="屏幕快照 2020-09-10 下午6"></p>
+<p><img src="pic/44.png" alt="img"></p>
+<p><img src="https://edu.aliyun.com/lab/files/courses/5f30f52a18234433a05002715c01db02/sections/55d40cc875894ae4b448c337c8fac19f/content/images/course-5f30f52a18234433a05002715c01db02-section-55d40cc875894ae4b448c337c8fac19f-content-image-1599535856694-lSe9O8" alt="img"></p>
+<p>从报告中，可以确定CPU飚高时段中没有死锁，但存在慢SQL，从资源监控中看到 CPU 使用率与QPS变化曲线一致。</p>
+<ol start="4">
+<li>自治服务：慢SQL</li>
+</ol>
+<p>点击RDS管理控制台左侧菜单 <strong>自治服务</strong> 下的 <strong>慢SQL</strong> ，进一步排查慢SQL的情况。</p>
+<p>选择CPU飚高时间段，如2020年8月31日 13:05:35 -2020年8月31日 14:05:35 （参考 <strong>实验资源</strong> 提供的时间范围），点击 <strong>查看</strong> 。</p>
+<p><img src="pic/46.png" alt="img"></p>
+<p>可以看到该时间段的慢SQL与报告中显示一致，均为 <strong>CALL test2()</strong>。</p>
+<ol start="5">
+<li>自治服务：一键诊断</li>
+</ol>
+<p>点击RDS管理控制台左侧菜单 <strong>自治服务</strong> 下的 <strong>一键诊断</strong> ，点击 <strong>性能洞察</strong> ，获取到真正导致慢的问题SQL为 test2存储过程中的select语句。</p>
+<p><img src="pic/47.png" alt="course-5f30f52a18234433a05002715c01db02-section-55d40cc875894ae4b448c337c8fac19f-content-image-1599535921509-GofZ1h"></p>
+<p><img src="pic/48.png" alt="img"></p>
+<p>**备注：若无 平均活跃会话 数据，可在 DMS控制台，**选中 <strong>demo_db</strong> ，打开9个SQLConsole窗口，同时执行 <strong>call test3();</strong> 然后刷新页面即可看到。</p>
+<h3 id="第三步：自治服务-SQL诊断优化" class="article-heading"><a href="#第三步：自治服务-SQL诊断优化" class="headerlink" title="第三步：自治服务-SQL诊断优化"></a>第三步：自治服务-SQL诊断优化<a class="article-anchor" href="#第三步：自治服务-SQL诊断优化" aria-hidden="true"></a></h3><p>点击 <strong>性能洞察 —&gt; 平均活跃会话数量 —&gt; 优化</strong> 按钮，进入“SQL诊断优化”窗口，等待1-3分钟，可查看 <strong>诊断结果 。</strong><img src="pic/49.png" alt="img"></p>
+<p>诊断结果提供了索引诊断建议并列出了优化后的收益，见如下内容详情：</p>
+<p><strong>索引诊断建议</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">ALTER TABLE `demo_db`.`table_demo` ADD INDEX `idx_uname` (`uname`);</span><br></pre></td></tr></tbody></table></figure>
+
+<p>优化收益：预期性能提升502959.86倍(提升倍数=旧代价/新代价-1)</p>
+<p><strong>第四步：总结CPU问题原因并提出解决建议</strong></p>
+<p><strong>CPU问题的原因</strong></p>
+<p>本次RDS For MySQL CPU使用率上升原因有以下两点：</p>
+<ol>
+<li>应用负载（QPS）变高</li>
+<li>慢查询</li>
+</ol>
+<p>属于 QPS 高和查询效率低的混合模式导致的 CPU 使用率高，建议从优化查询入手彻底解决问题。比如我们分析到本次实验中的demo_db.table_demo表，缺失索引，建议在业务低峰期添加以下索引：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">ALTER TABLE `demo_db`.`table_demo` ADD INDEX `idx_uname` (`uname`);</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>解决建议</strong></p>
+<ol>
+<li>CPU100%的情况下，若需要快速将CPU使用率降下来，可以在应用侧允许kill会话的前提下，<strong>结束全部会话</strong>。</li>
+<li>在业务低峰期对慢SQL进行优化，添加索引。</li>
+</ol>
+<p>具体步骤见下一章节。</p>
+<h1 id="处理CPU问题" class="article-heading"><a href="#处理CPU问题" class="headerlink" title="处理CPU问题"></a>处理CPU问题<a class="article-anchor" href="#处理CPU问题" aria-hidden="true"></a></h1><p>上一章节中我们已经排查出CPU问题是由于 QPS 高和查询效率低的混合模式导致，并给出了解决建议：</p>
+<ol>
+<li>CPU100%的情况下，若需要快速将CPU使用率降下来，可以在应用侧允许kill会话的前提下，结束全部会话。</li>
+<li>在业务低峰期对慢SQL进行优化，添加索引。</li>
+</ol>
+<h3 id="第一步：结束全部会话" class="article-heading"><a href="#第一步：结束全部会话" class="headerlink" title="第一步：结束全部会话"></a>第一步：结束全部会话<a class="article-anchor" href="#第一步：结束全部会话" aria-hidden="true"></a></h3><blockquote>
+<p>为了快速将CPU使用率降低下来，（实际生产中应在应用侧允许kill会话的前提下），使用 <strong>DAS</strong> 的 <strong>会话管理</strong> 功能来<strong>结束全部会话</strong>。</p>
+</blockquote>
+<ol>
+<li>点击RDS管理控制台左侧菜单 <strong>自治服务</strong> 下的 <strong>一键诊断</strong> ，点击 <strong>会话管理</strong> ，点击 <strong>结束全部会话</strong> 。</li>
+</ol>
+<p><img src="pic/50.png" alt="img"></p>
+<ol start="2">
+<li>点击弹框中的 <strong>确定</strong> 按钮。</li>
+</ol>
+<p><img src="pic/51.png" alt="img"></p>
+<ol start="3">
+<li>看到弹框中的 <strong>执行结果</strong> 列全部显示为 <strong>kill成功</strong> ，则可以点击 <strong>关闭</strong>。</li>
+</ol>
+<h3 id="第二步：添加索引" class="article-heading"><a href="#第二步：添加索引" class="headerlink" title="第二步：添加索引"></a>第二步：添加索引<a class="article-anchor" href="#第二步：添加索引" aria-hidden="true"></a></h3><blockquote>
+<p>阻塞会话全部结束后，我们选择在业务低峰期对慢SQL进行优化，按照上一章节中慢SQL优化分析的建议<strong>添加索引</strong>。</p>
+</blockquote>
+<p>索引诊断建议</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">ALTER TABLE `demo_db`.`table_demo` ADD INDEX `idx_uname` (`uname`);</span><br></pre></td></tr></tbody></table></figure>
+
+<p>打开DMS的SQLConsole窗口，复制上面的SQL命令，并点击 <strong>执行</strong>。（<em>注意一定要先完成第一步的删除所有会话再执行添加索引的操作，否则会引起锁冲突，添加索引的SQL语句执行时间大概在25秒）</em></p>
+<p><img src="https://edu.aliyun.com/lab/files/courses/5f30f52a18234433a05002715c01db02/sections/5247107ef78d480fa13967f4d49e4a80/content/images/course-5f30f52a18234433a05002715c01db02-section-5247107ef78d480fa13967f4d49e4a80-content-image-1600219416754-FaUrLY" alt="img"></p>
+<p>1）在 DMS控制台，选中 demo_db ，执行如上SQL；（注意：若还有 9个SQLConsole窗口在执行 call test3(); 中断任务后再执行如上SQL。）</p>
+<p>2）以上SQL执行完毕后，再次打开9个SQLConsole窗口，执行 call test3(); 可以看到执行速度明显加快。</p>
+<h3 id="第三步：验证结果" class="article-heading"><a href="#第三步：验证结果" class="headerlink" title="第三步：验证结果"></a>第三步：验证结果<a class="article-anchor" href="#第三步：验证结果" aria-hidden="true"></a></h3><blockquote>
+<p>索引添加完毕后，验证优化结果。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>对比</th>
+<th>优化前</th>
+<th>优化后</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>call test2();</td>
+<td>100137ms</td>
+<td>24ms</td>
+</tr>
+</tbody></table>
+<p>下图为添加索引前 test2() 的执行结果，耗时100137ms。</p>
+<p><img src="pic/52.png" alt="img"></p>
+<p>下图为添加索引后 test2() 的执行结果，耗时24ms。</p>
+<p><img src="pic/53.png" alt="img"></p>
+<h3 id="第四步：其他建议" class="article-heading"><a href="#第四步：其他建议" class="headerlink" title="第四步：其他建议"></a>第四步：其他建议<a class="article-anchor" href="#第四步：其他建议" aria-hidden="true"></a></h3><p></p><blockquote class="note warn"><strong class="note-title">避免出现 CPU 使用率达到100%影响业务的一般原则</strong><p></p>
+<p>1）云监控CMS设置 CPU 使用率报警，实例 CPU 使用率保证一定的冗余度。</p>
+<p>2）应用设计和开发过程中，要考虑查询的优化，遵守 MySQL 优化的一般优化原则，降低查询的逻辑 IO，提高应用可扩展性。</p>
+<p>3）新功能、新模块上线前，要使用生产环境数据进行压力测试（可以考虑使用阿里云 PTS 压力测试工具）。</p>
+<p>4）建议经常关注慢查询日志和使用DAS中的诊断报告。</p></blockquote>
+
+<p>到此CPU问题处理结束。</p>
+<h1 id="思考与讨论" class="article-heading"><a href="#思考与讨论" class="headerlink" title="思考与讨论"></a>思考与讨论<a class="article-anchor" href="#思考与讨论" aria-hidden="true"></a></h1><ol>
+<li><p>通过本次实验，思考并探索云数据RDS CPU问题的诊断与解决方法。</p>
+</li>
+<li><p>进一步了解并应用避免出现 CPU 使用率达到 100% 影响业务的一般原则。</p>
+</li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:51.766Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/cloud/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%A6%82%E8%BF%B0"><span class="toc-text">实验概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E7%9B%AE%E7%9A%84"><span class="toc-text">实验目的</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E5%87%86%E5%A4%87"><span class="toc-text">实验准备</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E9%80%9A%E5%AE%9E%E4%BE%8B"><span class="toc-text">开通实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B4%A6%E5%8F%B7"><span class="toc-text">创建数据库账号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">创建数据库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BB%E9%99%86DMS"><span class="toc-text">登陆DMS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A7%E8%A1%8CSQL"><span class="toc-text">执行SQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E8%B5%84%E6%BA%90"><span class="toc-text">实验资源</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%AD%A5%E9%AA%A4"><span class="toc-text">实验步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%91%8A%E8%AD%A6%E8%A7%84%E5%88%99"><span class="toc-text">配置告警规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E6%8B%9FCPU%E9%97%AE%E9%A2%98"><span class="toc-text">模拟CPU问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%8A%E6%96%ADCPU%E9%97%AE%E9%A2%98"><span class="toc-text">诊断CPU问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E6%9F%A5%E7%9C%8B%E5%91%8A%E8%AD%A6%E6%98%8E%E7%BB%86"><span class="toc-text">第一步：查看告警明细</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">第二步：信息收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E8%87%AA%E6%B2%BB%E6%9C%8D%E5%8A%A1-SQL%E8%AF%8A%E6%96%AD%E4%BC%98%E5%8C%96"><span class="toc-text">第三步：自治服务-SQL诊断优化</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%84%E7%90%86CPU%E9%97%AE%E9%A2%98"><span class="toc-text">处理CPU问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E7%BB%93%E6%9D%9F%E5%85%A8%E9%83%A8%E4%BC%9A%E8%AF%9D"><span class="toc-text">第一步：结束全部会话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E6%B7%BB%E5%8A%A0%E7%B4%A2%E5%BC%95"><span class="toc-text">第二步：添加索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E9%AA%8C%E8%AF%81%E7%BB%93%E6%9E%9C"><span class="toc-text">第三步：验证结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E5%85%B6%E4%BB%96%E5%BB%BA%E8%AE%AE"><span class="toc-text">第四步：其他建议</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%80%83%E4%B8%8E%E8%AE%A8%E8%AE%BA"><span class="toc-text">思考与讨论</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">开始使用</strong><a href="/cloud/index.html" class="sidebar-link">概览</a><a href="/cloud/aliyun/index.html" class="sidebar-link">阿里云</a><a href="/cloud/tencent/index.html" class="sidebar-link">腾讯云</a><a href="/cloud/aws/index.html" class="sidebar-link">亚马逊云</a><a href="/cloud/azure/index.html" class="sidebar-link">微软云</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">开始使用</strong><a href="/cloud/index.html" class="mobile-nav-link">概览</a><a href="/cloud/aliyun/index.html" class="mobile-nav-link">阿里云</a><a href="/cloud/tencent/index.html" class="mobile-nav-link">腾讯云</a><a href="/cloud/aws/index.html" class="mobile-nav-link">亚马逊云</a><a href="/cloud/azure/index.html" class="mobile-nav-link">微软云</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

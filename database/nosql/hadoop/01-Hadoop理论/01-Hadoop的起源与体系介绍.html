@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Hadoop的起源与体系介绍 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/nosql/hadoop/01-Hadoop%E7%90%86%E8%AE%BA/01-Hadoop%E7%9A%84%E8%B5%B7%E6%BA%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E4%BB%8B%E7%BB%8D">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/nosql/hadoop/01-Hadoop%E7%90%86%E8%AE%BA/01-Hadoop%E7%9A%84%E8%B5%B7%E6%BA%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E4%BB%8B%E7%BB%8D" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="这个讲义比较老，但是原理讲得非常细致，建议作为学习的第一部分。   1998@The Anatomy of a Large-Scale Hypertextual Web Search Engine 1998@The PageRank Citation Ranking: Bringing Order to the Web 2003@ai.google@The Google File System 2">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hadoop的起源与体系介绍">
+<meta property="og:url" content="http://www.toberoot.com/database/nosql/hadoop/01-Hadoop%E7%90%86%E8%AE%BA/01-Hadoop%E7%9A%84%E8%B5%B7%E6%BA%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E4%BB%8B%E7%BB%8D">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="这个讲义比较老，但是原理讲得非常细致，建议作为学习的第一部分。   1998@The Anatomy of a Large-Scale Hypertextual Web Search Engine 1998@The PageRank Citation Ranking: Bringing Order to the Web 2003@ai.google@The Google File System 2">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.875Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:36.725Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Hadoop的起源与体系介绍</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/nosql/hadoop/01-Hadoop理论/01-Hadoop的起源与体系介绍.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><p><em>这个讲义比较老，但是原理讲得非常细致，建议作为学习的第一部分。</em></p>
+<p><img src="pic/29.png"></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://infolab.stanford.edu/pub/papers/google.pdf">1998@The Anatomy of a Large-Scale Hypertextual Web Search Engine</a></li>
+<li><a href="hadoop_pdf/Google/pageranksub.pdf">1998@The PageRank Citation Ranking: Bringing Order to the Web</a></li>
+<li><a target="_blank" rel="noopener" href="https://ai.google/research/pubs/pub51">2003@ai.google@The Google File System</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.usenix.org/legacy/events/osdi04/tech/full_papers/dean/dean.pdf">2004@www.usenix.org@MapReduce: Simplified Data Processing on Large Clusters</a>–</li>
+<li><a target="_blank" rel="noopener" href="https://ai.google/research/pubs/pub62">2004@ai.google@MapReduce: Simplified Data Processing on Large Clusters</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.usenix.org/legacy/event/osdi06/tech/chang/chang_html/index.html">2006@www.usenix.org@Bigtable: A Distributed Storage System for Structured Data</a></li>
+<li><a target="_blank" rel="noopener" href="https://ai.google/research/pubs/pub36948">2010@ai.google@MapReduce/Bigtable for Distributed Optimization</a></li>
+</ul>
+<p>国内中文翻译参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/BoobooWei/booboo_hadoop/blob/master/hadoop_pdf/Google/Google-File-System%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf">Google-GFS 中文</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/BoobooWei/booboo_hadoop/blob/master/hadoop_pdf/Google/Google-MapReduce%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf">Google-MapReduce 中文</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/BoobooWei/booboo_hadoop/blob/master/hadoop_pdf/Google/Google-Bigtable%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf">Google-Bigtable 中文</a></li>
+</ul>
+<h2 id="Hadoop的思想之源：Google" class="article-heading"><a href="#Hadoop的思想之源：Google" class="headerlink" title="Hadoop的思想之源：Google"></a>Hadoop的思想之源：Google<a class="article-anchor" href="#Hadoop的思想之源：Google" aria-hidden="true"></a></h2><p>Google搜索引擎，Gmail，安卓，AppspotGoogle Maps，Google earth，Google学术，Google翻译，Google+，下一步Google what？？</p>
+<p>大家比较熟悉的Google产品：</p>
+<ul>
+<li>google搜索引擎 <a target="_blank" rel="noopener" href="http://www.google.com.hk/">www.google.com.hk</a></li>
+<li>google学术搜索 <a href="scholar.google.com.hk">scholar.google.com.hk</a></li>
+<li>android操作系统</li>
+<li>Chrome</li>
+</ul>
+<p>Hadoop几乎是google搜索引擎有关技术的百分之一百的山寨版。</p>
+<h3 id="Google的低成本之道" class="article-heading"><a href="#Google的低成本之道" class="headerlink" title="Google的低成本之道"></a>Google的低成本之道<a class="article-anchor" href="#Google的低成本之道" aria-hidden="true"></a></h3><ul>
+<li>不使用超级计算机，不使用存储（淘宝的去i，去e，去o之路）</li>
+<li>大量使用普通的pc服务器（去掉机箱，外设，硬盘），提供有冗余的集群服务</li>
+<li>全世界多个数据中心，有些附带发电厂</li>
+<li>运营商向Google倒付费</li>
+</ul>
+<p><img src="pic/02.png" alt="1536300752547"></p>
+<h3 id="集装箱数据中心" class="article-heading"><a href="#集装箱数据中心" class="headerlink" title="集装箱数据中心"></a>集装箱数据中心<a class="article-anchor" href="#集装箱数据中心" aria-hidden="true"></a></h3><ul>
+<li>位于 Mountain View， Calif 总部的数据中心</li>
+<li>总功率为10000千瓦，拥有45个集装箱，每个集装箱中有1160台服务器，该数据中心的能效比为1.25（ PUE 为 1 表示数据中心没有能源损耗，而根据2006年的统计，一般公司数据中心的能效比为 2.0 或更高。Google 的 1.16 已经低于美国能源部2011年的1.2 的目标）</li>
+</ul>
+<p>Google作为一家互联网公司，在创业的时候是很穷的，创始人是两个大学生。当然现在已经发财了，大发特发，但是当初那种节约的思想到今天还在持续。</p>
+<p>实际上在世界上任何一家互联网公司，一般来说都是比较省的，为什么呢？因为互联网公司的营业模式通常都会不是很成熟，前期都会很烧钱，烧完钱后还能不能继续下去还是个未知数，因此遇到烧钱的事都会比较谨慎，他们很可能不会去购买很昂贵的硬件。</p>
+<p>那么像Google这么大的规模，如果在一台超级计算机上跑，像天河那种估计也跑不动，如果去买很多超级计算机，那估计没有这个能力。另外像Google的信息量非常大，需要很大的存储，而存储也很贵。还有软件，例如数据存在Oracle中，那么购买license，估计把Google卖给Oracle都不够。因此Google使用大量的PC服务器。</p>
+<p>由于只需要CPU、内存和主板，因此一开始Google将机箱都去掉了，当然现在已经加了机箱。</p>
+<h2 id="Google面对的数据和计算难题" class="article-heading"><a href="#Google面对的数据和计算难题" class="headerlink" title="Google面对的数据和计算难题"></a>Google面对的数据和计算难题<a class="article-anchor" href="#Google面对的数据和计算难题" aria-hidden="true"></a></h2><p>google解决运营中难题的思想后来就成了Hadoop</p>
+<h3 id="大量的网页如何存储？" class="article-heading"><a href="#大量的网页如何存储？" class="headerlink" title="大量的网页如何存储？"></a>大量的网页如何存储？<a class="article-anchor" href="#大量的网页如何存储？" aria-hidden="true"></a></h3><p>通过爬虫去爬去大量的网页，这些网页如何存取呢？Google不会选择昂贵的存储设备，google的服务器都是没有硬盘的，爬回来的网页都存放在内存里面，来加快检索的速度。如果断电了，是不是内存中失去信息了，Google会采取冗余的方法，hadoop不会将数据存在内存中，但是同样也采用冗余的方式，采用多节点写入。</p>
+<h3 id="搜索算法-倒排索引" class="article-heading"><a href="#搜索算法-倒排索引" class="headerlink" title="搜索算法-倒排索引"></a>搜索算法-倒排索引<a class="article-anchor" href="#搜索算法-倒排索引" aria-hidden="true"></a></h3><p>搜索的速度一般在毫秒级别，例如自己手动做个实验，去Google搜索一个关键字耗时0.45秒。</p>
+<p><img src="pic/01.png"></p>
+<p>如果我们在关系型数据库中去近似匹配<code>索引</code>这个关键字时，例如</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb <span class="keyword">where</span> col <span class="keyword">like</span> <span class="string">'%索引%'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这个是时候时不能使用到索引的，上亿行记录时速度更慢，当然现在有全文索引，但是速度肯定还是达不到毫秒级别的。</p>
+<p>Google如何快速搜索网页的呢？主要是用了一种<strong>倒排索引</strong>的技术，我们可以对全文进行索引，但是索引的关键字，并不是文章内容的全部，而是首先将文章进行分词。</p>
+<p><img src="pic/03.png" alt="1536300919852"></p>
+<p><strong>举个例子</strong></p>
+<p>文章1<code>我爱北京天安门</code>，进行分词：</p>
+<ul>
+<li>我</li>
+<li>爱</li>
+<li>北京</li>
+<li>天安门</li>
+</ul>
+<p>文章2<code>我爱你北京</code>，进行分词：</p>
+<ul>
+<li>我</li>
+<li>爱</li>
+<li>你</li>
+<li>北京</li>
+</ul>
+<p>根据两个文章的分词统计，得到统计表</p>
+<table>
+<thead>
+<tr>
+<th>单词ID</th>
+<th>单词</th>
+<th>倒叙排列表</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>我</td>
+<td>(1:1),(2:1)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>爱</td>
+<td>(1:2),(2:2)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>北京</td>
+<td>(1:3),(2:4)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>天安门</td>
+<td>(1:5)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>你</td>
+<td>(2:3)</td>
+</tr>
+</tbody></table>
+<p>单词<code>我</code>出现在标识号为1的网站的1的位置，还出现在标识为2的网站的1的位置。</p>
+<p><img src="pic/04.png" alt="1536300960347"></p>
+<p>因此倒排列表可以快速进行查询。</p>
+<p>这里还有一个难题，就是<code>分词</code>，英语中分词非常方便，但是中文、日语，由于词汇之间没有一个明显的分界，这里有一个方法，例如用字典。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">我爱北京天安门。我、爱、北、北京、天、安、门、天安门，如果在字典中，则分词</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="Page-Rank计算问题" class="article-heading"><a href="#Page-Rank计算问题" class="headerlink" title="Page-Rank计算问题"></a>Page-Rank计算问题<a class="article-anchor" href="#Page-Rank计算问题" aria-hidden="true"></a></h3><p>Page Rank是Google最核心的算法，用于给每个网页价值评分，是Google“在垃圾中找黄金”的关键算法，这个算法成就了今天的Google！</p>
+<p>如果将搜索的网页不加过滤时全部推送给客户，那么就会有很多垃圾网站。</p>
+<p>Google通过Page-Rank对网页进行计算排名。</p>
+<p>Page Rank从来没有被Google公开过，大家都是从Google开放出来的数学论文去探究的，这个是Google的核心秘密。</p>
+<h4 id="算法体验-Google矩阵" class="article-heading"><a href="#算法体验-Google矩阵" class="headerlink" title="算法体验-Google矩阵"></a>算法体验-Google矩阵<a class="article-anchor" href="#算法体验-Google矩阵" aria-hidden="true"></a></h4><p><img src="pic/05.png" alt="1536301113846"></p>
+<p>上图中的矩阵是如何得到的呢？</p>
+<blockquote>
+<p>从源端到目标端有多少个指向</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>目标|源端</th>
+<th>1号网页</th>
+<th>2号网页</th>
+<th>3号网页</th>
+<th>4号网页</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1号网页</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2号网页</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3号网页</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4号网页</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Total</td>
+<td>3</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p>通过如上统计得到矩阵</p>
+<p>$$<br>G=<br>\begin{bmatrix}<br>0&amp;0&amp;0&amp;0\<br>\frac{1}{3}&amp;0&amp;0&amp;1\<br>\frac{1}{3}&amp;\frac{1}{2}&amp;0&amp;0\<br>\frac{1}{3}&amp;\frac{1}{2}&amp;1&amp;0\<br>\end{bmatrix}<br>$$</p>
+<p>至此，我们通过一个小实验已经体验了一次Page Rank的计算过程，接下来我们详细来了解该算法。</p>
+<h4 id="PageRank简介" class="article-heading"><a href="#PageRank简介" class="headerlink" title="PageRank简介"></a>PageRank简介<a class="article-anchor" href="#PageRank简介" aria-hidden="true"></a></h4><ul>
+<li>1998年，斯坦福大学的Brin和Page第一次提出了基于网页链接分析的算法PageRank，并在此基础上诞生了一个伟大的公司Google</li>
+<li>PageRank借鉴了引文分析的基本思想，认为一个超链接（类似引文分析中的一次引用）就是一个推荐，一个拥有更多入链的网页应该比一个更少入链的网页更加重要。</li>
+<li>但是与被引次数不同的是，PageRank不仅是考虑入链网页的多少，还考虑入链的网页的重要性，PageRank算法有个假设，如果一个网页被一个重要的网页链接，那么它也应该是一个重要的网页。</li>
+<li>PageRank算法是综合考虑入链网页的数量和质量从而计算网页的分数。</li>
+</ul>
+<h4 id="PageRank算法" class="article-heading"><a href="#PageRank算法" class="headerlink" title="PageRank算法"></a>PageRank算法<a class="article-anchor" href="#PageRank算法" aria-hidden="true"></a></h4><p>Google的算法</p>
+<p><img src="pic/06.png" alt="1536302023353"></p>
+<p><img src="pic/07.png" alt="1536302064742"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">算法:求出第一个特征向量的递推方法</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="计算PR值" class="article-heading"><a href="#计算PR值" class="headerlink" title="计算PR值"></a>计算PR值<a class="article-anchor" href="#计算PR值" aria-hidden="true"></a></h4><p>通过算法体验中的小例子，我们人工计算了4个网页的PR值，但是Google要计算的网页可能是十几个亿，那么矩阵的元素有十几亿乘以十几亿，下面看看用多台计算机，分布式地计算，如何实现？</p>
+<p><img src="pic/08.png" alt="1536302292759"></p>
+<p>网页分布在不同的服务器节点上</p>
+<p><img src="pic/09.png" alt="1536303293517"></p>
+<p><img src="pic/10.png" alt="1536303325318"></p>
+<p>将一个巨大的计算任务，通过map映射到各个的节点来进行分布式计算，每个节点只要抗下一小块负荷，通过两万个屌丝就变成了高富帅，然后汇总到一个节点，汇总的过程叫做reduce，将汇总的结果再分发到各个节点，再汇总，反复多次后，pagerank就被算出来了。</p>
+<p><a target="_blank" rel="noopener" href="https://www.changhai.org/articles/technology/misc/google_math.php">谷歌背后的数学</a></p>
+<h3 id="Google带给我们的关键技术和思想" class="article-heading"><a href="#Google带给我们的关键技术和思想" class="headerlink" title="Google带给我们的关键技术和思想"></a>Google带给我们的关键技术和思想<a class="article-anchor" href="#Google带给我们的关键技术和思想" aria-hidden="true"></a></h3><ul>
+<li>GFS</li>
+<li>Map-Reduce</li>
+<li>Bigtable（后面讲）</li>
+</ul>
+<h2 id="Hadoop的源起——Lucene" class="article-heading"><a href="#Hadoop的源起——Lucene" class="headerlink" title="Hadoop的源起——Lucene"></a>Hadoop的源起——Lucene<a class="article-anchor" href="#Hadoop的源起——Lucene" aria-hidden="true"></a></h2><ul>
+<li>Doug Cutting开创的开源软件，用java书写代码，实现与Google类似的全文搜索功能，它提供了全文检索引擎的架构，包括完整的查询引擎和索引引擎</li>
+<li>早期发布在个人网站和SourceForge，2001年年底成为apache软件基金会jakarta的一个子项目</li>
+<li>Lucene的目的是为软件开发人员提供一个简单易用的工具包，以方便的在目标系统中实现全文检索的功能，或者是以此为基础建立起完整的全文检索引擎</li>
+<li>对于大数量的场景，Lucene面对与Google同样的困难。迫使Doug Cutting学习和模仿Google解决这些问题的办法</li>
+<li>一个微缩版：Nutch</li>
+</ul>
+<p><img src="pic/20.png" alt="1536828301128"></p>
+<h3 id="从lucene到nutch，从nutch到hadoop" class="article-heading"><a href="#从lucene到nutch，从nutch到hadoop" class="headerlink" title="从lucene到nutch，从nutch到hadoop"></a>从lucene到nutch，从nutch到hadoop<a class="article-anchor" href="#从lucene到nutch，从nutch到hadoop" aria-hidden="true"></a></h3><ul>
+<li><p>2003-2004年，Google公开了部分GFS和Mapreduce思想的细节，以此为基础Doug Cutting等人用了2年业余时间实现了DFS和Mapreduce机制，使Nutch性能飙升</p>
+</li>
+<li><p>Yahoo招安Doug Cutting及其项目</p>
+</li>
+<li><p>Hadoop 于 2005 年秋天作为 Lucene的子项目 Nutch的 一部分正式引入Apache基金会。2006 年 3 月份，Map-Reduce 和 Nutch Distributed File System (NDFS) 分别被纳入称为 Hadoop 的项目中</p>
+</li>
+<li><p>名字来源于Doug Cutting儿子的玩具大象</p>
+</li>
+</ul>
+<p><img src="pic/21.png" alt="1536828405812"></p>
+<h4 id="目前Hadoop达到的高度" class="article-heading"><a href="#目前Hadoop达到的高度" class="headerlink" title="目前Hadoop达到的高度"></a>目前Hadoop达到的高度<a class="article-anchor" href="#目前Hadoop达到的高度" aria-hidden="true"></a></h4><ul>
+<li>实现云计算的事实标准开源软件</li>
+<li>包含数十个具有强大生命力的子项目</li>
+<li>已经能在数千节点上运行，处理数据量和排序时间不断打破世界纪录</li>
+</ul>
+<h3 id="Hadoop子项目家族" class="article-heading"><a href="#Hadoop子项目家族" class="headerlink" title="Hadoop子项目家族"></a>Hadoop子项目家族<a class="article-anchor" href="#Hadoop子项目家族" aria-hidden="true"></a></h3><p><img src="pic/22.png" alt="1536828478454"></p>
+<ul>
+<li>MapReduce和HDFS是Hadoop的两大支柱。</li>
+<li>Hbase：列式存储</li>
+<li>Pig：在Hadoop上进行开发的语言主要我们都知道Hadoop是Java写的，但是我们也需要一些其他语言来支持，Pig就类似于shell命令，自动将shell命令转化为MapReduce的语言，就像是一个转换器。</li>
+<li>Hive：是一个非常有用的子项目，用于SQL开发</li>
+</ul>
+<h3 id="Hadoop的架构" class="article-heading"><a href="#Hadoop的架构" class="headerlink" title="Hadoop的架构"></a>Hadoop的架构<a class="article-anchor" href="#Hadoop的架构" aria-hidden="true"></a></h3><p><img src="pic/23.png" alt="1536828513925"></p>
+<p>首先给大家讲一下Hadoop的架构，让大家有一些基本的认识。</p>
+<p>上图是按照机房的机柜来画的，每一个长方形是一个物理节点，通过网线连接到交换机。大家可以看到有些标识：datanode、namenode、jobtracker、tasktracker等，这些都是后台进程。</p>
+<p>这里面最重要的就是namenode。</p>
+<h4 id="Namenode" class="article-heading"><a href="#Namenode" class="headerlink" title="Namenode"></a>Namenode<a class="article-anchor" href="#Namenode" aria-hidden="true"></a></h4><blockquote>
+<p>Namenode可以翻译成“名称节点”，是HDFS的守护程序，他起到分布式文件系统的总控的作用。首先会记录所有的元数据，比如，会记录每一个文件是怎么记录的，会记录在哪个节点，也会对内存和IO进行管理。</p>
+<p>访问Hadoop集群时，一般情况下会先访问Namenode，了解数据分布的情况后，才能去具体的数据节点访问数据。NameNode还是单点（2012年），发生故障会导致集群故障</p>
+</blockquote>
+<ul>
+<li><p>HDFS的守护程序</p>
+</li>
+<li><p>纪录文件是如何分割成数据块的，以及这些数据块被存储到哪些节点上</p>
+</li>
+<li><p>对内存和I/O进行集中管理</p>
+</li>
+<li><p>是个单点，发生故障将使集群崩溃</p>
+<p><img src="pic/24.png" alt="1536828588787"></p>
+</li>
+</ul>
+<h4 id="Secondary-Namenode" class="article-heading"><a href="#Secondary-Namenode" class="headerlink" title="Secondary Namenode"></a>Secondary Namenode<a class="article-anchor" href="#Secondary-Namenode" aria-hidden="true"></a></h4><blockquote>
+<p>Secondary Namenode可以翻译为“辅助节点”，实时同步Namenode的元数据，一旦Namenode故障，则可以手动切换到辅助节点。目前不能自动故障转移（2012年）。</p>
+</blockquote>
+<ul>
+<li>监控HDFS状态的辅助后台程序</li>
+<li>每个集群都有一个</li>
+<li>与NameNode进行通讯，定期保存HDFS元数据快照</li>
+<li>当NameNode故障可以作为备用NameNode使用</li>
+</ul>
+<p><img src="pic/25.png" alt="1536828639596"></p>
+<h4 id="DataNode" class="article-heading"><a href="#DataNode" class="headerlink" title="DataNode"></a>DataNode<a class="article-anchor" href="#DataNode" aria-hidden="true"></a></h4><blockquote>
+<p>DataNode是运行在数据节点的后台进程，数据节点运行在子节点，我们称存放数据的节点为slave。而Namenode、secondary namenode我们称为master。</p>
+</blockquote>
+<ul>
+<li><p>每台从服务器都运行一个</p>
+</li>
+<li><p>负责把HDFS数据块读写到本地文件系统</p>
+</li>
+</ul>
+<p><img src="pic/26.png" alt="1536828697244"></p>
+<h4 id="JobTracker" class="article-heading"><a href="#JobTracker" class="headerlink" title="JobTracker"></a>JobTracker<a class="article-anchor" href="#JobTracker" aria-hidden="true"></a></h4><blockquote>
+<p>作业跟踪器，运行在master上的很重要的进程，对MapReduce体系的总控作用。</p>
+</blockquote>
+<ul>
+<li>用于处理作业（用户提交代码）的后台程序</li>
+<li>决定有哪些文件参与处理，然后切割task并分配节点</li>
+<li>监控task，重启失败的task（于不同的节点）</li>
+<li>每个集群只有唯一一个JobTracker，位于Master节点</li>
+</ul>
+<h4 id="TaskTracker" class="article-heading"><a href="#TaskTracker" class="headerlink" title="TaskTracker"></a>TaskTracker<a class="article-anchor" href="#TaskTracker" aria-hidden="true"></a></h4><blockquote>
+<p>在Slave中既有管理HDFS的DataNode，又有管理MapReduce的TaskTracker</p>
+</blockquote>
+<ul>
+<li>位于slave节点上，与datanode结合（代码与数据一起的原则）</li>
+<li>管理各自节点上的task（由jobtracker分配）</li>
+<li>每个节点只有一个tasktracker，但一个tasktracker可以启动多个jvm，用于并行执行map或者reduce任务</li>
+<li>与jobtracker交互</li>
+</ul>
+<h4 id="Master与Slave" class="article-heading"><a href="#Master与Slave" class="headerlink" title="Master与Slave"></a>Master与Slave<a class="article-anchor" href="#Master与Slave" aria-hidden="true"></a></h4><blockquote>
+<p>测试环境可以选择3台服务器，一台作为Master，两台作为Slave</p>
+</blockquote>
+<ul>
+<li>Master：Namenode、Secondary Namenode、Jobtracker。浏览器（用于观看 管理界面），其它Hadoop工具</li>
+<li>Slave：Tasktracker、Datanode</li>
+<li>Master不是唯一的</li>
+</ul>
+<h3 id="Why-hadoop？" class="article-heading"><a href="#Why-hadoop？" class="headerlink" title="Why hadoop？"></a>Why hadoop？<a class="article-anchor" href="#Why-hadoop？" aria-hidden="true"></a></h3><p><img src="pic/27.png" alt="1536828809846"></p>
+<h4 id="场景：电信运营商信令分析与监测" class="article-heading"><a href="#场景：电信运营商信令分析与监测" class="headerlink" title="场景：电信运营商信令分析与监测"></a>场景：电信运营商信令分析与监测<a class="article-anchor" href="#场景：电信运营商信令分析与监测" aria-hidden="true"></a></h4><ul>
+<li>原数据库服务器配置：HP小型机，128G内存，48颗CPU，2节点RAC，其中一个节点用于入库，另外一个节点用于查询</li>
+<li>存储：HP虚拟化存储，&gt;1000个盘</li>
+<li>数据库架构采用Oracle双节点RAC</li>
+<li>问题：1 入库瓶颈 2 查询瓶颈</li>
+</ul>
+<h5 id="数据分析者面临的问题" class="article-heading"><a href="#数据分析者面临的问题" class="headerlink" title="数据分析者面临的问题"></a>数据分析者面临的问题<a class="article-anchor" href="#数据分析者面临的问题" aria-hidden="true"></a></h5><ul>
+<li>数据日趋庞大，无论是入库和查询，都出现性能瓶颈</li>
+<li>用户的应用和分析结果呈整合趋势，对实时性和响应时间要求越来越高</li>
+<li>使用的模型越来越复杂，计算量指数级上升</li>
+</ul>
+<h5 id="数据分析者期待的解决方案" class="article-heading"><a href="#数据分析者期待的解决方案" class="headerlink" title="数据分析者期待的解决方案"></a>数据分析者期待的解决方案<a class="article-anchor" href="#数据分析者期待的解决方案" aria-hidden="true"></a></h5><ul>
+<li>完美解决性能瓶颈，在可见未来不容易出现新瓶颈</li>
+<li>过去所拥有的技能可以平稳过渡。比如SQL、R</li>
+<li>转移平台的成本有多高？平台软硬件成本，再开发成本，技能再培养成本，维护成本</li>
+</ul>
+<h4 id="Hadoop的思想" class="article-heading"><a href="#Hadoop的思想" class="headerlink" title="Hadoop的思想"></a>Hadoop的思想<a class="article-anchor" href="#Hadoop的思想" aria-hidden="true"></a></h4><blockquote>
+<p>100个屌丝可以替代一个高富帅</p>
+</blockquote>
+<p><img src="pic/28.png" alt="1536828941511"></p>
+<h3 id="Why-not-Hadoop？" class="article-heading"><a href="#Why-not-Hadoop？" class="headerlink" title="Why not Hadoop？"></a>Why not Hadoop？<a class="article-anchor" href="#Why-not-Hadoop？" aria-hidden="true"></a></h3><ul>
+<li>Java？</li>
+<li>难以驾驭？</li>
+<li>数据集成困难？</li>
+<li>Hadoop vs Oracle</li>
+</ul>
+<h3 id="Hadoop体系下的分析手段" class="article-heading"><a href="#Hadoop体系下的分析手段" class="headerlink" title="Hadoop体系下的分析手段"></a>Hadoop体系下的分析手段<a class="article-anchor" href="#Hadoop体系下的分析手段" aria-hidden="true"></a></h3><ul>
+<li>主流：Java程序</li>
+<li>轻量级的脚本语言：Pig</li>
+<li>SQL技巧平稳过渡：Hive</li>
+<li>NoSQL：HBase</li>
+</ul>
+<hr>
+<h2 id="课后练习-通过PageRank算法计算网页PR值" class="article-heading"><a href="#课后练习-通过PageRank算法计算网页PR值" class="headerlink" title="课后练习_通过PageRank算法计算网页PR值"></a>课后练习_通过PageRank算法计算网页PR值<a class="article-anchor" href="#课后练习-通过PageRank算法计算网页PR值" aria-hidden="true"></a></h2><p>网页之间的链家指向关系如下图所示。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">graph LR</span><br><span class="line">A[A网站]--&gt;B[B网站]</span><br><span class="line">A[A网站]--&gt;C[C网站]</span><br><span class="line">A[A网站]--&gt;D[D网站]</span><br><span class="line">B[B网站]--&gt;C[C网站]</span><br><span class="line">B[B网站]--&gt;D[D网站]</span><br><span class="line">C[C网站]--&gt;D[D网站]</span><br><span class="line">D[D网站]--&gt;B[B网站]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>使用markdown画出来稍微丑了点，但是网站间的指向是没有问题的。也可以参照下图：</p>
+<p><img src="pic/05.png" alt="1536301113846"></p>
+<p><strong>第一步：计算每一个网站的“概率转移矩阵”，我们用$S_a S_b S_c S_d $表示。</strong></p>
+<p>$$<br>S_a = \begin{bmatrix}<br>0\<br>\frac{1}{3}\\<br>\frac{1}{3}\\<br>\frac{1}{3}\\<br>\end{bmatrix}<br>S_b = \begin{bmatrix}<br>0\\<br>0\\<br>\frac{1}{2}\\<br>\frac{1}{2}\\<br>\end{bmatrix}<br>S_c = \begin{bmatrix}<br>0\\<br>0\\<br>0\\<br>1\\<br>\end{bmatrix}<br>S_d = \begin{bmatrix}<br>0\\<br>1\\<br>0\\<br>0\\<br>\end{bmatrix}<br>$$</p>
+<p>如何来计算概率转移矩阵呢？通俗易懂的方法 指向某个网站的个数/源端总的指向数</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">1. 如果我是一个网站，那么我链接了多少个网站（除自己以外的）表示为 N ？比如A网站，链接了B、C、D，则一共链接了3个网站，则N=3。</span><br><span class="line">2. 链接概率为链接数/N；有一个B的链接，那么概率为1/3；有一个C的链接，那么概率为1/3；有一个D的链接，那么概率为1/3。</span><br><span class="line">3. 按照以下顺序组成矩阵 A:0/3,B:1/3,C:1/3,D:1/3</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>如果指向同一个网站的链接数为多个，也只算1</p>
+</blockquote>
+<p><strong>第二步：根据 $G = \alpha S + ( 1 - \alpha ) \frac{1}{N} U$ 计算 $G_a G_b G_c G_d$</strong></p>
+<ul>
+<li><p>$\alpha$ 为0~1之间的值，是google工程师的一个经验值，例如0.85</p>
+</li>
+<li><p>$S$ 是第一步中计算的网站概率转移矩阵</p>
+</li>
+<li><p>$\frac{1}{N} U$ 其中N为网页的总数，$U$ 为元素全为 $1$ 的 $N$ 阶向量；例如题目中N=4，那么</p>
+<p>$$<br>\frac{1}{N} U  =<br>\frac{1}{4} *<br>\begin{bmatrix}<br>1\\<br>1\\<br>1\\<br>1\\<br>\end{bmatrix}<br>$$</p>
+<p>$$<br>\frac{1}{N} U  =<br>\begin{bmatrix}<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\end{bmatrix}<br>$$</p>
+</li>
+</ul>
+<p>当$\alpha = 0.85$ 时，计算$G_a G_b G_c G_d$ 如下：</p>
+<hr>
+<p>$$<br>G_a = 0.85 *  \begin{bmatrix}<br>0\<br>\frac{1}{3}\\<br>\frac{1}{3}\\<br>\frac{1}{3}\\<br>\end{bmatrix} + (1-0.85) * \begin{bmatrix}<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\end{bmatrix}<br>$$</p>
+<p>$$<br>G_a =<br>\begin{bmatrix}<br>\frac{3}{80}\\<br>\frac{77}{240}\\<br>\frac{77}{240}\\<br>\frac{77}{240}\\<br>\end{bmatrix}<br>$$</p>
+<hr>
+<p>$$<br>G_b = 0.85 * \begin{bmatrix}<br>0\<br>0\<br>\frac{1}{2}\\<br>\frac{1}{2}\\<br>\end{bmatrix} + (1-0.85) * \begin{bmatrix}<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\end{bmatrix}<br>$$</p>
+<p>$$<br>G_b =<br>\begin{bmatrix}<br>\frac{3}{80}\\<br>\frac{3}{80}\\<br>\frac{37}{80}\\<br>\frac{37}{80}\\<br>\end{bmatrix}<br>$$</p>
+<hr>
+<p>$$<br>G_c = 0.85 * \begin{bmatrix}<br>0\\<br>0\\<br>0\\<br>1\\<br>\end{bmatrix} + (1-0.85) * \begin{bmatrix}<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\end{bmatrix}<br>$$</p>
+<p>$$<br>G_c =<br>\begin{bmatrix}<br>\frac{3}{80}\\<br>\frac{3}{80}\\<br>\frac{3}{80}\\<br>\frac{71}{80}\\<br>\end{bmatrix}<br>$$</p>
+<hr>
+<p>$$<br>G_d = 0.85 *  \begin{bmatrix}<br>0\\<br>1\\<br>0\\<br>0\\<br>\end{bmatrix} + (1-0.85) * \begin{bmatrix}<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\frac{1}{4}\\<br>\end{bmatrix}<br>$$</p>
+<p>$$<br>G_d = \begin{bmatrix}<br>\frac{3}{80}\\<br>\frac{71}{80}\\<br>\frac{3}{80}\\<br>\frac{3}{80}\\<br>\end{bmatrix}<br>$$</p>
+<hr>
+<p>$$<br>G =  \begin{bmatrix}<br>\frac{3}{80} \frac{3}{80} \frac{3}{80} \frac{3}{80}\\<br>\frac{77}{240} \frac{3}{80} \frac{3}{80} \frac{71}{80}\\<br>\frac{77}{240} \frac{37}{80} \frac{3}{80} \frac{3}{80} \\<br>\frac{77}{240} \frac{37}{80} \frac{71}{80} \frac{3}{80}\\<br>\end{bmatrix}<br>$$</p>
+<p><strong>第三步：根据公式 $ q^{next}=Gq^{cur} $</strong> 求出 $q$ 的收敛值。</p>
+<ul>
+<li>1&gt;向量$q$的初始值是元素全为1的 $N$阶向量</li>
+</ul>
+<p>$$<br>q = \begin{bmatrix}<br>1\\<br>1\\<br>1\\<br>1\\<br>\end{bmatrix}<br>$$</p>
+<ul>
+<li>2&gt; 计算$q^{next}$</li>
+</ul>
+<p>$$<br>q = \begin{bmatrix}<br>  1\\<br>  1\\<br>  1\\<br>  1\\<br>  \end{bmatrix}<br>  *<br>  G<br>$$</p>
+<ul>
+<li>3&gt;判断$q^{next}是否等于q^{cur} $，如果不相等，则继续以上两步骤，直到$q^{next}=q^{cur} $</li>
+</ul>
+<p>按照上面的步骤我们计算一下：</p>
+<p>第一轮</p>
+<p>当</p>
+<p>$$<br>q^{cur} =<br>\begin{bmatrix}<br>1\\<br>1\\<br>1\\<br>1\\<br>\end{bmatrix}<br>$$</p>
+<p>时，</p>
+<p>$$<br>q^{next} =<br>\begin{bmatrix}<br>\frac{3}{80} \frac{3}{80} \frac{3}{80} \frac{3}{80}\\<br>\frac{77}{240} \frac{3}{80} \frac{3}{80} \frac{71}{80}\\<br>\frac{77}{240} \frac{37}{80} \frac{3}{80} \frac{3}{80} \\<br>\frac{77}{240} \frac{37}{80} \frac{71}{80} \frac{3}{80}\\<br>\end{bmatrix} * \begin{bmatrix}<br>1\\<br>1\\<br>1\\<br>1\\<br>\end{bmatrix}<br>$$</p>
+<p>此时$q^{next}!=q^{cur} $,则</p>
+<p>$$<br>q^{cur} =<br>\begin{bmatrix}<br>\frac{3}{20}\\<br>\frac{77}{60}\\<br>\frac{103}{120}\\<br>\frac{41}{24}\\<br>\end{bmatrix}<br>$$</p>
+<p>继续求 $q^{next}$</p>
+<p>$$<br>q^{next} =<br>\begin{bmatrix}<br>\frac{3}{80} \frac{3}{80} \frac{3}{80} \frac{3}{80}\\<br>\frac{77}{240} \frac{3}{80} \frac{3}{80} \frac{71}{80}\\<br>\frac{77}{240} \frac{37}{80} \frac{3}{80} \frac{3}{80} \\<br>\frac{77}{240} \frac{37}{80} \frac{71}{80} \frac{3}{80}\\<br>\end{bmatrix} *<br>\begin{bmatrix}<br>\frac{3}{20}\\<br>\frac{77}{60}\\<br>\frac{103}{120}\\<br>\frac{41}{24}\\<br>\end{bmatrix}<br>$$</p>
+<p>$$<br>q^{next} =<br>\begin{bmatrix}<br>\frac{3}{80} * \frac{3}{20} + \frac{3}{80} * \frac{77}{60} + \frac{3}{80} * \frac{103}{120} + \frac{3}{80} * \frac{41}{24} \\<br>\frac{77}{240} * \frac{3}{20} + \frac{3}{80} * \frac{77}{60} + \frac{3}{80} * \frac{103}{120} + \frac{71}{80} * \frac{41}{24} \\<br>\frac{77}{240} * \frac{3}{20} + \frac{37}{80} * \frac{77}{60} + \frac{3}{80} * \frac{103}{120} + \frac{3}{80} * \frac{41}{24} \\<br>\frac{77}{240} * \frac{3}{20} + \frac{37}{80} * \frac{77}{60} + \frac{71}{80} * \frac{103}{120} + \frac{3}{80} * \frac{41}{24} \\<br>\end{bmatrix}<br>$$</p>
+<p>后续循环不再列出，最终得到收敛的$q$值。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/BoobooWei/booboo_hadoop/blob/master/python_scripts/booboo_pagerank.py">计算脚本链接地址</a></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">通过python脚本协助计算结果如下</span></span><br><span class="line">迭代次数74</span><br><span class="line">('D', 1.529988694177496)</span><br><span class="line">('B', 1.492990390050871)</span><br><span class="line">('C', 0.8270209157716194)</span><br><span class="line">('A', 0.14999999999999947)</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:36.725Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Hadoop%E7%9A%84%E6%80%9D%E6%83%B3%E4%B9%8B%E6%BA%90%EF%BC%9AGoogle"><span class="toc-text">Hadoop的思想之源：Google</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Google%E7%9A%84%E4%BD%8E%E6%88%90%E6%9C%AC%E4%B9%8B%E9%81%93"><span class="toc-text">Google的低成本之道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9B%86%E8%A3%85%E7%AE%B1%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83"><span class="toc-text">集装箱数据中心</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Google%E9%9D%A2%E5%AF%B9%E7%9A%84%E6%95%B0%E6%8D%AE%E5%92%8C%E8%AE%A1%E7%AE%97%E9%9A%BE%E9%A2%98"><span class="toc-text">Google面对的数据和计算难题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E9%87%8F%E7%9A%84%E7%BD%91%E9%A1%B5%E5%A6%82%E4%BD%95%E5%AD%98%E5%82%A8%EF%BC%9F"><span class="toc-text">大量的网页如何存储？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95-%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95"><span class="toc-text">搜索算法-倒排索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Page-Rank%E8%AE%A1%E7%AE%97%E9%97%AE%E9%A2%98"><span class="toc-text">Page-Rank计算问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E4%BD%93%E9%AA%8C-Google%E7%9F%A9%E9%98%B5"><span class="toc-text">算法体验-Google矩阵</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PageRank%E7%AE%80%E4%BB%8B"><span class="toc-text">PageRank简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PageRank%E7%AE%97%E6%B3%95"><span class="toc-text">PageRank算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97PR%E5%80%BC"><span class="toc-text">计算PR值</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Google%E5%B8%A6%E7%BB%99%E6%88%91%E4%BB%AC%E7%9A%84%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF%E5%92%8C%E6%80%9D%E6%83%B3"><span class="toc-text">Google带给我们的关键技术和思想</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hadoop%E7%9A%84%E6%BA%90%E8%B5%B7%E2%80%94%E2%80%94Lucene"><span class="toc-text">Hadoop的源起——Lucene</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8Elucene%E5%88%B0nutch%EF%BC%8C%E4%BB%8Enutch%E5%88%B0hadoop"><span class="toc-text">从lucene到nutch，从nutch到hadoop</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E5%89%8DHadoop%E8%BE%BE%E5%88%B0%E7%9A%84%E9%AB%98%E5%BA%A6"><span class="toc-text">目前Hadoop达到的高度</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hadoop%E5%AD%90%E9%A1%B9%E7%9B%AE%E5%AE%B6%E6%97%8F"><span class="toc-text">Hadoop子项目家族</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hadoop%E7%9A%84%E6%9E%B6%E6%9E%84"><span class="toc-text">Hadoop的架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Namenode"><span class="toc-text">Namenode</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Secondary-Namenode"><span class="toc-text">Secondary Namenode</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DataNode"><span class="toc-text">DataNode</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JobTracker"><span class="toc-text">JobTracker</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TaskTracker"><span class="toc-text">TaskTracker</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Master%E4%B8%8ESlave"><span class="toc-text">Master与Slave</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-hadoop%EF%BC%9F"><span class="toc-text">Why hadoop？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%EF%BC%9A%E7%94%B5%E4%BF%A1%E8%BF%90%E8%90%A5%E5%95%86%E4%BF%A1%E4%BB%A4%E5%88%86%E6%9E%90%E4%B8%8E%E7%9B%91%E6%B5%8B"><span class="toc-text">场景：电信运营商信令分析与监测</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E8%80%85%E9%9D%A2%E4%B8%B4%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">数据分析者面临的问题</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E8%80%85%E6%9C%9F%E5%BE%85%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-text">数据分析者期待的解决方案</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Hadoop%E7%9A%84%E6%80%9D%E6%83%B3"><span class="toc-text">Hadoop的思想</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-not-Hadoop%EF%BC%9F"><span class="toc-text">Why not Hadoop？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hadoop%E4%BD%93%E7%B3%BB%E4%B8%8B%E7%9A%84%E5%88%86%E6%9E%90%E6%89%8B%E6%AE%B5"><span class="toc-text">Hadoop体系下的分析手段</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BE%E5%90%8E%E7%BB%83%E4%B9%A0-%E9%80%9A%E8%BF%87PageRank%E7%AE%97%E6%B3%95%E8%AE%A1%E7%AE%97%E7%BD%91%E9%A1%B5PR%E5%80%BC"><span class="toc-text">课后练习_通过PageRank算法计算网页PR值</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

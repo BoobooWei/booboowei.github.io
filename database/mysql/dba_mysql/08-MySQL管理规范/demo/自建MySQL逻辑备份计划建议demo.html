@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>2018.10.8.0.xxx.自建MySQL逻辑备份计划建议 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/demo/%E8%87%AA%E5%BB%BAMySQL%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E8%AE%A1%E5%88%92%E5%BB%BA%E8%AE%AEdemo">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/demo/%E8%87%AA%E5%BB%BAMySQL%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E8%AE%A1%E5%88%92%E5%BB%BA%E8%AE%AEdemo" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="需求Git服务器上我们已经部署了crm, 发现系统有点卡 我看了下mysql的配置文件, innodb buffer size才 256M  请梳理调整配置参数, 以提高性能 请备份mysql数据, 每天一次, 数据保持两周14天  操作系统概况 OS 2核&#x2F;8G 目前系统资源充足  Architecture:          x86_64CPU op-mode(s):">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2018.10.8.0.xxx.自建MySQL逻辑备份计划建议">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/demo/%E8%87%AA%E5%BB%BAMySQL%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E8%AE%A1%E5%88%92%E5%BB%BA%E8%AE%AEdemo">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="需求Git服务器上我们已经部署了crm, 发现系统有点卡 我看了下mysql的配置文件, innodb buffer size才 256M  请梳理调整配置参数, 以提高性能 请备份mysql数据, 每天一次, 数据保持两周14天  操作系统概况 OS 2核&#x2F;8G 目前系统资源充足  Architecture:          x86_64CPU op-mode(s):">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.822Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:06.007Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">2018.10.8.0.xxx.自建MySQL逻辑备份计划建议</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/dba_mysql/08-MySQL管理规范/demo/自建MySQL逻辑备份计划建议demo.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h2 id="需求" class="article-heading"><a href="#需求" class="headerlink" title="需求"></a>需求<a class="article-anchor" href="#需求" aria-hidden="true"></a></h2><p>Git服务器上我们已经部署了crm, 发现系统有点卡 我看了下mysql的配置文件, innodb buffer size才 256M</p>
+<ol>
+<li>请梳理调整配置参数, 以提高性能</li>
+<li>请备份mysql数据, 每天一次, 数据保持两周14天</li>
+</ol>
+<h2 id="操作系统概况" class="article-heading"><a href="#操作系统概况" class="headerlink" title="操作系统概况"></a>操作系统概况<a class="article-anchor" href="#操作系统概况" aria-hidden="true"></a></h2><blockquote>
+<p>OS 2核/8G 目前系统资源充足</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Architecture:          x86_64</span><br><span class="line">CPU op-mode(s):        32-bit, 64-bit</span><br><span class="line">Byte Order:            Little Endian</span><br><span class="line">CPU(s):                2</span><br><span class="line">On-line CPU(s) list:   0,1</span><br><span class="line">Thread(s) per core:    2</span><br><span class="line">Core(s) per socket:    1</span><br><span class="line">Socket(s):             1</span><br><span class="line">NUMA node(s):          1</span><br><span class="line">Vendor ID:             GenuineIntel</span><br><span class="line">CPU family:            6</span><br><span class="line">Model:                 79</span><br><span class="line">Model name:            Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GHz</span><br><span class="line">Stepping:              1</span><br><span class="line">CPU MHz:               2499.994</span><br><span class="line">BogoMIPS:              4999.98</span><br><span class="line">Hypervisor vendor:     KVM</span><br><span class="line">Virtualization type:   full</span><br><span class="line">L1d cache:             32K</span><br><span class="line">L1i cache:             32K</span><br><span class="line">L2 cache:              256K</span><br><span class="line">L3 cache:              40960K</span><br><span class="line">NUMA node0 CPU(s):     0,1</span><br><span class="line">             total       used       free     shared    buffers     cached</span><br><span class="line">Mem:       8061376    7919544     141832     106804     133572    3715704</span><br><span class="line">-/+ buffers/cache:    4070268    3991108</span><br><span class="line">Swap:            0          0          0</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/vda1        40G   24G   14G  63% /</span><br><span class="line">tmpfs           3.9G     0  3.9G   0% /dev/shm</span><br><span class="line">/dev/vdb         50G   52M   47G   1% /alidata</span><br><span class="line">procs -----------memory---------- ---swap-- -----io---- --system-- -----cpu-----</span><br><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br><span class="line"> 0  0      0 141832 133580 3715696    0    0     4   137   13    9  2  0 98  0  0</span><br><span class="line"> 0  0      0 141848 133584 3715824    0    0     0    60  422  650  1  0 98  0  0</span><br><span class="line"> 2  0      0 141476 133588 3715824    0    0    36   328  791  877 12  1 87  1  0</span><br><span class="line"> 0  0      0 141476 133588 3715916    0    0     0  2568  819  839  8  1 89  2  0</span><br><span class="line"> 1  0      0 141616 133592 3715868    0    0    12   120  831  881 10  1 89  1  0</span><br><span class="line">Linux 2.6.32-642.6.2.el6.x86_64 (zeji-git-server)       01/02/2018      _x86_64_        (2 CPU)</span><br><span class="line"></span><br><span class="line">Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util</span><br><span class="line">vda               0.00    57.70    0.20   13.90     7.45   273.10    39.81     0.16   11.13    2.72   11.25   0.59   0.83</span><br><span class="line">vdb               0.00     0.14    0.00    0.00     0.00     0.58   618.47     0.00 1227.92    4.45 1392.64   5.51   0.00</span><br><span class="line"></span><br><span class="line">Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util</span><br><span class="line">vda               0.00    28.00    1.00   10.00     8.00   148.00    28.36     0.01    0.82    0.00    0.90   0.55   0.60</span><br><span class="line">vdb               0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00</span><br><span class="line"></span><br><span class="line">Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util</span><br><span class="line">vda               0.00   264.00    0.00   65.00     0.00  1300.00    40.00     0.22    3.38    0.00    3.38   0.28   1.80</span><br><span class="line">vdb               0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00</span><br><span class="line"></span><br><span class="line">Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util</span><br><span class="line">vda               0.00    33.00    0.00    8.00     0.00   160.00    40.00     0.01    1.12    0.00    1.12   0.88   0.70</span><br><span class="line">vdb               0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00</span><br><span class="line"></span><br><span class="line">Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util</span><br><span class="line">vda               0.00    41.00    0.00   18.00     0.00   228.00    25.33     0.01    0.78    0.00    0.78   0.44   0.80</span><br><span class="line">vdb               0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00</span><br><span class="line"></span><br><span class="line">      2 CLOSE_WAIT</span><br><span class="line">      1 established)</span><br><span class="line">     68 ESTABLISHED</span><br><span class="line">      1 FIN_WAIT2</span><br><span class="line">      1 Foreign</span><br><span class="line">      8 LISTEN</span><br><span class="line">    132 TIME_WAIT</span><br><span class="line">      1 101.226.225.86</span><br><span class="line">      1 101.226.66.181</span><br><span class="line">      4 115.29.244.224</span><br><span class="line">     33 116.230.188.166</span><br><span class="line">      3 127.0.0.1</span><br><span class="line">      1 140.205.140.205</span><br><span class="line">     26 180.172.97.78</span><br><span class="line">%CPU    PID     COMMAD</span><br><span class="line">6.6  11086  /usr/local/mysql/bin/mysqld</span><br><span class="line">7.4  25435  sidekiq</span><br><span class="line">0.2  12190  /opt/gitlab/embedded/bin/redis-server</span><br><span class="line">0.9  26464  /usr/local/cloudmonitor/jre/bin/java</span><br><span class="line">0.1  31036  /usr/local/aegis/aegis_client/aegis_10_39/AliYunDun</span><br><span class="line">%MEM    PID     COMMAD</span><br><span class="line">7.4  25435  sidekiq</span><br><span class="line">6.6  11086  /usr/local/mysql/bin/mysqld</span><br><span class="line">5.7  4363  unicorn</span><br><span class="line">5.1  12273  unicorn</span><br><span class="line">5.1  12279  unicorn</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="MySQL配置优化建议" class="article-heading"><a href="#MySQL配置优化建议" class="headerlink" title="MySQL配置优化建议"></a>MySQL配置优化建议<a class="article-anchor" href="#MySQL配置优化建议" aria-hidden="true"></a></h2><h3 id="修改服务端接收的数据包大小" class="article-heading"><a href="#修改服务端接收的数据包大小" class="headerlink" title="修改服务端接收的数据包大小"></a>修改服务端接收的数据包大小<a class="article-anchor" href="#修改服务端接收的数据包大小" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">#max_allowed_packet = 1M</span><br><span class="line">max_allowed_packet = 32M</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="调整各类缓存配置" class="article-heading"><a href="#调整各类缓存配置" class="headerlink" title="调整各类缓存配置"></a>调整各类缓存配置<a class="article-anchor" href="#调整各类缓存配置" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">#table_open_cache = 256</span><br><span class="line">table_open_cache = 400</span><br><span class="line">table_definition_cache = 400</span><br><span class="line">table_open_cache_instances = 64</span><br><span class="line"></span><br><span class="line">#sort_buffer_size = 1M</span><br><span class="line">sort_buffer_size = 4M</span><br><span class="line"></span><br><span class="line">#read_buffer_size = 1M</span><br><span class="line">read_buffer_size = 8M</span><br><span class="line"></span><br><span class="line">#read_rnd_buffer_size = 512K</span><br><span class="line">read_rnd_buffer_size = 4M</span><br><span class="line"></span><br><span class="line">#myisam_sort_buffer_size = 16M</span><br><span class="line">myisam_sort_buffer_size = 128M</span><br><span class="line"></span><br><span class="line">#thread_cache_size = 32</span><br><span class="line">thread_cache_size = 768</span><br><span class="line"></span><br><span class="line">#query_cache_size = 32M</span><br><span class="line">query_cache_size = 0</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="修改二进制日志格式" class="article-heading"><a href="#修改二进制日志格式" class="headerlink" title="修改二进制日志格式"></a>修改二进制日志格式<a class="article-anchor" href="#修改二进制日志格式" aria-hidden="true"></a></h3><p>有利于误操作回滚</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">#binlog_format=mixed</span><br><span class="line">binlog_format = row</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="调整innodb缓冲池" class="article-heading"><a href="#调整innodb缓冲池" class="headerlink" title="调整innodb缓冲池"></a>调整innodb缓冲池<a class="article-anchor" href="#调整innodb缓冲池" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">#innodb_buffer_pool_size = 256M</span><br><span class="line">innodb_buffer_pool_size = 4014M</span><br><span class="line"></span><br><span class="line">#innodb_log_buffer_size = 8M</span><br><span class="line">innodb_log_buffer_size = 32M</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="调整逻辑备份配置" class="article-heading"><a href="#调整逻辑备份配置" class="headerlink" title="调整逻辑备份配置"></a>调整逻辑备份配置<a class="article-anchor" href="#调整逻辑备份配置" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">[mysqldump]</span><br><span class="line">quick</span><br><span class="line">#max_allowed_packet = 16M</span><br><span class="line">max_allowed_packet = 32M</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="修改慢查询配置" class="article-heading"><a href="#修改慢查询配置" class="headerlink" title="修改慢查询配置"></a>修改慢查询配置<a class="article-anchor" href="#修改慢查询配置" aria-hidden="true"></a></h3><p>开启未使用索引的查询记录</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">slow_query_log = ON</span><br><span class="line">slow_query_log_file = /usr/local/mysql/log/slow.log</span><br><span class="line">long_query_time = 1</span><br><span class="line"># new</span><br><span class="line">log_queries_not_using_indexes =1</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="优化后的配置文件" class="article-heading"><a href="#优化后的配置文件" class="headerlink" title="优化后的配置文件"></a>优化后的配置文件<a class="article-anchor" href="#优化后的配置文件" aria-hidden="true"></a></h3><p>如下：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">[client]</span><br><span class="line">#password   = your_password</span><br><span class="line">port        = 3306</span><br><span class="line">socket      = /tmp/mysql.sock</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">port        = 3306</span><br><span class="line">socket      = /tmp/mysql.sock</span><br><span class="line">datadir = /usr/local/mysql/var</span><br><span class="line">skip-external-locking</span><br><span class="line"></span><br><span class="line">key_buffer_size = 64M</span><br><span class="line"></span><br><span class="line">#max_allowed_packet = 1M</span><br><span class="line">max_allowed_packet = 32M</span><br><span class="line"></span><br><span class="line">#table_open_cache = 256</span><br><span class="line">table_open_cache = 400</span><br><span class="line">table_definition_cache = 400</span><br><span class="line">table_open_cache_instances = 64</span><br><span class="line"></span><br><span class="line">#sort_buffer_size = 1M</span><br><span class="line">sort_buffer_size = 4M</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">net_buffer_length = 8K</span><br><span class="line"></span><br><span class="line">#read_buffer_size = 1M</span><br><span class="line">read_buffer_size = 8M</span><br><span class="line"></span><br><span class="line">#read_rnd_buffer_size = 512K</span><br><span class="line">read_rnd_buffer_size = 4M</span><br><span class="line"></span><br><span class="line">#myisam_sort_buffer_size = 16M</span><br><span class="line">myisam_sort_buffer_size = 128M</span><br><span class="line"></span><br><span class="line">#thread_cache_size = 32</span><br><span class="line">thread_cache_size = 768</span><br><span class="line"></span><br><span class="line">#query_cache_size = 32M</span><br><span class="line">query_cache_size = 0</span><br><span class="line"></span><br><span class="line">tmp_table_size = 64M</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">explicit_defaults_for_timestamp = true</span><br><span class="line">#skip-networking</span><br><span class="line">max_connect_errors = 100</span><br><span class="line">open_files_limit = 65535</span><br><span class="line"></span><br><span class="line">log-bin=mysql-bin</span><br><span class="line"></span><br><span class="line">#binlog_format=mixed</span><br><span class="line">binlog_format = row</span><br><span class="line"></span><br><span class="line">server-id   = 1</span><br><span class="line">expire_logs_days = 10</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">default_storage_engine = InnoDB</span><br><span class="line">innodb_data_home_dir = /usr/local/mysql/var</span><br><span class="line">innodb_data_file_path = ibdata1:10M:autoextend</span><br><span class="line">innodb_log_group_home_dir = /usr/local/mysql/var</span><br><span class="line"></span><br><span class="line">#innodb_buffer_pool_size = 256M</span><br><span class="line">innodb_buffer_pool_size = 4014M</span><br><span class="line"></span><br><span class="line">innodb_log_file_size = 64M</span><br><span class="line"></span><br><span class="line">#innodb_log_buffer_size = 8M</span><br><span class="line">innodb_log_buffer_size = 32M</span><br><span class="line"></span><br><span class="line">innodb_flush_log_at_trx_commit = 1</span><br><span class="line">innodb_lock_wait_timeout = 50</span><br><span class="line"></span><br><span class="line">[mysqldump]</span><br><span class="line">quick</span><br><span class="line"></span><br><span class="line">#max_allowed_packet = 16M</span><br><span class="line">max_allowed_packet = 32M</span><br><span class="line"></span><br><span class="line">[mysql]</span><br><span class="line">no-auto-rehash</span><br><span class="line"></span><br><span class="line">[myisamchk]</span><br><span class="line">key_buffer_size = 64M</span><br><span class="line">sort_buffer_size = 1M</span><br><span class="line">read_buffer = 2M</span><br><span class="line">write_buffer = 2M</span><br><span class="line"></span><br><span class="line">[mysqlhotcopy]</span><br><span class="line">interactive-timeout</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">slow_query_log = ON</span><br><span class="line">slow_query_log_file = /usr/local/mysql/log/slow.log</span><br><span class="line">long_query_time = 1</span><br><span class="line"># new</span><br><span class="line">log_queries_not_using_indexes =1</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>注意点：修改配置文件后，需要重新启动使其生效，请告知服务器重启时间</strong></p>
+<hr>
+<h2 id="MySQL备份建议" class="article-heading"><a href="#MySQL备份建议" class="headerlink" title="MySQL备份建议"></a>MySQL备份建议<a class="article-anchor" href="#MySQL备份建议" aria-hidden="true"></a></h2><p>当前数据库中的数据量如下：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">+---------------+---------------+--------------+------------+-----------+</span><br><span class="line">| total_size_gb | index_size_gb | data_size_gb | perc_index | perc_data |</span><br><span class="line">+---------------+---------------+--------------+------------+-----------+</span><br><span class="line">|        3.1699 |        1.1100 |       2.0599 |      35.00 |     65.00 |</span><br><span class="line">+---------------+---------------+--------------+------------+-----------+</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="备份建议" class="article-heading"><a href="#备份建议" class="headerlink" title="备份建议"></a>备份建议<a class="article-anchor" href="#备份建议" aria-hidden="true"></a></h3><ol>
+<li>鉴于数据库目前的数据量在3G左右，建议可以使用逻辑备份mysqldump，若后期数据增长较快，达到50G以外，则建议使用物理备份工具innobackupex。</li>
+<li>备份文件按要求保留近14天</li>
+<li>备份文件建议存放于本地，需要确保磁盘空间够用。</li>
+</ol>
+<h3 id="备份脚本" class="article-heading"><a href="#备份脚本" class="headerlink" title="备份脚本"></a>备份脚本<a class="article-anchor" href="#备份脚本" aria-hidden="true"></a></h3><p><code>backup.sh</code>如下</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">DBUser=backup</span><br><span class="line">DBPwd=abc123</span><br><span class="line">DBName=mysql</span><br><span class="line">BackupPath="/alidata/backup"</span><br><span class="line">BackupFile="$DBName-"$(date +%y%m%d_%H)".sql"</span><br><span class="line"># Backup Dest directory, change this if you have someother location</span><br><span class="line">if !(test -d $BackupPath)</span><br><span class="line">then</span><br><span class="line">mkdir $BackupPath -p</span><br><span class="line">fi</span><br><span class="line">cd $BackupPath</span><br><span class="line">mysql -u$DBUser -p$DBPwd -e 'show databases;' | grep -Ev 'Database|information_schema|performance_schema|mysql|test|sys' | xargs mysqldump -u$DBUser -p$DBPwd --databases --opt --default-character-set=utf8  --single-transaction --hex-blob --skip-triggers --max_allowed_packet=824288000 &gt; "$BackupPath"/"$BackupFile"</span><br><span class="line">#Delete sql type file</span><br><span class="line">find "$BackupPath" -name "$DBname*[log,sql]" -type f -mtime +14 -exec rm -rf {} \;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>创建一个单独的备份用户backup，不要用root</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">mysql&gt; grant select,reload,show databases,super,lock tables,replication client,show view,event,file on *.* to backup@'localhost' identified by 'abc123';</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其中备份文件存放于<code>/alidata/backup</code>目录中。</p>
+<p><strong>目前脚本中备份的库是去除系统库的，请确认是否需要备份系统库。</strong></p>
+<h3 id="定时任务" class="article-heading"><a href="#定时任务" class="headerlink" title="定时任务"></a>定时任务<a class="article-anchor" href="#定时任务" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"># crontab</span><br><span class="line">[分] [时] * * * /bin/bash /usr/local/mysql/backup.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>请确定定时任务的执行时间，建议选择业务低峰期。</strong></p>
+<h2 id="后续事宜" class="article-heading"><a href="#后续事宜" class="headerlink" title="后续事宜"></a>后续事宜<a class="article-anchor" href="#后续事宜" aria-hidden="true"></a></h2><p>请您根据建议进行审核，待您确认后，我方再开始操作。</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:06.007Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9C%80%E6%B1%82"><span class="toc-text">需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E5%86%B5"><span class="toc-text">操作系统概况</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MySQL%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE"><span class="toc-text">MySQL配置优化建议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%8E%A5%E6%94%B6%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8C%85%E5%A4%A7%E5%B0%8F"><span class="toc-text">修改服务端接收的数据包大小</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E6%95%B4%E5%90%84%E7%B1%BB%E7%BC%93%E5%AD%98%E9%85%8D%E7%BD%AE"><span class="toc-text">调整各类缓存配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F"><span class="toc-text">修改二进制日志格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E6%95%B4innodb%E7%BC%93%E5%86%B2%E6%B1%A0"><span class="toc-text">调整innodb缓冲池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E6%95%B4%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E9%85%8D%E7%BD%AE"><span class="toc-text">调整逻辑备份配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%85%A2%E6%9F%A5%E8%AF%A2%E9%85%8D%E7%BD%AE"><span class="toc-text">修改慢查询配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E5%90%8E%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">优化后的配置文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MySQL%E5%A4%87%E4%BB%BD%E5%BB%BA%E8%AE%AE"><span class="toc-text">MySQL备份建议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E5%BB%BA%E8%AE%AE"><span class="toc-text">备份建议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC"><span class="toc-text">备份脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="toc-text">定时任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E7%BB%AD%E4%BA%8B%E5%AE%9C"><span class="toc-text">后续事宜</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

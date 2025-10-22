@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>突破阿里限制实现"RDS For MySQL 5.7到自建MySQL主从" | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/news/2018/08/22/tec-mysql/">
+  <!-- Alternate links -->
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="摘要: 阿里云的RDS For MySQL 5.7 到线下IDC机房的主从搭建相信看官方文档就可以完成，但是搭建之后却发现无法在本地进行认证权限的管理，这是为何？而阿里官方推荐使用DTS同步工具去实现，这个费用着实不少，又是否能够破解呢？本文详解如何暴力破解user表实现从库用户权限更改功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="突破阿里限制实现&quot;RDS For MySQL 5.7到自建MySQL主从&quot;">
+<meta property="og:url" content="http://www.toberoot.com/news/2018/08/22/tec-mysql/">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="摘要: 阿里云的RDS For MySQL 5.7 到线下IDC机房的主从搭建相信看官方文档就可以完成，但是搭建之后却发现无法在本地进行认证权限的管理，这是为何？而阿里官方推荐使用DTS同步工具去实现，这个费用着实不少，又是否能够破解呢？本文详解如何暴力破解user表实现从库用户权限更改功能">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2018-08-22T10:41:15.000Z">
+<meta property="article:modified_time" content="2025-10-20T17:00:01.592Z">
+<meta property="article:author" content="魏亚萍">
+<meta property="article:tag" content="RDS">
+<meta property="article:tag" content="主从同步">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <div class="article-content" itemprop="articleBody">
+                <article class="article post" itemscope itemtype="http://schema.org/Article">
+  <header class="article-header">
+    
+      <h1 class="article-title" itemprop="name">突破阿里限制实现"RDS For MySQL 5.7到自建MySQL主从"</h1>
+    
+    <a href="" class="article-date"><time datetime="2018-08-22T10:41:15.000Z">2018-08-22</time></a>
+  </header>
+  <div class="article-content" itemprop="articleBody">
+    <html><head></head><body><p>摘要: 阿里云的RDS For MySQL 5.7 到线下IDC机房的主从搭建相信看官方文档就可以完成，但是搭建之后却发现无法在本地进行认证权限的管理，这是为何？而阿里官方推荐使用DTS同步工具去实现，这个费用着实不少，又是否能够破解呢？本文详解如何暴力破解user表实现从库用户权限更改功能</p>
+<span id="more"></span>
+
+<h1 id="故事背景" class="article-heading"><a href="#故事背景" class="headerlink" title="故事背景"></a>故事背景<a class="article-anchor" href="#故事背景" aria-hidden="true"></a></h1><h2 id="数据库明细" class="article-heading"><a href="#数据库明细" class="headerlink" title="数据库明细"></a>数据库明细<a class="article-anchor" href="#数据库明细" aria-hidden="true"></a></h2><p>说在前面：</p>
+<ul>
+<li>云上数据库： RDS For MySQL 5.7.20 普通用户权限</li>
+<li>IDC数据库: MySQL 5.7.20</li>
+</ul>
+<h2 id="故事情节" class="article-heading"><a href="#故事情节" class="headerlink" title="故事情节"></a>故事情节<a class="article-anchor" href="#故事情节" aria-hidden="true"></a></h2><p>现需要搭建RDS For MySQL 到线下IDC机房的主从，问题如下：</p>
+<h3 id="同步系统表失败" class="article-heading"><a href="#同步系统表失败" class="headerlink" title="同步系统表失败"></a>同步系统表失败<a class="article-anchor" href="#同步系统表失败" aria-hidden="true"></a></h3><h4 id="故障原因" class="article-heading"><a href="#故障原因" class="headerlink" title="故障原因"></a>故障原因<a class="article-anchor" href="#故障原因" aria-hidden="true"></a></h4><ul>
+<li>RDS For MySQL 5.7.20 到自建MySQL 5.7.20主从同步异常的原因为RDS与MySQL官方版本使用的系统库不同</li>
+<li>自建MySQL 5.7.20 无法同步主库RDS的系统表</li>
+<li>自建MySQL 5.7.20 恢复RDS的全备份数据后无法执行授权语句,报错如下：</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ERROR 1785 (HY000): Statement violates GTID consistency: Updates to non-transactional tables can only be done in either autocommitted statements or single-statement transactions, and never in the same statement as updates to transactional tables.</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>自建MySQL 5.7.20 恢复RDS的全备份数据后无法对系统表执行更新操作，报错如下：</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ERROR 1064 (42000): Unknown trigger has an error in its body: 'Unknown system variable 'maintain_user_list''</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="解决方法" class="article-heading"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法<a class="article-anchor" href="#解决方法" aria-hidden="true"></a></h4><ul>
+<li>跳过系统表的同步</li>
+</ul>
+<hr>
+<h3 id="从库添加认证授权失败" class="article-heading"><a href="#从库添加认证授权失败" class="headerlink" title="从库添加认证授权失败"></a>从库添加认证授权失败<a class="article-anchor" href="#从库添加认证授权失败" aria-hidden="true"></a></h3><p>RDS For MySQL 5.7.20 到自建MySQL 5.7.20 搭建主从同步架构:</p>
+<ul>
+<li>配置从库不同步RDS主库的系统表</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"># skip rep</span><br><span class="line">replicate_wild_ignore_table=mysql.%</span><br><span class="line">replicate_wild_ignore_table=sys.%</span><br><span class="line">replicate_wild_ignore_table=information_schema.%</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><strong>非系统库数据同步正常</strong></li>
+<li>从库无法执行grant命令，即无法添加授权信息</li>
+<li>从库无法对系统表mysql.user表执行insert操作</li>
+<li>从库无法对系统表mysql.user表执行updat操作</li>
+</ul>
+<p>报错如下：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ERROR 1064 (42000): Unknown trigger has an error in its body: 'Unknown system variable 'maintain_user_list''</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="失败原因" class="article-heading"><a href="#失败原因" class="headerlink" title="失败原因"></a>失败原因<a class="article-anchor" href="#失败原因" aria-hidden="true"></a></h4><p><strong>阿里工单答复</strong>：RDS 目前已经不支持 MYISAM 引擎创建了。所以如果是通过自建的replication 同步 就会有这个问题的，RDS 统一INNOB 引擎。<br>如果需求是从RDS 到自建数据库的同步关系，建议您使用DTS 做业务数据的同步。</p>
+<h4 id="探索解决方法" class="article-heading"><a href="#探索解决方法" class="headerlink" title="探索解决方法"></a>探索解决方法<a class="article-anchor" href="#探索解决方法" aria-hidden="true"></a></h4><h5 id="从库尝试使用MySQL8-0-11" class="article-heading"><a href="#从库尝试使用MySQL8-0-11" class="headerlink" title="从库尝试使用MySQL8.0.11"></a>从库尝试使用<code>MySQL8.0.11</code><a class="article-anchor" href="#从库尝试使用MySQL8-0-11" aria-hidden="true"></a></h5><p>RDS For MySQL 5.7的备份文件 到线下自建MYSQL 8.0.11 无法恢复数据。因此该方法不可行。</p>
+<h5 id="尝试临时关闭GTID模式" class="article-heading"><a href="#尝试临时关闭GTID模式" class="headerlink" title="尝试临时关闭GTID模式"></a>尝试临时关闭GTID模式<a class="article-anchor" href="#尝试临时关闭GTID模式" aria-hidden="true"></a></h5><ol>
+<li>临时停止slave同步</li>
+<li>修改配置关闭gtid模式</li>
+<li>重启服务</li>
+</ol>
+<p>对系统表mysql.user测试明细：</p>
+<table>
+<thead>
+<tr>
+<th>No.</th>
+<th>测试项目</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>是否能够执行grant命令</td>
+<td>×</td>
+</tr>
+<tr>
+<td>2</td>
+<td>是否能够执行update命令</td>
+<td>×</td>
+</tr>
+<tr>
+<td>3</td>
+<td>是否能够执行insert命令</td>
+<td>×</td>
+</tr>
+</tbody></table>
+<p>该方法同样无法解决。</p>
+<h2 id="解决方案" class="article-heading"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案<a class="article-anchor" href="#解决方案" aria-hidden="true"></a></h2><h3 id="思路" class="article-heading"><a href="#思路" class="headerlink" title="思路"></a>思路<a class="article-anchor" href="#思路" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">权限相关的一些表：</span></span><br><span class="line">SCHEMA_PRIVILEGES：提供了数据库的相关权限，这个表是内存表是从mysql.db中拉去出来的。</span><br><span class="line">TABLE_PRIVILEGES:提供的是表权限相关信息，信息是从 mysql.tables_priv 表中加载的</span><br><span class="line">COLUMN_PRIVILEGES ：这个表可以清楚就能看到表授权的用户的对象，那张表那个库以及授予的是什么权限，如果授权的时候加上with grant option的话，我们可以看得到PRIVILEGE_TYPE这个值必须是YES。</span><br><span class="line">USER_PRIVILEGES:提供的是表权限相关信息，信息是从 mysql.user 表中加载的</span><br><span class="line">通过表我们可以很清晰看得到MySQL授权的层次，SCHEMA，TABLE，COLUMN级别，当然这些都是基于用户来授予的</span><br></pre></td></tr></tbody></table></figure>
+
+<p>从数据库用户权限管理的原理可以了解到管理用户的是<code>user</code>表，如果要更细致的权限还需要<code>db</code>表和<code>tables_priv</code>表。<em>（本文只从user表着手）</em></p>
+<h3 id="步骤概览" class="article-heading"><a href="#步骤概览" class="headerlink" title="步骤概览"></a>步骤概览<a class="article-anchor" href="#步骤概览" aria-hidden="true"></a></h3><ol>
+<li>创建新的user_1表</li>
+<li>对user_1表添加新的用户</li>
+<li>停服务</li>
+<li>将user_1替换user表</li>
+<li>启动该服务</li>
+<li>可以通过update、insert、delete操作user表来添加权限（grant无法操作）</li>
+</ol>
+<h3 id="测试环境" class="article-heading"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境<a class="article-anchor" href="#测试环境" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@MySQL-01 10:35:  [mysql]&gt; create table user_1 like user;</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:36:  [mysql]&gt; select * from user_1;</span><br><span class="line">Empty set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:36:  [mysql]&gt; show table status like user;</span><br><span class="line">ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'user' at line 1</span><br><span class="line">root@MySQL-01 10:36:  [mysql]&gt; show table status like 'user_1';</span><br><span class="line">+--------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+-----------+----------+----------------+-----------------------------+</span><br><span class="line">| Name   | Engine | Version | Row_format | Rows | Avg_row_length | Data_length | Max_data_length | Index_length | Data_free | Auto_increment | Create_time         | Update_time         | Check_time | Collation | Checksum | Create_options | Comment                     |</span><br><span class="line">+--------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+-----------+----------+----------------+-----------------------------+</span><br><span class="line">| user_1 | MyISAM |      10 | Dynamic    |    0 |              0 |           0 | 281474976710655 |         1024 |         0 |           NULL | 2019-01-04 10:36:00 | 2019-01-04 10:36:00 | NULL       | utf8_bin  |     NULL |                | Users and global privileges |</span><br><span class="line">+--------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+-----------+----------+----------------+-----------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:36:  [mysql]&gt; show table status like 'user';</span><br><span class="line">+------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+---------------------+-----------+----------+----------------+-----------------------------+</span><br><span class="line">| Name | Engine | Version | Row_format | Rows | Avg_row_length | Data_length | Max_data_length | Index_length | Data_free | Auto_increment | Create_time         | Update_time         | Check_time          | Collation | Checksum | Create_options | Comment                     |</span><br><span class="line">+------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+---------------------+-----------+----------+----------------+-----------------------------+</span><br><span class="line">| user | MyISAM |      10 | Dynamic    |    3 |             53 |         160 | 281474976710655 |         2048 |         0 |           NULL | 2015-05-22 15:24:42 | 2019-01-04 09:27:49 | 2015-05-22 15:33:22 | utf8_bin  |     NULL |                | Users and global privileges |</span><br><span class="line">+------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+---------------------+-----------+----------+----------------+-----------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:36:  [mysql]&gt; insert into user_1 select * from user;</span><br><span class="line">Query OK, 3 rows affected (0.00 sec)</span><br><span class="line">Records: 3  Duplicates: 0  Warnings: 0</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:36:  [mysql]&gt; select * from user_1;</span><br><span class="line">+-----------+------+----------+-------------+-------------+-------------+-------------+-------------+-----------+-------------+---------------+--------------+-----------+------------+-----------------+------------+------------+--------------+------------+-----------------------+------------------+--------------+-----------------+------------------+------------------+----------------+---------------------+--------------------+------------------+------------+--------------+------------------------+----------+------------+-------------+--------------+---------------+-------------+-----------------+----------------------+--------+-----------------------+</span><br><span class="line">| Host      | User | Password | Select_priv | Insert_priv | Update_priv | Delete_priv | Create_priv | Drop_priv | Reload_priv | Shutdown_priv | Process_priv | File_priv | Grant_priv | References_priv | Index_priv | Alter_priv | Show_db_priv | Super_priv | Create_tmp_table_priv | Lock_tables_priv | Execute_priv | Repl_slave_priv | Repl_client_priv | Create_view_priv | Show_view_priv | Create_routine_priv | Alter_routine_priv | Create_user_priv | Event_priv | Trigger_priv | Create_tablespace_priv | ssl_type | ssl_cipher | x509_issuer | x509_subject | max_questions | max_updates | max_connections | max_user_connections | plugin | authentication_string |</span><br><span class="line">+-----------+------+----------+-------------+-------------+-------------+-------------+-------------+-----------+-------------+---------------+--------------+-----------+------------+-----------------+------------+------------+--------------+------------+-----------------------+------------------+--------------+-----------------+------------------+------------------+----------------+---------------------+--------------------+------------------+------------+--------------+------------------------+----------+------------+-------------+--------------+---------------+-------------+-----------------+----------------------+--------+-----------------------+</span><br><span class="line">| localhost | root |          | Y           | Y           | Y           | Y           | Y           | Y         | Y           | Y             | Y            | Y         | Y          | Y               | Y          | Y          | Y            | Y          | Y                     | Y                | Y            | Y               | Y                | Y                | Y              | Y                   | Y                  | Y                | Y          | Y            | Y                      |          |            |             |              |             0 |           0 |               0 |                    0 |        |                       |</span><br><span class="line">| 127.0.0.1 | root |          | Y           | Y           | Y           | Y           | Y           | Y         | Y           | Y             | Y            | Y         | Y          | Y               | Y          | Y          | Y            | Y          | Y                     | Y                | Y            | Y               | Y                | Y                | Y              | Y                   | Y                  | Y                | Y          | Y            | Y                      |          |            |             |              |             0 |           0 |               0 |                    0 |        |                       |</span><br><span class="line">| ::1       | root |          | Y           | Y           | Y           | Y           | Y           | Y         | Y           | Y             | Y            | Y         | Y          | Y               | Y          | Y          | Y            | Y          | Y                     | Y                | Y            | Y               | Y                | Y                | Y              | Y                   | Y                  | Y                | Y          | Y            | Y                      |          |            |             |              |             0 |           0 |               0 |                    0 |        |                       |</span><br><span class="line">+-----------+------+----------+-------------+-------------+-------------+-------------+-------------+-----------+-------------+---------------+--------------+-----------+------------+-----------------+------------+------------+--------------+------------+-----------------------+------------------+--------------+-----------------+------------------+------------------+----------------+---------------------+--------------------+------------------+------------+--------------+------------------------+----------+------------+-------------+--------------+---------------+-------------+-----------------+----------------------+--------+-----------------------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:36:  [mysql]&gt; select user,host,authentication_string from user_1;</span><br><span class="line">+------+-----------+-----------------------+</span><br><span class="line">| user | host      | authentication_string |</span><br><span class="line">+------+-----------+-----------------------+</span><br><span class="line">| root | localhost |                       |</span><br><span class="line">| root | 127.0.0.1 |                       |</span><br><span class="line">| root | ::1       |                       |</span><br><span class="line">+------+-----------+-----------------------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:36:  [mysql]&gt; update user_1 set authentication_string=password('(Uploo00king)') where user='root';</span><br><span class="line">Query OK, 3 rows affected, 1 warning (0.01 sec)</span><br><span class="line">Rows matched: 3  Changed: 3  Warnings: 1</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:37:  [mysql]&gt; select user,host,authentication_string from user_1;</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">| user | host      | authentication_string                     |</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">| root | localhost | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">| root | 127.0.0.1 | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">| root | ::1       | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:37:  [mysql]&gt; exit</span><br><span class="line">Bye</span><br><span class="line">[root@sh_02 data]# /etc/init.d/mysqld stop</span><br><span class="line">Shutting down MySQL..                                      [  OK  ]</span><br><span class="line">[root@sh_02 mysql]# ll user_1*</span><br><span class="line">-rw-r-----. 1 mysql mysql 10630 Jan  4 10:36 user_1.frm</span><br><span class="line">-rw-r-----. 1 mysql mysql   328 Jan  4 10:37 user_1.MYD</span><br><span class="line">-rw-r-----. 1 mysql mysql  2048 Jan  4 10:37 user_1.MYI</span><br><span class="line">[root@sh_02 mysql]# mv user_1.frm user.frm</span><br><span class="line">[root@sh_02 mysql]# mv user_1.MYD user.MYD</span><br><span class="line">[root@sh_02 mysql]# mv user_1.MYI user.MYI</span><br><span class="line">[root@sh_02 mysql]# ll user*</span><br><span class="line">-rw-r-----. 1 mysql mysql 10630 Jan  4 10:36 user.frm</span><br><span class="line">-rw-r-----. 1 mysql mysql   328 Jan  4 10:37 user.MYD</span><br><span class="line">-rw-r-----. 1 mysql mysql  2048 Jan  4 10:37 user.MYI</span><br><span class="line">-rw-rw----. 1 mysql mysql  3989 Aug 14 09:14 user_view.frm</span><br><span class="line">[root@sh_02 mysql]# /etc/init.d/mysqld start</span><br><span class="line">Starting MySQL.                                            [  OK  ]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@sh_02 mysql]# mysql -uroot -p'(Uploo00king)'</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection id is 6</span><br><span class="line">Server version: 5.7.20-log MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2017, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:39:  [(none)]&gt; show databases;</span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| information_schema |</span><br><span class="line">| db1                |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+--------------------+</span><br><span class="line">5 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:39:  [(none)]&gt; use mysql</span><br><span class="line">Database changed</span><br><span class="line">root@MySQL-01 10:39:  [mysql]&gt; select user,host from mysql.user;</span><br><span class="line">+------+-----------+</span><br><span class="line">| user | host      |</span><br><span class="line">+------+-----------+</span><br><span class="line">| root | 127.0.0.1 |</span><br><span class="line">| root | ::1       |</span><br><span class="line">| root | localhost |</span><br><span class="line">+------+-----------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 10:39:  [mysql]&gt; grant all on *.* to booboo@'%' identified by '(Uploo00king)';</span><br><span class="line">ERROR 1785 (HY000): Statement violates GTID consistency: Updates to non-transactional tables can only be done in either autocommitted statements or single-statement transactions, and never in the same statement as updates to transactional tables.</span><br><span class="line"></span><br><span class="line">root@MySQL-01 11:39:  [mysql]&gt; update mysql.user_1 set user='aliyun_root' where host='127.0.0.1';</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line">Rows matched: 1  Changed: 1  Warnings: 0</span><br><span class="line"></span><br><span class="line">root@MySQL-01 11:40:  [mysql]&gt; select user,host from mysql.user_1;</span><br><span class="line">+-------------+-----------+</span><br><span class="line">| user        | host      |</span><br><span class="line">+-------------+-----------+</span><br><span class="line">| aliyun_root | 127.0.0.1 |</span><br><span class="line">| root        | ::1       |</span><br><span class="line">| root        | localhost |</span><br><span class="line">+-------------+-----------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">aliyun_root@MySQL-01 11:51:  [mysql]&gt; insert into mysql.user values ('%','jowing', '', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', '', '', '', '', 0, 0, 0, 0, '', password('Joowing@2017'));</span><br><span class="line">Query OK, 1 row affected, 1 warning (0.01 sec)</span><br><span class="line"></span><br><span class="line">aliyun_root@MySQL-01 11:51:  [mysql]&gt; select user,host from  mysql.user;</span><br><span class="line">+-------------+-----------+</span><br><span class="line">| user        | host      |</span><br><span class="line">+-------------+-----------+</span><br><span class="line">| jowing      | %         |</span><br><span class="line">| aliyun_root | 127.0.0.1 |</span><br><span class="line">| root        | ::1       |</span><br><span class="line">| root        | localhost |</span><br><span class="line">+-------------+-----------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="生产环境" class="article-heading"><a href="#生产环境" class="headerlink" title="生产环境"></a>生产环境<a class="article-anchor" href="#生产环境" aria-hidden="true"></a></h3><h4 id="用户权限" class="article-heading"><a href="#用户权限" class="headerlink" title="用户权限"></a>用户权限<a class="article-anchor" href="#用户权限" aria-hidden="true"></a></h4><p>目标：IDC机房从库支持通过insert、update、delete命令来修改用户权限，权限比较简单，分为只读和写。</p>
+<p>需要设置以下权限：权限作用于所有的库多有的表</p>
+<table>
+<thead>
+<tr>
+<th align="left">用户名</th>
+<th align="left">密码</th>
+<th align="left">权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">root</td>
+<td align="left">123</td>
+<td align="left">读写</td>
+</tr>
+<tr>
+<td align="left">joowingbuz</td>
+<td align="left">123</td>
+<td align="left">只读</td>
+</tr>
+<tr>
+<td align="left">ottersync</td>
+<td align="left">123</td>
+<td align="left">只读</td>
+</tr>
+<tr>
+<td align="left">syncdw</td>
+<td align="left">123</td>
+<td align="left">只读</td>
+</tr>
+<tr>
+<td align="left">datasis</td>
+<td align="left">123</td>
+<td align="left">只读</td>
+</tr>
+<tr>
+<td align="left">joowingv</td>
+<td align="left">123</td>
+<td align="left">只读</td>
+</tr>
+<tr>
+<td align="left">datadev</td>
+<td align="left">123</td>
+<td align="left">只读</td>
+</tr>
+<tr>
+<td align="left">readonly</td>
+<td align="left">123</td>
+<td align="left">只读</td>
+</tr>
+</tbody></table>
+<h4 id="步骤概览-1" class="article-heading"><a href="#步骤概览-1" class="headerlink" title="步骤概览"></a>步骤概览<a class="article-anchor" href="#步骤概览-1" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">1. 登陆数据库后操作如下：</span></span><br><span class="line">use mysql;</span><br><span class="line">create table user_1 like user;</span><br><span class="line">insert into user_1 select * from user;</span><br><span class="line">delete from mysql.user_1 where user='root';</span><br><span class="line">insert into mysql.user_1 values ('%','root', '', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">insert into mysql.user_1 values ('%','joowingbuz', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">insert into mysql.user_1 values ('%','ottersync', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">insert into mysql.user_1 values ('%','syncdw', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">insert into mysql.user_1 values ('%','datasis', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">insert into mysql.user_1 values ('%','joowingv', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">insert into mysql.user_1 values ('%','datadev', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">insert into mysql.user_1 values ('%','readonly', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">2. 退出数据库并停止服务</span></span><br><span class="line">/data/mysql/support-files/mysql.server stop</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">3. 将user_1表的物理文件覆盖user表</span></span><br><span class="line">cd /data/xtrabackup_data/mysql/</span><br><span class="line">mv user.frm user.ibd user.MYD user.MYI user.TRG /tmp</span><br><span class="line">mv user_1.frm user.frm</span><br><span class="line">mv user_1.MYI user.MYI</span><br><span class="line">mv user_1.MYD user.MYD</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">4. 启动数据库</span></span><br><span class="line">/data/mysql/support-files/mysql.server start</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="操作明细" class="article-heading"><a href="#操作明细" class="headerlink" title="操作明细"></a>操作明细<a class="article-anchor" href="#操作明细" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@MySQL-01 15:42:  [(none)]&gt; use mysql</span><br><span class="line">Database changed</span><br><span class="line">root@MySQL-01 15:42:  [mysql]&gt; create table user_1 like user;</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:42:  [mysql]&gt; insert into user_1 select * from user;</span><br><span class="line">Query OK, 3 rows affected (0.00 sec)</span><br><span class="line">Records: 3  Duplicates: 0  Warnings: 0</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:42:  [mysql]&gt; select user,host,authentication_string from mysql.user;</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">| user | host      | authentication_string                     |</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">| root | localhost | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">| root | 127.0.0.1 | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">| root | ::1       | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:42:  [mysql]&gt; select user,host,authentication_string from mysql.user_1;</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">| user | host      | authentication_string                     |</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">| root | localhost | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">| root | 127.0.0.1 | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">| root | ::1       | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:42:  [mysql]&gt; desc mysql.user_1;</span><br><span class="line">+------------------------+-----------------------------------+------+-----+---------+-------+</span><br><span class="line">| Field                  | Type                              | Null | Key | Default | Extra |</span><br><span class="line">+------------------------+-----------------------------------+------+-----+---------+-------+</span><br><span class="line">| Host                   | char(60)                          | NO   | PRI |         |       |</span><br><span class="line">| User                   | char(16)                          | NO   | PRI |         |       |</span><br><span class="line">| Password               | char(41)                          | NO   |     |         |       |</span><br><span class="line">| Select_priv            | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Insert_priv            | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Update_priv            | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Delete_priv            | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Create_priv            | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Drop_priv              | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Reload_priv            | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Shutdown_priv          | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Process_priv           | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| File_priv              | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Grant_priv             | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| References_priv        | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Index_priv             | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Alter_priv             | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Show_db_priv           | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Super_priv             | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Create_tmp_table_priv  | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Lock_tables_priv       | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Execute_priv           | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Repl_slave_priv        | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Repl_client_priv       | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Create_view_priv       | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Show_view_priv         | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Create_routine_priv    | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Alter_routine_priv     | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Create_user_priv       | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Event_priv             | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Trigger_priv           | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| Create_tablespace_priv | enum('N','Y')                     | NO   |     | N       |       |</span><br><span class="line">| ssl_type               | enum('','ANY','X509','SPECIFIED') | NO   |     |         |       |</span><br><span class="line">| ssl_cipher             | blob                              | NO   |     | NULL    |       |</span><br><span class="line">| x509_issuer            | blob                              | NO   |     | NULL    |       |</span><br><span class="line">| x509_subject           | blob                              | NO   |     | NULL    |       |</span><br><span class="line">| max_questions          | int(11) unsigned                  | NO   |     | 0       |       |</span><br><span class="line">| max_updates            | int(11) unsigned                  | NO   |     | 0       |       |</span><br><span class="line">| max_connections        | int(11) unsigned                  | NO   |     | 0       |       |</span><br><span class="line">| max_user_connections   | int(11) unsigned                  | NO   |     | 0       |       |</span><br><span class="line">| plugin                 | char(64)                          | YES  |     |         |       |</span><br><span class="line">| authentication_string  | text                              | YES  |     | NULL    |       |</span><br><span class="line">+------------------------+-----------------------------------+------+-----+---------+-------+</span><br><span class="line">42 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:47:  [mysql]&gt; delete from mysql.user_1 where user='root';</span><br><span class="line">Query OK, 3 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:51:  [mysql]&gt; insert into mysql.user_1 values ('%','root', '', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">Query OK, 1 row affected, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:52:  [mysql]&gt; insert into mysql.user_1 values ('%','joowingbuz', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">Query OK, 1 row affected, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:52:  [mysql]&gt; insert into mysql.user_1 values ('%','ottersync', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">Query OK, 1 row affected, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:52:  [mysql]&gt; insert into mysql.user_1 values ('%','syncdw', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:52:  [mysql]&gt; insert into mysql.user_1 values ('%','datasis', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">Query OK, 1 row affected, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:52:  [mysql]&gt; insert into mysql.user_1 values ('%','joowingv', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">Query OK, 1 row affected, 1 warning (0.01 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:52:  [mysql]&gt; insert into mysql.user_1 values ('%','datadev', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">Query OK, 1 row affected, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:52:  [mysql]&gt; insert into mysql.user_1 values ('%','readonly', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('123'));</span><br><span class="line">Query OK, 1 row affected, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:52:  [mysql]&gt; select user,host,authentication_string from mysql.user;</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">| user | host      | authentication_string                     |</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">| root | localhost | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">| root | 127.0.0.1 | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">| root | ::1       | *D4DF57DFB7019B3D8C4294CC413AF1D650A275E4 |</span><br><span class="line">+------+-----------+-------------------------------------------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:52:  [mysql]&gt; select user,host,authentication_string from mysql.user_1;</span><br><span class="line">+------------+------+-------------------------------------------+</span><br><span class="line">| user       | host | authentication_string                     |</span><br><span class="line">+------------+------+-------------------------------------------+</span><br><span class="line">| ottersync  | %    | *9443FA914A2D69FE8832F8294E7422CC1B02A492 |</span><br><span class="line">| joowingbuz | %    | *DFFDA1CA6135E355EF468AB13A465BB5D4FE2B11 |</span><br><span class="line">| root       | %    | *89BE852E4EECFD217F0C5463FB30AD25BD0751E0 |</span><br><span class="line">| syncdw     | %    | *3DD7B4B4F6EE968FF3452B607BDEE6294B6A425A |</span><br><span class="line">| datasis    | %    | *011D511C71990F832C531A0F9CFB34CF7BB4E485 |</span><br><span class="line">| joowingv   | %    | *56B364074270DF7F6D670A6B4F5A4AD13322397A |</span><br><span class="line">| datadev    | %    | *D3D73E0F6BFC3159B024EF31484B6F9CC2963C5B |</span><br><span class="line">| readonly   | %    | *E2BA196C0C7F409990FDB3FAB5F9C7CE95F7C449 |</span><br><span class="line">+------------+------+-------------------------------------------+</span><br><span class="line">8 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@joowing-server-06:~# /data/mysql/support-files/mysql.server stop</span><br><span class="line">Shutting down MySQL</span><br><span class="line">...... *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@joowing-server-06:~# cd /data/xtrabackup_data/</span><br><span class="line">root@joowing-server-06:/data/xtrabackup_data# cd mysql</span><br><span class="line">root@joowing-server-06:/data/xtrabackup_data/mysql# ll user*</span><br><span class="line">-rw-r----- 1 mysql mysql 10630 8月  14 15:42 user_1.frm</span><br><span class="line">-rw-r----- 1 mysql mysql   744 8月  14 15:52 user_1.MYD</span><br><span class="line">-rw-r----- 1 mysql mysql  2048 8月  14 15:53 user_1.MYI</span><br><span class="line">-rw-r----- 1 mysql mysql 10630 8月   9 20:14 user.frm</span><br><span class="line">-rw-r----- 1 mysql mysql 98304 8月   9 20:14 user.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql   328 8月   9 20:14 user.MYD</span><br><span class="line">-rw-r--r-- 1 mysql mysql  2048 8月   9 20:14 user.MYI</span><br><span class="line">-rw-r----- 1 mysql mysql  3569 8月   9 20:14 user.TRG</span><br><span class="line">-rw-r----- 1 mysql mysql  3982 8月   9 20:14 user_view.frm</span><br><span class="line">root@joowing-server-06:/data/xtrabackup_data/mysql# mv user.frm user.ibd user.MYD user.MYI user.TRG /data</span><br><span class="line">root@joowing-server-06:/data/xtrabackup_data/mysql# ll user*</span><br><span class="line">-rw-r----- 1 mysql mysql 10630 8月  14 15:42 user_1.frm</span><br><span class="line">-rw-r----- 1 mysql mysql   744 8月  14 15:52 user_1.MYD</span><br><span class="line">-rw-r----- 1 mysql mysql  2048 8月  14 15:53 user_1.MYI</span><br><span class="line">-rw-r----- 1 mysql mysql  3982 8月   9 20:14 user_view.frm</span><br><span class="line">root@joowing-server-06:/data/xtrabackup_data/mysql# mv user_1.frm user.frm</span><br><span class="line">root@joowing-server-06:/data/xtrabackup_data/mysql# mv user_1.MYI user.MYI</span><br><span class="line">root@joowing-server-06:/data/xtrabackup_data/mysql# mv user_1.MYD user.MYD</span><br><span class="line">root@joowing-server-06:/data/xtrabackup_data/mysql# ll user*</span><br><span class="line">-rw-r----- 1 mysql mysql 10630 8月  14 15:42 user.frm</span><br><span class="line">-rw-r----- 1 mysql mysql   744 8月  14 15:52 user.MYD</span><br><span class="line">-rw-r----- 1 mysql mysql  2048 8月  14 15:53 user.MYI</span><br><span class="line">-rw-r----- 1 mysql mysql  3982 8月   9 20:14 user_view.frm</span><br><span class="line">root@joowing-server-06:/data/xtrabackup_data/mysql# /data/mysql/support-files/mysql.server start</span><br><span class="line">Starting MySQL</span><br><span class="line">...... *</span><br><span class="line"></span><br><span class="line">root@joowing-server-06:/data/xtrabackup_data/mysql# mysql -uroot -p'123'</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection id is 5</span><br><span class="line">Server version: 5.7.20-log MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">root@MySQL-01 15:55:  [(none)]&gt; show slave status\G;</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: rm-uf6f05k2rg95s23bp.mysql.rds.aliyuncs.com</span><br><span class="line">                  Master_User: idc_slave</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: mysql-bin.001641</span><br><span class="line">          Read_Master_Log_Pos: 447207506</span><br><span class="line">               Relay_Log_File: joowing-server-06-relay-bin.000225</span><br><span class="line">                Relay_Log_Pos: 35529076</span><br><span class="line">        Relay_Master_Log_File: mysql-bin.001641</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB:</span><br><span class="line">          Replicate_Ignore_DB:</span><br><span class="line">           Replicate_Do_Table:</span><br><span class="line">       Replicate_Ignore_Table:</span><br><span class="line">      Replicate_Wild_Do_Table:</span><br><span class="line">  Replicate_Wild_Ignore_Table: mysql.%,sys.%,information_schema.%</span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error:</span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 447207506</span><br><span class="line">              Relay_Log_Space: 35529295</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File:</span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File:</span><br><span class="line">           Master_SSL_CA_Path:</span><br><span class="line">              Master_SSL_Cert:</span><br><span class="line">            Master_SSL_Cipher:</span><br><span class="line">               Master_SSL_Key:</span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error:</span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error:</span><br><span class="line">  Replicate_Ignore_Server_Ids:</span><br><span class="line">             Master_Server_Id: 1095052097</span><br><span class="line">                  Master_UUID: b3e1de69-5daa-11e8-bed2-7cd30ab8a9fc</span><br><span class="line">             Master_Info_File: mysql.slave_master_info</span><br><span class="line">                    SQL_Delay: 0</span><br><span class="line">          SQL_Remaining_Delay: NULL</span><br><span class="line">      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates</span><br><span class="line">           Master_Retry_Count: 86400</span><br><span class="line">                  Master_Bind:</span><br><span class="line">      Last_IO_Error_Timestamp:</span><br><span class="line">     Last_SQL_Error_Timestamp:</span><br><span class="line">               Master_SSL_Crl:</span><br><span class="line">           Master_SSL_Crlpath:</span><br><span class="line">           Retrieved_Gtid_Set: b3e1de69-5daa-11e8-bed2-7cd30ab8a9fc:97478646-97483368</span><br><span class="line">            Executed_Gtid_Set: b3e1de69-5daa-11e8-bed2-7cd30ab8a9fc:1-97483368,</span><br><span class="line">c39ecf19-5daa-11e8-aa9c-7cd30ac4764a:1-178658794,</span><br><span class="line">c69289d7-9bc9-11e8-b922-44a842431b62:1-12</span><br><span class="line">                Auto_Position: 1</span><br><span class="line">         Replicate_Rewrite_DB:</span><br><span class="line">                 Channel_Name:</span><br><span class="line">           Master_TLS_Version:</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">ERROR:</span><br><span class="line">No query specified</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">验证只读账号</span></span><br><span class="line">mysql -uroot	-p'123'  -e "create database dbzyadmin;"</span><br><span class="line">mysql -ujoowingbuz -p'123'  -e "create database dbzyadmin;"</span><br><span class="line">mysql -uottersync -p'123'  -e "create database dbzyadmin;"</span><br><span class="line">mysql -usyncdw -p'123'  -e "create database dbzyadmin;"</span><br><span class="line">mysql -udatasis -p'123'  -e "create database dbzyadmin;"</span><br><span class="line">mysql -ujoowingv -p'123'  -e "create database dbzyadmin;"</span><br><span class="line">mysql -udatadev -p'123' -e "create database dbzyadmin;"</span><br><span class="line">mysql -ureadonly -p'123'  -e "create database dbzyadmin;"</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只读账号无法执行写操作，验证成功</span></span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">ERROR 1044 (42000) at line 1: Access denied for user 'readonly'@'%' to database 'dbzyadmin'</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="后续用户权限变更操作指南" class="article-heading"><a href="#后续用户权限变更操作指南" class="headerlink" title="后续用户权限变更操作指南"></a>后续用户权限变更操作指南<a class="article-anchor" href="#后续用户权限变更操作指南" aria-hidden="true"></a></h4><blockquote>
+<p>后续新增用户、删除用户、更改密码命令如下：</p>
+</blockquote>
+<h5 id="新增读写用户" class="article-heading"><a href="#新增读写用户" class="headerlink" title="新增读写用户"></a>新增读写用户<a class="article-anchor" href="#新增读写用户" aria-hidden="true"></a></h5><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">insert into mysql.user_1 values ('%','【用户名】', '', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', '', '', '', '', 0, 0, 0, 0, '', password('【密码】'));</span><br></pre></td></tr></tbody></table></figure>
+
+<h5 id="新增只读用户" class="article-heading"><a href="#新增只读用户" class="headerlink" title="新增只读用户"></a>新增只读用户<a class="article-anchor" href="#新增只读用户" aria-hidden="true"></a></h5><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">insert into mysql.user_1 values ('%','【用户名】', '', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', '', '', '', '', 0, 0, 0, 0, '', password('【密码】'));</span><br></pre></td></tr></tbody></table></figure>
+
+<h5 id="删除用户命令" class="article-heading"><a href="#删除用户命令" class="headerlink" title="删除用户命令"></a>删除用户命令<a class="article-anchor" href="#删除用户命令" aria-hidden="true"></a></h5><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">delete from mysql.user where user='【用户名】';</span><br></pre></td></tr></tbody></table></figure>
+
+<h5 id="修改密码" class="article-heading"><a href="#修改密码" class="headerlink" title="修改密码"></a>修改密码<a class="article-anchor" href="#修改密码" aria-hidden="true"></a></h5><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">update mysql.user set authentication_string=password('【密码】') where user='【用户名】';</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="后记" class="article-heading"><a href="#后记" class="headerlink" title="后记"></a>后记<a class="article-anchor" href="#后记" aria-hidden="true"></a></h2><p>RDS目前使用MySQL版本和官方在系统库上差异还是很大的，若需要搭建RDS到线下自建MySQL5.7的主从时，可以通过此法去实现。</p>
+<p>本文中对user表的破解，同样适适用于<code>mysql.db</code> 、<code>mysql.tables_priv</code>表，都破解则可以将权限从用户拓展到库表列。读者可自行实验测试。</p>
+</body></html>
+  </div>
+  
+</article>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-20T17:00:01.592Z" itemprop="dateModified">Last updated: 2025-10-20</time>
+                
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+             <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%85%E4%BA%8B%E8%83%8C%E6%99%AF"><span class="toc-text">故事背景</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%98%8E%E7%BB%86"><span class="toc-text">数据库明细</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%85%E4%BA%8B%E6%83%85%E8%8A%82"><span class="toc-text">故事情节</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E7%B3%BB%E7%BB%9F%E8%A1%A8%E5%A4%B1%E8%B4%A5"><span class="toc-text">同步系统表失败</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E5%8E%9F%E5%9B%A0"><span class="toc-text">故障原因</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E5%BA%93%E6%B7%BB%E5%8A%A0%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E5%A4%B1%E8%B4%A5"><span class="toc-text">从库添加认证授权失败</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%B1%E8%B4%A5%E5%8E%9F%E5%9B%A0"><span class="toc-text">失败原因</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A2%E7%B4%A2%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">探索解决方法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BB%8E%E5%BA%93%E5%B0%9D%E8%AF%95%E4%BD%BF%E7%94%A8MySQL8-0-11"><span class="toc-text">从库尝试使用MySQL8.0.11</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B0%9D%E8%AF%95%E4%B8%B4%E6%97%B6%E5%85%B3%E9%97%ADGTID%E6%A8%A1%E5%BC%8F"><span class="toc-text">尝试临时关闭GTID模式</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-text">解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF"><span class="toc-text">思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E6%A6%82%E8%A7%88"><span class="toc-text">步骤概览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83"><span class="toc-text">测试环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83"><span class="toc-text">生产环境</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90"><span class="toc-text">用户权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E6%A6%82%E8%A7%88-1"><span class="toc-text">步骤概览</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%98%8E%E7%BB%86"><span class="toc-text">操作明细</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E%E7%BB%AD%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E5%8F%98%E6%9B%B4%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97"><span class="toc-text">后续用户权限变更操作指南</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%96%B0%E5%A2%9E%E8%AF%BB%E5%86%99%E7%94%A8%E6%88%B7"><span class="toc-text">新增读写用户</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%96%B0%E5%A2%9E%E5%8F%AA%E8%AF%BB%E7%94%A8%E6%88%B7"><span class="toc-text">新增只读用户</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E7%94%A8%E6%88%B7%E5%91%BD%E4%BB%A4"><span class="toc-text">删除用户命令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81"><span class="toc-text">修改密码</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E8%AE%B0"><span class="toc-text">后记</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Redis 入门 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/nosql/booboo_redis/01-Redis%E5%85%A5%E9%97%A8">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/nosql/booboo_redis/01-Redis%E5%85%A5%E9%97%A8" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Redis是一个开源的（BSD许可），基于内存的存储系统，可以用作于缓存系统，数据库等，支持多种数据结构，支持主从，高可用等特性。由于Redis出色的性能表现与丰富的功能，经常被用于各种高效的数据检索环境或者缓冲环境中。 Redis 特性 性能高 多种数据结构 持久化 功能丰富  Redis 基本安装使用初始化环境启动实验主机，演示主机为matsera0 ，你们需要按自己的主机名启动。 [kios">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Redis 入门">
+<meta property="og:url" content="http://www.toberoot.com/database/nosql/booboo_redis/01-Redis%E5%85%A5%E9%97%A8">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Redis是一个开源的（BSD许可），基于内存的存储系统，可以用作于缓存系统，数据库等，支持多种数据结构，支持主从，高可用等特性。由于Redis出色的性能表现与丰富的功能，经常被用于各种高效的数据检索环境或者缓冲环境中。 Redis 特性 性能高 多种数据结构 持久化 功能丰富  Redis 基本安装使用初始化环境启动实验主机，演示主机为matsera0 ，你们需要按自己的主机名启动。 [kios">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.875Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:30.329Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Redis 入门</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/nosql/booboo_redis/01-Redis入门.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><p>Redis是一个开源的（BSD许可），基于内存的存储系统，可以用作于缓存系统，数据库等，支持多种数据结构，支持主从，高可用等特性。由于Redis出色的性能表现与丰富的功能，经常被用于各种高效的数据检索环境或者缓冲环境中。</p>
+<h3 id="Redis-特性" class="article-heading"><a href="#Redis-特性" class="headerlink" title="Redis 特性"></a>Redis 特性<a class="article-anchor" href="#Redis-特性" aria-hidden="true"></a></h3><ul>
+<li>性能高</li>
+<li>多种数据结构</li>
+<li>持久化</li>
+<li>功能丰富</li>
+</ul>
+<h3 id="Redis-基本安装使用" class="article-heading"><a href="#Redis-基本安装使用" class="headerlink" title="Redis 基本安装使用"></a>Redis 基本安装使用<a class="article-anchor" href="#Redis-基本安装使用" aria-hidden="true"></a></h3><h4 id="初始化环境" class="article-heading"><a href="#初始化环境" class="headerlink" title="初始化环境"></a>初始化环境<a class="article-anchor" href="#初始化环境" aria-hidden="true"></a></h4><p>启动实验主机，演示主机为matsera0 ，你们需要按自己的主机名启动。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[kiosk@foundation0 ~]$ rht-vmctl  start mastera</span><br><span class="line">Downloading virtual machine definition file for mastera.</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">####################################################################### 100.0%</span></span></span><br><span class="line">Downloading virtual machine disk image db100-mastera-vda.qcow2</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">####################################################################### 100.0%</span></span></span><br><span class="line">Creating virtual machine disk overlay for db100-mastera-vda.qcow2</span><br><span class="line">Downloading virtual machine disk image db100-mastera-vdb.qcow2</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">####################################################################### 100.0%</span></span></span><br><span class="line">Creating virtual machine disk overlay for db100-mastera-vdb.qcow2</span><br><span class="line">Starting mastera.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>登录到实验主机上并配置基本环境</p>
+<ul>
+<li>登录并配置相关安装源</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[kiosk@foundation0 ~]$ ssh root@mastera0</span><br><span class="line">Warning: Permanently added 'mastera0' (ECDSA) to the list of known hosts.</span><br><span class="line">root@mastera0's password:</span><br><span class="line">Last login: Sun Aug 14 08:19:23 2016 from 172.25.0.250</span><br><span class="line">[root@mastera0 ~]# yum install wget -y</span><br><span class="line">Loaded plugins: product-id, search-disabled-repos, subscription-manager</span><br><span class="line">This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.</span><br><span class="line">Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast</span><br><span class="line">rhel_dvd                                                                                                                               | 4.1 kB  00:00:00</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package wget.x86_64 0:1.14-10.el7_0.1 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line"></span><br><span class="line">Dependencies Resolved</span><br><span class="line"></span><br><span class="line">==============================================================================================================================================================</span><br><span class="line"> Package                          Arch                               Version                                       Repository                            Size</span><br><span class="line">==============================================================================================================================================================</span><br><span class="line">Installing:</span><br><span class="line"> wget                             x86_64                             1.14-10.el7_0.1                               rhel_dvd                             546 k</span><br><span class="line"></span><br><span class="line">Transaction Summary</span><br><span class="line">==============================================================================================================================================================</span><br><span class="line">Install  1 Package</span><br><span class="line"></span><br><span class="line">Total download size: 546 k</span><br><span class="line">Installed size: 2.0 M</span><br><span class="line">Downloading packages:</span><br><span class="line">wget-1.14-10.el7_0.1.x86_64.rpm                                                                                                        | 546 kB  00:00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : wget-1.14-10.el7_0.1.x86_64                                                                                                                1/1</span><br><span class="line">  Verifying  : wget-1.14-10.el7_0.1.x86_64                                                                                                                1/1</span><br><span class="line"></span><br><span class="line">Installed:</span><br><span class="line">  wget.x86_64 0:1.14-10.el7_0.1</span><br><span class="line"></span><br><span class="line">Complete!</span><br><span class="line">[root@mastera0 ~]# cd /etc/yum.repos.d/</span><br><span class="line">[root@mastera0 yum.repos.d]# wget http://172.25.254.254/content/courses/db100/rhel7.2/materials/redis.repo</span><br><span class="line">--2016-08-14 08:23:15--  http://172.25.254.254/content/courses/db100/rhel7.2/materials/redis.repo</span><br><span class="line">Connecting to 172.25.254.254:80... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 108</span><br><span class="line">Saving to: ‘redis.repo’</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">100%</span><span class="language-bash">[====================================================================================================================&gt;] 108         --.-K/s   <span class="keyword">in</span> 0s</span></span><br><span class="line"></span><br><span class="line">2016-08-14 08:23:15 (24.7 MB/s) - ‘redis.repo’ saved [108/108]</span><br><span class="line"></span><br><span class="line">[root@mastera0 yum.repos.d]# ls</span><br><span class="line">redhat.repo  redis.repo  rhel_dvd.repo</span><br><span class="line">[root@mastera0 yum.repos.d]# yum makecache</span><br><span class="line">Loaded plugins: product-id, search-disabled-repos, subscription-manager</span><br><span class="line">This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.</span><br><span class="line">redis                                                                                                                                  | 2.9 kB  00:00:00</span><br><span class="line">rhel_dvd                                                                                                                               | 4.1 kB  00:00:00</span><br><span class="line">(1/3): redis/filelists_db                                                                                                              | 1.6 kB  00:00:00</span><br><span class="line">(2/3): redis/other_db                                                                                                                  | 2.4 kB  00:00:00</span><br><span class="line">(3/3): redis/primary_db                                                                                                                | 3.7 kB  00:00:00</span><br><span class="line">Metadata Cache Created</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>安装相关rpm包</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 yum.repos.d]# yum install redis -y</span><br><span class="line">Loaded plugins: product-id, search-disabled-repos, subscription-manager</span><br><span class="line">This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package redis.x86_64 0:2.8.19-2.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: libjemalloc.so.1()(64bit) <span class="keyword">for</span> package: redis-2.8.19-2.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package jemalloc.x86_64 0:3.6.0-1.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line"></span><br><span class="line">Dependencies Resolved</span><br><span class="line"></span><br><span class="line">==============================================================================================================================================================</span><br><span class="line"> Package                               Arch                                Version                                   Repository                          Size</span><br><span class="line">==============================================================================================================================================================</span><br><span class="line">Installing:</span><br><span class="line"> redis                                 x86_64                              2.8.19-2.el7                              redis                              419 k</span><br><span class="line">Installing for dependencies:</span><br><span class="line"> jemalloc                              x86_64                              3.6.0-1.el7                               redis                              105 k</span><br><span class="line"></span><br><span class="line">Transaction Summary</span><br><span class="line">==============================================================================================================================================================</span><br><span class="line">Install  1 Package (+1 Dependent package)</span><br><span class="line"></span><br><span class="line">Total download size: 523 k</span><br><span class="line">Installed size: 1.4 M</span><br><span class="line">Downloading packages:</span><br><span class="line">(1/2): jemalloc-3.6.0-1.el7.x86_64.rpm                                                                                                 | 105 kB  00:00:00</span><br><span class="line">(2/2): redis-2.8.19-2.el7.x86_64.rpm                                                                                                   | 419 kB  00:00:00</span><br><span class="line">--------------------------------------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">Total                                                                                                                         8.9 MB/s | 523 kB  00:00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : jemalloc-3.6.0-1.el7.x86_64                                                                                                                1/2</span><br><span class="line">  Installing : redis-2.8.19-2.el7.x86_64                                                                                                                  2/2</span><br><span class="line">  Verifying  : redis-2.8.19-2.el7.x86_64                                                                                                                  1/2</span><br><span class="line">  Verifying  : jemalloc-3.6.0-1.el7.x86_64                                                                                                                2/2</span><br><span class="line"></span><br><span class="line">Installed:</span><br><span class="line">  redis.x86_64 0:2.8.19-2.el7</span><br><span class="line"></span><br><span class="line">Dependency Installed:</span><br><span class="line">  jemalloc.x86_64 0:3.6.0-1.el7</span><br><span class="line"></span><br><span class="line">Complete!</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>配置防火墙</li>
+<li>配置selinux</li>
+</ul>
+<p>redis默认使用6379端口，所以需要在防火墙中允许此端口，或者关闭防火墙</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# systemctl  stop firewalld</span><br><span class="line">[root@mastera0 ~]# systemctl  disable firewalld</span><br><span class="line">Removed symlink /etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service.</span><br><span class="line">Removed symlink /etc/systemd/system/basic.target.wants/firewalld.service.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>禁用selinux</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# setenforce 0</span><br><span class="line">[root@mastera0 ~]# vi /etc/selinux/config</span><br><span class="line">SELINUX=permissive</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="包组成" class="article-heading"><a href="#包组成" class="headerlink" title="包组成"></a>包组成<a class="article-anchor" href="#包组成" aria-hidden="true"></a></h4><p>redis包由以下文件组成</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# rpm -ql redis</span><br><span class="line">/etc/logrotate.d/redis</span><br><span class="line">/etc/redis-sentinel.conf</span><br><span class="line">/etc/redis.conf</span><br><span class="line">/etc/systemd/system/redis-sentinel.service.d</span><br><span class="line">/etc/systemd/system/redis-sentinel.service.d/limit.conf</span><br><span class="line">/etc/systemd/system/redis.service.d</span><br><span class="line">/etc/systemd/system/redis.service.d/limit.conf</span><br><span class="line">/usr/bin/redis-benchmark</span><br><span class="line">/usr/bin/redis-check-aof</span><br><span class="line">/usr/bin/redis-check-dump</span><br><span class="line">/usr/bin/redis-cli</span><br><span class="line">/usr/bin/redis-sentinel</span><br><span class="line">/usr/bin/redis-server</span><br><span class="line">/usr/bin/redis-shutdown</span><br><span class="line">/usr/lib/systemd/system/redis-sentinel.service</span><br><span class="line">/usr/lib/systemd/system/redis.service</span><br><span class="line">/usr/lib/tmpfiles.d/redis.conf</span><br><span class="line">/usr/share/doc/redis-2.8.19</span><br><span class="line">/usr/share/doc/redis-2.8.19/00-RELEASENOTES</span><br><span class="line">/usr/share/doc/redis-2.8.19/BUGS</span><br><span class="line">/usr/share/doc/redis-2.8.19/CONTRIBUTING</span><br><span class="line">/usr/share/doc/redis-2.8.19/MANIFESTO</span><br><span class="line">/usr/share/doc/redis-2.8.19/README</span><br><span class="line">/usr/share/licenses/redis-2.8.19</span><br><span class="line">/usr/share/licenses/redis-2.8.19/COPYING</span><br><span class="line">/var/lib/redis</span><br><span class="line">/var/log/redis</span><br><span class="line">/var/run/redis</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其中主配置文件</p>
+<blockquote>
+<p>/etc/redis.conf</p>
+</blockquote>
+<p>启动脚本</p>
+<blockquote>
+<p>/usr/lib/systemd/system/redis.service</p>
+</blockquote>
+<p>相关命令</p>
+<table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th align="left">介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">/usr/bin/redis-benchmark</td>
+<td align="left">性能测试命令</td>
+</tr>
+<tr>
+<td align="left">/usr/bin/redis-check-aof</td>
+<td align="left">aof文件修复命令</td>
+</tr>
+<tr>
+<td align="left">/usr/bin/redis-check-dump</td>
+<td align="left">rdb文件检查命令</td>
+</tr>
+<tr>
+<td align="left">/usr/bin/redis-cli</td>
+<td align="left">命令行客户端</td>
+</tr>
+<tr>
+<td align="left">/usr/bin/redis-server</td>
+<td align="left">redis服务启动命令</td>
+</tr>
+<tr>
+<td align="left">/usr/bin/redis-shutdown</td>
+<td align="left">redis服务停止命令</td>
+</tr>
+</tbody></table>
+<p>启动redis</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# systemctl start redis</span><br></pre></td></tr></tbody></table></figure>
+
+<p>​</p>
+<h3 id="Redis使用初步" class="article-heading"><a href="#Redis使用初步" class="headerlink" title="Redis使用初步"></a>Redis使用初步<a class="article-anchor" href="#Redis使用初步" aria-hidden="true"></a></h3><p>登录redis</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>数据库选择</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; select 0</span><br></pre></td></tr></tbody></table></figure>
+
+<p>键值创建赋值语法</p>
+<table>
+<thead>
+<tr>
+<th align="left">语法</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">set key value</td>
+<td align="left">设定单个键值</td>
+</tr>
+<tr>
+<td align="left">mset key1 value1 key2 value2 ….</td>
+<td align="left">设定多个键值</td>
+</tr>
+<tr>
+<td align="left">Append key value</td>
+<td align="left">对一个key追加值</td>
+</tr>
+</tbody></table>
+<p>Ex: 设定name键，值为mark</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; set  name  mark</span><br><span class="line">OK</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Ex: 设定name2键，值为jack , 追加赋值 tom</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; set name2 "jack"</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; get name2</span><br><span class="line">"jack"</span><br><span class="line">127.0.0.1:6379&gt; append name2 " tom"</span><br><span class="line">(integer) 8</span><br><span class="line">127.0.0.1:6379&gt; get name2</span><br><span class="line">"jack tom"</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查询语法</p>
+<table>
+<thead>
+<tr>
+<th align="left">语法</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">keys [ keyname / * ]</td>
+<td align="left">列出已经生效的key</td>
+</tr>
+<tr>
+<td align="left">get keyname</td>
+<td align="left">查询某个key的值</td>
+</tr>
+</tbody></table>
+<p>Ex: 列出当前生效的key，并查询name的值</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; keys  *</span><br><span class="line">1) name</span><br><span class="line">2) "name2"</span><br><span class="line">127.0.0.1:6379&gt; get name</span><br><span class="line">"mark"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其他基础语法</p>
+<table>
+<thead>
+<tr>
+<th align="left">语法</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">del keyname</td>
+<td align="left">删除一个key</td>
+</tr>
+<tr>
+<td align="left">rename key newkey</td>
+<td align="left">重命名一个key</td>
+</tr>
+<tr>
+<td align="left">renamenx key newkey</td>
+<td align="left">重命名一个key (不会覆盖同名key)</td>
+</tr>
+<tr>
+<td align="left">exists key</td>
+<td align="left">判断一个键是否存在</td>
+</tr>
+<tr>
+<td align="left">move key dbnumber</td>
+<td align="left">将一个key移动到其他库</td>
+</tr>
+<tr>
+<td align="left">flushdb</td>
+<td align="left">清空当前库</td>
+</tr>
+<tr>
+<td align="left">type keyname</td>
+<td align="left">查询一个键的数据类型</td>
+</tr>
+</tbody></table>
+<p>Ex：删除name健，并判断name是否还存在</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; del name</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; exists name</span><br><span class="line">(integer) 0</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Ex：在０号库中创建name键，并将它移动到２号库</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; select 0</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; set name mark</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; get name</span><br><span class="line">"mark"</span><br><span class="line">127.0.0.1:6379&gt; move name 2</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; get name</span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6379&gt; select 2</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379[2]&gt; get name</span><br><span class="line">"mark"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Ex：清空当前库</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; flushdb</span><br><span class="line">OK</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Redis-常见数据类型" class="article-heading"><a href="#Redis-常见数据类型" class="headerlink" title="Redis 常见数据类型"></a>Redis 常见数据类型<a class="article-anchor" href="#Redis-常见数据类型" aria-hidden="true"></a></h2><h3 id="字符串" class="article-heading"><a href="#字符串" class="headerlink" title="字符串"></a>字符串<a class="article-anchor" href="#字符串" aria-hidden="true"></a></h3><p>语法：Set key value [ex][px] [nx/xx]</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">EX seconds</td>
+<td align="left">设置指定的到期时间，单位为秒。</td>
+</tr>
+<tr>
+<td align="left">PX milliseconds</td>
+<td align="left">设置指定到期时间，单位为毫秒。</td>
+</tr>
+<tr>
+<td align="left">NX</td>
+<td align="left">设置键，如果它不存在。</td>
+</tr>
+<tr>
+<td align="left">XX</td>
+<td align="left">设置键，如果它已经存在。</td>
+</tr>
+<tr>
+<td align="left">————-</td>
+<td align="left">————-</td>
+</tr>
+</tbody></table>
+<p>Ex : 如果name键不存在则设置键name，值为mark,生效时间为10秒</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; flushdb</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; set name mark ex 10 nx</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379[2]&gt; get name</span><br><span class="line">"mark"</span><br><span class="line">127.0.0.1:6379[2]&gt; get name</span><br><span class="line">(nil)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>相关操作命令</p>
+<table>
+<thead>
+<tr>
+<th align="left">语法</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">mset key1 vaule1 key2 value2 …</td>
+<td align="left">同时设置多个key</td>
+</tr>
+<tr>
+<td align="left">get key</td>
+<td align="left">取值</td>
+</tr>
+<tr>
+<td align="left">mget key1 key2</td>
+<td align="left">取多个key值</td>
+</tr>
+<tr>
+<td align="left">append</td>
+<td align="left">追加key值</td>
+</tr>
+<tr>
+<td align="left">getset</td>
+<td align="left">取得旧值并设置新值</td>
+</tr>
+</tbody></table>
+<p>redis并未提供整数型数据类型，但确有一些专用指令可以回复整数结果</p>
+<table>
+<thead>
+<tr>
+<th align="left">语法</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">incr key</td>
+<td align="left">作用: 指定的key的值加1,并返回加1后的值</td>
+</tr>
+<tr>
+<td align="left">incrby key number</td>
+<td align="left">指定的key的值加number,并返回值</td>
+</tr>
+<tr>
+<td align="left">incrbyfloat key floatnumber</td>
+<td align="left">指定的key的值加floatnumber,并返回值</td>
+</tr>
+<tr>
+<td align="left">decr key</td>
+<td align="left">指定的key的值减1,并返回减1后的值</td>
+</tr>
+<tr>
+<td align="left">decrby key number</td>
+<td align="left">指定的key的值减number,并返回值</td>
+</tr>
+</tbody></table>
+<p>Ex:设置键number，初始值为10，做一次加1操作，一次加10操作，一次减1操作，一次减5操作，一次加0.5操作</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; set number 10</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; INCR number</span><br><span class="line">(integer) 11</span><br><span class="line">127.0.0.1:6379&gt; INCRBY number 10</span><br><span class="line">(integer) 21</span><br><span class="line">127.0.0.1:6379&gt; DECR number</span><br><span class="line">(integer) 20</span><br><span class="line">127.0.0.1:6379&gt; DECRBY number 5</span><br><span class="line">(integer) 15</span><br><span class="line">127.0.0.1:6379&gt; INCRBYFLOAT number 0.5</span><br><span class="line">"15.5"</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="散列hash" class="article-heading"><a href="#散列hash" class="headerlink" title="散列hash"></a>散列hash<a class="article-anchor" href="#散列hash" aria-hidden="true"></a></h3><p>Hash格式由键名，字段以及值组成，其功能类似关联数组。</p>
+<p><img src="pic/hash.jpg" alt="hash"></p>
+<p>相关命令语法</p>
+<table>
+<thead>
+<tr>
+<th align="left">语法</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">hset key field value</td>
+<td align="left">创建hash并定义一个域</td>
+</tr>
+<tr>
+<td align="left">hmset key field1 value1 [field2 value2 field3 value3 ……fieldn valuen]</td>
+<td align="left">创建hash并定义多个域</td>
+</tr>
+<tr>
+<td align="left">hget key field</td>
+<td align="left">取值(单个域)</td>
+</tr>
+<tr>
+<td align="left">hmget key field1 field2 fieldN</td>
+<td align="left">取值(多个域)</td>
+</tr>
+<tr>
+<td align="left">hgetall key</td>
+<td align="left">取值(所有域)</td>
+</tr>
+<tr>
+<td align="left">hdel key field</td>
+<td align="left">删除一个域</td>
+</tr>
+</tbody></table>
+<p>Example：创建hash散列（user1）,定义此用户性别（Gender） 身高（180）体重　（75）　年龄　（28）　工作（sale）</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; hmset user1 Gender male height 180 weight 75 Age 28 job sale</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; hget user1 Gender</span><br><span class="line">"male"</span><br><span class="line">127.0.0.1:6379&gt; hgetall user1</span><br><span class="line"> 1) "Gender"</span><br><span class="line"> 2) "male"</span><br><span class="line"> 3) "height"</span><br><span class="line"> 4) "180"</span><br><span class="line"> 5) "weight"</span><br><span class="line"> 6) "75"</span><br><span class="line"> 7) "Age"</span><br><span class="line"> 8) "28"</span><br><span class="line"> 9) "job"</span><br><span class="line">10) "sale"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>课后练习：使用hash来记录书籍相关信息（ID，书名，作者，发行日期，价格）</p>
+<h3 id="列表-list" class="article-heading"><a href="#列表-list" class="headerlink" title="列表 list"></a>列表 list<a class="article-anchor" href="#列表-list" aria-hidden="true"></a></h3><p>列表用于存储一个有序字符串链表。我们可以在其头部(left)和尾部(right)添加新的元素。</p>
+<p><img src="pic/list.jpg" alt="list"></p>
+<p>基本语法</p>
+<table>
+<thead>
+<tr>
+<th align="left">语法</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">lpush key value [value]</td>
+<td align="left">把值插入到链接头部</td>
+</tr>
+<tr>
+<td align="left">rpush key value [value]</td>
+<td align="left">把值插入到链接尾部</td>
+</tr>
+<tr>
+<td align="left">lpop key</td>
+<td align="left">删除链表头部元素</td>
+</tr>
+<tr>
+<td align="left">rpop key</td>
+<td align="left">删除链表尾部元素</td>
+</tr>
+<tr>
+<td align="left">lrange key start stop</td>
+<td align="left">返回链表中[start ,stop]中的元素</td>
+</tr>
+<tr>
+<td align="left">lrem key count value</td>
+<td align="left">删除若干（count）个value值，count为正数代表从头部开始删除，count为负数则从尾部开始删除</td>
+</tr>
+<tr>
+<td align="left">ltrim key start stop</td>
+<td align="left">剪切链表,切[start,stop]一段,并把该段重新赋给key</td>
+</tr>
+<tr>
+<td align="left">lindex key index</td>
+<td align="left">返回index索引上的值</td>
+</tr>
+<tr>
+<td align="left">llen key</td>
+<td align="left">返回链表长度</td>
+</tr>
+<tr>
+<td align="left">linsert key after</td>
+<td align="left">before search value</td>
+</tr>
+</tbody></table>
+<p>Ex:创建列表route，在列表尾部添加r7值，取出列表内容，取出列表内第3个元素</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; RPUSH route R1 R5 R6</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; LRANGE route 0 -1</span><br><span class="line">1) "R1"</span><br><span class="line">2) "R5"</span><br><span class="line">3) "R6"</span><br><span class="line">127.0.0.1:6379&gt; RPUSH route R7</span><br><span class="line">(integer) 4</span><br><span class="line">127.0.0.1:6379&gt; LRANGE route 0 -1</span><br><span class="line">1) "R1"</span><br><span class="line">2) "R5"</span><br><span class="line">3) "R6"</span><br><span class="line">4) "R7</span><br><span class="line">127.0.0.1:6379&gt; LINDEX route 2</span><br><span class="line">"R6"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>课后练习：使用list来存储每本书的章节信息</p>
+<h3 id="集合" class="article-heading"><a href="#集合" class="headerlink" title="集合"></a>集合<a class="article-anchor" href="#集合" aria-hidden="true"></a></h3><p>由元素组成的总体叫做集合，也简称集。每个元素不同，且无序。</p>
+<p><img src="pic/set.jpg" alt="set.jpg"></p>
+<p>基本语法</p>
+<table>
+<thead>
+<tr>
+<th align="left">语法</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">sadd key value1 value2</td>
+<td align="left">往集合key中增加元素</td>
+</tr>
+<tr>
+<td align="left">srem value1 value2</td>
+<td align="left">删除集合中集为 value1 value2的元素</td>
+</tr>
+<tr>
+<td align="left">spop key</td>
+<td align="left">返回并删除集合中key中1个随机元素</td>
+</tr>
+<tr>
+<td align="left">srandmember key</td>
+<td align="left">返回集合key中,随机的1个元素</td>
+</tr>
+<tr>
+<td align="left">smembers key</td>
+<td align="left">返回集中中所有的元素</td>
+</tr>
+<tr>
+<td align="left">sismember key value</td>
+<td align="left">判断value是否在key集合中</td>
+</tr>
+<tr>
+<td align="left">scard key</td>
+<td align="left">返回集合中元素的个数</td>
+</tr>
+<tr>
+<td align="left">smove source dest value</td>
+<td align="left">将value从source集合移动到dest集合</td>
+</tr>
+<tr>
+<td align="left">sinter key1 key2 key3</td>
+<td align="left">求出key1 key2 key3 三个集合中的交集</td>
+</tr>
+<tr>
+<td align="left">sunion key1 key2.. Keyn</td>
+<td align="left">求出key1 key2 keyn的并集,并返回</td>
+</tr>
+<tr>
+<td align="left">sinterstore dest key1 key2 key3</td>
+<td align="left">求出key1 key2 key3 三个集合中的交集,并赋给dest</td>
+</tr>
+<tr>
+<td align="left">sdiff key1 key2 key3</td>
+<td align="left">求出key1与key2 key3的差集</td>
+</tr>
+</tbody></table>
+<p>Ex: 创建集合word1,word2。返回集合wrod2中所有内容，求word1与word2的并集，交集，差集</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; SADD word1 a d c f k e</span><br><span class="line">(integer) 6</span><br><span class="line">127.0.0.1:6379&gt; SADD word2 a d p v m e  r t</span><br><span class="line">(integer) 8</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS word1</span><br><span class="line">1) "f"</span><br><span class="line">2) "c"</span><br><span class="line">3) "d"</span><br><span class="line">4) "a"</span><br><span class="line">5) "k"</span><br><span class="line">6) "e"</span><br><span class="line">127.0.0.1:6379&gt; SUNION word1 word2</span><br><span class="line"> 1) "a"</span><br><span class="line"> 2) "d"</span><br><span class="line"> 3) "m"</span><br><span class="line">  4) "f"</span><br><span class="line">  5) "p"</span><br><span class="line">  6) "k"</span><br><span class="line">  7) "r"</span><br><span class="line">  8) "e"</span><br><span class="line">  9) "v"</span><br><span class="line">10) "t"</span><br><span class="line">11) "c"</span><br><span class="line">127.0.0.1:6379&gt; SINTER word1 word2</span><br><span class="line">1) "d"</span><br><span class="line">2) "a"</span><br><span class="line">3) "e"</span><br><span class="line">127.0.0.1:6379&gt; SDIFF word1 word2</span><br><span class="line">1) "k"</span><br><span class="line">2) "c"</span><br><span class="line">3) "f"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>课后练习：使用集合来定义书籍分类信息</p>
+<h3 id="有序集合" class="article-heading"><a href="#有序集合" class="headerlink" title="有序集合"></a>有序集合<a class="article-anchor" href="#有序集合" aria-hidden="true"></a></h3><p>与集合的区别只是有序而已，与列表有很像，但与列表有几个不同之处。列表操作头尾两端数据性能比特别高效，有序集合不是，列表不能简单的实现某个元素的位置调整，有序集合可以，列表内的元素可以重复，有序集合不可，有序集合比列表更消耗内存。</p>
+<p>基本语法</p>
+<table>
+<thead>
+<tr>
+<th align="left">语法</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">zadd key score1 value1 score2 value2 ..</td>
+<td align="left">添加元素</td>
+</tr>
+<tr>
+<td align="left">zrem key value1 value2 ..</td>
+<td align="left">删除集合中的元素</td>
+</tr>
+<tr>
+<td align="left">zremrangebyscore key min max</td>
+<td align="left">按照socre来删除元素,删除score在[min,max]之间的</td>
+</tr>
+<tr>
+<td align="left">zremrangebyrank key start end</td>
+<td align="left">按排名删除元素,删除名次在[start,end]之间的</td>
+</tr>
+<tr>
+<td align="left">zrank key value1</td>
+<td align="left">查询value1的排名</td>
+</tr>
+<tr>
+<td align="left">zrevrank key value1</td>
+<td align="left">查询 value1的排名(降续 0名开始)</td>
+</tr>
+<tr>
+<td align="left">ZRANGE key start stop [WITHSCORES]</td>
+<td align="left">把集合排序后,返回名次[start,stop]的元素 默认是升续排列 Withscores 是把score也打印出来</td>
+</tr>
+<tr>
+<td align="left">zrevrange key start stop</td>
+<td align="left">把集合降序排列,取名字[start,stop]之间的元素</td>
+</tr>
+<tr>
+<td align="left">zcard key</td>
+<td align="left">返回元素个数</td>
+</tr>
+<tr>
+<td align="left">zcount key min max</td>
+<td align="left">返回[min,max] 区间内元素的数量</td>
+</tr>
+</tbody></table>
+<p>​<br>Ex:创建有序集合ranking，查看集合，查询lisi的排名</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; ZADD ranking 45 zhangsan 60 lisi 85 laowang  70 xiaoming</span><br><span class="line">(integer) 4</span><br><span class="line">127.0.0.1:6379&gt; ZRANGE ranking 0 -1</span><br><span class="line">1) "zhangsan"</span><br><span class="line">2) "lisi"</span><br><span class="line">3) "xiaoming"</span><br><span class="line">4) "laowang</span><br><span class="line">127.0.0.1:6379&gt; ZRANK ranking lisi</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; zrange ranking 0 2</span><br><span class="line">1) "zhangsan"</span><br><span class="line">2) "lisi"</span><br><span class="line">3) "xiaoming"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>课后练习：使用有序集合来定义top10排行榜</p>
+<p>还有更多其他的数据类型这里就不一一讲解了，可以自行参考官方帮助文档。</p>
+<h2 id="Redis-事务" class="article-heading"><a href="#Redis-事务" class="headerlink" title="Redis 事务"></a>Redis 事务<a class="article-anchor" href="#Redis-事务" aria-hidden="true"></a></h2><p>在Redis中，事务是一组命令的集合。</p>
+<p>语法格式:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Multi</span><br><span class="line">…..</span><br><span class="line">…..</span><br><span class="line">Exec</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Redis的事务功能非常简单，并未像其他数据库（mysql,oracle）那样可以实现事务性ACID的特性。<br>​<br>以原子性(Atomicity )为例，如果multi~exec之间有明显的语法错误，则所有语句失效，如果是操作的数据出错，则会忽略出错语句，执行其他正确语句。</p>
+<p>例-error1：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; multi</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; set name1 zhangsan</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; set name2</span><br><span class="line">(error) ERR wrong number of arguments for 'set' command</span><br><span class="line">127.0.0.1:6379&gt; set name3 lisi</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; exec</span><br><span class="line">(error) EXECABORT Transaction discarded because of previous errors.</span><br><span class="line">127.0.0.1:6379&gt; get name1</span><br></pre></td></tr></tbody></table></figure>
+
+<p>上述例子中可以看到因为语法错误而导致所有语句全部未执行。</p>
+<p>例-error2：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; MULTI</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; RPUSH testlist aa bb cc dd</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; LRANGE testlist 0 -1</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; zadd testlist 10 ee</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; RPUSH testlist ff</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; exec</span><br><span class="line">1) (integer) 4</span><br><span class="line">2) 1) "aa"</span><br><span class="line"> 	2) "bb"</span><br><span class="line">	3) "cc"</span><br><span class="line">	4) "dd"</span><br><span class="line">3) (error) WRONGTYPE Operation against a key holding the wrong kind of value</span><br><span class="line">4) (integer) 5</span><br><span class="line">127.0.0.1:6379&gt; LRANGE testlist 0 -1</span><br><span class="line">1) "aa"</span><br><span class="line">2) "bb"</span><br><span class="line">3) "cc"</span><br><span class="line">4) "dd"</span><br><span class="line">5) "ff"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以看到zadd语句是有问题的，执行过程中zadd被忽略，其他语句仍然执行了。</p>
+<p>另一个与事务处理相关的命令watch. 此命令可以用于监控某些键值，以决定是否运行事务。</p>
+<p>例-watch</p>
+<p>终端1：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; set key1 100</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; get key1</span><br><span class="line">"100"</span><br><span class="line">127.0.0.1:6379&gt; watch key1</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; multi</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; INCR key1</span><br><span class="line">QUEUED</span><br></pre></td></tr></tbody></table></figure>
+
+<p>终端2：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; set key1 101</span><br><span class="line">OK</span><br></pre></td></tr></tbody></table></figure>
+
+<p>终端1继续：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line">127.0.0.1:6379&gt; exec</span><br><span class="line">(nil)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以看到所有事务都没执行。那是因为在事务定义过程中key1发生了改变，并且使用了watch命令对key1做了监控。Watch命令发现自己监控的键值发生改变，那么就会取消事务执行。</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:30.329Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-%E7%89%B9%E6%80%A7"><span class="toc-text">Redis 特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-%E5%9F%BA%E6%9C%AC%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8"><span class="toc-text">Redis 基本安装使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E7%8E%AF%E5%A2%83"><span class="toc-text">初始化环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8C%85%E7%BB%84%E6%88%90"><span class="toc-text">包组成</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E4%BD%BF%E7%94%A8%E5%88%9D%E6%AD%A5"><span class="toc-text">Redis使用初步</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis-%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">Redis 常见数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-text">字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%A3%E5%88%97hash"><span class="toc-text">散列hash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E8%A1%A8-list"><span class="toc-text">列表 list</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9B%86%E5%90%88"><span class="toc-text">集合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88"><span class="toc-text">有序集合</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis-%E4%BA%8B%E5%8A%A1"><span class="toc-text">Redis 事务</span></a>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

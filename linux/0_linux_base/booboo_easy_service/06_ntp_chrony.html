@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>时间同步服务NTP/Chony | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/0_linux_base/booboo_easy_service/06_ntp_chrony">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/0_linux_base/booboo_easy_service/06_ntp_chrony" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="服务 域名解析服务 文件共享服务   web服务     DNS FTP NFS SAMBA APACHE   软件 bind bind-chroot vsftpd rpcbind nfs-utils samba samba-common httpd   服务 named vsftpd rpcbind nfs smb nmb httpd   daemon named vsftpd rpcbi">
+<meta property="og:type" content="website">
+<meta property="og:title" content="时间同步服务NTP&#x2F;Chony">
+<meta property="og:url" content="http://www.toberoot.com/linux/0_linux_base/booboo_easy_service/06_ntp_chrony">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="服务 域名解析服务 文件共享服务   web服务     DNS FTP NFS SAMBA APACHE   软件 bind bind-chroot vsftpd rpcbind nfs-utils samba samba-common httpd   服务 named vsftpd rpcbind nfs smb nmb httpd   daemon named vsftpd rpcbi">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.018Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:38.286Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">时间同步服务NTP/Chony</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/0_linux_base/booboo_easy_service/06_ntp_chrony.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><table>
+<thead>
+<tr>
+<th align="left">服务</th>
+<th align="left">域名解析服务</th>
+<th align="left">文件共享服务</th>
+<th align="left"></th>
+<th align="left"></th>
+<th align="left">web服务</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left">DNS</td>
+<td align="left">FTP</td>
+<td align="left">NFS</td>
+<td align="left">SAMBA</td>
+<td align="left">APACHE</td>
+</tr>
+<tr>
+<td align="left">软件</td>
+<td align="left">bind bind-chroot</td>
+<td align="left">vsftpd</td>
+<td align="left">rpcbind nfs-utils</td>
+<td align="left">samba samba-common</td>
+<td align="left">httpd</td>
+</tr>
+<tr>
+<td align="left">服务</td>
+<td align="left">named</td>
+<td align="left">vsftpd</td>
+<td align="left">rpcbind nfs</td>
+<td align="left">smb nmb</td>
+<td align="left">httpd</td>
+</tr>
+<tr>
+<td align="left">daemon</td>
+<td align="left">named</td>
+<td align="left">vsftpd</td>
+<td align="left">rpcbind nfs</td>
+<td align="left">smbd nmbd</td>
+<td align="left">httpd</td>
+</tr>
+<tr>
+<td align="left">端口号</td>
+<td align="left">53</td>
+<td align="left">21</td>
+<td align="left">111 2049</td>
+<td align="left">137 138 139 445</td>
+<td align="left">80 8080</td>
+</tr>
+<tr>
+<td align="left">配置文件</td>
+<td align="left">/etc/named.conf /etc/named.rfc1912.zones</td>
+<td align="left">/etc/vsftpd/vsftpd.conf</td>
+<td align="left">/etc/exports</td>
+<td align="left">/etc/samba/smb.conf</td>
+<td align="left">/etc/httpd/conf/httpd.conf</td>
+</tr>
+<tr>
+<td align="left">数据文件</td>
+<td align="left">/var/named/</td>
+<td align="left">/var/ftp/</td>
+<td align="left"></td>
+<td align="left">/var/lib/samba</td>
+<td align="left">/var/www</td>
+</tr>
+<tr>
+<td align="left">客户端</td>
+<td align="left"></td>
+<td align="left">lftp</td>
+<td align="left">rpcbind</td>
+<td align="left">samba-client</td>
+<td align="left">elinks</td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left">nslookup</td>
+<td align="left">lftp</td>
+<td align="left">nfs-utils mount</td>
+<td align="left">smbclient</td>
+<td align="left">links</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="Ntp服务的作用" class="article-heading"><a href="#Ntp服务的作用" class="headerlink" title="Ntp服务的作用"></a>Ntp服务的作用<a class="article-anchor" href="#Ntp服务的作用" aria-hidden="true"></a></h3><p>大家设想一下，如果我们的主机时间不准，可以怎么做？有将硬件时间和软件时间同步的办法，也可以使用<code>date -s</code>去设置一个时间，但是你怎么知道你设置的时间就一定准了，或者说你能确定硬件时间一定准么？不能保证吧？那这时候我们就可以找天文台或者一些网络上的时间服务器去做同步，那这时候怎么去做呢？</p>
+<p>这里就用到一种服务了，这种服务叫做ntp服务，它是一种针对时间同步的服务。</p>
+<h3 id="Ntp服务的原理" class="article-heading"><a href="#Ntp服务的原理" class="headerlink" title="Ntp服务的原理"></a>Ntp服务的原理<a class="article-anchor" href="#Ntp服务的原理" aria-hidden="true"></a></h3><p>其实更细化来说，NTP服务器（Network Time Protocol）是用来使计算机时间同步化的一种协议，它可以使计算机对其服务器或时钟源（如石英钟，GPS等等)做同步化，它可以提供高精准度的时间校正（LAN上与标准间差小于1毫秒，WAN上几十毫秒），且可介由加密确认的方式来防止恶毒的协议攻击。时间按NTP服务器的等级传播。按照离外部UTC源的远近把所有服务器归入不同的Stratum（层）中。</p>
+<p>Stratum层也是一个分层式的结构，下一层找上一层做同步，上一层还有上一层。以此类推。</p>
+<h3 id="时间同步服务配置" class="article-heading"><a href="#时间同步服务配置" class="headerlink" title="时间同步服务配置"></a>时间同步服务配置<a class="article-anchor" href="#时间同步服务配置" aria-hidden="true"></a></h3><p>服务端</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">rhel6</th>
+<th align="left">rhel7</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">软件</td>
+<td align="left">ntp</td>
+<td align="left">chrony</td>
+</tr>
+<tr>
+<td align="left">service</td>
+<td align="left">ntpd</td>
+<td align="left">chronyd</td>
+</tr>
+<tr>
+<td align="left">daemon</td>
+<td align="left">ntpd</td>
+<td align="left">chronyd</td>
+</tr>
+<tr>
+<td align="left">配置文件</td>
+<td align="left">/etc/ntp.conf</td>
+<td align="left">/etc/chrony.conf</td>
+</tr>
+<tr>
+<td align="left">数据文件</td>
+<td align="left">/var/lib/ntp</td>
+<td align="left">/var/lib/chrony</td>
+</tr>
+<tr>
+<td align="left">日志文件</td>
+<td align="left">/var/log/ntpstats</td>
+<td align="left">/var/log/chrony</td>
+</tr>
+</tbody></table>
+<p>客户端</p>
+<table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th align="left">ntpdate</th>
+<th align="left">timedatectl</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left">ntpdate 172.25.0.11</td>
+<td align="left">timedatectl set-ntp 1</td>
+</tr>
+</tbody></table>
+<h3 id="项目实践1：配置ntp时间同步服务器" class="article-heading"><a href="#项目实践1：配置ntp时间同步服务器" class="headerlink" title="项目实践1：配置ntp时间同步服务器"></a>项目实践1：配置ntp时间同步服务器<a class="article-anchor" href="#项目实践1：配置ntp时间同步服务器" aria-hidden="true"></a></h3><p>rhel6 软件</p>
+<p>ntp-4.2.6p5-1.el6.x86_64</p>
+<h4 id="配置详解" class="article-heading"><a href="#配置详解" class="headerlink" title="配置详解"></a>配置详解<a class="article-anchor" href="#配置详解" aria-hidden="true"></a></h4><p>NTP安全设置(restrict)</p>
+<p>运行一个NTP Server不需要占用很多的系统资源,所以也不用专门配置独立的服务器,就可以给许多client提供时间同步服务, 但是一些基本的安全设置还是很有必要的那么这里一个很简单的思路就是第一我们只允许局域网内一部分的用户连接到我们的服务器. 第二个就是这些client不能修改我们服务器上的时间</p>
+<p>driftfile /var/lib/ntp/drift #侦测BIOS时钟与Linux系统时间的差异写入次文件。</p>
+<p>利用restrict 来管理权限控制</p>
+<p>Restrict [IP] mask [netmask_IP] [parameter]</p>
+<p>Parameter 的参数主要如下：</p>
+<ul>
+<li>ignore :拒绝所有类型的NTP联机。</li>
+<li>nomodify: 客户端不能使用ntpc 与ntpq 这两个程序来修改服务器的时间参数，但客户端可透过这部主机来进行网络校时；</li>
+<li>noquery:客户端不能够使用ntpc 与ntpq 等指令来查询时间服务器，不提供NTP的网络校时。</li>
+<li>notrap:不提供trap 这个运程事件登入的功能。</li>
+<li>notrust:拒绝没有认证的客户端。</li>
+<li>Kod:kod技术可以阻止“Kiss of Death “包对服务器的破坏。拒绝服务攻击</li>
+<li>Nopeer:不与其他同一层的NTP服务器进行时间同步。</li>
+</ul>
+<p>利用server 设定上层NTP服务器，格式如下：</p>
+<p>server [IP or hostname] [prefer]</p>
+<ul>
+<li><p>perfer:表示优先级最高</p>
+</li>
+<li><p>burst ：当一个运程NTP服务器可用时，向它发送一系列的并发包进行检测。</p>
+</li>
+<li><p>iburst ：当一个运程NTP服务器不可用时，向它发送一系列的并发包进行检测。</p>
+<p>注：默认情况小15分钟后才会与上层NTP服务器进行时间校对。</p>
+</li>
+</ul>
+<blockquote>
+<p>谁能来同步我的时间？</p>
+</blockquote>
+<p>首先我们对于默认的client拒绝所有的操作</p>
+<p>代码:<br><code>restrict default kod nomodify notrap nopeer noquery</code></p>
+<p>然后允许本机地址一切的操作</p>
+<p>代码:<br><code>restrict 127.0.0.1</code></p>
+<p>最后我们允许局域网内所有client连接到这台服务器同步时间.但是拒绝让他们修改服务器上的时间</p>
+<p>代码:<br><code>restrict 172.25.0.0 mask 255.255.255.0 nomodify</code></p>
+<blockquote>
+<p>我去同步谁的时间？</p>
+</blockquote>
+<p>server 时间同步服务器 层数比我高的，及数字比我小的</p>
+<p>代码:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">server  127.127.1.0     # local clock</span><br><span class="line">fudge   127.127.1.0 stratum 10</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="详细步骤" class="article-heading"><a href="#详细步骤" class="headerlink" title="详细步骤"></a>详细步骤<a class="article-anchor" href="#详细步骤" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">服务器端</span></span><br><span class="line"></span><br><span class="line">[root@rhel6 ~]# yum install -y ntp</span><br><span class="line">[root@rhel6 ~]# vim /etc/ntp.conf</span><br><span class="line">[root@rhel6 ~]# grep -v "^#" /etc/ntp.conf|grep -v "^$"</span><br><span class="line">driftfile /var/lib/ntp/drift</span><br><span class="line">restrict default kod nomodify notrap nopeer noquery</span><br><span class="line">restrict -6 default kod nomodify notrap nopeer noquery</span><br><span class="line">restrict 127.0.0.1</span><br><span class="line">restrict -6 ::1</span><br><span class="line">restrict 172.25.0.0 mask 255.255.255.0 nomodify</span><br><span class="line">server 172.25.0.11</span><br><span class="line">server  127.127.1.0</span><br><span class="line">fudge   127.127.1.0 stratum 10</span><br><span class="line">includefile /etc/ntp/crypto/pw</span><br><span class="line">keys /etc/ntp/keys</span><br><span class="line">[root@rhel6 ~]# service ntpd start</span><br><span class="line">Starting ntpd:                                             [  OK  ]</span><br><span class="line">[root@rhel6 ~]# service iptables stop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">客户端</span></span><br><span class="line">[root@rhel7 ~]# which ntpdate</span><br><span class="line">/usr/sbin/ntpdate</span><br><span class="line">[root@rhel7 ~]# rpm -qf /usr/sbin/ntpdate</span><br><span class="line">ntpdate-4.2.6p5-18.el7.x86_64</span><br><span class="line">[root@rhel7 ~]# systemctl stop firewalld</span><br><span class="line">[root@rhel7 ~]# ntpdate 172.25.0.11</span><br><span class="line"> 2 Aug 06:36:51 ntpdate[8128]: step time server 172.25.0.11 offset -0.691491 sec</span><br><span class="line">[root@rhel7 ~]# date -s "2016-08-01"</span><br><span class="line">Mon Aug  1 00:00:00 EDT 2016</span><br><span class="line">[root@rhel7 ~]# date</span><br><span class="line">Mon Aug  1 00:00:01 EDT 2016</span><br><span class="line">[root@rhel7 ~]# ntpdate 172.25.0.11</span><br><span class="line"> 2 Aug 06:37:35 ntpdate[8140]: step time server 172.25.0.11 offset 110240.425235 sec</span><br><span class="line">[root@rhel7 ~]# date</span><br><span class="line">Tue Aug  2 06:37:37 EDT 2016</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="一些补充和拾遗（挺重要）" class="article-heading"><a href="#一些补充和拾遗（挺重要）" class="headerlink" title="一些补充和拾遗（挺重要）"></a>一些补充和拾遗（挺重要）<a class="article-anchor" href="#一些补充和拾遗（挺重要）" aria-hidden="true"></a></h4><ol>
+<li><p>配置文件中的driftfile是什么?<br>我们每一个system clock的频率都有小小的误差,这个就是为什么机器运行一段时间后会不精确.NTP会自动来监测我们时钟的误差值并予以调整.但问题是这是一个冗长的过程,所以它会把记录下来的误差先写入driftfile.这样即使你重新开机以后之前的计算结果也就不会丢失了</p>
+</li>
+<li><p>如何同步硬件时钟?<br>NTP一般只会同步system clock. 但是如果我们也要同步RTC(hwclock)的话那么只需要把下面的选项打开就可以了</p>
+</li>
+</ol>
+<p>代码:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">vi /etc/sysconfig/ntpd</span></span><br><span class="line">SYNC_HWCLOCK=yes</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li>让rhel6运行ntpdate更新时间时，rhel6同步失败，会提示端口被占用：如下</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel6 ~]# ntpdate 172.25.0.11</span><br><span class="line"> 2 Aug 18:39:16 ntpdate[4831]: the NTP socket is in use, exiting</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>利用crontab让rhel7 NTP定时更新时间</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">0 8 * * * /usr/sbin/ntpdate 172.25.0.11</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h3 id="chrony" class="article-heading"><a href="#chrony" class="headerlink" title="chrony"></a>chrony<a class="article-anchor" href="#chrony" aria-hidden="true"></a></h3><p>chrony-1.29.1-1.el7.x86_64</p>
+<p>RHEL从7.0开始改用chrony同步时间，原ntp同步方式也可以使用，但要安装ntp服务。</p>
+<p>chronyd是一个在系统后台运行的守护进程。他根据网络上其他时间服务器时间来测量本机时间的偏移量从而调整系统时钟。对于孤立系统，用户可以手动周期性的输入正确时间（通过chronyc）。在这两种情况下，chronyd决定计算机快慢的比例，并加以纠正。chronyd实现了NTP协议并且可以作为服务器或客户端。</p>
+<h4 id="项目实践2：配置chrony时间同步服务器" class="article-heading"><a href="#项目实践2：配置chrony时间同步服务器" class="headerlink" title="项目实践2：配置chrony时间同步服务器"></a>项目实践2：配置chrony时间同步服务器<a class="article-anchor" href="#项目实践2：配置chrony时间同步服务器" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# yum install -y chrony</span><br><span class="line"></span><br><span class="line">[root@rhel7 ~]# vim /etc/chrony.conf</span><br><span class="line">[root@rhel7 ~]# grep -v "^#" /etc/chrony.conf |grep -v "^$"</span><br><span class="line">server 172.25.0.10</span><br><span class="line">allow 172.25.0.0/24</span><br><span class="line">stratumweight 0</span><br><span class="line">driftfile /var/lib/chrony/drift</span><br><span class="line">rtcsync</span><br><span class="line">makestep 10 3</span><br><span class="line">bindcmdaddress 127.0.0.1</span><br><span class="line">bindcmdaddress ::1</span><br><span class="line">keyfile /etc/chrony.keys</span><br><span class="line">commandkey 1</span><br><span class="line">generatecommandkey</span><br><span class="line">noclientlog</span><br><span class="line">logchange 0.5</span><br><span class="line">logdir /var/log/chrony</span><br><span class="line">[root@rhel7 ~]# timedatectl</span><br><span class="line">      Local time: Tue 2016-08-02 07:24:15 EDT</span><br><span class="line">  Universal time: Tue 2016-08-02 11:24:15 UTC</span><br><span class="line">        RTC time: Tue 2016-08-02 11:24:15</span><br><span class="line">        Timezone: America/New_York (EDT, -0400)</span><br><span class="line">     NTP enabled: yes</span><br><span class="line">NTP synchronized: yes</span><br><span class="line"> RTC in local TZ: no</span><br><span class="line">      DST active: yes</span><br><span class="line"> Last DST change: DST began at</span><br><span class="line">                  Sun 2016-03-13 01:59:59 EST</span><br><span class="line">                  Sun 2016-03-13 03:00:00 EDT</span><br><span class="line"> Next DST change: DST ends (the clock jumps one hour backwards) at</span><br><span class="line">                  Sun 2016-11-06 01:59:59 EDT</span><br><span class="line">                  Sun 2016-11-06 01:00:00 EST</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="项目汇总" class="article-heading"><a href="#项目汇总" class="headerlink" title="项目汇总"></a>项目汇总<a class="article-anchor" href="#项目汇总" aria-hidden="true"></a></h3><p><img src="sides/ntp-lab_Page_1.jpg" alt="ntp-lab_Page_1"></p>
+<p><img src="sides/ntp-lab_Page_2.jpg" alt="ntp-lab_Page_2"></p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:38.286Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Ntp%E6%9C%8D%E5%8A%A1%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-text">Ntp服务的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ntp%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-text">Ntp服务的原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="toc-text">时间同步服务配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E8%B7%B51%EF%BC%9A%E9%85%8D%E7%BD%AEntp%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">项目实践1：配置ntp时间同步服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3"><span class="toc-text">配置详解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E6%AD%A5%E9%AA%A4"><span class="toc-text">详细步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E8%A1%A5%E5%85%85%E5%92%8C%E6%8B%BE%E9%81%97%EF%BC%88%E6%8C%BA%E9%87%8D%E8%A6%81%EF%BC%89"><span class="toc-text">一些补充和拾遗（挺重要）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chrony"><span class="toc-text">chrony</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E8%B7%B52%EF%BC%9A%E9%85%8D%E7%BD%AEchrony%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">项目实践2：配置chrony时间同步服务器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%B1%87%E6%80%BB"><span class="toc-text">项目汇总</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

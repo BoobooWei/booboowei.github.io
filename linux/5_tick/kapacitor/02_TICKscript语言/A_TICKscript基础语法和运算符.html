@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>02-TICKscript语言-A-基础语法和运算符 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/5_tick/kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80/A_TICKscript%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/5_tick/kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80/A_TICKscript%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="TICKscript 语法 介绍 符号 语法 关键字 运算符 链接运算符      TICKscript 语法介绍TICKscript语言是一种用于定义数据处理管道的调用链语言。   符号使用Extended Backus-Naur Form（“EBNF”）指定语法。EBNF与Go编程语言规范中使用的符号相同，可在此处找到。 Production  &#x3D; production_name &amp;qu">
+<meta property="og:type" content="website">
+<meta property="og:title" content="02-TICKscript语言-A-基础语法和运算符">
+<meta property="og:url" content="http://www.toberoot.com/linux/5_tick/kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80/A_TICKscript%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="TICKscript 语法 介绍 符号 语法 关键字 运算符 链接运算符      TICKscript 语法介绍TICKscript语言是一种用于定义数据处理管道的调用链语言。   符号使用Extended Backus-Naur Form（“EBNF”）指定语法。EBNF与Go编程语言规范中使用的符号相同，可在此处找到。 Production  &#x3D; production_name &amp;qu">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2020-04-14T11:28:43.000Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:06.189Z">
+<meta property="article:author" content="魏亚萍">
+<meta property="article:tag" content="TICKscript语言">
+<meta property="article:tag" content="TICK技术栈">
+<meta property="article:tag" content="监控告警">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">02-TICKscript语言-A-基础语法和运算符</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/5_tick/kapacitor/02_TICKscript语言/A_TICKscript基础语法和运算符.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --><html><head></head><body><ul>
+<li><a href="#tickscript-%E8%AF%AD%E6%B3%95">TICKscript 语法</a><ul>
+<li><a href="#%E4%BB%8B%E7%BB%8D">介绍</a></li>
+<li><a href="#%E7%AC%A6%E5%8F%B7">符号</a></li>
+<li><a href="#%E8%AF%AD%E6%B3%95">语法</a></li>
+<li><a href="#%E5%85%B3%E9%94%AE%E5%AD%97">关键字</a></li>
+<li><a href="#%E8%BF%90%E7%AE%97%E7%AC%A6">运算符</a></li>
+<li><a href="#%E9%93%BE%E6%8E%A5%E8%BF%90%E7%AE%97%E7%AC%A6">链接运算符</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h1 id="TICKscript-语法" class="article-heading"><a href="#TICKscript-语法" class="headerlink" title="TICKscript 语法"></a>TICKscript 语法<a class="article-anchor" href="#TICKscript-语法" aria-hidden="true"></a></h1><h2 id="介绍" class="article-heading"><a href="#介绍" class="headerlink" title="介绍"></a>介绍<a class="article-anchor" href="#介绍" aria-hidden="true"></a></h2><p>TICKscript语言是一种用于定义数据处理管道的调用链语言。</p>
+<p><img src="dag_01.jpg"></p>
+<p><img src="dag_02.jpg"></p>
+<h2 id="符号" class="article-heading"><a href="#符号" class="headerlink" title="符号"></a>符号<a class="article-anchor" href="#符号" aria-hidden="true"></a></h2><p>使用<code>Extended Backus-Naur Form</code>（“EBNF”）指定语法。<code>EBNF</code>与<code>Go</code>编程语言规范中使用的符号相同，可在此处找到。</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line">Production  = production_name <span class="string">"="</span> [ Expression ] <span class="string">"."</span> .</span><br><span class="line">Expression  = Alternative { <span class="string">"|"</span> Alternative } .</span><br><span class="line">Alternative = Term { Term } .</span><br><span class="line">Term        = production_name | token [ <span class="string">"…"</span> token ] | Group | Option | Repetition .</span><br><span class="line">Group       = <span class="string">"("</span> Expression <span class="string">")"</span> .</span><br><span class="line">Option      = <span class="string">"["</span> Expression <span class="string">"]"</span> .</span><br><span class="line">Repetition  = <span class="string">"{"</span> Expression <span class="string">"}"</span> .</span><br></pre></td></tr></tbody></table></figure>
+
+<p>符号运算符按优先顺序排列：</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line">|   alternation</span><br><span class="line">()  grouping</span><br><span class="line">[]  option (<span class="number">0</span> or <span class="number">1</span> times)</span><br><span class="line">{}  repetition (<span class="number">0</span> to n times)</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="语法" class="article-heading"><a href="#语法" class="headerlink" title="语法"></a>语法<a class="article-anchor" href="#语法" aria-hidden="true"></a></h2><p>以下是TICKscript的EBNF语法定义。</p>
+<figure class="highlight go"><table><tbody><tr><td class="code"><pre><span class="line">unicode_char        = (* an arbitrary Unicode code point except newline *) .</span><br><span class="line">digit               = <span class="string">"0"</span> … <span class="string">"9"</span> .</span><br><span class="line">ascii_letter        = <span class="string">"A"</span> … <span class="string">"Z"</span> | <span class="string">"a"</span> … <span class="string">"z"</span> .</span><br><span class="line">letter              = ascii_letter | <span class="string">"_"</span> .</span><br><span class="line">identifier          = ( letter ) { letter | digit } .</span><br><span class="line">boolean_lit         = <span class="string">"TRUE"</span> | <span class="string">"FALSE"</span> .</span><br><span class="line">int_lit             = <span class="string">"1"</span> … <span class="string">"9"</span> { digit }</span><br><span class="line">letter              = ascii_letter | <span class="string">"_"</span> .</span><br><span class="line">number_lit          = digit { digit } { <span class="string">"."</span> {digit} } .</span><br><span class="line">duration_lit        = int_lit duration_unit .</span><br><span class="line">duration_unit       = <span class="string">"u"</span> | <span class="string">"µ"</span> | <span class="string">"ms"</span> | <span class="string">"s"</span> | <span class="string">"m"</span> | <span class="string">"h"</span> | <span class="string">"d"</span> | <span class="string">"w"</span> .</span><br><span class="line">string_lit          = <span class="string">`'`</span> { unicode_char } <span class="string">`'`</span> .</span><br><span class="line">star_lit            = <span class="string">"*"</span></span><br><span class="line">regex_lit           = <span class="string">`/`</span> { unicode_char } <span class="string">`/`</span> .</span><br><span class="line"></span><br><span class="line">operator_lit       = <span class="string">"+"</span> | <span class="string">"-"</span> | <span class="string">"*"</span> | <span class="string">"/"</span> | <span class="string">"=="</span> | <span class="string">"!="</span> |</span><br><span class="line">                     <span class="string">"&lt;"</span> | <span class="string">"&lt;="</span> | <span class="string">"&gt;"</span> | <span class="string">"&gt;="</span> | <span class="string">"=~"</span> | <span class="string">"!~"</span> |</span><br><span class="line">                     <span class="string">"AND"</span> | <span class="string">"OR"</span> .</span><br><span class="line"></span><br><span class="line">Program      = Statement { Statement } .</span><br><span class="line">Statement    = Declaration | Expression .</span><br><span class="line">Declaration  = <span class="string">"var"</span> identifier <span class="string">"="</span> Expression .</span><br><span class="line">Expression   = identifier { Chain } | Function { Chain } | Primary .</span><br><span class="line">Chain        = <span class="string">"@"</span> Function | <span class="string">"|"</span> Function { Chain } | <span class="string">"."</span> Function { Chain} | <span class="string">"."</span> identifier { Chain } .</span><br><span class="line">Function     = identifier <span class="string">"("</span> Parameters <span class="string">")"</span> .</span><br><span class="line">Parameters   = { Parameter <span class="string">","</span> } [ Parameter ] .</span><br><span class="line">Parameter    = Expression | <span class="string">"lambda:"</span> LambdaExpr | Primary .</span><br><span class="line">Primary      = <span class="string">"("</span> LambdaExpr <span class="string">")"</span> | number_lit | string_lit |</span><br><span class="line">                boolean_lit | duration_lit | regex_lit | star_lit |</span><br><span class="line">                LFunc | identifier | Reference | <span class="string">"-"</span> Primary | <span class="string">"!"</span> Primary .</span><br><span class="line">Reference    = <span class="string">`"`</span> { unicode_char } <span class="string">`"`</span> .</span><br><span class="line">LambdaExpr   =  Primary operator_lit Primary .</span><br><span class="line">LFunc        = identifier <span class="string">"("</span> LParameters <span class="string">")"</span></span><br><span class="line">LParameters  = { LParameter <span class="string">","</span> } [ LParameter ] .</span><br><span class="line">LParameter   = LambdaExpr |  Primary .</span><br></pre></td></tr></tbody></table></figure>
+
+<p>注释：通过<code>//</code>实现</p>
+<h2 id="关键字" class="article-heading"><a href="#关键字" class="headerlink" title="关键字"></a>关键字<a class="article-anchor" href="#关键字" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th><strong>Word</strong></th>
+<th><strong>Usage</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>TRUE</strong></td>
+<td>The literal Boolean value “true”.</td>
+</tr>
+<tr>
+<td><strong>FALSE</strong></td>
+<td>The literal Boolean value “false”.</td>
+</tr>
+<tr>
+<td><strong>AND</strong></td>
+<td>与</td>
+</tr>
+<tr>
+<td><strong>OR</strong></td>
+<td>或</td>
+</tr>
+<tr>
+<td><strong>lambda:</strong></td>
+<td>lambda表达式</td>
+</tr>
+<tr>
+<td><strong>var</strong></td>
+<td>变量声明</td>
+</tr>
+<tr>
+<td><strong>dbrp</strong></td>
+<td>数据库声明</td>
+</tr>
+</tbody></table>
+<h2 id="运算符" class="article-heading"><a href="#运算符" class="headerlink" title="运算符"></a>运算符<a class="article-anchor" href="#运算符" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th><strong>Operator</strong></th>
+<th><strong>Usage</strong></th>
+<th><strong>Examples</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>+</strong></td>
+<td>加法和字符串连接</td>
+<td><code>3 + 6</code>, <code>total + count</code> and <code>'foo' + 'bar'</code></td>
+</tr>
+<tr>
+<td><strong>-</strong></td>
+<td>减法</td>
+<td><code>10 - 1</code>, <code>total - errs</code></td>
+</tr>
+<tr>
+<td><strong>*</strong></td>
+<td>乘法</td>
+<td><code>3 * 6</code>, <code>ratio * 100.0</code></td>
+</tr>
+<tr>
+<td><strong>/</strong></td>
+<td>除法</td>
+<td><code>36 / 4</code>, <code>errs / total</code></td>
+</tr>
+<tr>
+<td><strong>==</strong></td>
+<td>等值判断</td>
+<td><code>1 == 1</code>, <code>date == today</code></td>
+</tr>
+<tr>
+<td><strong>!=</strong></td>
+<td>不等于判断</td>
+<td><code>result != 0</code>, <code>id != "testbed"</code></td>
+</tr>
+<tr>
+<td><strong>&lt;</strong></td>
+<td>小于判断</td>
+<td><code>4 &lt; 5</code>, <code>timestamp &lt; today</code></td>
+</tr>
+<tr>
+<td><strong>&lt;=</strong></td>
+<td>小于等于判断</td>
+<td><code>3 &lt;= 6</code>, <code>flow &lt;= mean</code></td>
+</tr>
+<tr>
+<td><strong>&gt;</strong></td>
+<td>大于判断</td>
+<td><code>6 &gt; 3.0</code>, <code>delta &gt; sigma</code></td>
+</tr>
+<tr>
+<td><strong>&gt;=</strong></td>
+<td>大于等于判断</td>
+<td><code>9.0 &gt;= 8.1</code>, <code>quantity &gt;= threshold</code></td>
+</tr>
+<tr>
+<td><strong>=~</strong></td>
+<td>正则匹配判断</td>
+<td><code>tag =~ /^cz\d+/</code></td>
+</tr>
+<tr>
+<td><strong>!~</strong></td>
+<td>正则不匹配判断</td>
+<td><code>tag !~ /^sn\d+/</code></td>
+</tr>
+<tr>
+<td><strong>!</strong></td>
+<td>逻辑否定</td>
+<td><code>!TRUE</code>, <code>!(cpu_idle &gt; 70)</code></td>
+</tr>
+<tr>
+<td><strong>AND</strong></td>
+<td>逻辑与</td>
+<td><code>rate &lt; 20.0 AND rate &gt;= 10</code></td>
+</tr>
+<tr>
+<td><strong>OR</strong></td>
+<td>逻辑或</td>
+<td><code>status &gt; warn OR delta &gt; sigma</code></td>
+</tr>
+</tbody></table>
+<h2 id="链接运算符" class="article-heading"><a href="#链接运算符" class="headerlink" title="链接运算符"></a>链接运算符<a class="article-anchor" href="#链接运算符" aria-hidden="true"></a></h2><p>| <strong>操作符</strong> | <strong>用法</strong>                                                                           | <strong>例子</strong>                   |<br>| ———- | ———————————————————————————- | ————————– | ——– |<br>| <strong>|</strong>     | 声明一个链接方法调用，它创建一个新节点的实例并将其链接到它上面的节点。             | <code>stream</code>                   | <code>from()</code> |<br>| <strong>.</strong>      | 声明属性方法调用，设置或更改它所属的节点中的内部属性。                             | <code>from()</code> <code>.database(mydb)</code> |<br>| <strong>@</strong>      | 声明用户定义的函数（UDF）调用。本质上是一种链接方法，它将新的UDF节点添加到管道中。 | <code>from()</code> <code>...</code> <code>@MyFunc()</code> |</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:06.189Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#TICKscript-%E8%AF%AD%E6%B3%95"><span class="toc-text">TICKscript 语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%A6%E5%8F%B7"><span class="toc-text">符号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-text">语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-text">关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-text">运算符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-text">链接运算符</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

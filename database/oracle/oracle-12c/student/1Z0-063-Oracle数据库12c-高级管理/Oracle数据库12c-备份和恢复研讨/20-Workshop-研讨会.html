@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-备份和恢复研讨 第20课：研讨会 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8D%E7%A0%94%E8%AE%A8/20-Workshop-%E7%A0%94%E8%AE%A8%E4%BC%9A">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8D%E7%A0%94%E8%AE%A8/20-Workshop-%E7%A0%94%E8%AE%A8%E4%BC%9A" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2020.04.19 BoobooWei     第20课：研讨会 实践概述 练习20-1：准备备份和恢复研讨会 总览 假设条件 任务   练习20-2：体验现实生活研讨会 总览 假设条件 任务   练习20-3：您的场景 总览 假设条件 热身方案 1.从丢失的重做日志文件中恢复（不活动）。 2.从丢失的重做日志文件中恢复（当前）。您可以使用RMAN客户端或这些任务的云控制。 3.丢失密钥库并丢">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-备份和恢复研讨 第20课：研讨会">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8D%E7%A0%94%E8%AE%A8/20-Workshop-%E7%A0%94%E8%AE%A8%E4%BC%9A">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2020.04.19 BoobooWei     第20课：研讨会 实践概述 练习20-1：准备备份和恢复研讨会 总览 假设条件 任务   练习20-2：体验现实生活研讨会 总览 假设条件 任务   练习20-3：您的场景 总览 假设条件 热身方案 1.从丢失的重做日志文件中恢复（不活动）。 2.从丢失的重做日志文件中恢复（当前）。您可以使用RMAN客户端或这些任务的云控制。 3.丢失密钥库并丢">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.722Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:09.343Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../../news/" class="main-nav-link">News</a><a href="../../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-备份和恢复研讨 第20课：研讨会</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-063-Oracle数据库12c-高级管理/Oracle数据库12c-备份和恢复研讨/20-Workshop-研讨会.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2020.04.19 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#%E7%AC%AC20%E8%AF%BE%EF%BC%9A%E7%A0%94%E8%AE%A8%E4%BC%9A">第20课：研讨会</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B5%E6%A6%82%E8%BF%B0">实践概述</a></li>
+<li><a href="#%E7%BB%83%E4%B9%A020-1%EF%BC%9A%E5%87%86%E5%A4%87%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8D%E7%A0%94%E8%AE%A8%E4%BC%9A">练习20-1：准备备份和恢复研讨会</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6">假设条件</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1">任务</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%83%E4%B9%A020-2%EF%BC%9A%E4%BD%93%E9%AA%8C%E7%8E%B0%E5%AE%9E%E7%94%9F%E6%B4%BB%E7%A0%94%E8%AE%A8%E4%BC%9A">练习20-2：体验现实生活研讨会</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6">假设条件</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1">任务</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%83%E4%B9%A020-3%EF%BC%9A%E6%82%A8%E7%9A%84%E5%9C%BA%E6%99%AF">练习20-3：您的场景</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6">假设条件</a></li>
+<li><a href="#%E7%83%AD%E8%BA%AB%E6%96%B9%E6%A1%88">热身方案</a><ul>
+<li><a href="#1%E4%BB%8E%E4%B8%A2%E5%A4%B1%E7%9A%84%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6%E4%B8%AD%E6%81%A2%E5%A4%8D%EF%BC%88%E4%B8%8D%E6%B4%BB%E5%8A%A8%EF%BC%89%E3%80%82">1.从丢失的重做日志文件中恢复（不活动）。</a></li>
+<li><a href="#2%E4%BB%8E%E4%B8%A2%E5%A4%B1%E7%9A%84%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6%E4%B8%AD%E6%81%A2%E5%A4%8D%EF%BC%88%E5%BD%93%E5%89%8D%EF%BC%89%E3%80%82%E6%82%A8%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8rman%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%88%96%E8%BF%99%E4%BA%9B%E4%BB%BB%E5%8A%A1%E7%9A%84%E4%BA%91%E6%8E%A7%E5%88%B6%E3%80%82">2.从丢失的重做日志文件中恢复（当前）。您可以使用RMAN客户端或这些任务的云控制。</a></li>
+<li><a href="#3%E4%B8%A2%E5%A4%B1%E5%AF%86%E9%92%A5%E5%BA%93%E5%B9%B6%E4%B8%A2%E5%A4%B1%E8%A1%A8%E7%A9%BA%E9%97%B4%E3%80%82">3.丢失密钥库并丢失表空间。</a></li>
+<li><a href="#4%E6%81%A2%E5%A4%8D%E4%B8%A2%E5%A4%B1%E7%9A%84%E5%8F%AA%E8%AF%BB%E8%A1%A8%E7%A9%BA%E9%97%B4%E3%80%82">4.恢复丢失的只读表空间。</a></li>
+<li><a href="#5%E5%9C%A8%E6%B2%A1%E6%9C%89%E5%A4%87%E4%BB%BD%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E6%81%A2%E5%A4%8D%E8%A1%A8%E7%A9%BA%E9%97%B4%EF%BC%88%E5%9C%A8archivelog%E6%A8%A1%E5%BC%8F%E4%B8%8B%EF%BC%89%E3%80%82">5.在没有备份的情况下恢复表空间（在ARCHIVELOG模式下）。</a></li>
+<li><a href="#6%E4%BB%A5noarchivelog%E6%A8%A1%E5%BC%8F%E6%81%A2%E5%A4%8D%E8%A1%A8%E7%A9%BA%E9%97%B4%E3%80%82">6.以NOARCHIVELOG模式恢复表空间。</a></li>
+<li><a href="#7%E9%80%9A%E8%BF%87%E4%BD%BF%E7%94%A8%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E6%9D%A5%E6%81%A2%E5%A4%8D%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6%E3%80%82">7.通过使用控制文件跟踪文件来恢复控制文件。</a></li>
+<li><a href="#8%E8%A1%A8%E7%A9%BA%E9%97%B4%E5%92%8C%E5%BD%93%E5%89%8D%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6%E4%B8%A2%E5%A4%B1%E3%80%82">8.表空间和当前重做日志文件丢失。</a></li>
+<li><a href="#9%E4%BB%8E%E4%B8%A2%E5%A4%B1%E7%9A%84%E6%89%80%E6%9C%89%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6%E5%92%8C%E8%A1%A8%E7%A9%BA%E9%97%B4%E4%B8%AD%E6%81%A2%E5%A4%8D%E3%80%82%E8%BF%99%E5%B0%86%E9%9C%80%E8%A6%81%E4%BB%8E%E5%A4%87%E4%BB%BD%E9%9B%86%E4%B8%AD%E8%BF%98%E5%8E%9F%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6%E3%80%82">9.从丢失的所有控制文件和表空间中恢复。这将需要从备份集中还原控制文件。</a></li>
+<li><a href="#10%E8%87%AA%E4%B8%8A%E6%AC%A1%E5%A4%87%E4%BB%BD%E4%BB%A5%E6%9D%A5%EF%BC%8C%E6%89%80%E6%9C%89%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6%E5%9D%87%E4%B8%A2%E5%A4%B1%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%88%A0%E9%99%A4%E4%BA%86%E8%A1%A8%E7%A9%BA%E9%97%B4%E5%B9%B6%E9%87%8D%E6%96%B0%E5%88%9B%E5%BB%BA%E4%BA%86%E8%A1%A8%E7%A9%BA%E9%97%B4%E3%80%82">10.自上次备份以来，所有控制文件均丢失，并且删除了表空间并重新创建了表空间。</a></li>
+<li><a href="#11%E4%B8%A2%E5%A4%B1%E5%B0%9A%E6%9C%AA%E5%88%86%E7%B1%BB%E7%9A%84%E5%A4%87%E4%BB%BD%E7%9A%84%E8%A1%A8%E7%A9%BA%E9%97%B4%E3%80%82%E4%BD%BF%E7%94%A8%E6%9C%AA%E5%88%97%E5%85%A5%E7%9B%AE%E5%BD%95%E7%9A%84%E5%A4%87%E4%BB%BD%E9%9B%86%E8%BF%9B%E8%A1%8C%E6%81%A2%E5%A4%8D%E3%80%82">11.丢失尚未分类的备份的表空间。使用未列入目录的备份集进行恢复。</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="实践概述" class="article-heading"><a href="#实践概述" class="headerlink" title="实践概述"></a>实践概述<a class="article-anchor" href="#实践概述" aria-hidden="true"></a></h2><p>在这些实践中，您将使用备份保护ORCL数据库。</p>
+<p>然后，您或您的讲师会将已知和未知问题引入您的环境。</p>
+<p>您的任务是在不丢失数据或数据丢失最少的情况下恢复数据库。</p>
+<h2 id="练习20-1：准备备份和恢复研讨会" class="article-heading"><a href="#练习20-1：准备备份和恢复研讨会" class="headerlink" title="练习20-1：准备备份和恢复研讨会"></a>练习20-1：准备备份和恢复研讨会<a class="article-anchor" href="#练习20-1：准备备份和恢复研讨会" aria-hidden="true"></a></h2><h3 id="总览" class="article-heading"><a href="#总览" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览" aria-hidden="true"></a></h3><p>在这种实践中，您将有机会运用所学的知识。您的任务是通过适当的备份和恢复策略来确保数据库的可用性。然后将测试您的配置：（由您或您的讲师介绍）已知问题和未知问题，以便您有机会在实际场景中进行恢复，而不会丢失数据或丢失的数据最少。</p>
+<h3 id="假设条件" class="article-heading"><a href="#假设条件" class="headerlink" title="假设条件"></a>假设条件<a class="article-anchor" href="#假设条件" aria-hidden="true"></a></h3><p>您熟悉Oracle备份和恢复操作。您完成了练习19，因此，与本课程开始时一样，ORCL和RCAT数据库处于默认配置。</p>
+<h3 id="任务" class="article-heading"><a href="#任务" class="headerlink" title="任务"></a>任务<a class="article-anchor" href="#任务" aria-hidden="true"></a></h3><p>1.配置恢复设置。使用企业管理器或实践中所示的命令来配置希望用于保护数据库的设置。假设这是一个生产数据库，并且业务需求是最小的数据丢失。如果可能的话，需要完全恢复。考虑以下：</p>
+<p>− ARCHIVELOG模式（练习3-1）</p>
+<p>− 存档日志文件目标（练习3-1）</p>
+<p>− 快速恢复区（实践3-1）</p>
+<p>− 默认备份位置（实践3-1）</p>
+<p>− 备份集或映像副本</p>
+<p>− 增量或完全备份</p>
+<p>− 备份保留策略（这些练习建议冗余为2）（练习3-3 ）</p>
+<p>− 控制文件的数量和位置（练习3-4）</p>
+<p>− 重做日志文件的数量和位置（实践3-6）</p>
+<p>− 参数和密码文件的位置（练习12）</p>
+<p>− 表空间和数据文件的位置</p>
+<p>− 控制文件的备份策略（练习3-3、7-1）</p>
+<p>− 使用恢复目录（实践4）</p>
+<p>2.记录DBID的的ORCL数据库：</p>
+<p>3.在为备份和恢复策略完全配置数据库之后，请执行两次选择的备份。</p>
+<h2 id="练习20-2：体验现实生活研讨会" class="article-heading"><a href="#练习20-2：体验现实生活研讨会" class="headerlink" title="练习20-2：体验现实生活研讨会"></a>练习20-2：体验现实生活研讨会<a class="article-anchor" href="#练习20-2：体验现实生活研讨会" aria-hidden="true"></a></h2><h3 id="总览-1" class="article-heading"><a href="#总览-1" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览-1" aria-hidden="true"></a></h3><p>在这个工作坊中，讲师将随机呈现一个场景。您的任务是诊断问题并在可能的情况下对数据库执行完全恢复。</p>
+<p>如果无法进行完全恢复，请尽可能恢复到最近的时间点。</p>
+<h3 id="假设条件-1" class="article-heading"><a href="#假设条件-1" class="headerlink" title="假设条件"></a>假设条件<a class="article-anchor" href="#假设条件-1" aria-hidden="true"></a></h3><p>练习19和20-1已完成。</p>
+<h3 id="任务-1" class="article-heading"><a href="#任务-1" class="headerlink" title="任务"></a>任务<a class="article-anchor" href="#任务-1" aria-hidden="true"></a></h3><ol>
+<li>在每种情况下，第一步都是登录数据库并尝试启动它。</li>
+<li>通过查看错误消息，警报日志或其他指示器来诊断问题。</li>
+<li>决定并实施恢复计划。</li>
+<li>重要提示：如果执行的恢复不完整，则必须执行新的备份以保护数据库。</li>
+<li>当您对数据库已被恢复和保护感到满意时，请教师指定其他方案。</li>
+</ol>
+<h2 id="练习20-3：您的场景" class="article-heading"><a href="#练习20-3：您的场景" class="headerlink" title="练习20-3：您的场景"></a>练习20-3：您的场景<a class="article-anchor" href="#练习20-3：您的场景" aria-hidden="true"></a></h2><h3 id="总览-2" class="article-heading"><a href="#总览-2" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览-2" aria-hidden="true"></a></h3><p>在这种情况下，您将看到一个无法正常运行的数据库。您必须确定故障原因以及可用于修复数据库的资源。然后修复数据库，恢复尽可能多的数据。</p>
+<p>在每种情况下，都会创建具有新架构的新表空间。有时已经备份了。检查警报日志将显示自上次备份以来创建的表空间。在USERS表空间中创建了一个新模式。</p>
+<p>如果讲师启动了崩溃场景（这是推荐的方法），那么讲师将通过ftp连接到您的训练环境并在本地启动其中一种场景。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="variable">$WORKS</span></span><br><span class="line">./wksh_20_nn.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p>仅当您在没有教员的情况下工作并且想要介绍自己的“崩溃情况”时，才使用以下命令。（用场景号替换nn。）</p>
+<p>在大多数恢复之后，强烈建议进行新的完整数据库备份。</p>
+<h3 id="假设条件-2" class="article-heading"><a href="#假设条件-2" class="headerlink" title="假设条件"></a>假设条件<a class="article-anchor" href="#假设条件-2" aria-hidden="true"></a></h3><p>您采用的恢复策略可能已受到影响。数据库可能已从ARCHIVELOG模式中退出，使用的备份类型可能已更改，或者您期望安全的特定文件可能会丢失。</p>
+<h3 id="热身方案" class="article-heading"><a href="#热身方案" class="headerlink" title="热身方案"></a>热身方案<a class="article-anchor" href="#热身方案" aria-hidden="true"></a></h3><h4 id="1-从丢失的重做日志文件中恢复（不活动）。" class="article-heading"><a href="#1-从丢失的重做日志文件中恢复（不活动）。" class="headerlink" title="1.从丢失的重做日志文件中恢复（不活动）。"></a>1.从丢失的重做日志文件中恢复（不活动）。<a class="article-anchor" href="#1-从丢失的重做日志文件中恢复（不活动）。" aria-hidden="true"></a></h4><p>无效的重做日志文件已丢失。完全恢复是可能的。</p>
+<p>a. 启动数据库实例。只要至少一个组成员仍在运行，实例的正常运行就不会受到影响。<br>b. 查看alert_orcl.log的末尾以查看错误很重要。重做日志文件丢失。<br>c. 确定缺少哪个重做日志文件组或成员。<br>d. 确定重做日志组的状态：CURRENT，ACTIVE或INACTIVE来自V$LOG 。<br>e. 您可以通过删除丢失的重做日志成员并添加新成员来恢复丢失的日志文件。<br>f.如果已归档缺少日志文件的组，则可以清除日志组以重新创建丢失的文件<code>ALTER DATABASE CLEAR [UNARCHIVED] LOGFILE GROUP &lt;number&gt;</code>命令。<br>g. 执行完整备份。</p>
+<h4 id="2-从丢失的重做日志文件中恢复（当前）。您可以使用RMAN客户端或这些任务的云控制。" class="article-heading"><a href="#2-从丢失的重做日志文件中恢复（当前）。您可以使用RMAN客户端或这些任务的云控制。" class="headerlink" title="2.从丢失的重做日志文件中恢复（当前）。您可以使用RMAN客户端或这些任务的云控制。"></a>2.从丢失的重做日志文件中恢复（当前）。您可以使用RMAN客户端或这些任务的云控制。<a class="article-anchor" href="#2-从丢失的重做日志文件中恢复（当前）。您可以使用RMAN客户端或这些任务的云控制。" aria-hidden="true"></a></h4><p>活动或当前的重做日志文件已丢失。可能无法完全恢复。</p>
+<p>a. 启动数据库实例。只要至少一个组成员仍在运行，实例的正常运行就不会受到影响。<br>b. 查看alert_orcl.log的末尾以查看错误很重要。重做日志文件丢失。<br>c. 确定缺少哪个重做日志文件组或成员。<br>d. 确定重做日志组的状态（(CURRENT, ACTIVE, or INACTIVE）从V$LOG。记录丢失组的序列号和起始SCN。注意：如果V$LOG视图不可用，请关闭数据库并使用。<br>e. 您可以通过删除丢失的重做日志成员并添加新成员来恢复丢失的日志文件。<br>F. 如果已归档缺少日志文件的组，则可以清除日志组以重新创建丢失的文件<code>ALTER DATABASE CLEAR [UNARCHIVED] LOGFILE GROUP &lt;number&gt;</code>命令。<br>g.启动RMAN并列出故障。如果无法使数据库保持一致，则需要进行不完全的恢复。您可以使用<code>REPAIR FAILURE</code>命令执行它。注意<code>UNTIL SCN</code>子句。<br>h.执行完整备份。（这是必需的，尤其是在不完全恢复之后。）</p>
+<h4 id="3-丢失密钥库并丢失表空间。" class="article-heading"><a href="#3-丢失密钥库并丢失表空间。" class="headerlink" title="3.丢失密钥库并丢失表空间。"></a>3.丢失密钥库并丢失表空间。<a class="article-anchor" href="#3-丢失密钥库并丢失表空间。" aria-hidden="true"></a></h4><p>此方案使用加密的备份。表空间丢失，密钥库丢失。密钥库（或加密钱包）的备份位于<code>/u01/backup/orcl/ewallet.p12</code>中。P12。密钥库密码为“ secret”。密钥库是在<code>$ORACLE_BASE/admin/orcl/wallet/ewallet.p12</code>目录中的默认位置创建的。</p>
+<p>a. 确定故障。（丢失数据文件将是第一个错误。）<br>b. 恢复数据文件。（还原将失败，并出现加密备份错误。）<br>c. 尝试将密钥库作为SYSDBA打开。<code>ADMINISTER KEY MANAGEMENT SET KEYSTORE OPEN IDENTIFIED BY secret;</code><br>d. 将密钥库还原到默认位置，然后打开密钥库。<br>e. 使用<code> LIST FAILURE, ..., REPAIR FAILURE.</code><br>f. 打开数据库。<br>g. 恢复为未加密的备份。执行<code>$WORKS/cleanup_20_03.sh</code>脚本以创建新的0级备份。</p>
+<h4 id="4-恢复丢失的只读表空间。" class="article-heading"><a href="#4-恢复丢失的只读表空间。" class="headerlink" title="4.恢复丢失的只读表空间。"></a>4.恢复丢失的只读表空间。<a class="article-anchor" href="#4-恢复丢失的只读表空间。" aria-hidden="true"></a></h4><p>只要控制文件能够正确识别表空间的状态，丢失的只读表空间的恢复与任何其他表空间相同。如果可以应用存档日志，则可以进行完全恢复。</p>
+<h4 id="5-在没有备份的情况下恢复表空间（在ARCHIVELOG模式下）。" class="article-heading"><a href="#5-在没有备份的情况下恢复表空间（在ARCHIVELOG模式下）。" class="headerlink" title="5.在没有备份的情况下恢复表空间（在ARCHIVELOG模式下）。"></a>5.在没有备份的情况下恢复表空间（在ARCHIVELOG模式下）。<a class="article-anchor" href="#5-在没有备份的情况下恢复表空间（在ARCHIVELOG模式下）。" aria-hidden="true"></a></h4><p>不带备份的表空间恢复与任何其他表空间相同，只要控制文件是最新的，并且该控制文件具有表空间的存在记录，并且归档日志文件的存在可以恢复到当前时间点。</p>
+<h4 id="6-以NOARCHIVELOG模式恢复表空间。" class="article-heading"><a href="#6-以NOARCHIVELOG模式恢复表空间。" class="headerlink" title="6.以NOARCHIVELOG模式恢复表空间。"></a>6.以NOARCHIVELOG模式恢复表空间。<a class="article-anchor" href="#6-以NOARCHIVELOG模式恢复表空间。" aria-hidden="true"></a></h4><p>注意：数据库处于NOARCHIVELOG模式。表空间已丢失。除非自上次备份以来的所有更改都包含在联机重做日志中，否则不可能进行完全恢复。</p>
+<p>a. 诊断故障。<br>b. 确定可用于还原的备份。<br>c. 恢复数据库后，执行$WORKS/cleanup_20_06.sh脚本。</p>
+<p>提示：使用<code>LIST BACKUP</code>命令检查可用的备份。</p>
+<p>有两种可能的恢复路径：1）删除丢失的表空间或 2）将整个数据库恢复到上一次备份的时间。</p>
+<p>使用选项1，您会丢失单个表空间中的所有内容，并且必须通过其他方式重新输入它。</p>
+<p>使用选项2，您将丢失自上次备份以来输入的所有内容。这是ADVISE FAILURE命令附带的选项。</p>
+<p>选项1：发出以下命令。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">$ sqlplus <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">ALTER</span> DATABASE DATAFILE <span class="operator">&lt;</span>filenumber <span class="keyword">or</span> ‘filename’<span class="operator">&gt;</span> OFFLINE <span class="keyword">FOR</span> <span class="keyword">DROP</span>;</span><br><span class="line"><span class="keyword">ALTER</span> DATABASE <span class="keyword">OPEN</span>;</span><br><span class="line"><span class="keyword">DROP</span> TABLESPACE BARTBS INCLUDING CONTENTS <span class="keyword">AND</span> DATAFILES;</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> EXIT;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>选项2：发出以下命令。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">$ rman target <span class="operator">/</span></span><br><span class="line">RMAN<span class="operator">&gt;</span> list failure;</span><br><span class="line">RMAN<span class="operator">&gt;</span> advise failure;</span><br><span class="line">RMAN<span class="operator">&gt;</span> repair failure;</span><br><span class="line">RMAN<span class="operator">&gt;</span> exit</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="7-通过使用控制文件跟踪文件来恢复控制文件。" class="article-heading"><a href="#7-通过使用控制文件跟踪文件来恢复控制文件。" class="headerlink" title="7.通过使用控制文件跟踪文件来恢复控制文件。"></a>7.通过使用控制文件跟踪文件来恢复控制文件。<a class="article-anchor" href="#7-通过使用控制文件跟踪文件来恢复控制文件。" aria-hidden="true"></a></h4><p>该方案在/u01/backup/orcl/control.trc中创建一个控制文件跟踪。控制文件自动备份不可用。</p>
+<p>a. 使用SQL * Plus启动数据库实例并确定失败。<br>b. 通过查看alert_orcl.log文件，确定所有控制文件都丢失。<br>c. 转到 /u01/app/oracle/oradata/orcl目录，并验证所有存在其他数据库文件。<br>d. 找到控制文件跟踪文件，然后将其复制到control.sql。编辑control.sql 文件。<br>e. 确保列出了所有数据文件，包括BARTBS表空间的数据文件。<br>f. 由于所有重做日志仍然存在，因此请使用<code>“Set #1. NORESETLOGS case</code>控制文件中的SQL语句将跟踪以重新创建控制文件。注意：控制文件将在初始化参数文件中指定的位置中创建。<br>g. 确认各种语句中命名的文件存在。使用ls OS命令进行检查。<br>h. 删除或注释掉所有“ Set＃2”。RESETLOGS case ”命令。<br>i. 关闭数据库。<code>shutdown immediate</code><br>j. 执行control.sql文件。<code> @control.sql</code><br>k. 如果脚本失败，请再次检查文件是否存在并更正脚本。<br>l. 检查数据库是否处于ARCHIVELOG模式。<code>archive log list</code><br>m. 此时，检查化身表和记录的备份。检查控制文件自动备份配置。检查所有表空间均已正确配置。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">$ rman target <span class="operator">/</span></span><br><span class="line">RMAN<span class="operator">&gt;</span> list incarnation;</span><br><span class="line">RMAN<span class="operator">&gt;</span> list backup summary;</span><br><span class="line">RMAN<span class="operator">&gt;</span> <span class="keyword">show</span> controlfile autobackup; RMAN<span class="operator">&gt;</span> report schema;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>完成此练习后，执行<code>/home/oracle/workshop/cleanup_20_07.sh</code>。该脚本包括一个新的备份。</p>
+<p><strong>场景：</strong></p>
+<p>对于以下情况，请诊断故障并执行恢复。有很少的提示。</p>
+<h4 id="8-表空间和当前重做日志文件丢失。" class="article-heading"><a href="#8-表空间和当前重做日志文件丢失。" class="headerlink" title="8.表空间和当前重做日志文件丢失。"></a>8.表空间和当前重做日志文件丢失。<a class="article-anchor" href="#8-表空间和当前重做日志文件丢失。" aria-hidden="true"></a></h4><h4 id="9-从丢失的所有控制文件和表空间中恢复。这将需要从备份集中还原控制文件。" class="article-heading"><a href="#9-从丢失的所有控制文件和表空间中恢复。这将需要从备份集中还原控制文件。" class="headerlink" title="9.从丢失的所有控制文件和表空间中恢复。这将需要从备份集中还原控制文件。"></a>9.从丢失的所有控制文件和表空间中恢复。这将需要从备份集中还原控制文件。<a class="article-anchor" href="#9-从丢失的所有控制文件和表空间中恢复。这将需要从备份集中还原控制文件。" aria-hidden="true"></a></h4><p>此方案要求控制文件有备份。必须使用INCLUDING CONTROLFILE或CONTROLFILE AUTOBACKUP ON进行备份。可以使用控制文件备份进行跟踪来进行还原，但是它要求您知道属于丢失的表空间的数据文件的位置。在所有情况下，都可以完全恢复。</p>
+<h4 id="10-自上次备份以来，所有控制文件均丢失，并且删除了表空间并重新创建了表空间。" class="article-heading"><a href="#10-自上次备份以来，所有控制文件均丢失，并且删除了表空间并重新创建了表空间。" class="headerlink" title="10.自上次备份以来，所有控制文件均丢失，并且删除了表空间并重新创建了表空间。"></a>10.自上次备份以来，所有控制文件均丢失，并且删除了表空间并重新创建了表空间。<a class="article-anchor" href="#10-自上次备份以来，所有控制文件均丢失，并且删除了表空间并重新创建了表空间。" aria-hidden="true"></a></h4><p>提示：表空间的创建在警报日志中可见。</p>
+<h4 id="11-丢失尚未分类的备份的表空间。使用未列入目录的备份集进行恢复。" class="article-heading"><a href="#11-丢失尚未分类的备份的表空间。使用未列入目录的备份集进行恢复。" class="headerlink" title="11.丢失尚未分类的备份的表空间。使用未列入目录的备份集进行恢复。"></a>11.丢失尚未分类的备份的表空间。使用未列入目录的备份集进行恢复。<a class="article-anchor" href="#11-丢失尚未分类的备份的表空间。使用未列入目录的备份集进行恢复。" aria-hidden="true"></a></h4><p>安装程序在/u01/backup/alt目录中创建备份文件的副本。</p>
+<p>提示：编目现有备份文件，然后使用REPAIR FAILURE 进行恢复命令。</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:09.343Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E6%A6%82%E8%BF%B0"><span class="toc-text">实践概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A020-1%EF%BC%9A%E5%87%86%E5%A4%87%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8D%E7%A0%94%E8%AE%A8%E4%BC%9A"><span class="toc-text">练习20-1：准备备份和恢复研讨会</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6"><span class="toc-text">假设条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1"><span class="toc-text">任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A020-2%EF%BC%9A%E4%BD%93%E9%AA%8C%E7%8E%B0%E5%AE%9E%E7%94%9F%E6%B4%BB%E7%A0%94%E8%AE%A8%E4%BC%9A"><span class="toc-text">练习20-2：体验现实生活研讨会</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88-1"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6-1"><span class="toc-text">假设条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1-1"><span class="toc-text">任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A020-3%EF%BC%9A%E6%82%A8%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="toc-text">练习20-3：您的场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88-2"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6-2"><span class="toc-text">假设条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%83%AD%E8%BA%AB%E6%96%B9%E6%A1%88"><span class="toc-text">热身方案</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%BB%8E%E4%B8%A2%E5%A4%B1%E7%9A%84%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6%E4%B8%AD%E6%81%A2%E5%A4%8D%EF%BC%88%E4%B8%8D%E6%B4%BB%E5%8A%A8%EF%BC%89%E3%80%82"><span class="toc-text">1.从丢失的重做日志文件中恢复（不活动）。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%BB%8E%E4%B8%A2%E5%A4%B1%E7%9A%84%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6%E4%B8%AD%E6%81%A2%E5%A4%8D%EF%BC%88%E5%BD%93%E5%89%8D%EF%BC%89%E3%80%82%E6%82%A8%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8RMAN%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%88%96%E8%BF%99%E4%BA%9B%E4%BB%BB%E5%8A%A1%E7%9A%84%E4%BA%91%E6%8E%A7%E5%88%B6%E3%80%82"><span class="toc-text">2.从丢失的重做日志文件中恢复（当前）。您可以使用RMAN客户端或这些任务的云控制。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%B8%A2%E5%A4%B1%E5%AF%86%E9%92%A5%E5%BA%93%E5%B9%B6%E4%B8%A2%E5%A4%B1%E8%A1%A8%E7%A9%BA%E9%97%B4%E3%80%82"><span class="toc-text">3.丢失密钥库并丢失表空间。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%81%A2%E5%A4%8D%E4%B8%A2%E5%A4%B1%E7%9A%84%E5%8F%AA%E8%AF%BB%E8%A1%A8%E7%A9%BA%E9%97%B4%E3%80%82"><span class="toc-text">4.恢复丢失的只读表空间。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%9C%A8%E6%B2%A1%E6%9C%89%E5%A4%87%E4%BB%BD%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E6%81%A2%E5%A4%8D%E8%A1%A8%E7%A9%BA%E9%97%B4%EF%BC%88%E5%9C%A8ARCHIVELOG%E6%A8%A1%E5%BC%8F%E4%B8%8B%EF%BC%89%E3%80%82"><span class="toc-text">5.在没有备份的情况下恢复表空间（在ARCHIVELOG模式下）。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E4%BB%A5NOARCHIVELOG%E6%A8%A1%E5%BC%8F%E6%81%A2%E5%A4%8D%E8%A1%A8%E7%A9%BA%E9%97%B4%E3%80%82"><span class="toc-text">6.以NOARCHIVELOG模式恢复表空间。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E9%80%9A%E8%BF%87%E4%BD%BF%E7%94%A8%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E6%9D%A5%E6%81%A2%E5%A4%8D%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6%E3%80%82"><span class="toc-text">7.通过使用控制文件跟踪文件来恢复控制文件。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E8%A1%A8%E7%A9%BA%E9%97%B4%E5%92%8C%E5%BD%93%E5%89%8D%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6%E4%B8%A2%E5%A4%B1%E3%80%82"><span class="toc-text">8.表空间和当前重做日志文件丢失。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-%E4%BB%8E%E4%B8%A2%E5%A4%B1%E7%9A%84%E6%89%80%E6%9C%89%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6%E5%92%8C%E8%A1%A8%E7%A9%BA%E9%97%B4%E4%B8%AD%E6%81%A2%E5%A4%8D%E3%80%82%E8%BF%99%E5%B0%86%E9%9C%80%E8%A6%81%E4%BB%8E%E5%A4%87%E4%BB%BD%E9%9B%86%E4%B8%AD%E8%BF%98%E5%8E%9F%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6%E3%80%82"><span class="toc-text">9.从丢失的所有控制文件和表空间中恢复。这将需要从备份集中还原控制文件。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#10-%E8%87%AA%E4%B8%8A%E6%AC%A1%E5%A4%87%E4%BB%BD%E4%BB%A5%E6%9D%A5%EF%BC%8C%E6%89%80%E6%9C%89%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6%E5%9D%87%E4%B8%A2%E5%A4%B1%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%88%A0%E9%99%A4%E4%BA%86%E8%A1%A8%E7%A9%BA%E9%97%B4%E5%B9%B6%E9%87%8D%E6%96%B0%E5%88%9B%E5%BB%BA%E4%BA%86%E8%A1%A8%E7%A9%BA%E9%97%B4%E3%80%82"><span class="toc-text">10.自上次备份以来，所有控制文件均丢失，并且删除了表空间并重新创建了表空间。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#11-%E4%B8%A2%E5%A4%B1%E5%B0%9A%E6%9C%AA%E5%88%86%E7%B1%BB%E7%9A%84%E5%A4%87%E4%BB%BD%E7%9A%84%E8%A1%A8%E7%A9%BA%E9%97%B4%E3%80%82%E4%BD%BF%E7%94%A8%E6%9C%AA%E5%88%97%E5%85%A5%E7%9B%AE%E5%BD%95%E7%9A%84%E5%A4%87%E4%BB%BD%E9%9B%86%E8%BF%9B%E8%A1%8C%E6%81%A2%E5%A4%8D%E3%80%82"><span class="toc-text">11.丢失尚未分类的备份的表空间。使用未列入目录的备份集进行恢复。</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>冷备-物理备份-在线热备 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-04-%E5%86%B7%E5%A4%87-%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E5%9C%A8%E7%BA%BF%E7%83%AD%E5%A4%87">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-04-%E5%86%B7%E5%A4%87-%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E5%9C%A8%E7%BA%BF%E7%83%AD%E5%A4%87" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2019-11-23 BoobooWei  [toc] 物理备份-在线热备上一节课学习了物理备份-离线冷备，在数据库shutdown的情况下，手动复制物理文件到备份目录：  口令文件 参数文件 控制文件 数据文件 日志文件  今天学习的是在数据库正常提供服务的情况线下，进行的备份。 物理备份-在线热备份：online backup在数据库open状态下进行的备份，需要数据库运行在归档模式下。 操">
+<meta property="og:type" content="website">
+<meta property="og:title" content="冷备-物理备份-在线热备">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-04-%E5%86%B7%E5%A4%87-%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E5%9C%A8%E7%BA%BF%E7%83%AD%E5%A4%87">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2019-11-23 BoobooWei  [toc] 物理备份-在线热备上一节课学习了物理备份-离线冷备，在数据库shutdown的情况下，手动复制物理文件到备份目录：  口令文件 参数文件 控制文件 数据文件 日志文件  今天学习的是在数据库正常提供服务的情况线下，进行的备份。 物理备份-在线热备份：online backup在数据库open状态下进行的备份，需要数据库运行在归档模式下。 操">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.768Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:49.740Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">冷备-物理备份-在线热备</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/E-数据库备份与恢复-04-冷备-物理备份恢复-在线热备.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2019-11-23 BoobooWei</p>
+</blockquote>
+<p>[toc]</p>
+<h2 id="物理备份-在线热备" class="article-heading"><a href="#物理备份-在线热备" class="headerlink" title="物理备份-在线热备"></a>物理备份-在线热备<a class="article-anchor" href="#物理备份-在线热备" aria-hidden="true"></a></h2><p>上一节课学习了物理备份-离线冷备，在数据库shutdown的情况下，手动复制物理文件到备份目录：</p>
+<ul>
+<li>口令文件</li>
+<li>参数文件</li>
+<li>控制文件</li>
+<li>数据文件</li>
+<li>日志文件</li>
+</ul>
+<p>今天学习的是在数据库正常提供服务的情况线下，进行的备份。</p>
+<p>物理备份-在线热备份：<code>online backup</code>在数据库<code>open</code>状态下进行的备份，需要数据库运行在<code>归档模式下</code>。</p>
+<h2 id="操作实践" class="article-heading"><a href="#操作实践" class="headerlink" title="操作实践"></a>操作实践<a class="article-anchor" href="#操作实践" aria-hidden="true"></a></h2><h3 id="实践01-检查数据库归档模式" class="article-heading"><a href="#实践01-检查数据库归档模式" class="headerlink" title="实践01-检查数据库归档模式"></a>实践01-检查数据库归档模式<a class="article-anchor" href="#实践01-检查数据库归档模式" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-archived-redo-log-files.html#GUID-5EE4AC49-E1B2-41A2-BEE7-AA951EAAB2F3">Managing Archived Redo Log Files</a></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">SQL&gt; <span class="keyword">select</span> open_mode from v<span class="variable">$database</span>;</span><br><span class="line"></span><br><span class="line">OPEN_MODE</span><br><span class="line">--------------------</span><br><span class="line">READ WRITE</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> open_mode from v<span class="variable">$database</span>;</span><br><span class="line"></span><br><span class="line">OPEN_MODE</span><br><span class="line">--------------------</span><br><span class="line">READ WRITE</span><br><span class="line"></span><br><span class="line">SQL&gt; archive <span class="built_in">log</span> list;</span><br><span class="line">Database <span class="built_in">log</span> mode	       No Archive Mode</span><br><span class="line">Automatic archival	       Disabled</span><br><span class="line">Archive destination	       /u01/app/oracle/product/11.2.0.4/dbs/arch</span><br><span class="line">Oldest online <span class="built_in">log</span> sequence     7</span><br><span class="line">Current <span class="built_in">log</span> sequence	       9</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>思考：初始化配置数据库归档模式的方式是什么？即如何设置初始数据库归档模式？</p>
+</blockquote>
+<ul>
+<li><p>可以在<code>CREATE DATABASE</code>语句中将初始归档模式设置为数据库创建的一部分。</p>
+</li>
+<li><p>建议创建数据库时，使用<code>NOARCHIVELOG</code>也是默认的模式，在创建数据库后，再决定是否更改初始归档模式。</p>
+</li>
+<li><p>如果创建数据库时，指定<code>ARCHIVELOG</code>模式，则必须设置初始化参数，这些参数指定已归档的重做日志文件的目标位置（请参见“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-archived-redo-log-files.html#GUID-9D577C54-A0BF-43E9-BB56-24A9BFCF4F26">为归档目标设置初始化参数</a> ”）。</p>
+</li>
+</ul>
+<h3 id="实践02-开启数据库归档模式" class="article-heading"><a href="#实践02-开启数据库归档模式" class="headerlink" title="实践02-开启数据库归档模式"></a>实践02-开启数据库归档模式<a class="article-anchor" href="#实践02-开启数据库归档模式" aria-hidden="true"></a></h3><p>**语法：**更改数据库的归档模式，请使用<code>ALTER DATABASE</code>带有<code>ARCHIVELOG</code>or <code>NOARCHIVELOG</code>子句的语句。</p>
+<p>**权限：**必须以管理员权限（<code>AS SYSDBA</code>）连接到数据库。</p>
+<p><strong>步骤：</strong></p>
+<ol>
+<li>关闭数据库实例，备份数据库</li>
+<li>启动实例到<code>nomount</code>模式，更改初始化参数文件</li>
+<li>启动实例到<code>mount</code>模式，更改数据库的归档模式</li>
+<li>启动实例到<code>open</code>模式</li>
+<li>关闭数据库实例，备份数据库</li>
+</ol>
+<blockquote>
+<p>更改数据库归档模式将更新控制文件。更改数据库归档模式后，必须备份所有数据库文件和控制文件。以前的任何备份均已在<code>NOARCHIVELOG</code>模式下使用，因此不再可用。</p>
+</blockquote>
+<h4 id="1-关闭数据库实例，备份数据库" class="article-heading"><a href="#1-关闭数据库实例，备份数据库" class="headerlink" title="1. 关闭数据库实例，备份数据库"></a>1. 关闭数据库实例，备份数据库<a class="article-anchor" href="#1-关闭数据库实例，备份数据库" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest ~]$ sqlplus / as sysdba</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.4.0 Production on Sat Nov 23 20:06:25 2019</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2013, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Connected to:</span><br><span class="line">Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span><br><span class="line">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span><br><span class="line"></span><br><span class="line">SQL&gt; archive <span class="built_in">log</span> list;</span><br><span class="line">Database <span class="built_in">log</span> mode	       No Archive Mode</span><br><span class="line">Automatic archival	       Disabled</span><br><span class="line">Archive destination	       /u01/app/oracle/product/11.2.0.4/dbs/arch</span><br><span class="line">Oldest online <span class="built_in">log</span> sequence     7</span><br><span class="line">Current <span class="built_in">log</span> sequence	       9</span><br><span class="line">SQL&gt; shutdown immediate</span><br><span class="line">Database closed.</span><br><span class="line">Database dismounted.</span><br><span class="line">ORACLE instance shut down.</span><br><span class="line"></span><br><span class="line">备份数据库</span><br><span class="line">--此处省略备份操作，详情见上一节实践内容</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="2-启动实例到nomount模式，更改初始化参数文件" class="article-heading"><a href="#2-启动实例到nomount模式，更改初始化参数文件" class="headerlink" title="2. 启动实例到nomount模式，更改初始化参数文件"></a>2. 启动实例到<code>nomount</code>模式，更改初始化参数文件<a class="article-anchor" href="#2-启动实例到nomount模式，更改初始化参数文件" aria-hidden="true"></a></h4><p>修改初始化参数文件 log_archive_dest_1</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest ~]$ <span class="built_in">mkdir</span> /home/oracle/arc_booboo_dest1</span><br><span class="line"></span><br><span class="line">SQL&gt; startup nomount</span><br><span class="line">ORACLE instance started.</span><br><span class="line"></span><br><span class="line">Total System Global Area  229683200 bytes</span><br><span class="line">Fixed Size		    2251936 bytes</span><br><span class="line">Variable Size		  171967328 bytes</span><br><span class="line">Database Buffers	   50331648 bytes</span><br><span class="line">Redo Buffers		    5132288 bytes</span><br><span class="line"></span><br><span class="line">SQL&gt; column name format a30</span><br><span class="line">SQL&gt; column value format a20</span><br><span class="line">SQL&gt; column issys_modifiable format a10</span><br><span class="line">SQL&gt; <span class="keyword">select</span> name,value,issys_modifiable from v<span class="variable">$parameter</span> <span class="built_in">where</span> name like <span class="string">'log_archive%'</span>;</span><br><span class="line"></span><br><span class="line">NAME			       VALUE		    ISSYS_MODI</span><br><span class="line">------------------------------ -------------------- ----------</span><br><span class="line">log_archive_dest_1				    IMMEDIATE</span><br><span class="line">log_archive_dest_2				    IMMEDIATE</span><br><span class="line">log_archive_dest_3				    IMMEDIATE</span><br><span class="line">log_archive_dest_4				    IMMEDIATE</span><br><span class="line">log_archive_dest_5				    IMMEDIATE</span><br><span class="line">log_archive_dest_6				    IMMEDIATE</span><br><span class="line">log_archive_dest_7				    IMMEDIATE</span><br><span class="line">log_archive_dest_8				    IMMEDIATE</span><br><span class="line">log_archive_dest_9				    IMMEDIATE</span><br><span class="line">log_archive_dest_10				    IMMEDIATE</span><br><span class="line">log_archive_dest_11				    IMMEDIATE</span><br><span class="line"></span><br><span class="line">NAME			       VALUE		    ISSYS_MODI</span><br><span class="line">------------------------------ -------------------- ----------</span><br><span class="line">log_archive_dest_12				    IMMEDIATE</span><br><span class="line">log_archive_dest_13				    IMMEDIATE</span><br><span class="line">log_archive_dest_14				    IMMEDIATE</span><br><span class="line">log_archive_dest_15				    IMMEDIATE</span><br><span class="line">log_archive_dest_16				    IMMEDIATE</span><br><span class="line">log_archive_dest_17				    IMMEDIATE</span><br><span class="line">log_archive_dest_18				    IMMEDIATE</span><br><span class="line">log_archive_dest_19				    IMMEDIATE</span><br><span class="line">log_archive_dest_20				    IMMEDIATE</span><br><span class="line">log_archive_dest_21				    IMMEDIATE</span><br><span class="line">log_archive_dest_22				    IMMEDIATE</span><br><span class="line"></span><br><span class="line">NAME			       VALUE		    ISSYS_MODI</span><br><span class="line">------------------------------ -------------------- ----------</span><br><span class="line">log_archive_dest_23				    IMMEDIATE</span><br><span class="line">log_archive_dest_24				    IMMEDIATE</span><br><span class="line">log_archive_dest_25				    IMMEDIATE</span><br><span class="line">log_archive_dest_26				    IMMEDIATE</span><br><span class="line">log_archive_dest_27				    IMMEDIATE</span><br><span class="line">log_archive_dest_28				    IMMEDIATE</span><br><span class="line">log_archive_dest_29				    IMMEDIATE</span><br><span class="line">log_archive_dest_30				    IMMEDIATE</span><br><span class="line">log_archive_dest_31				    IMMEDIATE</span><br><span class="line">log_archive_dest_state_1       <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_2       <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line"></span><br><span class="line">NAME			       VALUE		    ISSYS_MODI</span><br><span class="line">------------------------------ -------------------- ----------</span><br><span class="line">log_archive_dest_state_3       <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_4       <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_5       <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_6       <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_7       <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_8       <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_9       <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_10      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_11      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_12      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_13      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line"></span><br><span class="line">NAME			       VALUE		    ISSYS_MODI</span><br><span class="line">------------------------------ -------------------- ----------</span><br><span class="line">log_archive_dest_state_14      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_15      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_16      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_17      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_18      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_19      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_20      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_21      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_22      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_23      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_24      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line"></span><br><span class="line">NAME			       VALUE		    ISSYS_MODI</span><br><span class="line">------------------------------ -------------------- ----------</span><br><span class="line">log_archive_dest_state_25      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_26      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_27      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_28      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_29      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_30      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_dest_state_31      <span class="built_in">enable</span>		    IMMEDIATE</span><br><span class="line">log_archive_start	       FALSE		    FALSE</span><br><span class="line">log_archive_dest				    IMMEDIATE</span><br><span class="line">log_archive_duplex_dest 			    IMMEDIATE</span><br><span class="line">log_archive_min_succeed_dest   1		    IMMEDIATE</span><br><span class="line"></span><br><span class="line">NAME			       VALUE		    ISSYS_MODI</span><br><span class="line">------------------------------ -------------------- ----------</span><br><span class="line">log_archive_trace	       0		    IMMEDIATE</span><br><span class="line">log_archive_config				    IMMEDIATE</span><br><span class="line">log_archive_local_first        TRUE		    IMMEDIATE</span><br><span class="line">log_archive_format	       %t_%s_%r.dbf	    FALSE</span><br><span class="line">log_archive_max_processes      4		    IMMEDIATE</span><br><span class="line"></span><br><span class="line">71 rows selected.</span><br><span class="line"></span><br><span class="line">SQL&gt; alter system <span class="built_in">set</span> log_archive_dest_1=<span class="string">'location=/home/oracle/arc_booboo_dest1'</span>;</span><br><span class="line"></span><br><span class="line">System altered.</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-启动实例到mount模式，更改数据库的归档模式" class="article-heading"><a href="#3-启动实例到mount模式，更改数据库的归档模式" class="headerlink" title="3. 启动实例到mount模式，更改数据库的归档模式"></a>3. 启动实例到<code>mount</code>模式，更改数据库的归档模式<a class="article-anchor" href="#3-启动实例到mount模式，更改数据库的归档模式" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">alter</span> database  mount</span><br><span class="line">ORACLE instance started.</span><br><span class="line"></span><br><span class="line">Total <span class="keyword">System</span> <span class="keyword">Global</span> Area  <span class="number">229683200</span> bytes</span><br><span class="line">Fixed Size		    <span class="number">2251936</span> bytes</span><br><span class="line">Variable Size		  <span class="number">171967328</span> bytes</span><br><span class="line">Database Buffers	   <span class="number">50331648</span> bytes</span><br><span class="line">Redo Buffers		    <span class="number">5132288</span> bytes</span><br><span class="line">Database mounted.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> name,LOG_MODE <span class="keyword">from</span> v$database;</span><br><span class="line"></span><br><span class="line">NAME	  LOG_MODE</span><br><span class="line"><span class="comment">--------- ------------</span></span><br><span class="line">BOOBOO	  NOARCHIVELOG</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">alter</span> database archivelog;</span><br><span class="line"></span><br><span class="line">Database altered.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> name,LOG_MODE <span class="keyword">from</span> v$database;</span><br><span class="line"></span><br><span class="line">NAME	  LOG_MODE</span><br><span class="line"><span class="comment">--------- ------------</span></span><br><span class="line">BOOBOO	  ARCHIVELOG</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> archive log list;</span><br><span class="line">Database log mode	       Archive Mode</span><br><span class="line">Automatic archival	       Enabled</span><br><span class="line">Archive destination	       <span class="operator">/</span>home<span class="operator">/</span>oracle<span class="operator">/</span>arc_booboo_dest1</span><br><span class="line">Oldest online log sequence     <span class="number">7</span></span><br><span class="line">Next log sequence <span class="keyword">to</span> archive   <span class="number">9</span></span><br><span class="line"><span class="keyword">Current</span> log sequence	       <span class="number">9</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="4-启动实例到open模式" class="article-heading"><a href="#4-启动实例到open模式" class="headerlink" title="4. 启动实例到open模式"></a>4. 启动实例到<code>open</code>模式<a class="article-anchor" href="#4-启动实例到open模式" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">alter</span> database <span class="keyword">open</span>;</span><br><span class="line">Database altered.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">create</span> pfile <span class="keyword">from</span> spfile;</span><br><span class="line">File created.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">create</span> pfile <span class="keyword">from</span> spfile;</span><br><span class="line">File created.</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="5-关闭数据库实例，备份数据库" class="article-heading"><a href="#5-关闭数据库实例，备份数据库" class="headerlink" title="5. 关闭数据库实例，备份数据库"></a>5. 关闭数据库实例，备份数据库<a class="article-anchor" href="#5-关闭数据库实例，备份数据库" aria-hidden="true"></a></h4><p>更改数据库归档模式将更新控制文件。更改数据库归档模式后，必须备份所有数据库文件和控制文件。以前的任何备份均已在<code>NOARCHIVELOG</code>模式下使用，因此不再可用。</p>
+<p>所以变更归档模式后一定要备份 。</p>
+<p>具体备份操作查看上一节课。</p>
+<h3 id="实践03-在线热备用户表空间" class="article-heading"><a href="#实践03-在线热备用户表空间" class="headerlink" title="实践03-在线热备用户表空间"></a>实践03-在线热备用户表空间<a class="article-anchor" href="#实践03-在线热备用户表空间" aria-hidden="true"></a></h3><h2 id="老师笔记" class="article-heading"><a href="#老师笔记" class="headerlink" title="老师笔记"></a>老师笔记<a class="article-anchor" href="#老师笔记" aria-hidden="true"></a></h2><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">热备份：(online backup)在数据库open状态下进行的备份，需要数据库运行在归档模式下！！！</span><br><span class="line"></span><br><span class="line">archive <span class="built_in">log</span> list</span><br><span class="line">shut immediate</span><br><span class="line">startup mount</span><br><span class="line">alter database archivelog;</span><br><span class="line">alter database open;</span><br><span class="line"></span><br><span class="line">修改存档位置：</span><br><span class="line"><span class="built_in">mkdir</span> /home/oracle/arc_db01_dest1</span><br><span class="line">alter system <span class="built_in">set</span> log_archive_dest_1=<span class="string">'location=/home/oracle/arc_db01_dest1/'</span>;</span><br><span class="line"></span><br><span class="line">如何热备份用户表空间</span><br><span class="line">alter tablespace <span class="built_in">users</span> begin backup;</span><br><span class="line">!<span class="built_in">cp</span> -v /u01/app/oracle/oradata/db01/users01.dbf /home/oracle/hotbk/</span><br><span class="line">alter tablespace <span class="built_in">users</span> end backup;</span><br><span class="line"></span><br><span class="line">切换日志：</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line"></span><br><span class="line">模拟数据改变：</span><br><span class="line">insert into scott.e01 <span class="keyword">select</span> * from scott.e01;</span><br><span class="line">commit;</span><br><span class="line"></span><br><span class="line">切换日志：</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line"></span><br><span class="line">模拟数据文件丢失：</span><br><span class="line">!<span class="built_in">rm</span> -f /u01/app/oracle/oradata/db01/users01.dbf</span><br><span class="line"></span><br><span class="line">模拟数据改变：</span><br><span class="line">insert into scott.e01 <span class="keyword">select</span> * from scott.e01;</span><br><span class="line">commit;</span><br><span class="line"></span><br><span class="line">切换日志：</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line"></span><br><span class="line">重新启动数据库</span><br><span class="line">startup force</span><br><span class="line"></span><br><span class="line">将普通文件offline，打开数据库(offline状态的数据文件open时不会被校验)</span><br><span class="line">SQL&gt; alter database datafile 4 offline;</span><br><span class="line">SQL&gt; alter database open;</span><br><span class="line">查看哪些文件需要恢复</span><br><span class="line">SQL&gt; <span class="keyword">select</span> * from v<span class="variable">$recover_file</span>;</span><br><span class="line"></span><br><span class="line">还原数据文件：将备份的文件拷贝回数据库中</span><br><span class="line"><span class="built_in">cp</span> -v /home/oracle/hotbk/users01.dbf /u01/app/oracle/oradata/db01/users01.dbf</span><br><span class="line"></span><br><span class="line">恢复数据文件</span><br><span class="line">SQL&gt; recover datafile 4;</span><br><span class="line"></span><br><span class="line">Specify <span class="built_in">log</span>: {&lt;RET&gt;=suggested | filename | AUTO | CANCEL}</span><br><span class="line">AUTO</span><br><span class="line"></span><br><span class="line">恢复成功后将数据文件online，然后校验数据：</span><br><span class="line">SQL&gt; alter database datafile 4 online;</span><br><span class="line"></span><br><span class="line">Database altered.</span><br><span class="line"></span><br><span class="line">Elapsed: 00:00:00.15</span><br><span class="line">SQL&gt; <span class="keyword">select</span> count(*) from scott.e01;</span><br><span class="line"></span><br><span class="line">  COUNT(*)</span><br><span class="line">----------</span><br><span class="line">     57344</span><br><span class="line"><span class="comment">#################################################################################</span></span><br><span class="line">无备份的还原和恢复:</span><br><span class="line">1.数据库要归档模式</span><br><span class="line">2.数据文件创建于归档之后</span><br><span class="line"></span><br><span class="line">创建实验用的表空间</span><br><span class="line">create tablespace tbs1 datafile <span class="string">'/home/oracle/tbs01.dbf'</span> size 10m;</span><br><span class="line"></span><br><span class="line">在新的表空间中创建表，将表空间写满数据</span><br><span class="line">create table scott.t01 tablespace tbs1 as <span class="keyword">select</span> * from scott.emp;</span><br><span class="line"></span><br><span class="line">切换日志：</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line"></span><br><span class="line">模拟数据增长</span><br><span class="line">insert into scott.t01 <span class="keyword">select</span> * from scott.t01;</span><br><span class="line">commit;</span><br><span class="line"></span><br><span class="line">切换日志：</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line"></span><br><span class="line">模拟数据文件丢失</span><br><span class="line">!<span class="built_in">rm</span> -f /home/oracle/tbs01.dbf</span><br><span class="line"></span><br><span class="line">重新启动数据库,发现文件丢失</span><br><span class="line">startup force</span><br><span class="line"></span><br><span class="line">ORA-01157: cannot identify/lock data file 5 - see DBWR trace file</span><br><span class="line">ORA-01110: data file 5: <span class="string">'/home/oracle/tbs01.dbf'</span></span><br><span class="line"></span><br><span class="line">将5号文件offline打开数据库</span><br><span class="line">SQL&gt; alter database datafile 5 offline;</span><br><span class="line">SQL&gt; alter database open;</span><br><span class="line"></span><br><span class="line">根据控制创建崭新的数据文件</span><br><span class="line">alter database create datafile 5 as <span class="string">'/u01/app/oracle/oradata/db01/tbs01.dbf'</span>;</span><br><span class="line"></span><br><span class="line">使用日志恢复数据文件</span><br><span class="line">SQL&gt; recover datafile 5;</span><br><span class="line"></span><br><span class="line">将数据文件online</span><br><span class="line">SQL&gt; alter database datafile 5 online;</span><br><span class="line"></span><br><span class="line">校验数据：</span><br><span class="line"><span class="keyword">select</span> count(*) from scott.t01;</span><br><span class="line"><span class="comment">#################################################################################</span></span><br><span class="line">热备份全库：</span><br><span class="line"><span class="keyword">select</span> <span class="string">'alter tablespace '</span>||tablespace_name||<span class="string">' begin backup;'</span>||chr(10)||</span><br><span class="line">       <span class="string">'!cp -v '</span>||file_name||<span class="string">' /home/oracle/hotbk/'</span>||chr(10)||</span><br><span class="line">       <span class="string">'alter tablespace '</span>||tablespace_name||<span class="string">' end backup;'</span></span><br><span class="line">from dba_data_files;</span><br><span class="line"></span><br><span class="line">切换日志：</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line">alter system switch logfile;</span><br><span class="line"><span class="comment">#################################################################################</span></span><br><span class="line">不完全恢复：</span><br><span class="line"></span><br><span class="line">1.要有全备</span><br><span class="line">2.要确定灾难产生时间点(<span class="built_in">log</span> miner)</span><br><span class="line">生成挖掘队列：告诉oracle要对哪些日志进行挖掘</span><br><span class="line"><span class="built_in">exec</span> dbms_logmnr.add_logfile(<span class="string">'/home/oracle/arc_db01_dest1/1_39_924710753.dbf'</span>,dbms_logmnr.new);</span><br><span class="line">开始挖掘</span><br><span class="line"><span class="built_in">exec</span> dbms_logmnr.start_logmnr(options=&gt;dbms_logmnr.dict_from_online_catalog);</span><br><span class="line">查看挖掘结果</span><br><span class="line"><span class="keyword">select</span> scn,sql_redo from v<span class="variable">$logmnr_contents</span> <span class="built_in">where</span> seg_name=<span class="string">'E01'</span> and seg_owner=<span class="string">'SCOTT'</span>;</span><br><span class="line"></span><br><span class="line">       SCN</span><br><span class="line">----------</span><br><span class="line">SQL_REDO</span><br><span class="line">---------------------------</span><br><span class="line">--------------------</span><br><span class="line">   1032938</span><br><span class="line">drop table scott.e01 purge;</span><br><span class="line"></span><br><span class="line">3.在备用节点还原数据文件</span><br><span class="line"></span><br><span class="line">4.创建控制文件</span><br><span class="line">create controlfile reuse database db01 resetlogs archivelog</span><br><span class="line">datafile</span><br><span class="line"><span class="string">'/home/oracle/test/system01.dbf'</span>,</span><br><span class="line"><span class="string">'/home/oracle/test/sysaux01.dbf'</span>,</span><br><span class="line"><span class="string">'/home/oracle/test/tbs01.dbf'</span>,</span><br><span class="line"><span class="string">'/home/oracle/test/undotbs01.dbf'</span>,</span><br><span class="line"><span class="string">'/home/oracle/test/users01.dbf'</span></span><br><span class="line">logfile</span><br><span class="line">group 1 <span class="string">'/home/oracle/test/redo01.log'</span> size 50m,</span><br><span class="line">group 2 <span class="string">'/home/oracle/test/redo02.log'</span> size 50m;</span><br><span class="line"></span><br><span class="line">5.恢复数据库到灾难产生时间点</span><br><span class="line">recover database using backup controlfile <span class="keyword">until</span> change 1032938;</span><br><span class="line"></span><br><span class="line">6.拷贝需要的归档日志</span><br><span class="line">scp /home/oracle/arc_db01_dest1/1_{27..35}_924710753.dbf oracle@172.25.5.11:/home/oracle/arc_db01_dest1/</span><br><span class="line"></span><br><span class="line">7.使用resetlogs方式打开数据库</span><br><span class="line">Log applied.</span><br><span class="line">Media recovery complete.</span><br><span class="line">SQL&gt; alter database open resetlogs;</span><br><span class="line"></span><br><span class="line">Database altered.</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> count(*) from scott.e01;</span><br><span class="line"></span><br><span class="line">  COUNT(*)</span><br><span class="line">----------</span><br><span class="line">     50000</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:49.740Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD-%E5%9C%A8%E7%BA%BF%E7%83%AD%E5%A4%87"><span class="toc-text">物理备份-在线热备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E5%AE%9E%E8%B7%B5"><span class="toc-text">操作实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B501-%E6%A3%80%E6%9F%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E5%BD%92%E6%A1%A3%E6%A8%A1%E5%BC%8F"><span class="toc-text">实践01-检查数据库归档模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B502-%E5%BC%80%E5%90%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E5%BD%92%E6%A1%A3%E6%A8%A1%E5%BC%8F"><span class="toc-text">实践02-开启数据库归档模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%85%B3%E9%97%AD%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B%EF%BC%8C%E5%A4%87%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">1. 关闭数据库实例，备份数据库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%90%AF%E5%8A%A8%E5%AE%9E%E4%BE%8B%E5%88%B0nomount%E6%A8%A1%E5%BC%8F%EF%BC%8C%E6%9B%B4%E6%94%B9%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8F%82%E6%95%B0%E6%96%87%E4%BB%B6"><span class="toc-text">2. 启动实例到nomount模式，更改初始化参数文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%90%AF%E5%8A%A8%E5%AE%9E%E4%BE%8B%E5%88%B0mount%E6%A8%A1%E5%BC%8F%EF%BC%8C%E6%9B%B4%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%BD%92%E6%A1%A3%E6%A8%A1%E5%BC%8F"><span class="toc-text">3. 启动实例到mount模式，更改数据库的归档模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%90%AF%E5%8A%A8%E5%AE%9E%E4%BE%8B%E5%88%B0open%E6%A8%A1%E5%BC%8F"><span class="toc-text">4. 启动实例到open模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%85%B3%E9%97%AD%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B%EF%BC%8C%E5%A4%87%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">5. 关闭数据库实例，备份数据库</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B503-%E5%9C%A8%E7%BA%BF%E7%83%AD%E5%A4%87%E7%94%A8%E6%88%B7%E8%A1%A8%E7%A9%BA%E9%97%B4"><span class="toc-text">实践03-在线热备用户表空间</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%80%81%E5%B8%88%E7%AC%94%E8%AE%B0"><span class="toc-text">老师笔记</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

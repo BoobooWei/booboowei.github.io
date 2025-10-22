@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Python 模块和包 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/6_devops/00_python_base/09_Python%E6%A8%A1%E5%9D%97%E5%92%8C%E5%8C%85">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/6_devops/00_python_base/09_Python%E6%A8%A1%E5%9D%97%E5%92%8C%E5%8C%85" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="模块(Module)的概念在计算机程序的开发过程中，随着程序代码越写越多，在一个文件里代码就会越来越长，越来越不容易维护。 为了编写可维护的代码，我们把很多函数分组，分别放到不同的文件里，这样每个文件包含的代码就相对较少，很多编程语言都采用这种组织代码的方式。在Python中，一个.py文件就称之为一个模块（Module）。 模块的好处最大的好处是大大提高了代码的可维护性。 其次，编写代码不必从零">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Python 模块和包">
+<meta property="og:url" content="http://www.toberoot.com/linux/6_devops/00_python_base/09_Python%E6%A8%A1%E5%9D%97%E5%92%8C%E5%8C%85">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="模块(Module)的概念在计算机程序的开发过程中，随着程序代码越写越多，在一个文件里代码就会越来越长，越来越不容易维护。 为了编写可维护的代码，我们把很多函数分组，分别放到不同的文件里，这样每个文件包含的代码就相对较少，很多编程语言都采用这种组织代码的方式。在Python中，一个.py文件就称之为一个模块（Module）。 模块的好处最大的好处是大大提高了代码的可维护性。 其次，编写代码不必从零">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.046Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:18.063Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Python 模块和包</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/6_devops/00_python_base/09_Python模块和包.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h2 id="模块-Module-的概念" class="article-heading"><a href="#模块-Module-的概念" class="headerlink" title="模块(Module)的概念"></a>模块(<code>Module</code>)的概念<a class="article-anchor" href="#模块-Module-的概念" aria-hidden="true"></a></h2><p>在计算机程序的开发过程中，随着程序代码越写越多，在一个文件里代码就会越来越长，越来越不容易维护。</p>
+<p>为了编写可维护的代码，我们把很多函数分组，分别放到不同的文件里，这样每个文件包含的代码就相对较少，很多编程语言都采用这种组织代码的方式。在Python中，一个<code>.py</code>文件就称之为一个模块（<code>Module</code>）。</p>
+<h3 id="模块的好处" class="article-heading"><a href="#模块的好处" class="headerlink" title="模块的好处"></a>模块的好处<a class="article-anchor" href="#模块的好处" aria-hidden="true"></a></h3><p>最大的好处是大大提高了代码的可维护性。</p>
+<p>其次，编写代码不必从零开始。当一个模块编写完毕，就可以被其他地方引用。我们在编写程序的时候，也经常引用其他模块，包括Python内置的模块和来自第三方的模块。</p>
+<h3 id="模块的种类" class="article-heading"><a href="#模块的种类" class="headerlink" title="模块的种类"></a>模块的种类<a class="article-anchor" href="#模块的种类" aria-hidden="true"></a></h3><ul>
+<li>python标准库</li>
+<li>第三方模块</li>
+<li>应用程序自定义模块</li>
+</ul>
+<p>注意：</p>
+<ol>
+<li>使用模块还可以避免函数名和变量名冲突。相同名字的函数和变量完全可以分别存在不同的模块中，因此，我们自己在编写模块时，不必考虑名字会与其他模块冲突。</li>
+<li>但是也要注意，尽量不要与内置函数名字冲突。</li>
+</ol>
+<h2 id="模块导入方法" class="article-heading"><a href="#模块导入方法" class="headerlink" title="模块导入方法"></a>模块导入方法<a class="article-anchor" href="#模块导入方法" aria-hidden="true"></a></h2><h3 id="import-语句" class="article-heading"><a href="#import-语句" class="headerlink" title="import 语句"></a><code>import</code> 语句<a class="article-anchor" href="#import-语句" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import module1[, module2[,... moduleN]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>当我们使用import语句的时候，Python解释器是怎样找到对应的文件的呢？答案就是解释器有自己的搜索路径，存在<code>sys.path</code>里。　　</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">['', '/usr/lib/python3.4', '/usr/lib/python3.4/plat-x86_64-linux-gnu',</span><br><span class="line">'/usr/lib/python3.4/lib-dynload', '/usr/local/lib/python3.4/dist-packages', '/usr/lib/python3/dist-packages']　　</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>因此若像我一样在当前目录下存在与要引入模块同名的文件，就会把要引入的模块屏蔽掉。</strong></p>
+<h3 id="from…import-语句" class="article-heading"><a href="#from…import-语句" class="headerlink" title="from…import 语句"></a><code>from…import</code> 语句<a class="article-anchor" href="#from…import-语句" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">from modname import name1[, name2[, ... nameN]]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这个声明不会把整个<code>modulename</code>模块导入到当前的命名空间中，只会将它里面的<code>name</code>1或<code>name2</code>单个引入到执行这个声明的模块的全局符号表。</p>
+<h3 id="From-…-import-语句" class="article-heading"><a href="#From-…-import-语句" class="headerlink" title="From … import * 语句"></a><code>From … import *</code> 语句<a class="article-anchor" href="#From-…-import-语句" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">from modname import *</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这提供了一个简单的方法来导入一个模块中的所有项目。然而这种声明不该被过多地使用。大多数情况， Python程序员不使用这种方法，因为引入的其它来源的命名，很可能覆盖了已有的定义。</p>
+<h3 id="运行本质" class="article-heading"><a href="#运行本质" class="headerlink" title="运行本质"></a>运行本质<a class="article-anchor" href="#运行本质" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import test</span><br><span class="line">from test import add　　</span><br></pre></td></tr></tbody></table></figure>
+
+<p>无论<code>1</code>还是<code>2</code>，首先通过<code>sys.path</code>找到<code>test.py</code>,然后执行<code>test</code>脚本（全部执行）;<br>区别是:</p>
+<ul>
+<li><code>1</code>会将<code>test</code>这个变量名加载到名字空间<ul>
+<li>而<code>2</code>只会将add这个变量名加载到名字空间</li>
+</ul>
+</li>
+</ul>
+<p>　　</p>
+<h2 id="包-Package" class="article-heading"><a href="#包-Package" class="headerlink" title="包(Package)"></a>包(<code>Package</code>)<a class="article-anchor" href="#包-Package" aria-hidden="true"></a></h2><p>如果不同的人编写的模块名相同怎么办？为了避免模块名冲突，Python又引入了按目录来组织模块的方法，称为包（<code>Package</code>）。</p>
+<p>举个例子，一个<code>abc.py</code>的文件就是一个名字叫<code>abc</code>的模块，一个<code>xyz.py</code>的文件就是一个名字叫<code>xyz</code>的模块。</p>
+<p>现在，假设我们的<code>abc</code>和<code>xyz</code>这两个模块名字与其他模块冲突了，于是我们可以通过包来组织模块，避免冲突。方法是选择一个顶层包名：</p>
+<p>引入了包以后，只要顶层的包名不与别人冲突，那所有模块都不会与别人冲突。现在，<code>view.py</code>模块的名字就变成了<code>hello_django.app01.views</code>，类似的，<code>manage.py</code>的模块名则是<code>hello_django.manage</code>。</p>
+<p>请注意，每一个包目录下面都会有一个<code>__init__.p</code>y的文件，这个文件是必须存在的，否则，Python就把这个目录当成普通目录(文件夹)，而不是一个包。<code>__init__.py</code>可以是空文件，也可以有Python代码，因为<code>__init__.py</code>本身就是一个模块，而它的模块名就是对应包的名字。</p>
+<p>调用包就是执行包下的<code>__init__.py</code>文件</p>
+<h3 id="注意点（important）" class="article-heading"><a href="#注意点（important）" class="headerlink" title="注意点（important）"></a>注意点（important）<a class="article-anchor" href="#注意点（important）" aria-hidden="true"></a></h3><h4 id="第一点" class="article-heading"><a href="#第一点" class="headerlink" title="第一点"></a>第一点<a class="article-anchor" href="#第一点" aria-hidden="true"></a></h4><p>手动将程序执行的路径加入<code>sys.path</code></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import sys,os</span><br><span class="line">BASE_DIR=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))</span><br><span class="line">sys.path.append(BASE_DIR)</span><br><span class="line">import hello</span><br><span class="line">hello.hello1()</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="第二点" class="article-heading"><a href="#第二点" class="headerlink" title="第二点"></a>第二点<a class="article-anchor" href="#第二点" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">if __name__=='__main__':</span><br><span class="line">    print('ok')</span><br></pre></td></tr></tbody></table></figure>
+
+<p>“Make a .py both importable and executable”</p>
+<p>如果我们是直接执行某个<code>.py</code>文件的时候，该文件中那么<code>__name__ == '__main__'</code>是<code>True</code>,但是我们如果从另外一个<code>.py</code>文件通过<code>import</code>导入该文件的时候，这时<code>__name__</code>的值就是我们这个<code>py</code>文件的名字而不是<code>__main__</code>。</p>
+<p>这个功能还有一个用处：调试代码的时候，在<code>if __name__ == '__main__'</code>中加入一些我们的调试代码，我们可以让外部模块调用的时候不执行我们的调试代码，但是如果我们想排查问题的时候，直接执行该模块文件，调试代码能够正常运行！</p>
+<h4 id="第三点" class="article-heading"><a href="#第三点" class="headerlink" title="第三点"></a>第三点<a class="article-anchor" href="#第三点" aria-hidden="true"></a></h4><p><code>/Users/yuanhao/Desktop/whaterver/project/web/module/cal.py</code></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">def add(x,y):</span><br><span class="line">    return x+y</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>/Users/yuanhao/Desktop/whaterver/project/web/module/main.py</code></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import cal      #from module import cal</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line"></span><br><span class="line">    cal.add(1,2)</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>/Users/yuanhao/Desktop/whaterver/project/web/bin.py</code></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">from module import main</span><br><span class="line"></span><br><span class="line">main.main()</span><br></pre></td></tr></tbody></table></figure>
+
+<ol>
+<li><code>from module import main</code> 改成 <code>from . import main</code>同样可以，这是因为<code>bin.py</code>是我们的执行脚本，<code>sys.path</code>里有<code>bin.py</code>的当前环境。即<code>/Users/yuanhao/Desktop/whaterver/project/web</code>这层路径，无论<code>import what</code> , 解释器都会按这个路径找。<br>所以当执行到<code>main.py</code>时，<code>import cal</code>会找不到，因为<code>sys.path</code>里没有<code>/Users/yuanhao/Desktop/whaterver/project/web/module</code>这个路径，而<code>from  module/.  import cal</code> 时，解释器就可以找到了。</li>
+</ol>
+<h2 id="time模块" class="article-heading"><a href="#time模块" class="headerlink" title="time模块"></a>time模块<a class="article-anchor" href="#time模块" aria-hidden="true"></a></h2><h3 id="三种时间表示" class="article-heading"><a href="#三种时间表示" class="headerlink" title="三种时间表示"></a>三种时间表示<a class="article-anchor" href="#三种时间表示" aria-hidden="true"></a></h3><p>在Python中，通常有这几种方式来表示时间：</p>
+<ul>
+<li>A时间戳(timestamp) : 通常来说，时间戳表示的是从1970年1月1日00:00:00开始按秒计算的偏移量。我们运行“type(time.time())”，返回的是float类型。</li>
+<li>B格式化的时间字符串</li>
+<li>C元组(struct_time):struct_time元组共有9个元素共九个元素:(年，月，日，时，分，秒，一年中第几周，一年中第几天，夏令时)</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">a1 = time.time()</span><br><span class="line">a2 = time.localtime()</span><br><span class="line">a3 = time.gmtime()</span><br><span class="line">a4 = time.mktime(a2)</span><br><span class="line">a5 = time.asctime(a2)</span><br><span class="line">a6 = time.ctime(a1)</span><br><span class="line">a7 = time.strftime(<span class="string">'%Y-%m-%d %X'</span>, a2)</span><br><span class="line">a8 = time.strptime(a7, <span class="string">'%Y-%m-%d %X'</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> [a1, a2, a3, a4, a5, a6, a7, a8]:</span><br><span class="line">    <span class="built_in">print</span>(i)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="三种时间的关系" class="article-heading"><a href="#三种时间的关系" class="headerlink" title="三种时间的关系"></a>三种时间的关系<a class="article-anchor" href="#三种时间的关系" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">time&gt;time]==&gt;A</span><br><span class="line">A--ctime--&gt;B</span><br><span class="line">A(时间戳)==localtime==&gt;C(时间元组)</span><br><span class="line">C(时间元组)==strftime==&gt;B</span><br><span class="line">B(时间字符串)-.strptime.-&gt;C(时间元组)</span><br><span class="line">C(时间元组)-.mktime.-&gt;A</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/03.jpg"></p>
+<h2 id="random模块" class="article-heading"><a href="#random模块" class="headerlink" title="random模块"></a>random模块<a class="article-anchor" href="#random模块" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>random.random()</code></td>
+<td>用于生成一个0到1的随机浮点数：0&lt;= n &lt; 1.0</td>
+</tr>
+<tr>
+<td><code>random.uniform(a,b)</code></td>
+<td>用于生成一个指定范围内的随机符点数，两个参数其中一个是上限，一个是下限。如果a &gt; b，则生成的随机数n: a &lt;= n &lt;= b。如果 a &lt;b， 则 b &lt;= n &lt;= a</td>
+</tr>
+<tr>
+<td><code>random.randint(a, b)</code></td>
+<td>用于生成一个指定范围内的整数。其中参数a是下限，参数b是上限，生成的随机数n: a &lt;= n &lt;= b</td>
+</tr>
+<tr>
+<td><code>random.randrange([start], stop[, step])</code></td>
+<td>从指定范围内，按指定基数递增的集合中 获取一个随机数</td>
+</tr>
+<tr>
+<td><code>random.choice(sequence)</code></td>
+<td>从序列中获取一个随机元素</td>
+</tr>
+<tr>
+<td><code>random.shuffle(x[, random])</code></td>
+<td>用于将一个列表中的元素打乱,即将列表内的元素随机排列</td>
+</tr>
+<tr>
+<td><code>random.sample(sequence, k)</code></td>
+<td>从指定序列中随机获取指定长度的片断并随机排列。注意：sample函数不会修改原有序列。</td>
+</tr>
+</tbody></table>
+<h4 id="验证码" class="article-heading"><a href="#验证码" class="headerlink" title="验证码"></a>验证码<a class="article-anchor" href="#验证码" aria-hidden="true"></a></h4><figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">v_code</span>():</span><br><span class="line"></span><br><span class="line">    code = <span class="string">''</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line"></span><br><span class="line">        num=random.randint(<span class="number">0</span>,<span class="number">9</span>)</span><br><span class="line">        alf=<span class="built_in">chr</span>(random.randint(<span class="number">65</span>,<span class="number">90</span>))</span><br><span class="line">        add=random.choice([num,alf])</span><br><span class="line">        code += <span class="built_in">str</span>(add)</span><br><span class="line">    <span class="keyword">return</span> code</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(v_code())</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="os模块" class="article-heading"><a href="#os模块" class="headerlink" title="os模块"></a>os模块<a class="article-anchor" href="#os模块" aria-hidden="true"></a></h2><p>os模块是与操作系统交互的接口</p>
+<h3 id="常用方法" class="article-heading"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法<a class="article-anchor" href="#常用方法" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th></th>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>目录</td>
+<td><code>os.getcwd()</code></td>
+<td>获取当前工作目录，即当前python脚本工作的目录路径</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.chdir("dirname")</code></td>
+<td>改变当前脚本工作目录；相当于shell下cd</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.curdir</code></td>
+<td>返回当前目录</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.pardir</code></td>
+<td>获取当前目录的父目录字符串名</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.makedirs('dirname1/dirname2')</code></td>
+<td>可生成多层递归目录</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.removedirs('dirname1')</code></td>
+<td>若目录为空，则删除，并递归到上一级目录，如若也为空，则删除，依此类推</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.mkdir('dirname')</code></td>
+<td>生成单级目录；相当于shell中mkdir dirname</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.rmdir('dirname')</code></td>
+<td>删除单级空目录，若目录不为空则无法删除，报错；相当于shell中rmdir dirname</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.listdir('dirname')</code></td>
+<td>列出指定目录下的所有文件和子目录，包括隐藏文件，并以列表方式打印</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.remove()</code></td>
+<td>删除文件</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.rename("oldname","newname")</code></td>
+<td>重命名文件/目录</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.stat('path/filename')</code></td>
+<td>获取文件/目录信息</td>
+</tr>
+<tr>
+<td>符号</td>
+<td><code>os.sep</code></td>
+<td>输出操作系统特定的路径分隔符，win下为”\“,Linux下为”/“</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.linesep</code></td>
+<td>输出当前平台使用的行终止符，win下为”\t\n”,Linux下为”\n”</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.pathsep</code></td>
+<td>输出用于分割文件路径的字符串</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.name</code></td>
+<td>输出字符串指示当前使用平台。win-&gt;’nt’; Linux-&gt;’posix’</td>
+</tr>
+<tr>
+<td>执行系统命令</td>
+<td><code>os.system("bash command")</code></td>
+<td>运行shell命令，直接显示</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.environ</code></td>
+<td>获取系统环境变量</td>
+</tr>
+<tr>
+<td>路径</td>
+<td><code>os.path.abspath(path)</code></td>
+<td>返回path规范化的绝对路径</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.path.split(path)</code></td>
+<td>将path分割成目录和文件名二元组返回</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.path.dirname(path)</code></td>
+<td>返回path的目录。其实就是os.path.split(path)的第一个元素</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.path.basename(path)</code></td>
+<td>返回path最后的文件名。如何path以／或\结尾，那么就会返回空值。即os.path.split(path)的第二个元素</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.path.exists(path)</code></td>
+<td>如果path存在，返回True；如果path不存在，返回False</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.path.isabs(path)</code></td>
+<td>如果path是绝对路径，返回True</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.path.isfile(path)</code></td>
+<td>如果path是一个存在的文件，返回True;否则返回False</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.path.isdir(path)</code></td>
+<td>如果path是一个存在的目录，则返回True;否则返回False</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.path.join(path1[, path2[, ...]])</code></td>
+<td>将多个路径组合后返回，第一个绝对路径之前的参数将被忽略</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.path.getatime(path)</code></td>
+<td>返回path所指向的文件或者目录的最后存取时间</td>
+</tr>
+<tr>
+<td></td>
+<td><code>os.path.getmtime(path)</code></td>
+<td>返回path所指向的文件或者目录的最后修改时间</td>
+</tr>
+</tbody></table>
+<h2 id="sys模块" class="article-heading"><a href="#sys模块" class="headerlink" title="sys模块"></a>sys模块<a class="article-anchor" href="#sys模块" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sys.argv</code></td>
+<td>命令行参数</td>
+</tr>
+<tr>
+<td><code>sys.exit(n)</code></td>
+<td>退出程序</td>
+</tr>
+<tr>
+<td><code>sys.version</code></td>
+<td>获取Python解释程序的版本信息</td>
+</tr>
+<tr>
+<td><code>sys.maxint</code></td>
+<td>最大的整型</td>
+</tr>
+<tr>
+<td><code>sys.path</code></td>
+<td>返回模块的搜索路径，初始化时使用PYTHONPATH环境变量的值</td>
+</tr>
+<tr>
+<td><code>sys.platform</code></td>
+<td>返回操作系统平台名称</td>
+</tr>
+</tbody></table>
+<h3 id="进度条" class="article-heading"><a href="#进度条" class="headerlink" title="进度条"></a>进度条<a class="article-anchor" href="#进度条" aria-hidden="true"></a></h3><figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys, time</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    sys.stdout.write(<span class="string">'#'</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    sys.stdout.flush()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>缓冲区的刷新方式：</p>
+<ol>
+<li>flush()刷新缓存区</li>
+<li>缓冲区满时，自动刷新</li>
+<li>文件关闭或者是程序结束自动刷新。</li>
+</ol>
+<p>当我们打印一些字符时，并不是调用print函数后就立即打印的。一般会先将字符送到缓冲区，然后再打印。这就存在一个问题，如果你想等时间间隔的打印一些字符，但由于缓冲区没满，不会打印。就需要采取一些手段。如每次打印后强行刷新缓冲区<code>sys.stdout.flush()</code>。</p>
+<h2 id="json模块" class="article-heading"><a href="#json模块" class="headerlink" title="json模块"></a>json模块<a class="article-anchor" href="#json模块" aria-hidden="true"></a></h2><blockquote>
+<p>重点掌握</p>
+</blockquote>
+<p>如果我们要在不同的编程语言之间传递对象，就必须把对象序列化为标准格式，比如XML，但更好的方法是序列化为JSON，因为JSON表示出来就是一个字符串，可以被所有语言读取，也可以方便地存储到磁盘或者通过网络传输。JSON不仅是标准格式，并且比XML更快，而且可以直接在Web页面中读取，非常方便。</p>
+<p>JSON表示的对象就是标准的JavaScript语言的对象，JSON和Python内置的数据类型对应如下：</p>
+<table>
+<thead>
+<tr>
+<th>json类型</th>
+<th>python类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>{}</code></td>
+<td><code>dict</code></td>
+</tr>
+<tr>
+<td><code>[]</code></td>
+<td><code>list</code></td>
+</tr>
+<tr>
+<td><code>string</code></td>
+<td><code>str</code></td>
+</tr>
+<tr>
+<td><code>123.45</code></td>
+<td><code>int/float</code></td>
+</tr>
+<tr>
+<td><code>true/false</code></td>
+<td><code>True/Flase</code></td>
+</tr>
+<tr>
+<td><code>null</code></td>
+<td><code>None</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">a = {</span><br><span class="line">    <span class="string">'name'</span>: <span class="string">'booboo'</span>,</span><br><span class="line">    <span class="string">'goods'</span>: [<span class="string">'机票'</span>, <span class="string">'酒店'</span>]</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">a_json = json.dumps(a, indent=<span class="number">2</span>, ensure_ascii=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">b_json = <span class="string">"""</span></span><br><span class="line"><span class="string">{</span></span><br><span class="line"><span class="string">  "name": "booboo",</span></span><br><span class="line"><span class="string">  "goods": [</span></span><br><span class="line"><span class="string">    "机票",</span></span><br><span class="line"><span class="string">    "酒店"</span></span><br><span class="line"><span class="string">  ]</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line">b_dict = json.loads(b_json)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(a_json), a_json)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(b_dict), b_json)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>常用：</p>
+<ol>
+<li><code>json.dumps(a, indent=2, ensure_ascii=False)</code>显示中文</li>
+<li>与数据库交互时，时间和浮点数需要特殊处理：</li>
+</ol>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> decimal</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CJsonEncoder</span>(json.JSONEncoder):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">default</span>(<span class="params">self, obj</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">isinstance</span>(obj, datetime.datetime):</span><br><span class="line">            <span class="keyword">return</span> obj.strftime(<span class="string">'%Y-%m-%d %H:%M:%S'</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">isinstance</span>(obj, decimal.Decimal):</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">str</span>(obj)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> json.JSONEncoder.default(<span class="variable language_">self</span>, obj)</span><br><span class="line"></span><br><span class="line">result = <span class="string">"从数据库中查询的结果集"</span></span><br><span class="line"><span class="built_in">print</span>(json.dumps(result, cls=CJsonEncoder, ensure_ascii=<span class="literal">False</span>, indent=<span class="number">2</span>))</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="pickle模块" class="article-heading"><a href="#pickle模块" class="headerlink" title="pickle模块"></a>pickle模块<a class="article-anchor" href="#pickle模块" aria-hidden="true"></a></h2><blockquote>
+<p>从来没有用过</p>
+</blockquote>
+<p>Pickle的问题和所有其他编程语言特有的序列化问题一样，就是它只能用于Python，并且可能不同版本的Python彼此都不兼容，因此，只能用Pickle保存那些不重要的数据，不能成功地反序列化也没关系。</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">dic = {<span class="string">'name'</span>: <span class="string">'booboo'</span>, <span class="string">'age'</span>: <span class="number">10</span>, <span class="string">'sex'</span>: <span class="string">'female'</span>}</span><br><span class="line">j = pickle.dumps(dic)</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="shelve模块" class="article-heading"><a href="#shelve模块" class="headerlink" title="shelve模块"></a>shelve模块<a class="article-anchor" href="#shelve模块" aria-hidden="true"></a></h2><ul>
+<li>shelve模块比pickle模块简单，只有一个open函数，返回类似字典的对象，可读可写；</li>
+<li>key必须为字符串，而值可以是python所支持的数据类型。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> shelve</span><br><span class="line"></span><br><span class="line">f = shelve.<span class="built_in">open</span>(<span class="string">r'shelve.db'</span>)</span><br><span class="line">f[<span class="string">'name'</span>] = <span class="string">'booboo'</span></span><br><span class="line">f[<span class="string">'age'</span>] = <span class="number">10</span></span><br><span class="line">f.close()</span><br><span class="line"></span><br><span class="line">s = shelve.<span class="built_in">open</span>(<span class="string">'shelve.db'</span>, flag=<span class="string">'w'</span>, writeback=<span class="literal">True</span>)</span><br><span class="line">s[<span class="string">'home'</span>] = <span class="string">'shanghai'</span></span><br><span class="line">s.close()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>writeback：默认为False。当设置为True以后，shelf将会将所有从DB中读取的对象存放到一个内存缓存。当我们close()打开的shelf的时候，缓存中所有的对象会被重新写入DB。<br>writeback方式有优点也有缺点。</p>
+<p>优点是减少了我们出错的概率，并且让对象的持久化对用户更加的透明了；但这种方式并不是所有的情况下都需要，首先，使用writeback以后，shelf在open()的时候会增加额外的内存消耗，并且当DB在close()的时候会将缓存中的每一个对象都写入到DB，这也会带来额外的等待时间。因为shelve没有办法知道缓存中哪些对象修改了，哪些对象没有修改，因此所有的对象都会被写入。</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sui776265233/p/9225164.html">帮助</a></p>
+<h2 id="xml模块" class="article-heading"><a href="#xml模块" class="headerlink" title="xml模块"></a>xml模块<a class="article-anchor" href="#xml模块" aria-hidden="true"></a></h2><p>xml是实现不同语言或程序之间进行数据交换的协议，跟json差不多，但json使用起来更简单，不过，古时候，在json还没诞生的黑暗年代，大家只能选择用xml呀，至今很多传统公司如金融行业的很多系统的接口还主要是xml。</p>
+<p>xml的格式如下，就是通过<code>&lt;&gt;</code>节点来区别数据结构的:</p>
+<figure class="highlight xml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">"1.0"</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">country</span> <span class="attr">name</span>=<span class="string">"Liechtenstein"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rank</span> <span class="attr">updated</span>=<span class="string">"yes"</span>&gt;</span>2<span class="tag">&lt;/<span class="name">rank</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">year</span>&gt;</span>2008<span class="tag">&lt;/<span class="name">year</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">gdppc</span>&gt;</span>141100<span class="tag">&lt;/<span class="name">gdppc</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">name</span>=<span class="string">"Austria"</span> <span class="attr">direction</span>=<span class="string">"E"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">name</span>=<span class="string">"Switzerland"</span> <span class="attr">direction</span>=<span class="string">"W"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">country</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">country</span> <span class="attr">name</span>=<span class="string">"Singapore"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rank</span> <span class="attr">updated</span>=<span class="string">"yes"</span>&gt;</span>5<span class="tag">&lt;/<span class="name">rank</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">year</span>&gt;</span>2011<span class="tag">&lt;/<span class="name">year</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">gdppc</span>&gt;</span>59900<span class="tag">&lt;/<span class="name">gdppc</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">name</span>=<span class="string">"Malaysia"</span> <span class="attr">direction</span>=<span class="string">"N"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">country</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">country</span> <span class="attr">name</span>=<span class="string">"Panama"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rank</span> <span class="attr">updated</span>=<span class="string">"yes"</span>&gt;</span>69<span class="tag">&lt;/<span class="name">rank</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">year</span>&gt;</span>2011<span class="tag">&lt;/<span class="name">year</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">gdppc</span>&gt;</span>13600<span class="tag">&lt;/<span class="name">gdppc</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">name</span>=<span class="string">"Costa Rica"</span> <span class="attr">direction</span>=<span class="string">"W"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">name</span>=<span class="string">"Colombia"</span> <span class="attr">direction</span>=<span class="string">"E"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">country</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>xml协议在各个语言里的都 是支持的，在python中可以用以下模块操作xml：</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line"></span><br><span class="line">tree = ET.parse(<span class="string">"xmltest.xml"</span>)</span><br><span class="line">root = tree.getroot()</span><br><span class="line"><span class="built_in">print</span>(root.tag)</span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">遍历xml文档</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">for</span> child <span class="keyword">in</span> root:</span><br><span class="line">    <span class="built_in">print</span>(child.tag, child.attrib)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> child:</span><br><span class="line">        <span class="built_in">print</span>(i.tag,i.text)</span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">只遍历year 节点</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">for</span> node <span class="keyword">in</span> root.<span class="built_in">iter</span>(<span class="string">'year'</span>):</span><br><span class="line">    <span class="built_in">print</span>(node.tag,node.text)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line"></span><br><span class="line">tree = ET.parse(<span class="string">"xmltest.xml"</span>)</span><br><span class="line">root = tree.getroot()</span><br><span class="line"></span><br><span class="line"><span class="string">"""修改"""</span></span><br><span class="line"><span class="keyword">for</span> node <span class="keyword">in</span> root.<span class="built_in">iter</span>(<span class="string">'year'</span>):</span><br><span class="line">    new_year = <span class="built_in">int</span>(node.text) + <span class="number">1</span></span><br><span class="line">    node.text = <span class="built_in">str</span>(new_year)</span><br><span class="line">    node.<span class="built_in">set</span>(<span class="string">"updated"</span>,<span class="string">"yes"</span>)</span><br><span class="line"></span><br><span class="line">tree.write(<span class="string">"xmltest.xml"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">"""删除node"""</span></span><br><span class="line"><span class="keyword">for</span> country <span class="keyword">in</span> root.findall(<span class="string">'country'</span>):</span><br><span class="line">   rank = <span class="built_in">int</span>(country.find(<span class="string">'rank'</span>).text)</span><br><span class="line">   <span class="keyword">if</span> rank &gt; <span class="number">50</span>:</span><br><span class="line">     root.remove(country)</span><br><span class="line"></span><br><span class="line">tree.write(<span class="string">'output.xml'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>自己创建xml文档：</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">new_xml = ET.Element(<span class="string">"namelist"</span>)</span><br><span class="line">name = ET.SubElement(new_xml,<span class="string">"name"</span>,attrib={<span class="string">"enrolled"</span>:<span class="string">"yes"</span>})</span><br><span class="line">age = ET.SubElement(name,<span class="string">"age"</span>,attrib={<span class="string">"checked"</span>:<span class="string">"no"</span>})</span><br><span class="line">sex = ET.SubElement(name,<span class="string">"sex"</span>)</span><br><span class="line">sex.text = <span class="string">'33'</span></span><br><span class="line">name2 = ET.SubElement(new_xml,<span class="string">"name"</span>,attrib={<span class="string">"enrolled"</span>:<span class="string">"no"</span>})</span><br><span class="line">age = ET.SubElement(name2,<span class="string">"age"</span>)</span><br><span class="line">age.text = <span class="string">'19'</span></span><br><span class="line"></span><br><span class="line">et = ET.ElementTree(new_xml)</span><br><span class="line">et.write(<span class="string">"test.xml"</span>, encoding=<span class="string">"utf-8"</span>,xml_declaration=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">ET.dump(new_xml)</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="configpaser模块" class="article-heading"><a href="#configpaser模块" class="headerlink" title="configpaser模块"></a>configpaser模块<a class="article-anchor" href="#configpaser模块" aria-hidden="true"></a></h2><p>一般软件的常见文档格式如下：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">[DEFAULT]</span><br><span class="line">ServerAliveInterval = 45</span><br><span class="line">Compression = yes</span><br><span class="line">CompressionLevel = 9</span><br><span class="line">ForwardX11 = yes</span><br><span class="line"></span><br><span class="line">[bitbucket.org]</span><br><span class="line">User = hg</span><br><span class="line"></span><br><span class="line">[topsecret.server.com]</span><br><span class="line">Port = 50022</span><br><span class="line">ForwardX11 = no</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果想用python生成一个这样的文档怎么做呢？</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> configparser</span><br><span class="line"></span><br><span class="line">config = configparser.ConfigParser()</span><br><span class="line">config[<span class="string">"DEFAULT"</span>] = {<span class="string">'ServerAliveInterval'</span>: <span class="string">'45'</span>,</span><br><span class="line">                      <span class="string">'Compression'</span>: <span class="string">'yes'</span>,</span><br><span class="line">                      <span class="string">'CompressionLevel'</span>: <span class="string">'9'</span>}</span><br><span class="line"></span><br><span class="line">config[<span class="string">'bitbucket.org'</span>] = {}</span><br><span class="line">config[<span class="string">'bitbucket.org'</span>][<span class="string">'User'</span>] = <span class="string">'hg'</span></span><br><span class="line">config[<span class="string">'topsecret.server.com'</span>] = {}</span><br><span class="line">topsecret = config[<span class="string">'topsecret.server.com'</span>]</span><br><span class="line">topsecret[<span class="string">'Host Port'</span>] = <span class="string">'50022'</span>     <span class="comment"># mutates the parser</span></span><br><span class="line">topsecret[<span class="string">'ForwardX11'</span>] = <span class="string">'no'</span>  <span class="comment"># same here</span></span><br><span class="line">config[<span class="string">'DEFAULT'</span>][<span class="string">'ForwardX11'</span>] = <span class="string">'yes'</span>&lt;br&gt;</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">'example.ini'</span>, <span class="string">'w'</span>) <span class="keyword">as</span> configfile:</span><br><span class="line">   config.write(configfile)</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="yaml模块" class="article-heading"><a href="#yaml模块" class="headerlink" title="yaml模块"></a>yaml模块<a class="article-anchor" href="#yaml模块" aria-hidden="true"></a></h2><blockquote>
+<p>重点掌握</p>
+</blockquote>
+<p>自研小工具时可以将配置文件的格式设置为<code>yaml</code>， 例如：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">version: 1</span><br><span class="line">ak:</span><br><span class="line">  AccessKeyId:</span><br><span class="line">  AccessKeySecret:</span><br><span class="line"></span><br><span class="line">action:</span><br><span class="line">  global_enable: True</span><br><span class="line">  create_contact:</span><br><span class="line">    is_enable: True</span><br><span class="line">    params:</span><br><span class="line">      [</span><br><span class="line">      {</span><br><span class="line">        "Channels.Mail": "abc@xxx.com",</span><br><span class="line">        "Channels.SMS": 15000137000,</span><br><span class="line">        "Describe": "abc",</span><br><span class="line">        "ContactName": "abc"</span><br><span class="line">      }</span><br><span class="line">      ]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>读取配置文件时：</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> yaml</span><br><span class="line">config_file = <span class="string">'config.yaml'</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(config_file, <span class="string">'r'</span>) <span class="keyword">as</span> f:</span><br><span class="line">  config = yaml.safe_load(f.read())</span><br><span class="line">  <span class="built_in">print</span>(<span class="built_in">type</span>(config))</span><br><span class="line">  <span class="built_in">print</span>(json.dumps(config, indent=<span class="number">2</span>))</span><br></pre></td></tr></tbody></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/eaa1bf01b3a6">帮助文档</a></p>
+<h2 id="hashlib模块" class="article-heading"><a href="#hashlib模块" class="headerlink" title="hashlib模块"></a>hashlib模块<a class="article-anchor" href="#hashlib模块" aria-hidden="true"></a></h2><p>用于加密相关的操作，3.x里代替了md5模块和sha模块，主要提供 SHA1, SHA224, SHA256, SHA384, SHA512 ，MD5 算法。</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line">m = hashlib.md5()</span><br><span class="line"></span><br><span class="line">m.update(<span class="string">'hello'</span>.encode(<span class="string">'utf8'</span>))</span><br><span class="line"><span class="built_in">print</span>(m.hexdigest())</span><br><span class="line"></span><br><span class="line">m.update(<span class="string">'alvin'</span>.encode(<span class="string">'utf8'</span>))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(m.hexdigest())</span><br><span class="line"></span><br><span class="line">m2 = hashlib.md5()</span><br><span class="line">m2.update(<span class="string">'hello word'</span>.encode(<span class="string">'utf8'</span>))</span><br><span class="line"><span class="built_in">print</span>(m2.hexdigest())</span><br><span class="line"></span><br><span class="line">m3 = hashlib.sha256()</span><br><span class="line"><span class="built_in">print</span>(m3.hexdigest())</span><br></pre></td></tr></tbody></table></figure>
+
+<p>以上加密算法虽然依然非常厉害，但时候存在缺陷，即：通过撞库可以反解。所以，有必要对加密算法中添加自定义key再来做加密。</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line">a = hashlib.sha256(<span class="string">'hello'</span>.encode(<span class="string">'utf8'</span>))</span><br><span class="line">a.update(<span class="string">'booboo'</span>.encode(<span class="string">'utf8'</span>))</span><br><span class="line"><span class="built_in">print</span>(a.hexdigest())</span><br></pre></td></tr></tbody></table></figure>
+
+<p>python 还有一个 hmac 模块，它内部对我们创建 key 和 内容 再进行处理然后再加密:</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> hmac</span><br><span class="line"></span><br><span class="line">h = hmac.new(<span class="string">'booboo'</span>.encode(<span class="string">'utf8'</span>))</span><br><span class="line">h.update(<span class="string">'hello'</span>.encode(<span class="string">'utf8'</span>))</span><br><span class="line"><span class="built_in">print</span>(h.hexdigest())</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="subprocess模块" class="article-heading"><a href="#subprocess模块" class="headerlink" title="subprocess模块"></a>subprocess模块<a class="article-anchor" href="#subprocess模块" aria-hidden="true"></a></h2><blockquote>
+<p>重点掌握</p>
+</blockquote>
+<p>当我们需要调用系统的命令的时候，最先考虑的os模块。用os.system()和os.popen()来进行操作。但是这两个命令过于简单，不能完成一些复杂的操作，如给运行的命令提供输入或者读取命令的输出，判断该命令的运行状态，管理多个命令的并行等等。这时subprocess中的Popen命令就能有效的完成我们需要的操作。</p>
+<p>subprocess模块允许一个进程创建一个新的子进程，通过管道连接到子进程的stdin/stdout/stderr，获取子进程的返回值等操作。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/BoobooWei/booboo_python/blob/master/04-python.md">python基础中已重点介绍，此处省略</a></p>
+<h2 id="logging模块" class="article-heading"><a href="#logging模块" class="headerlink" title="logging模块"></a>logging模块<a class="article-anchor" href="#logging模块" aria-hidden="true"></a></h2><blockquote>
+<p>重点掌握</p>
+</blockquote>
+<p><strong>灵活配置日志级别，日志格式，输出位置</strong></p>
+<figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">disable_existing_loggers:</span> <span class="literal">False</span></span><br><span class="line"><span class="attr">formatters:</span></span><br><span class="line">  <span class="attr">simple:</span></span><br><span class="line">    <span class="attr">format:</span> <span class="string">"%(asctime)s\nFile %(filename)s, [%(levelname)s] [lines: %(lineno)s] %(message)s"</span></span><br><span class="line"></span><br><span class="line"><span class="attr">handlers:</span></span><br><span class="line">  <span class="attr">console:</span></span><br><span class="line">    <span class="attr">class:</span> <span class="string">logging.StreamHandler</span></span><br><span class="line">    <span class="attr">level:</span> <span class="string">INFO</span></span><br><span class="line">    <span class="attr">formatter:</span> <span class="string">simple</span></span><br><span class="line">    <span class="attr">stream:</span> <span class="string">ext://sys.stdout</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">debug_file_handler:</span></span><br><span class="line">    <span class="attr">class:</span> <span class="string">logging.handlers.RotatingFileHandler</span></span><br><span class="line">    <span class="attr">level:</span> <span class="string">DEBUG</span></span><br><span class="line">    <span class="attr">formatter:</span> <span class="string">simple</span></span><br><span class="line">    <span class="attr">filename:</span> <span class="string">./logs/info.log</span></span><br><span class="line">    <span class="attr">maxBytes:</span> <span class="number">10485760</span></span><br><span class="line">    <span class="attr">backupCount:</span> <span class="number">20</span></span><br><span class="line">    <span class="attr">encoding:</span> <span class="string">utf8</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">warning_file_handler:</span></span><br><span class="line">    <span class="attr">class:</span> <span class="string">logging.handlers.RotatingFileHandler</span></span><br><span class="line">    <span class="attr">level:</span> <span class="string">WARNING</span></span><br><span class="line">    <span class="attr">formatter:</span> <span class="string">simple</span></span><br><span class="line">    <span class="attr">filename:</span> <span class="string">./logs/warning.log</span></span><br><span class="line">    <span class="attr">maxBytes:</span> <span class="number">10485760</span></span><br><span class="line">    <span class="attr">backupCount:</span> <span class="number">20</span></span><br><span class="line">    <span class="attr">encoding:</span> <span class="string">utf8</span></span><br><span class="line"></span><br><span class="line"><span class="attr">loggers:</span></span><br><span class="line">  <span class="attr">simpleExample:</span></span><br><span class="line">    <span class="attr">level:</span> <span class="string">WARNING</span></span><br><span class="line">    <span class="attr">handlers:</span> [<span class="string">warning_file_handler</span>]</span><br><span class="line">    <span class="attr">propagate:</span> <span class="literal">no</span></span><br><span class="line"></span><br><span class="line"><span class="attr">root:</span></span><br><span class="line">  <span class="attr">level:</span> <span class="string">DEBUG</span></span><br><span class="line">  <span class="attr">handlers:</span> [<span class="string">console</span>, <span class="string">debug_file_handler</span>, <span class="string">warning_file_handler</span>]</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="re模块" class="article-heading"><a href="#re模块" class="headerlink" title="re模块"></a>re模块<a class="article-anchor" href="#re模块" aria-hidden="true"></a></h2><p>re是一个用来处理正则表达式的库</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>compile</td>
+<td>将一个正则表达式“编译”。编译后的正则表达式对象比直接运行拥有更快的速度。</td>
+</tr>
+<tr>
+<td>search</td>
+<td>在一系列文字中搜索。</td>
+</tr>
+<tr>
+<td>match</td>
+<td>在一系列文字中匹配。</td>
+</tr>
+<tr>
+<td>split</td>
+<td>利用正则将文字分裂为多个部分。</td>
+</tr>
+<tr>
+<td>findall</td>
+<td>找到所有符合正则的子字符串。</td>
+</tr>
+<tr>
+<td>sub</td>
+<td>对文本进行替换。</td>
+</tr>
+</tbody></table>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d3cbab5874e4">帮助文档</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/BoobooWei/DBA_Mysql/blob/master/scripts/analyze/pythonshell/binlog_analyze.py">re参考案例</a></p>
+<h2 id="argparse模块" class="article-heading"><a href="#argparse模块" class="headerlink" title="argparse模块"></a>argparse模块<a class="article-anchor" href="#argparse模块" aria-hidden="true"></a></h2><p><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/argparse.html">帮助文档</a></p>
+<blockquote>
+<p>需要开发一些小工具时的必要第三方包！</p>
+</blockquote>
+<h2 id="UUID模块" class="article-heading"><a href="#UUID模块" class="headerlink" title="UUID模块"></a>UUID模块<a class="article-anchor" href="#UUID模块" aria-hidden="true"></a></h2><p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/dkblog/archive/2011/10/10/2205200.html">帮助文档</a></p>
+<ul>
+<li>Python官方Doc：《20.15. uuid — UUID objects according to RFC 4122》</li>
+<li>UUID的算法介绍：《A Universally Unique IDentifier (UUID) URN Namespace》</li>
+</ul>
+<h3 id="概述" class="article-heading"><a href="#概述" class="headerlink" title="概述"></a>概述<a class="article-anchor" href="#概述" aria-hidden="true"></a></h3><p>UUID是128位的全局唯一标识符，通常由32字节的字符串表示。它可以保证时间和空间的唯一性，它通过MAC地址、时间戳、命名空间、随机数、伪随机数来保证生成ID的唯一性。</p>
+<h3 id="算法" class="article-heading"><a href="#算法" class="headerlink" title="算法"></a>算法<a class="article-anchor" href="#算法" aria-hidden="true"></a></h3><blockquote>
+<p>UUID主要有五个算法，也就是五种方法来实现：</p>
+</blockquote>
+<h4 id="uuid1-——基于时间戳" class="article-heading"><a href="#uuid1-——基于时间戳" class="headerlink" title="uuid1()——基于时间戳"></a>uuid1()——基于时间戳<a class="article-anchor" href="#uuid1-——基于时间戳" aria-hidden="true"></a></h4><p>由MAC地址、当前时间戳、随机数生成。可以保证全球范围内的唯一性，但MAC的使用同时带来安全性问题，局域网中可以使用IP来代替MAC。</p>
+<h4 id="uuid2-——基于分布式计算环境DCE（Python中没有这个函数）" class="article-heading"><a href="#uuid2-——基于分布式计算环境DCE（Python中没有这个函数）" class="headerlink" title="uuid2()——基于分布式计算环境DCE（Python中没有这个函数）"></a>uuid2()——基于分布式计算环境DCE（Python中没有这个函数）<a class="article-anchor" href="#uuid2-——基于分布式计算环境DCE（Python中没有这个函数）" aria-hidden="true"></a></h4><p>算法与uuid1相同，不同的是把时间戳的前4位置换为POSIX的UID。实际中很少用到该方法。</p>
+<h4 id="uuid3-——基于名字的MD5散列值" class="article-heading"><a href="#uuid3-——基于名字的MD5散列值" class="headerlink" title="uuid3()——基于名字的MD5散列值"></a>uuid3()——基于名字的MD5散列值<a class="article-anchor" href="#uuid3-——基于名字的MD5散列值" aria-hidden="true"></a></h4><p>通过计算名字和命名空间的MD5散列值得到，保证了同一命名空间中不同名字的唯一性，和不同命名空间的唯一性，但同一命名空间的同一名字生成相同的uuid。</p>
+<h4 id="uuid4-——基于随机数" class="article-heading"><a href="#uuid4-——基于随机数" class="headerlink" title="uuid4()——基于随机数"></a>uuid4()——基于随机数<a class="article-anchor" href="#uuid4-——基于随机数" aria-hidden="true"></a></h4><p>由伪随机数得到，有一定的重复概率，该概率可以计算出来。</p>
+<h4 id="uuid5-——基于名字的SHA-1散列值" class="article-heading"><a href="#uuid5-——基于名字的SHA-1散列值" class="headerlink" title="uuid5()——基于名字的SHA-1散列值"></a>uuid5()——基于名字的SHA-1散列值<a class="article-anchor" href="#uuid5-——基于名字的SHA-1散列值" aria-hidden="true"></a></h4><p>算法与uuid3相同，不同的是使用 Secure Hash Algorithm 1 算法</p>
+<h3 id="使用建议" class="article-heading"><a href="#使用建议" class="headerlink" title="使用建议"></a>使用建议<a class="article-anchor" href="#使用建议" aria-hidden="true"></a></h3><ul>
+<li>Python中没有基于DCE的，所以uuid2可以忽略；</li>
+<li>uuid4存在概率性重复，由无映射性，最好不用；</li>
+<li>若在Global的分布式计算环境下，最好用uuid1；</li>
+<li>若有名字的唯一性要求，最好用uuid3或uuid5。</li>
+</ul>
+<h2 id="参考" class="article-heading"><a href="#参考" class="headerlink" title="参考"></a>参考<a class="article-anchor" href="#参考" aria-hidden="true"></a></h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yuanchenqi/articles/5732581.html">参考文章</a></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:18.063Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97-Module-%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-text">模块(Module)的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="toc-text">模块的好处</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E7%9A%84%E7%A7%8D%E7%B1%BB"><span class="toc-text">模块的种类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E5%AF%BC%E5%85%A5%E6%96%B9%E6%B3%95"><span class="toc-text">模块导入方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#import-%E8%AF%AD%E5%8F%A5"><span class="toc-text">import 语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#from%E2%80%A6import-%E8%AF%AD%E5%8F%A5"><span class="toc-text">from…import 语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#From-%E2%80%A6-import-%E8%AF%AD%E5%8F%A5"><span class="toc-text">From … import * 语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%9C%AC%E8%B4%A8"><span class="toc-text">运行本质</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%85-Package"><span class="toc-text">包(Package)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E7%82%B9%EF%BC%88important%EF%BC%89"><span class="toc-text">注意点（important）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%82%B9"><span class="toc-text">第一点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%82%B9"><span class="toc-text">第二点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%82%B9"><span class="toc-text">第三点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#time%E6%A8%A1%E5%9D%97"><span class="toc-text">time模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E6%97%B6%E9%97%B4%E8%A1%A8%E7%A4%BA"><span class="toc-text">三种时间表示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E6%97%B6%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-text">三种时间的关系</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#random%E6%A8%A1%E5%9D%97"><span class="toc-text">random模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E7%A0%81"><span class="toc-text">验证码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#os%E6%A8%A1%E5%9D%97"><span class="toc-text">os模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-text">常用方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sys%E6%A8%A1%E5%9D%97"><span class="toc-text">sys模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E5%BA%A6%E6%9D%A1"><span class="toc-text">进度条</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#json%E6%A8%A1%E5%9D%97"><span class="toc-text">json模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pickle%E6%A8%A1%E5%9D%97"><span class="toc-text">pickle模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shelve%E6%A8%A1%E5%9D%97"><span class="toc-text">shelve模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xml%E6%A8%A1%E5%9D%97"><span class="toc-text">xml模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#configpaser%E6%A8%A1%E5%9D%97"><span class="toc-text">configpaser模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#yaml%E6%A8%A1%E5%9D%97"><span class="toc-text">yaml模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hashlib%E6%A8%A1%E5%9D%97"><span class="toc-text">hashlib模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#subprocess%E6%A8%A1%E5%9D%97"><span class="toc-text">subprocess模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#logging%E6%A8%A1%E5%9D%97"><span class="toc-text">logging模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#re%E6%A8%A1%E5%9D%97"><span class="toc-text">re模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#argparse%E6%A8%A1%E5%9D%97"><span class="toc-text">argparse模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UUID%E6%A8%A1%E5%9D%97"><span class="toc-text">UUID模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%B3%95"><span class="toc-text">算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#uuid1-%E2%80%94%E2%80%94%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E6%88%B3"><span class="toc-text">uuid1()——基于时间戳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#uuid2-%E2%80%94%E2%80%94%E5%9F%BA%E4%BA%8E%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97%E7%8E%AF%E5%A2%83DCE%EF%BC%88Python%E4%B8%AD%E6%B2%A1%E6%9C%89%E8%BF%99%E4%B8%AA%E5%87%BD%E6%95%B0%EF%BC%89"><span class="toc-text">uuid2()——基于分布式计算环境DCE（Python中没有这个函数）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#uuid3-%E2%80%94%E2%80%94%E5%9F%BA%E4%BA%8E%E5%90%8D%E5%AD%97%E7%9A%84MD5%E6%95%A3%E5%88%97%E5%80%BC"><span class="toc-text">uuid3()——基于名字的MD5散列值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#uuid4-%E2%80%94%E2%80%94%E5%9F%BA%E4%BA%8E%E9%9A%8F%E6%9C%BA%E6%95%B0"><span class="toc-text">uuid4()——基于随机数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#uuid5-%E2%80%94%E2%80%94%E5%9F%BA%E4%BA%8E%E5%90%8D%E5%AD%97%E7%9A%84SHA-1%E6%95%A3%E5%88%97%E5%80%BC"><span class="toc-text">uuid5()——基于名字的SHA-1散列值</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%BB%BA%E8%AE%AE"><span class="toc-text">使用建议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

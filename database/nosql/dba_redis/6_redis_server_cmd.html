@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Redis_Client_Server_CMD | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/nosql/dba_redis/6_redis_server_cmd">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/nosql/dba_redis/6_redis_server_cmd" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2017-11-14 BoobooWei  命令请求的执行过程一个命令请求从发送到获得回复的过程中， 客户端和服务器需要完成一系列操作。 举个例子， 如果我们使用客户端执行以下命令： redis&gt; SET KEY VALUEOK  那么从客户端发送 SET KEY VALUE 命令到获得回复 OK 期间， 客户端和服务器共需要执行以下操作：  客户端向服务器发送命令请求 SET KEY V">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Redis_Client_Server_CMD">
+<meta property="og:url" content="http://www.toberoot.com/database/nosql/dba_redis/6_redis_server_cmd">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2017-11-14 BoobooWei  命令请求的执行过程一个命令请求从发送到获得回复的过程中， 客户端和服务器需要完成一系列操作。 举个例子， 如果我们使用客户端执行以下命令： redis&gt; SET KEY VALUEOK  那么从客户端发送 SET KEY VALUE 命令到获得回复 OK 期间， 客户端和服务器共需要执行以下操作：  客户端向服务器发送命令请求 SET KEY V">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.873Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:36.044Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Redis_Client_Server_CMD</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/nosql/dba_redis/6_redis_server_cmd.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2017-11-14 BoobooWei</p>
+</blockquote>
+<h1 id="命令请求的执行过程" class="article-heading"><a href="#命令请求的执行过程" class="headerlink" title="命令请求的执行过程"></a>命令请求的执行过程<a class="article-anchor" href="#命令请求的执行过程" aria-hidden="true"></a></h1><p>一个命令请求从发送到获得回复的过程中， 客户端和服务器需要完成一系列操作。</p>
+<p>举个例子， 如果我们使用客户端执行以下命令：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">redis&gt; SET KEY VALUE</span><br><span class="line">OK</span><br></pre></td></tr></tbody></table></figure>
+
+<p>那么从客户端发送 <code>SET KEY VALUE</code> 命令到获得回复 <code>OK</code> 期间， 客户端和服务器共需要执行以下操作：</p>
+<ol>
+<li>客户端向服务器发送命令请求 <code>SET KEY VALUE</code> 。</li>
+<li>服务器接收并处理客户端发来的命令请求 <code>SET KEY VALUE</code> ， 在数据库中进行设置操作， 并产生命令回复 <code>OK</code> 。</li>
+<li>服务器将命令回复 <code>OK</code> 发送给客户端。</li>
+<li>客户端接收服务器返回的命令回复 <code>OK</code> ， 并将这个回复打印给用户观看。</li>
+</ol>
+<p>本节接下来的内容将对这些操作的执行细节进行补充， 详细地说明客户端和服务器在执行命令请求时所做的各种工作。</p>
+<h2 id="发送命令请求" class="article-heading"><a href="#发送命令请求" class="headerlink" title="发送命令请求"></a>发送命令请求<a class="article-anchor" href="#发送命令请求" aria-hidden="true"></a></h2><p>Redis 服务器的命令请求来自 Redis 客户端， 当用户在客户端中键入一个命令请求时， 客户端会将这个命令请求转换成协议格式， 然后通过连接到服务器的套接字， 将协议格式的命令请求发送给服务器， 如图 14-1 所示。</p>
+<p><img src="pic/14-1.png"></p>
+<p>举个例子， 假设客户端执行命令：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">SET KEY VALUE</span><br></pre></td></tr></tbody></table></figure>
+
+<p>那么客户端会将这个命令转换成协议：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">*3\r\n$3\r\nSET\r\n$3\r\nKEY\r\n$5\r\nVALUE\r\n</span><br></pre></td></tr></tbody></table></figure>
+
+<p>然后将这段协议内容发送给服务器。</p>
+<blockquote>
+<h3 id="booboo笔记" class="article-heading"><a href="#booboo笔记" class="headerlink" title="booboo笔记"></a>booboo笔记<a class="article-anchor" href="#booboo笔记" aria-hidden="true"></a></h3><ol>
+<li>所谓协议就是约定就是一种语言，人类是强大的哈，尤其是寻找规律的能力，看多了机器代码的协议自然能找到规律，破解出来，比如这里的如果你截获了redis客户端和服务端发送的这段信息<code>*3\r\n$3\r\nSET\r\n$3\r\nKEY\r\n$5\r\nVALUE\r\n</code>，你能破解吗？</li>
+<li><code>\r\n</code>表示分割，那么去除分割符就是:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>协议</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*3</td>
+<td>信息中一共包含了3个单词</td>
+</tr>
+<tr>
+<td>$3</td>
+<td>第一个单词有3个字符</td>
+</tr>
+<tr>
+<td>SET</td>
+<td>第一个单词是SET</td>
+</tr>
+<tr>
+<td>$3</td>
+<td>第二个单词有3个字符</td>
+</tr>
+<tr>
+<td>KEY</td>
+<td>第二个单词是KEY</td>
+</tr>
+<tr>
+<td>$5</td>
+<td>第三个单词有5个单词</td>
+</tr>
+<tr>
+<td>VALUE</td>
+<td>第三个单词是VALUE</td>
+</tr>
+</tbody></table>
+<ol start="3">
+<li><p>了解了所谓的redis协议，我们也能说redis的语言了，比如用人话说的“往redis中存放name=tom”，翻译成redis客户端的语言是<code>set name tom</code>，翻译成redis服务器的语言是<code>*3\n\r$3set\n\r$4\n\rname\n\r$3\n\rtom</code></p>
+</li>
+<li><p>命令不区分大小写，key和value区分大小写</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">127.0.0.1:6380&gt; set name tom</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6380&gt; set NAME TOM</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6380&gt; get name</span><br><span class="line">"tom"</span><br><span class="line">127.0.0.1:6380&gt; get NAME</span><br><span class="line">"TOM"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>​</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="读取命令请求" class="article-heading"><a href="#读取命令请求" class="headerlink" title="读取命令请求"></a>读取命令请求<a class="article-anchor" href="#读取命令请求" aria-hidden="true"></a></h2><p>当客户端与服务器之间的连接套接字因为客户端的写入而变得可读时， 服务器将调用命令请求处理器来执行以下操作：</p>
+<ol>
+<li>读取套接字中协议格式的命令请求， 并将其保存到客户端状态的输入缓冲区里面。</li>
+<li>对输入缓冲区中的命令请求进行分析， 提取出命令请求中包含的命令参数， 以及命令参数的个数， 然后分别将参数和参数个数保存到客户端状态的 <code>argv</code> 属性和 <code>argc</code> 属性里面。</li>
+<li>调用命令执行器， 执行客户端指定的命令。</li>
+</ol>
+<p>继续用上一个小节的 SET 命令为例子， 图 14-2 展示了程序将命令请求保存到客户端状态的输入缓冲区之后， 客户端状态的样子。</p>
+<p><img src="pic/14-2.png"></p>
+<p>之后， 分析程序将对输入缓冲区中的协议：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">*3\r\n$3\r\nSET\r\n$3\r\nKEY\r\n$5\r\nVALUE\r\n</span><br></pre></td></tr></tbody></table></figure>
+
+<p>进行分析， 并将得出的分析结果保存到客户端状态的 <code>argv</code> 属性和 <code>argc</code> 属性里面， 如图 14-3 所示。</p>
+<p><img src="pic/14-3.png"></p>
+<p>之后， 服务器将通过调用命令执行器来完成执行命令所需的余下步骤， 以下几个小节将分别介绍命令执行器所执行的工作。</p>
+<blockquote>
+<h3 id="booboo笔记-1" class="article-heading"><a href="#booboo笔记-1" class="headerlink" title="booboo笔记"></a>booboo笔记<a class="article-anchor" href="#booboo笔记-1" aria-hidden="true"></a></h3><ol>
+<li>客户端通过redis协议传输过来的内容会首先保存在redisServer–&gt;clients–&gt;redisClient–&gt;querybuf中，</li>
+<li>这里注意了输入缓冲指的是redis服务器接收客户端命令的缓冲，是在服务器端哦</li>
+<li>通过对querybuf的内容解析将对应的命令和参数以及单词的个数存放到redisServer–&gt;clients–&gt;redisClient–&gt;argv–&gt;argc</li>
+</ol>
+</blockquote>
+<h2 id="命令执行器（1）：查找命令实现" class="article-heading"><a href="#命令执行器（1）：查找命令实现" class="headerlink" title="命令执行器（1）：查找命令实现"></a>命令执行器（1）：查找命令实现<a class="article-anchor" href="#命令执行器（1）：查找命令实现" aria-hidden="true"></a></h2><p>命令执行器要做的第一件事就是根据客户端状态的 <code>argv[0]</code> 参数， 在命令表（command table）中查找参数所指定的命令， 并将找到的命令保存到客户端状态的 <code>cmd</code> 属性里面。</p>
+<p>命令表是一个字典， 字典的键是一个个命令名字，比如 <code>"set"</code> 、 <code>"get"</code> 、 <code>"del"</code> ，等等； 而字典的值则是一个个 <code>redisCommand</code> 结构， 每个 <code>redisCommand</code> 结构记录了一个 Redis 命令的实现信息， 表 14-1 记录了这个结构的各个主要属性的类型和作用。</p>
+<hr>
+<p>表 14-1 <code>redisCommand</code> 结构的主要属性</p>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>类型</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td><code>char *</code></td>
+<td>命令的名字，比如 <code>"set"</code> 。</td>
+</tr>
+<tr>
+<td><code>proc</code></td>
+<td><code>redisCommandProc *</code></td>
+<td>函数指针，指向命令的实现函数，比如 <code>setCommand</code> 。 <code>redisCommandProc</code> 类型的定义为<code>typedef void redisCommandProc(redisClient *c);</code> 。</td>
+</tr>
+<tr>
+<td><code>arity</code></td>
+<td><code>int</code></td>
+<td>命令参数的个数，用于检查命令请求的格式是否正确。 如果这个值为负数 <code>-N</code> ，那么表示参数的数量大于等于 <code>N</code> 。 注意命令的名字本身也是一个参数， 比如说 <code>SET msg "helloworld"</code> 命令的参数是 <code>"SET"</code> 、 <code>"msg"</code> 、 <code>"hello world"</code> ， 而不仅仅是 <code>"msg"</code> 和 <code>"hello world"</code>。</td>
+</tr>
+<tr>
+<td><code>sflags</code></td>
+<td><code>char *</code></td>
+<td>字符串形式的标识值， 这个值记录了命令的属性， 比如这个命令是写命令还是读命令， 这个命令是否允许在载入数据时使用， 这个命令是否允许在 Lua 脚本中使用， 等等。</td>
+</tr>
+<tr>
+<td><code>flags</code></td>
+<td><code>int</code></td>
+<td>对 <code>sflags</code> 标识进行分析得出的二进制标识， 由程序自动生成。 服务器对命令标识进行检查时使用的都是 <code>flags</code> 属性而不是 <code>sflags</code> 属性， 因为对二进制标识的检查可以方便地通过 <code>&amp;</code> 、 <code>^</code> 、 <code>~</code> 等操作来完成。</td>
+</tr>
+<tr>
+<td><code>calls</code></td>
+<td><code>long long</code></td>
+<td>服务器总共执行了多少次这个命令。</td>
+</tr>
+<tr>
+<td><code>milliseconds</code></td>
+<td><code>long long</code></td>
+<td>服务器执行这个命令所耗费的总时长。</td>
+</tr>
+</tbody></table>
+<hr>
+<p>表 14-2 列出了 <code>sflags</code> 属性可以使用的标识值， 以及这些标识的意义。</p>
+<hr>
+<p>表 14-2 <code>sflags</code> 属性的标识</p>
+<table>
+<thead>
+<tr>
+<th>标识</th>
+<th>意义</th>
+<th>带有这个标识的命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>w</code></td>
+<td>这是一个写入命令，可能会修改数据库。</td>
+<td>SET 、 RPUSH 、 DEL ，等等。</td>
+</tr>
+<tr>
+<td><code>r</code></td>
+<td>这是一个只读命令，不会修改数据库。</td>
+<td>GET 、 STRLEN 、 EXISTS ，等等。</td>
+</tr>
+<tr>
+<td><code>m</code></td>
+<td>这个命令可能会占用大量内存， 执行之前需要先检查服务器的内存使用情况， 如果内存紧缺的话就禁止执行这个命令。</td>
+<td>SET 、 APPEND 、 RPUSH 、 LPUSH 、 SADD、 SINTERSTORE ，等等。</td>
+</tr>
+<tr>
+<td><code>a</code></td>
+<td>这是一个管理命令。</td>
+<td>SAVE 、 BGSAVE 、 SHUTDOWN ，等等。</td>
+</tr>
+<tr>
+<td><code>p</code></td>
+<td>这是一个发布与订阅功能方面的命令。</td>
+<td>PUBLISH 、 SUBSCRIBE 、 PUBSUB ，等等。</td>
+</tr>
+<tr>
+<td><code>s</code></td>
+<td>这个命令不可以在 Lua 脚本中使用。</td>
+<td>BRPOP 、 BLPOP 、 BRPOPLPUSH 、 SPOP，等等。</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>这是一个随机命令， 对于相同的数据集和相同的参数， 命令返回的结果可能不同。</td>
+<td>SPOP 、 SRANDMEMBER 、 SSCAN 、RANDOMKEY ，等等。</td>
+</tr>
+<tr>
+<td><code>S</code></td>
+<td>当在 Lua 脚本中使用这个命令时， 对这个命令的输出结果进行一次排序， 使得命令的结果有序。</td>
+<td>SINTER 、 SUNION 、 SDIFF 、 SMEMBERS、 KEYS ，等等。</td>
+</tr>
+<tr>
+<td><code>l</code></td>
+<td>这个命令可以在服务器载入数据的过程中使用。</td>
+<td>INFO 、 SHUTDOWN 、 PUBLISH ，等等。</td>
+</tr>
+<tr>
+<td><code>t</code></td>
+<td>这是一个允许从服务器在带有过期数据时使用的命令。</td>
+<td>SLAVEOF 、 PING 、 INFO ，等等。</td>
+</tr>
+<tr>
+<td><code>M</code></td>
+<td>这个命令在监视器（monitor）模式下不会自动被传播（propagate）。</td>
+<td>EXEC</td>
+</tr>
+</tbody></table>
+<hr>
+<p>图 14-4 展示了命令表的样子， 并且以 SET 命令和 GET 命令作为例子， 展示了 <code>redisCommand</code> 结构：</p>
+<ul>
+<li>SET 命令的名字为 <code>"set"</code> ， 实现函数为 <code>setCommand</code> ； 命令的参数个数为 <code>-3</code> ， 表示命令接受三个或以上数量的参数； 命令的标识为 <code>"wm"</code> ， 表示 SET 命令是一个写入命令， 并且在执行这个命令之前， 服务器应该对占用内存状况进行检查， 因为这个命令可能会占用大量内存。</li>
+<li>GET 命令的名字为 <code>"get"</code> ， 实现函数为 <code>getCommand</code> 函数； 命令的参数个数为 <code>2</code> ， 表示命令只接受两个参数； 命令的标识为 <code>"r"</code> ， 表示这是一个只读命令。</li>
+</ul>
+<p><img src="pic/14-4.png"></p>
+<p>继续之前 SET 命令的例子， 当程序以图 14-3 中的 <code>argv[0]</code> 作为输入， 在命令表中进行查找时， 命令表将返回 <code>"set"</code> 键所对应的 <code>redisCommand</code> 结构， 客户端状态的 <code>cmd</code> 指针会指向这个 <code>redisCommand</code> 结构， 如图 14-5 所示。</p>
+<p><img src="pic/14-5.png"></p>
+<p>命令名字的大小写不影响命令表的查找结果</p>
+<p>因为命令表使用的是大小写无关的查找算法， 无论输入的命令名字是大写、小写或者混合大小写， 只要命令的名字是正确的， 就能找到相应的 <code>redisCommand</code> 结构。</p>
+<p>比如说， 无论用户输入的命令名字是 <code>"SET"</code> 、 <code>"set"</code> 、 <code>"SeT"</code> 又或者 <code>"sEt"</code> ， 命令表返回的都是同一个 <code>redisCommand</code> 结构。</p>
+<p>这也是 Redis 客户端可以发送不同大小写的命令， 并且获得相同执行结果的原因：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"># 以下四个命令的执行效果完全一样</span><br><span class="line"></span><br><span class="line">redis&gt; SET msg "hello world"</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">redis&gt; set msg "hello world"</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">redis&gt; SeT msg "hello world"</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">redis&gt; sEt msg "hello world"</span><br><span class="line">OK</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<h3 id="booboo笔记-2" class="article-heading"><a href="#booboo笔记-2" class="headerlink" title="booboo笔记"></a>booboo笔记<a class="article-anchor" href="#booboo笔记-2" aria-hidden="true"></a></h3><ol>
+<li>当分析出命令为set后，就会到命令字典去查找set命令的用法，将查找结果存放于redisServer–&gt;clients–&gt;redisClient–&gt;cmd（redisCommand）</li>
+<li>命令不区分大小写</li>
+</ol>
+</blockquote>
+<h2 id="命令执行器（2）：执行预备操作" class="article-heading"><a href="#命令执行器（2）：执行预备操作" class="headerlink" title="命令执行器（2）：执行预备操作"></a>命令执行器（2）：执行预备操作<a class="article-anchor" href="#命令执行器（2）：执行预备操作" aria-hidden="true"></a></h2><p>到目前为止， 服务器已经将执行命令所需的命令实现函数（保存在客户端状态的 <code>cmd</code> 属性）、参数（保存在客户端状态的 <code>argv</code> 属性）、参数个数（保存在客户端状态的 <code>argc</code> 属性）都收集齐了， 但是在真正执行命令之前， 程序还需要进行一些预备操作， 从而确保命令可以正确、顺利地被执行， 这些操作包括：</p>
+<ul>
+<li>检查客户端状态的 <code>cmd</code> 指针是否指向 <code>NULL</code> ， 如果是的话， 那么说明用户输入的命令名字找不到相应的命令实现， 服务器不再执行后续步骤， 并向客户端返回一个错误。</li>
+<li>根据客户端 <code>cmd</code> 属性指向的 <code>redisCommand</code> 结构的 <code>arity</code> 属性， 检查命令请求所给定的参数个数是否正确， 当参数个数不正确时， 不再执行后续步骤， 直接向客户端返回一个错误。 比如说， 如果 <code>redisCommand</code> 结构的 <code>arity</code> 属性的值为 <code>-3</code> ， 那么用户输入的命令参数个数必须大于等于 <code>3</code> 个才行。</li>
+<li>检查客户端是否已经通过了身份验证， 未通过身份验证的客户端只能执行 AUTH 命令， 如果未通过身份验证的客户端试图执行除 AUTH 命令之外的其他命令， 那么服务器将向客户端返回一个错误。</li>
+<li>如果服务器打开了 <code>maxmemory</code> 功能， 那么在执行命令之前， 先检查服务器的内存占用情况， 并在有需要时进行内存回收， 从而使得接下来的命令可以顺利执行。 如果内存回收失败， 那么不再执行后续步骤， 向客户端返回一个错误。</li>
+<li>如果服务器上一次执行 BGSAVE 命令时出错， 并且服务器打开了 <code>stop-writes-on-bgsave-error</code> 功能， 而且服务器即将要执行的命令是一个写命令， 那么服务器将拒绝执行这个命令， 并向客户端返回一个错误。</li>
+<li>如果客户端当前正在用 SUBSCRIBE 命令订阅频道， 或者正在用 PSUBSCRIBE 命令订阅模式， 那么服务器只会执行客户端发来的 SUBSCRIBE 、 PSUBSCRIBE 、 UNSUBSCRIBE 、 PUNSUBSCRIBE 四个命令， 其他别的命令都会被服务器拒绝。</li>
+<li>如果服务器正在进行数据载入， 那么客户端发送的命令必须带有 <code>l</code> 标识（比如 INFO 、 SHUTDOWN 、 PUBLISH ，等等）才会被服务器执行， 其他别的命令都会被服务器拒绝。</li>
+<li>如果服务器因为执行 Lua 脚本而超时并进入阻塞状态， 那么服务器只会执行客户端发来的 SHUTDOWN nosave 命令和 SCRIPT KILL 命令， 其他别的命令都会被服务器拒绝。</li>
+<li>如果客户端正在执行事务， 那么服务器只会执行客户端发来的 EXEC 、 DISCARD 、 MULTI 、 WATCH 四个命令， 其他命令都会被放进事务队列中。</li>
+<li>如果服务器打开了监视器功能， 那么服务器会将要执行的命令和参数等信息发送给监视器。</li>
+</ul>
+<p>当完成了以上预备操作之后， 服务器就可以开始真正执行命令了。</p>
+<p>注意</p>
+<p>以上只列出了服务器在单机模式下执行命令时的检查操作， 当服务器在复制或者集群模式下执行命令时， 预备操作还会更多一些。</p>
+<blockquote>
+<h3 id="booboo笔记-3" class="article-heading"><a href="#booboo笔记-3" class="headerlink" title="booboo笔记"></a>booboo笔记<a class="article-anchor" href="#booboo笔记-3" aria-hidden="true"></a></h3><p>执行预备的操作可以理解为在做一下检查：</p>
+<ol>
+<li>认证通过了吗？</li>
+<li>命令存在吗？</li>
+<li>命令语法对吗？</li>
+<li>内存够用吗？</li>
+<li>当前进程是否被阻塞？</li>
+</ol>
+</blockquote>
+<h2 id="命令执行器（3）：调用命令的实现函数" class="article-heading"><a href="#命令执行器（3）：调用命令的实现函数" class="headerlink" title="命令执行器（3）：调用命令的实现函数"></a>命令执行器（3）：调用命令的实现函数<a class="article-anchor" href="#命令执行器（3）：调用命令的实现函数" aria-hidden="true"></a></h2><p>在前面的操作中， 服务器已经将要执行命令的实现保存到了客户端状态的 <code>cmd</code> 属性里面， 并将命令的参数和参数个数分别保存到了客户端状态的 <code>argv</code> 属性和 <code>argc</code> 属性里面， 当服务器决定要执行命令时， 它只要执行以下语句就可以了：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">// client 是指向客户端状态的指针</span><br><span class="line">client-&gt;cmd-&gt;proc(client);</span><br></pre></td></tr></tbody></table></figure>
+
+<p>因为执行命令所需的实际参数都已经保存到客户端状态的 <code>argv</code> 属性里面了， 所以命令的实现函数只需要一个指向客户端状态的指针作为参数即可。</p>
+<p>继续以之前的 SET 命令为例子， 图 14-6 展示了客户端包含了命令实现、参数和参数个数的样子。</p>
+<p><img src="pic/14-6.png"></p>
+<p>对于这个例子来说， 执行语句：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">client-&gt;cmd-&gt;proc(client);</span><br></pre></td></tr></tbody></table></figure>
+
+<p>等于执行语句：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">setCommand(client);</span><br></pre></td></tr></tbody></table></figure>
+
+<p>被调用的命令实现函数会执行指定的操作， 并产生相应的命令回复， 这些回复会被保存在客户端状态的输出缓冲区里面（<code>buf</code> 属性和 <code>reply</code>属性）， 之后实现函数还会为客户端的套接字关联命令回复处理器， 这个处理器负责将命令回复返回给客户端。</p>
+<p>对于前面 SET 命令的例子来说， 函数调用 <code>setCommand(client);</code> 将产生一个 <code>"+OK\r\n"</code> 回复， 这个回复会被保存到客户端状态的 <code>buf</code> 属性里面， 如图 14-7 所示。</p>
+<p><img src="pic/14-7.png"></p>
+<blockquote>
+<h3 id="booboo笔记-4" class="article-heading"><a href="#booboo笔记-4" class="headerlink" title="booboo笔记"></a>booboo笔记<a class="article-anchor" href="#booboo笔记-4" aria-hidden="true"></a></h3><ol>
+<li>执行命令的函数为redisCommand结构，调用的命令参数直接读取redisClient中的argv数组中的参数即可</li>
+<li>命令执行后的结果保存在redisServer–&gt;clients–&gt;redisClient–&gt;buf和bufpos中</li>
+</ol>
+</blockquote>
+<h2 id="命令执行器（4）：执行后续工作" class="article-heading"><a href="#命令执行器（4）：执行后续工作" class="headerlink" title="命令执行器（4）：执行后续工作"></a>命令执行器（4）：执行后续工作<a class="article-anchor" href="#命令执行器（4）：执行后续工作" aria-hidden="true"></a></h2><p>在执行完实现函数之后， 服务器还需要执行一些后续工作：</p>
+<ul>
+<li>如果服务器开启了慢查询日志功能， 那么慢查询日志模块会检查是否需要为刚刚执行完的命令请求添加一条新的慢查询日志。</li>
+<li>根据刚刚执行命令所耗费的时长， 更新被执行命令的 <code>redisCommand</code> 结构的 <code>milliseconds</code> 属性， 并将命令的 <code>redisCommand</code> 结构的 <code>calls</code> 计数器的值增一。</li>
+<li>如果服务器开启了 AOF 持久化功能， 那么 AOF 持久化模块会将刚刚执行的命令请求写入到 AOF 缓冲区里面。</li>
+<li>如果有其他从服务器正在复制当前这个服务器， 那么服务器会将刚刚执行的命令传播给所有从服务器。</li>
+</ul>
+<p>当以上操作都执行完了之后， 服务器对于当前命令的执行到此就告一段落了， 之后服务器就可以继续从文件事件处理器中取出并处理下一个命令请求了。</p>
+<blockquote>
+<h3 id="booboo笔记-5" class="article-heading"><a href="#booboo笔记-5" class="headerlink" title="booboo笔记"></a>booboo笔记<a class="article-anchor" href="#booboo笔记-5" aria-hidden="true"></a></h3><p>命令执行完成后，还需要做一下事情：</p>
+<ol>
+<li>判断是否为慢查询</li>
+<li>更新该命令执行的次数</li>
+<li>是否需要AOF固化</li>
+<li>是否需要replication给其他redis服务器</li>
+</ol>
+</blockquote>
+<h2 id="将命令回复发送给客户端" class="article-heading"><a href="#将命令回复发送给客户端" class="headerlink" title="将命令回复发送给客户端"></a>将命令回复发送给客户端<a class="article-anchor" href="#将命令回复发送给客户端" aria-hidden="true"></a></h2><p>前面说过， 命令实现函数会将命令回复保存到客户端的输出缓冲区里面， 并为客户端的套接字关联命令回复处理器， 当客户端套接字变为可写状态时， 服务器就会执行命令回复处理器， 将保存在客户端输出缓冲区中的命令回复发送给客户端。</p>
+<p>当命令回复发送完毕之后， 回复处理器会清空客户端状态的输出缓冲区， 为处理下一个命令请求做好准备。</p>
+<p>以图 14-7 所示的客户端状态为例子， 当客户端的套接字变为可写状态时， 命令回复处理器会将协议格式的命令回复 <code>"+OK\r\n"</code> 发送给客户端。</p>
+<h2 id="客户端接收并打印命令回复" class="article-heading"><a href="#客户端接收并打印命令回复" class="headerlink" title="客户端接收并打印命令回复"></a>客户端接收并打印命令回复<a class="article-anchor" href="#客户端接收并打印命令回复" aria-hidden="true"></a></h2><p>当客户端接收到协议格式的命令回复之后， 它会将这些回复转换成人类可读的格式， 并打印给用户观看（假设我们使用的是 Redis 自带的 <code>redis-cli</code> 客户端）， 如图 14-8 所示。</p>
+<p><img src="pic/14-8.png"></p>
+<p>继续以之前的 SET 命令为例子， 当客户端接到服务器发来的 <code>"+OK\r\n"</code> 协议回复时， 它会将这个回复转换成 <code>"OK\n"</code> ， 然后打印给用户看：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">redis&gt; SET KEY VALUE</span><br><span class="line">OK</span><br></pre></td></tr></tbody></table></figure>
+
+<p>以上就是 Redis 客户端和服务器执行命令请求的整个过程了。</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:36.044Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%AF%B7%E6%B1%82%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="toc-text">命令请求的执行过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%91%E9%80%81%E5%91%BD%E4%BB%A4%E8%AF%B7%E6%B1%82"><span class="toc-text">发送命令请求</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#booboo%E7%AC%94%E8%AE%B0"><span class="toc-text">booboo笔记</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96%E5%91%BD%E4%BB%A4%E8%AF%B7%E6%B1%82"><span class="toc-text">读取命令请求</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#booboo%E7%AC%94%E8%AE%B0-1"><span class="toc-text">booboo笔记</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%99%A8%EF%BC%881%EF%BC%89%EF%BC%9A%E6%9F%A5%E6%89%BE%E5%91%BD%E4%BB%A4%E5%AE%9E%E7%8E%B0"><span class="toc-text">命令执行器（1）：查找命令实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#booboo%E7%AC%94%E8%AE%B0-2"><span class="toc-text">booboo笔记</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%99%A8%EF%BC%882%EF%BC%89%EF%BC%9A%E6%89%A7%E8%A1%8C%E9%A2%84%E5%A4%87%E6%93%8D%E4%BD%9C"><span class="toc-text">命令执行器（2）：执行预备操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#booboo%E7%AC%94%E8%AE%B0-3"><span class="toc-text">booboo笔记</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%99%A8%EF%BC%883%EF%BC%89%EF%BC%9A%E8%B0%83%E7%94%A8%E5%91%BD%E4%BB%A4%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0"><span class="toc-text">命令执行器（3）：调用命令的实现函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#booboo%E7%AC%94%E8%AE%B0-4"><span class="toc-text">booboo笔记</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%99%A8%EF%BC%884%EF%BC%89%EF%BC%9A%E6%89%A7%E8%A1%8C%E5%90%8E%E7%BB%AD%E5%B7%A5%E4%BD%9C"><span class="toc-text">命令执行器（4）：执行后续工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#booboo%E7%AC%94%E8%AE%B0-5"><span class="toc-text">booboo笔记</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86%E5%91%BD%E4%BB%A4%E5%9B%9E%E5%A4%8D%E5%8F%91%E9%80%81%E7%BB%99%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">将命令回复发送给客户端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8E%A5%E6%94%B6%E5%B9%B6%E6%89%93%E5%8D%B0%E5%91%BD%E4%BB%A4%E5%9B%9E%E5%A4%8D"><span class="toc-text">客户端接收并打印命令回复</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

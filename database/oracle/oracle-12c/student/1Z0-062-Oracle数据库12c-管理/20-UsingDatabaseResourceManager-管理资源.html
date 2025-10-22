@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践20:管理资源 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/20-UsingDatabaseResourceManager-%E7%AE%A1%E7%90%86%E8%B5%84%E6%BA%90">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/20-UsingDatabaseResourceManager-%E7%AE%A1%E7%90%86%E8%B5%84%E6%BA%90" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 20: Using Database Resource Manager 2020.01.29 BoobooWei  [toc] 实践20:概览Practices for Lesson 20: Overview You received complaints that certain batch jobs are using too many system">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践20:管理资源">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/20-UsingDatabaseResourceManager-%E7%AE%A1%E7%90%86%E8%B5%84%E6%BA%90">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 20: Using Database Resource Manager 2020.01.29 BoobooWei  [toc] 实践20:概览Practices for Lesson 20: Overview You received complaints that certain batch jobs are using too many system">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.732Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:05.515Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践20:管理资源</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/20-UsingDatabaseResourceManager-管理资源.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p><strong>Practices for Lesson 20: Using Database Resource Manager</strong></p>
+<p>2020.01.29 BoobooWei</p>
+</blockquote>
+<p>[toc]</p>
+<h2 id="实践20-概览" class="article-heading"><a href="#实践20-概览" class="headerlink" title="实践20:概览"></a>实践20:概览<a class="article-anchor" href="#实践20-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 20: Overview</p>
+<p>You received complaints that certain batch jobs are using too many system resources and that a specific user is known to start data warehouse processes during regular business hours. You decide to use the Database Resource Manager for better system-resource utilization and control.</p>
+<p>Your first effort to balance the situation includes creating an APPUSER consumer group and assigning it to the default DEFAULT_PLAN resource plan. You then map a couple of Oracle users and your major OS user to resource groups. Activate the resource plan and test your assignments. Regularly click Show SQL to review all statements that are new to you.</p>
+<p>您收到的投诉是，某些批处理作业使用了太多的系统资源，并且已知某个特定用户会在正常工作时间启动数据仓库流程。您决定使用数据库资源管理器来更好地利用和控制系统资源。</p>
+<p>要平衡这种情况，首先要创建一个APPUSER使用者组，并将其分配给默认的DEFAULT_PLAN资源计划。然后将几个Oracle用户和主要OS用户映射到资源组。激活资源计划并测试你的任务。定期单击Show SQL查看所有新出现的语句。</p>
+<h2 id="实践20-1-管理资源" class="article-heading"><a href="#实践20-1-管理资源" class="headerlink" title="实践20-1:管理资源"></a>实践20-1:管理资源<a class="article-anchor" href="#实践20-1-管理资源" aria-hidden="true"></a></h2><p>Practice 20-1: Managing Resources</p>
+<h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><p>In this practice you use Enterprise Manager Cloud Control and SQL*Plus to configure a resource plan with consumer groups to balance the resource usage among different users and applications.</p>
+<p><strong>Assumptions</strong></p>
+<p>Users SH, OE, and PM are unlocked and the password for each is set to oracle_4U.</p>
+<h3 id="Task" class="article-heading"><a href="#Task" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task" aria-hidden="true"></a></h3><p>In this practice, you create an APPUSER consumer group and assign it to the default DEFAULT_PLAN resource plan. Then you map a few Oracle users and your major OS user to resource groups. Activate the resource plan and test your assignments.</p>
+<p>Log in as the DBA1 user (with oracle_4U password, connect as SYSDBA) and perform the necessary tasks through Enterprise Manager Cloud Control or through SQL*Plus. All scripts for this practice are in the $LABS/P20 directory.</p>
+<p>Whenever you open a new terminal window, execute the oraenv script to set environment variables for the orcl database.</p>
+<ol>
+<li><p>Using Cloud Control, create a resource group called APPUSER. At this point, do not add users to the group.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Cloud Control orcl Database home</td>
+<td>Click <strong>Administration &gt; Resource Manager</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Database Login</td>
+<td>Select Credential <strong>Preferred</strong>. Select Preferred Credential Name: <strong>SYSDBA Database Credentials</strong> Click <strong>Login</strong>.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Getting Started with Database Resource Manager</td>
+<td>Click <strong>Consumer Groups</strong>.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Consumer Groups</td>
+<td>Click <strong>Create</strong>.</td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Create Resource Consumer Group</td>
+<td>Enter Consumer Group: <strong>APPUSER</strong> Verify Scheduling Policy: <strong>Round Robin</strong> Click <strong>Show SQL</strong>.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Show SQL</td>
+<td>Click <strong>Return</strong>.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>Create Resource Consumer Group</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+</tbody></table>
+<p><em>Question 1:</em> What does the ROUND-ROBIN parameter value mean?</p>
+<p><em>Possible Answer:</em> ROUND-ROBIN indicates that CPU resources are fairly allocated to the PPUSER consumer group, according to the active resource plan directives.</p>
+</li>
+<li><p>Create a new plan called NEW_DEFAULT_PLAN that uses the DEFAULT_PLAN as a template. Use the Create Like action. Add the APPUSER and LOW_GROUP consumer groups to the DEFAULT_PLAN resource plan. Change the level 3 CPU resource allocation percentages: 60 percent for the APPUSER consumer group and 40 percent for the LOW_GROUP consumer group.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Consumer Groups</td>
+<td>Click <strong>Administration &gt; Resource Manager</strong>.</td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Getting Started with Database Resource Manager</td>
+<td>Click <strong>Plans</strong>.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Resource Plans</td>
+<td>Select <strong>Default Plan</strong>. Select Action <strong>Create Like</strong>. Click <strong>Go</strong>.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Create Resource Plan</td>
+<td>Enter Plan: <strong>NEW_DEFAULT_PLAN</strong></td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Create Resource Plan</td>
+<td>In Resource Allocations section, click <strong>Add/Remove</strong>.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Select Groups/Subplans</td>
+<td>Select <strong>APPUSER</strong>. Click <strong>Move</strong> from Available Groups/Subplans.</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+<td>pane to Resource Allocations pane. Select <strong>LOW_GROUP</strong>. Click <strong>Move</strong>. Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>Create Resource Plan</td>
+<td>In Resource Allocations section: For APPUSER, set Shares equal to <strong>40</strong>. For LOW_GROUP, set Shares equal to <strong>20</strong>. For SYS_GROUP, set Shares equal to <strong>30</strong>. Click <strong>Show SQL</strong>.</td>
+</tr>
+<tr>
+<td>h.</td>
+<td>Show SQL</td>
+<td>Review the PL/SQL code. Click <strong>Return</strong>.</td>
+</tr>
+<tr>
+<td>i.</td>
+<td>Create Resource Plan</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>There are two ways to assign users to consumer groups: The user can be assigned to one or more groups explicitly and an initial group defined, or the user can be mapped into an initial group based on one or more of the rules in the Consumer Group Mappings. Configure Consumer Group Mappings so that the HR Oracle user belongs to the APPUSER consumer group and the SCOTT user to the LOW_GROUP consumer group. For the SCOTT user, confirm that his ORACLE_USER attribute has a higher priority than the CLIENT_OS_USER attribute.</p>
+<p>a. Log in to SQL*Plus as the DBA1 user.</p>
+<p>b. Execute the <strong>$LABS/P20/assign_hr_appuser.sql</strong> script to assign the HR user to the APPUSER consumer group.</p>
+<p>c. Execute the <strong>$LABS/P20/assign_scott_lowgroup.sql</strong> script to assign the SCOTT user to the LOW_GROUP consumer group.</p>
+</li>
+<li><p>Return to Enterprise Manager Cloud Control to verify the additions you made in step 3.</p>
+<p>a. Click <strong>Administration &gt; Resource Manager</strong>.</p>
+<p>b. Click <strong>Consumer Group Mappings</strong>. c. HR and SCOTT now appear in the list.</p>
+</li>
+<li><p>Assign the PM Oracle user to the following consumer groups: APPUSER, LOW_GROUP, and</p>
+<p>SYS_GROUP without using the Consumer Group Mappings.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Consumer Group Mappings</td>
+<td>Click <strong>Security &gt; Users</strong>.</td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Users</td>
+<td>Enter <strong>PM</strong> in the Search box. Click <strong>Go</strong>.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Users</td>
+<td>Select <strong>PM</strong> user. Click <strong>Edit</strong>.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Edit User: PM</td>
+<td>Click <strong>Consumer Group Privileges</strong> tab. If you see an error regarding the password for the PM user, enter oracle_4U in both the password fields.</td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Edit User: PM : Consumer Group Privileges tab</td>
+<td>Click <strong>Edit List</strong>.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Modify Consumer Groups</td>
+<td>Move <strong>APPUSER</strong> to Selected Consumer Groups. Move <strong>LOW_GROUP</strong> to Selected Consumer Groups.</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+<td>Move <strong>SYS_GROUP</strong> to Selected Consumer Groups. Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>Edit User: PM</td>
+<td>Set Default Consumer Group to <strong>APPUSER</strong>. Click <strong>Show SQL</strong>.</td>
+</tr>
+<tr>
+<td>h.</td>
+<td>Show SQL</td>
+<td><strong>Note:</strong> The PM user is granted the privilege of switching to any of the three groups, but the initial group is set to APPUSER. Click <strong>Return</strong>.</td>
+</tr>
+<tr>
+<td>i.</td>
+<td>Edit User: PM</td>
+<td>Click <strong>Apply</strong>.</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>Activate the NEW_DEFAULT_PLAN resource plan.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Edit User: PM</td>
+<td>Click <strong>Administration &gt; Resource Manager</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Getting Started with Database Resource Manager</td>
+<td>Click <strong>Plans</strong>.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Resource Plans</td>
+<td>Select <strong>NEW_DEFAULT_PLAN</strong>. Select <strong>Activate</strong> in the Actions menu. Click <strong>GO</strong>.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Confirmation</td>
+<td>Click <strong>Yes</strong>.</td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Resource Plans</td>
+<td>You should see a success message. NEW_DEFAULT_PLAN has status of ACTIVE.</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>Test the consumer group mappings. Start two SQL*Plus sessions: the first with the system/oracle_4U@orcl connect string and the second with the scott/tiger@orcl connect string.</p>
+<p>a. As the oracle user in a terminal window, execute the oraenv script to set environment variables for the orcl database.</p>
+<p>b. To start a SQL*Plus session with the system/oracle_4U@orcl connect string and to set your SQL prompt to “FIRST,” enter:</p>
+<p>c. As the oracle user in a second terminal window, execute the oraenv script to set environment variables for the orcl database.</p>
+<p>d. To start a SQL*Plus session with the scott/tiger@orcl connect string and to set your SQL prompt to “SECOND,” enter:</p>
+<p>e. In your FIRST SQL*Plus session, enter:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">column</span> username format A12</span><br><span class="line"><span class="keyword">column</span> resource_consumer_group format A24</span><br><span class="line"><span class="keyword">SELECT</span> username, resource_consumer_group, <span class="built_in">count</span>(username) <span class="keyword">FROM</span> v$session</span><br><span class="line"><span class="keyword">WHERE</span> username <span class="keyword">IS</span> <span class="keyword">not null</span></span><br><span class="line"><span class="keyword">AND</span> program <span class="keyword">IS</span> <span class="keyword">not null</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> username, resource_consumer_group;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>Note:</strong> This statement is available in the /solns/sol_qry_vsession.sql file.</p>
+<p><em>Question:</em> To which consumer group does the SCOTT user belong?</p>
+<p><em>Answer:</em> SCOTT is in the LOW_GROUP consumer group.</p>
+<p><strong>Note:</strong> Your output for this step (and the following steps) may not look exactly like the output shown. The information of concern here is for the specific users being mentioned.</p>
+<p>f. In the SECOND terminal window, connect as the PM user with the oracle_4U password:</p>
+<p>g. In your FIRST SQL*Plus session, enter “/” to execute the previous SQL statement again.</p>
+<p>h. In the SECOND terminal window, connect as the OE user with the oracle_4U password:</p>
+<p>i. In your FIRST SQL*Plus session, enter “/” to execute the previous SQL statement again.</p>
+<p>j. Exit both the SQL*Plus sessions.</p>
+<p><em>Question:</em> When testing your OE Oracle user, you notice that OE is in the</p>
+<p>OTHER_GROUPS consumer group. Why is that?</p>
+<p><em>Possible Answer:</em> The OE user is not explicitly assigned to another consumer resource group.</p>
+</li>
+<li><p>Revert to your original configuration by deactivating the NEW_DEFAULT_PLAN resource group, undoing all consumer group mappings, and finally by deleting the APPUSER resource group.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td></td>
+<td>Click <strong>Administration &gt; Resource Manager</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Getting Started with Database Resource Manager</td>
+<td>Click <strong>Plans.</strong></td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Resource Plans</td>
+<td>Select <strong>INTERNAL_PLAN.</strong> Select <strong>Activate</strong> in the Actions menu. Click <strong>GO.</strong></td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Confirmation</td>
+<td>Click <strong>Yes.</strong></td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Resource Plans</td>
+<td>You should see a success message INTERNAL_PLAN has status of ACTIVE</td>
+</tr>
+</tbody></table>
+<p>f. To reconfigure or undo all consumer group mappings, review and execute the rsc_cleanup.sh script from the $LABS/P20 directory:</p>
+<p>g. Log out of Enterprise Manager Cloud Control.</p>
+</li>
+</ol>
+<h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3></body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:05.515Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B520-%E6%A6%82%E8%A7%88"><span class="toc-text">实践20:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B520-1-%E7%AE%A1%E7%90%86%E8%B5%84%E6%BA%90"><span class="toc-text">实践20-1:管理资源</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

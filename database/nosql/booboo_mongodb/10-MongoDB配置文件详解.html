@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>MongoDB 配置文件详解 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/nosql/booboo_mongodb/10-MongoDB%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/nosql/booboo_mongodb/10-MongoDB%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="系统日志systemLog OptionssystemLog:   verbosity: &lt;int&gt;    #在3.0版更改，详细级别决定了MongoDB输出的信息量和调试量，默认为0   quiet: &lt;boolean&gt;    #静默模式，不推荐生产使用，不利于排查问题   traceAllExceptions: &lt;boolean&gt;    #打印详细的调试信息">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MongoDB 配置文件详解">
+<meta property="og:url" content="http://www.toberoot.com/database/nosql/booboo_mongodb/10-MongoDB%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="系统日志systemLog OptionssystemLog:   verbosity: &lt;int&gt;    #在3.0版更改，详细级别决定了MongoDB输出的信息量和调试量，默认为0   quiet: &lt;boolean&gt;    #静默模式，不推荐生产使用，不利于排查问题   traceAllExceptions: &lt;boolean&gt;    #打印详细的调试信息">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.863Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:28.937Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">MongoDB 配置文件详解</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/nosql/booboo_mongodb/10-MongoDB配置文件详解.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h2 id="系统日志systemLog-Options" class="article-heading"><a href="#系统日志systemLog-Options" class="headerlink" title="系统日志systemLog Options"></a>系统日志systemLog Options<a class="article-anchor" href="#系统日志systemLog-Options" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">systemLog:</span><br><span class="line">   verbosity: &lt;int&gt;    #在3.0版更改，详细级别决定了MongoDB输出的信息量和调试量，默认为0</span><br><span class="line">   quiet: &lt;boolean&gt;    #静默模式，不推荐生产使用，不利于排查问题</span><br><span class="line">   traceAllExceptions: &lt;boolean&gt;    #打印详细的调试信息。使用其他日志记录进行支持相关的故障排除。</span><br><span class="line">   syslogFacility: &lt;string&gt;    #将消息记录到系统日志时使用的设施级别。</span><br><span class="line">   path: &lt;string&gt;    #mongod或mongos应发送所有诊断日志信息的日志文件的路径，在指定的路径上创建日志文件</span><br><span class="line">   logAppend: &lt;boolean&gt;    #为true，则在mongos或mongod 实例重新启动时将新条目附加到现有日志文件的末尾</span><br><span class="line">   logRotate: &lt;string&gt;    #3.0.0新版功能，三个选项 rename,reopen,logAppend必须为true</span><br><span class="line">   destination: &lt;string&gt;    #MongoDB发送所有日志输出的目的地两个选项：file or syslog</span><br><span class="line">   timeStampFormat: &lt;string&gt; #Default: iso8601-local 1969-12-31T19:00:00.000-0500</span><br><span class="line">   component:</span><br><span class="line">      accessControl:</span><br><span class="line">         verbosity: &lt;int&gt;</span><br><span class="line">      command:</span><br><span class="line">         verbosity: &lt;int&gt;</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">systemLog:</span><br><span class="line">   destination: file</span><br><span class="line">   path: "/alidata/mongodb/log/mongod_22001.log"</span><br><span class="line">   logAppend: true</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>verbosity:</p>
+<p>详细级别的范围可以从0到5：</p>
+<p>0是MongoDB默认的日志详细级别，包含 信息性消息。</p>
+<p>1到 5增加了详细级别以包含 调试消息。</p>
+<p>参考地址：<a target="_blank" rel="noopener" href="http://docs.mongoing.com/reference/log-messages.html#log-messages-configure-verbosity">http://docs.mongoing.com/reference/log-messages.html#log-messages-configure-verbosity</a></p>
+<p>logRotate：</p>
+<p>rename：重命名日志文件。<br>reopen：关闭并重新打开日志文件，遵循典型的Linux / Unix日志旋转行为。使用Linux / Unix的logrotate工具时要重新打开，以避免日志丢失。<br>reopen：则还必须将systemLog.logAppend设置为true。</p>
+</blockquote>
+<h2 id="进程管理processManagement-Options" class="article-heading"><a href="#进程管理processManagement-Options" class="headerlink" title="进程管理processManagement Options"></a>进程管理processManagement Options<a class="article-anchor" href="#进程管理processManagement-Options" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">processManagement:</span><br><span class="line">   fork: &lt;boolean&gt;    #默认：False 启用在后台运行mongos或mongod进程的守护进程模式</span><br><span class="line">   pidFilePath: &lt;string&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="网络选项Net-Options" class="article-heading"><a href="#网络选项Net-Options" class="headerlink" title="网络选项Net Options"></a>网络选项Net Options<a class="article-anchor" href="#网络选项Net-Options" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">net:</span><br><span class="line">   port: &lt;int&gt;    #默认：27017</span><br><span class="line">   bindIp: &lt;string&gt;    #4.0默认只允许本地访问。3.2默认允许所有。mongos或mongod绑定的IP地址，以侦听来自应用程序的连接要绑定到多个IP地址，请输入逗号分隔值列表。</span><br><span class="line">   maxIncomingConnections: &lt;int&gt;    #默认：65536。mongos或mongod可以接受的最大并发连接数。</span><br><span class="line">   wireObjectCheck: &lt;boolean&gt;    #默认值：True</span><br><span class="line">   ipv6: &lt;boolean&gt; #在版本3.0中删除。MongoDB 3.0和更高版本中，IPv6始终处于启用状态。</span><br><span class="line">   unixDomainSocket:</span><br><span class="line">      enabled: &lt;boolean&gt;</span><br><span class="line">      pathPrefix: &lt;string&gt;    #默认：/ tmp</span><br><span class="line">      filePermissions: &lt;int&gt;    #默认：0700 设置UNIX域套接字文件的权限 只适用于基于Unix的系统</span><br><span class="line">   http:</span><br><span class="line">      enabled: &lt;boolean&gt;    #Default: False 3.2 版后已移除</span><br><span class="line">      JSONPEnabled: &lt;boolean&gt;</span><br><span class="line">      RESTInterfaceEnabled: &lt;boolean&gt;</span><br><span class="line">   ssl:</span><br><span class="line">      sslOnNormalPorts: &lt;boolean&gt; # 2.6版后已移除。在3.0版本更改：大多数MongoDB发行版现在包含对TLS / SSL的支持</span><br><span class="line">      mode: &lt;string&gt;    #2.6 新版功能.</span><br><span class="line">      PEMKeyFile: &lt;string&gt;</span><br><span class="line">      PEMKeyPassword: &lt;string&gt;</span><br><span class="line">      clusterFile: &lt;string&gt;</span><br><span class="line">      clusterPassword: &lt;string&gt;</span><br><span class="line">      CAFile: &lt;string&gt;</span><br><span class="line">      CRLFile: &lt;string&gt;</span><br><span class="line">      allowConnectionsWithoutCertificates: &lt;boolean&gt;</span><br><span class="line">      allowInvalidCertificates: &lt;boolean&gt;</span><br><span class="line">      allowInvalidHostnames: &lt;boolean&gt;</span><br><span class="line">      disabledProtocols: &lt;string&gt;</span><br><span class="line">      FIPSMode: &lt;boolean&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="安全Security-Options" class="article-heading"><a href="#安全Security-Options" class="headerlink" title="安全Security Options"></a>安全Security Options<a class="article-anchor" href="#安全Security-Options" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">security:</span><br><span class="line">  keyFile: &lt;string&gt;</span><br><span class="line">  clusterAuthMode: &lt;string&gt;    #2.6新版功能。</span><br><span class="line">  authorization: &lt;string&gt;    #默认：禁用 启用或禁用基于角色的访问控制（RBAC）来控制每个用户对数据库资源和操作的访问。</span><br><span class="line">  transitionToAuth: &lt;boolean&gt;    #默认：False 3.4 新版功能:</span><br><span class="line">  javascriptEnabled:  &lt;boolean&gt;    #默认值：True 启用或禁用服务器端JavaScript执行</span><br><span class="line">  redactClientLogData: &lt;boolean&gt;    #3.4新版功能：仅适用于MongoDB Enterprise。</span><br><span class="line">  sasl:</span><br><span class="line">     hostName: &lt;string&gt;</span><br><span class="line">     serviceName: &lt;string&gt;</span><br><span class="line">     saslauthdSocketPath: &lt;string&gt;</span><br><span class="line">  enableEncryption: &lt;boolean&gt;    #默认：False 3.2新版功能：为WiredTiger存储引擎启用加密 仅在MongoDB Enterprise中可用</span><br><span class="line">  encryptionCipherMode: &lt;string&gt;    #3.2新版功能 仅在MongoDB Enterprise中可用</span><br><span class="line">  encryptionKeyFile: &lt;string&gt;    #仅在MongoDB Enterprise中可用</span><br><span class="line">  kmip:</span><br><span class="line">     keyIdentifier: &lt;string&gt;    #3.2新版功能</span><br><span class="line">     rotateMasterKey: &lt;boolean&gt;</span><br><span class="line">     serverName: &lt;string&gt;</span><br><span class="line">     port: &lt;string&gt;</span><br><span class="line">     clientCertificateFile: &lt;string&gt;</span><br><span class="line">     clientCertificatePassword: &lt;string&gt;</span><br><span class="line">     serverCAFile: &lt;string&gt;</span><br><span class="line">  ldap:    #3.4新版功能：仅适用于MongoDB Enterprise。</span><br><span class="line">     servers: &lt;string&gt;</span><br><span class="line">     bind:</span><br><span class="line">        method: &lt;string&gt;</span><br><span class="line">        saslMechanism: &lt;string&gt;</span><br><span class="line">        queryUser: &lt;string&gt;</span><br><span class="line">        queryPassword: &lt;string&gt;</span><br><span class="line">        useOSDefaults: &lt;boolean&gt;    #3.4新版功能：仅适用于Windows平台的MongoDB Enterprise。</span><br><span class="line">     transportSecurity: &lt;string&gt;</span><br><span class="line">     timeoutMS: &lt;int&gt;</span><br><span class="line">     userToDNMapping: &lt;string&gt;</span><br><span class="line">     authz:</span><br><span class="line">        queryTemplate: &lt;string&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="参数设置setParameter-Option" class="article-heading"><a href="#参数设置setParameter-Option" class="headerlink" title="参数设置setParameter Option"></a>参数设置setParameter Option<a class="article-anchor" href="#参数设置setParameter-Option" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">setParameter:</span><br><span class="line">   &lt;parameter1&gt;: &lt;value1&gt;</span><br><span class="line">   &lt;parameter2&gt;: &lt;value2&gt;</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">setParameter:</span><br><span class="line">   enableLocalhostAuthBypass: false</span><br><span class="line">   ldapUserCacheInvalidationInterval: &lt;int&gt; #默认：30</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="存储Storage-Options" class="article-heading"><a href="#存储Storage-Options" class="headerlink" title="存储Storage Options"></a>存储Storage Options<a class="article-anchor" href="#存储Storage-Options" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">storage:</span><br><span class="line">   dbPath: &lt;string&gt;    #缺省值：Linux和OS X上的/data/db，Windows上的\data\db</span><br><span class="line">   indexBuildRetry: &lt;boolean&gt;    #默认值：True mongod是否在下次启动时重建不完整的索引 不适用于使用内存存储引擎的mongod实例</span><br><span class="line">   repairPath: &lt;string&gt;</span><br><span class="line">   journal:</span><br><span class="line">      enabled: &lt;boolean&gt;    #Default: true on 64-bit systems, false on 32-bit systems</span><br><span class="line">      commitIntervalMs: &lt;num&gt; #默认值：100或30 3.2新版功能</span><br><span class="line">   directoryPerDB: &lt;boolean&gt;    #默认：False</span><br><span class="line">   syncPeriodSecs: &lt;int&gt;   #默认：60 不要在生产系统上设置这个值。在几乎所有情况下，您都应该使用默认设置。</span><br><span class="line">   engine: &lt;string&gt;    #在3.2版本更改：从MongoDB 3.2开始，wiredTiger是默认的</span><br><span class="line">   mmapv1:</span><br><span class="line">      preallocDataFiles: &lt;boolean&gt;    #默认值：True 2.6版后已移除</span><br><span class="line">      nsSize: &lt;int&gt;    #默认：16</span><br><span class="line">      quota:</span><br><span class="line">         enforced: &lt;boolean&gt;    #默认：false MongoDB每个数据库最多有8个数据文件 使用storage.quota.maxFilesPerDB调整配额 。</span><br><span class="line">         maxFilesPerDB: &lt;int&gt;    #默认：8</span><br><span class="line">      smallFiles: &lt;boolean&gt;    #默认：False</span><br><span class="line">      journal:</span><br><span class="line">         debugFlags: &lt;int&gt;    #类型：整数 提供测试功能</span><br><span class="line">         commitIntervalMs: &lt;num&gt;    #3.2版本已移除</span><br><span class="line">   wiredTiger:</span><br><span class="line">      engineConfig:</span><br><span class="line">         cacheSizeGB: &lt;number&gt;    #类型：float WiredTiger将用于所有数据的内部缓存的最大大小，控制的物理内存</span><br><span class="line">         #物理内存-wiredtiger-其他进程-系统所占用的内存=filesystem cache</span><br><span class="line">         journalCompressor: &lt;string&gt;    #默认：snappy 3.0.0新版功能</span><br><span class="line">         directoryForIndexes: &lt;boolean&gt;    #默认：false 3.0.0新版功能</span><br><span class="line">      collectionConfig:</span><br><span class="line">         blockCompressor: &lt;string&gt;    #默认：snappy</span><br><span class="line">      indexConfig:</span><br><span class="line">         prefixCompression: &lt;boolean&gt;    #默认值：true</span><br><span class="line">   inMemory:</span><br><span class="line">      engineConfig:</span><br><span class="line">         inMemorySizeGB: &lt;number&gt;    #默认值：物理RAM的50％少于1 GB 在3.4版本更改：数值可以从256MB到10TB，可以是一个浮点数 仅在MongoDB Enterprise中可用</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="OperationProfiling-Options" class="article-heading"><a href="#OperationProfiling-Options" class="headerlink" title="OperationProfiling Options"></a>OperationProfiling Options<a class="article-anchor" href="#OperationProfiling-Options" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">operationProfiling:</span><br><span class="line">   slowOpThresholdMs: &lt;int&gt;    #默认值：100 数据库分析器认为查询的阈值（以毫秒为单位）变慢。</span><br><span class="line">   mode: &lt;string&gt;    #默认：关闭 数据库分析可能会影响数据库性能 off,slowOp,all</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="复制Replication-Options" class="article-heading"><a href="#复制Replication-Options" class="headerlink" title="复制Replication Options"></a>复制Replication Options<a class="article-anchor" href="#复制Replication-Options" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">replication:</span><br><span class="line">   oplogSizeMB: &lt;int&gt;    #ype: integer 以兆字节为单位 对于64位系统，oplog通常是可用磁盘空间的5％</span><br><span class="line">   replSetName: &lt;string&gt;   #类型：字符串</span><br><span class="line">   secondaryIndexPrefetch: &lt;string&gt;    #默认：全部 仅在 mmapv1 存储引擎中可用 none,all,_id_only</span><br><span class="line">   enableMajorityReadConcern: &lt;boolean&gt;    #默认：False 3.2新版功能</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="集群分片sharding-Options" class="article-heading"><a href="#集群分片sharding-Options" class="headerlink" title="集群分片sharding Options"></a>集群分片sharding Options<a class="article-anchor" href="#集群分片sharding-Options" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">sharding:</span><br><span class="line">   clusterRole: &lt;string&gt;    #configsvr 默认启动端口27019 shardsvr 默认启动端口27018</span><br><span class="line">   archiveMovedChunks: &lt;boolean&gt;    #3.2版本更改：从3.2开始，MongoDB 默认使用false 在块迁移期间，分片不保存从分片迁移的文档</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="检查日志AuditLog-Options" class="article-heading"><a href="#检查日志AuditLog-Options" class="headerlink" title="检查日志AuditLog Options"></a>检查日志AuditLog Options<a class="article-anchor" href="#检查日志AuditLog-Options" aria-hidden="true"></a></h2><blockquote>
+<p>注解</p>
+<p>Available only in?<a target="_blank" rel="noopener" href="http://www.mongodb.com/products/mongodb-enterprise?jmp=docs">MongoDB Enterprise</a></p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">auditLog:</span><br><span class="line">   destination: &lt;string&gt;    #2.6 新版功能</span><br><span class="line">   format: &lt;string&gt;</span><br><span class="line">   path: &lt;string&gt;</span><br><span class="line">   filter: &lt;string&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="简单网络管理协议-snmp-Options" class="article-heading"><a href="#简单网络管理协议-snmp-Options" class="headerlink" title="简单网络管理协议 snmp Options"></a>简单网络管理协议 snmp Options<a class="article-anchor" href="#简单网络管理协议-snmp-Options" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">snmp:</span><br><span class="line">   subagent: &lt;boolean&gt;</span><br><span class="line">   master: &lt;boolean&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Mongos-only-Options" class="article-heading"><a href="#Mongos-only-Options" class="headerlink" title="Mongos-only Options"></a>Mongos-only Options<a class="article-anchor" href="#Mongos-only-Options" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">replication:</span><br><span class="line">   localPingThresholdMs: &lt;int&gt;    #Default: 15 以毫秒为单位</span><br><span class="line"></span><br><span class="line">sharding:</span><br><span class="line">   configDB: &lt;string&gt; #从MongoDB 3.2开始，分片集群的配置服务器可以部署为一个副本集。副本集配置服务器必须运行WiredTiger存储引擎。MongoDB 3.2弃用配置服务器的三个镜像 mongod实例。</span><br><span class="line"></span><br><span class="line">eg：</span><br><span class="line">sharding：</span><br><span class="line">  configDB：&lt;configReplSetName&gt; /cfg1.example.net:27017，cfg2.example.net:27017，...</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Windows-Service-Options" class="article-heading"><a href="#Windows-Service-Options" class="headerlink" title="Windows Service Options"></a>Windows Service Options<a class="article-anchor" href="#Windows-Service-Options" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">processManagement:</span><br><span class="line">   windowsService:</span><br><span class="line">      serviceName: &lt;string&gt;    # default: MongoDB</span><br><span class="line">      displayName: &lt;string&gt;</span><br><span class="line">      description: &lt;string&gt;</span><br><span class="line">      serviceUser: &lt;string&gt;</span><br><span class="line">      servicePassword: &lt;string&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="MongoDB-WT建议配置项" class="article-heading"><a href="#MongoDB-WT建议配置项" class="headerlink" title="MongoDB WT建议配置项"></a>MongoDB WT建议配置项<a class="article-anchor" href="#MongoDB-WT建议配置项" aria-hidden="true"></a></h1><h2 id="单实例配置" class="article-heading"><a href="#单实例配置" class="headerlink" title="单实例配置"></a>单实例配置<a class="article-anchor" href="#单实例配置" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">systemLog:</span><br><span class="line"> destination: file</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">##日志存储位置</span></span></span><br><span class="line"> path: /data/mongodb/log/mongod.log</span><br><span class="line"> logAppend: true</span><br><span class="line">storage:</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#journal配置</span></span></span><br><span class="line"> journal:</span><br><span class="line">  enabled: true</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#数据文件存储位置</span></span></span><br><span class="line"> dbPath: /data/zhou/mongo1/</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#是否一个库一个文件夹</span></span></span><br><span class="line"> directoryPerDB: true</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#数据引擎</span></span></span><br><span class="line"> engine: wiredTiger</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#WT引擎配置</span></span></span><br><span class="line"> wiredTiger:</span><br><span class="line">  engineConfig:</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#WT最大使用cache（根据服务器实际情况调节）</span></span></span><br><span class="line">   cacheSizeGB: 10</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#是否将索引也按数据库名单独存储</span></span></span><br><span class="line">   directoryForIndexes: true</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#表压缩配置</span></span></span><br><span class="line">  collectionConfig:</span><br><span class="line">   blockCompressor: zlib</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#索引配置</span></span></span><br><span class="line">  indexConfig:</span><br><span class="line">   prefixCompression: true</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#端口配置</span></span></span><br><span class="line">net:</span><br><span class="line"> port: 27017</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="复制集配置" class="article-heading"><a href="#复制集配置" class="headerlink" title="复制集配置"></a>复制集配置<a class="article-anchor" href="#复制集配置" aria-hidden="true"></a></h2><p>（在上述配置上加入如下几个配置）：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">replication:</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#oplog大小</span></span></span><br><span class="line"> oplogSizeMB: 20</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#复制集名称</span></span></span><br><span class="line"> replSetName: zhou1</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="分片集群配置" class="article-heading"><a href="#分片集群配置" class="headerlink" title="分片集群配置"></a>分片集群配置<a class="article-anchor" href="#分片集群配置" aria-hidden="true"></a></h2><p>分片复制集配置</p>
+<p>（单实例节点的基础上）：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">replication:</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#oplog大小</span></span></span><br><span class="line"> oplogSizeMB: 20</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#复制集名称</span></span></span><br><span class="line"> replSetName: zhou1</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#分片配置</span></span></span><br><span class="line">sharding:</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#分片角色</span></span></span><br><span class="line"> clusterRole: shardsvr</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="config-server配置" class="article-heading"><a href="#config-server配置" class="headerlink" title="config server配置"></a>config server配置<a class="article-anchor" href="#config-server配置" aria-hidden="true"></a></h2><p>（单实例节点的基础上）</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#分片配置</span></span></span><br><span class="line">sharding:</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#分片角色</span></span></span><br><span class="line"> clusterRole: configsvr</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Mongos配置" class="article-heading"><a href="#Mongos配置" class="headerlink" title="Mongos配置"></a>Mongos配置<a class="article-anchor" href="#Mongos配置" aria-hidden="true"></a></h2><p>（与单实例不同）：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#日志配置</span></span></span><br><span class="line">systemLog:</span><br><span class="line"> destination: file</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#日志位置</span></span></span><br><span class="line"> path: /data/mongos/mongod.log</span><br><span class="line"> logAppend: true</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#网路配置</span></span></span><br><span class="line">net:</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#端口配置</span></span></span><br><span class="line"> port: 29020</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#分片配置</span></span></span><br><span class="line">sharding:</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#指定config server</span></span></span><br><span class="line"> configDB: 10.96.29.2:29017,10.96.29.2:29018,10.96.29.2:29019</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:28.937Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97systemLog-Options"><span class="toc-text">系统日志systemLog Options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86processManagement-Options"><span class="toc-text">进程管理processManagement Options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E9%80%89%E9%A1%B9Net-Options"><span class="toc-text">网络选项Net Options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8Security-Options"><span class="toc-text">安全Security Options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AEsetParameter-Option"><span class="toc-text">参数设置setParameter Option</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%82%A8Storage-Options"><span class="toc-text">存储Storage Options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OperationProfiling-Options"><span class="toc-text">OperationProfiling Options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6Replication-Options"><span class="toc-text">复制Replication Options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%86%E7%BE%A4%E5%88%86%E7%89%87sharding-Options"><span class="toc-text">集群分片sharding Options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5%E6%97%A5%E5%BF%97AuditLog-Options"><span class="toc-text">检查日志AuditLog Options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE-snmp-Options"><span class="toc-text">简单网络管理协议 snmp Options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mongos-only-Options"><span class="toc-text">Mongos-only Options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows-Service-Options"><span class="toc-text">Windows Service Options</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MongoDB-WT%E5%BB%BA%E8%AE%AE%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="toc-text">MongoDB WT建议配置项</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E5%AE%9E%E4%BE%8B%E9%85%8D%E7%BD%AE"><span class="toc-text">单实例配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E9%9B%86%E9%85%8D%E7%BD%AE"><span class="toc-text">复制集配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE"><span class="toc-text">分片集群配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#config-server%E9%85%8D%E7%BD%AE"><span class="toc-text">config server配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mongos%E9%85%8D%E7%BD%AE"><span class="toc-text">Mongos配置</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

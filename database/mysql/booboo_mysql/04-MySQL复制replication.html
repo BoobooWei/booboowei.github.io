@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>复制 AB replication | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/booboo_mysql/04-MySQL%E5%A4%8D%E5%88%B6replication">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/booboo_mysql/04-MySQL%E5%A4%8D%E5%88%B6replication" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="本讲义参考 《 HA mysql 》 高可用MySQL:第2版 &#x2F;(美)贝尔(Bell,C.),(美)肯德尔(Kindahl,M.),(美)塞尔曼  复制概述数据库为应用程序提供高可用性和可扩展性的重要特性之一就是复制(Replication)。复制在数据库层创建冗余,同时产生多个数据库副本进行读扩展。 复制就是把某个服务器上(称为 主节点服务器 或者简称 主节点 ,即 master)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="复制 AB replication">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/booboo_mysql/04-MySQL%E5%A4%8D%E5%88%B6replication">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="本讲义参考 《 HA mysql 》 高可用MySQL:第2版 &#x2F;(美)贝尔(Bell,C.),(美)肯德尔(Kindahl,M.),(美)塞尔曼  复制概述数据库为应用程序提供高可用性和可扩展性的重要特性之一就是复制(Replication)。复制在数据库层创建冗余,同时产生多个数据库副本进行读扩展。 复制就是把某个服务器上(称为 主节点服务器 或者简称 主节点 ,即 master)">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.832Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:28.936Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">复制 AB replication</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/booboo_mysql/04-MySQL复制replication.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>本讲义参考 《 HA mysql 》 高可用MySQL:第2版 /(美)贝尔(Bell,C.),(美)肯德尔(Kindahl,M.),(美)塞尔曼</p>
+</blockquote>
+<h3 id="复制概述" class="article-heading"><a href="#复制概述" class="headerlink" title="复制概述"></a>复制概述<a class="article-anchor" href="#复制概述" aria-hidden="true"></a></h3><p>数据库为应用程序提供高可用性和可扩展性的重要特性之一就是复制(Replication)。复制在数据库层创建冗余,同时产生多个数据库副本进行读扩展。</p>
+<p>复制就是把某个服务器上(称为 主节点服务器 或者简称 主节点 ,即 master)的所有变化克隆到另一个服务器(称为 从节点服务器 或简称 从节点 ,即 slave)。复制通常用来创建master 的一个可靠副本,不过复制也有其他用途。</p>
+<p>两种最常见的使用复制的例子是 :</p>
+<ul>
+<li>(1)创建一个 master 的备份,以避免 master 崩溃时丢失数据 ;</li>
+<li>(2)创建一个 master 的副本,从而在不干扰其他业务的情况下执行报表和分析工作。</li>
+</ul>
+<p>对小型企业来说,这足以简化很多事情,但复制可以做得更多,比如 :</p>
+<ul>
+<li>支持多个机房</li>
+</ul>
+<p>每个地点都可能要维护服务器,然后将变更复制到其他地方,从而使得信息处处可用。这就需要保护数据,在合法的情况下,保证用于审计目的的业务信息可用。</p>
+<ul>
+<li>即使有服务器停机,也能保证业务的持续运行</li>
+</ul>
+<p>如果原来的服务器失效,由其他服务器处理所有的访问量。</p>
+<ul>
+<li>即使有灾难发生,也能保证业务持续运行</li>
+</ul>
+<p>复制可以将变更发送给不同地理位置的其他数据中心。</p>
+<ul>
+<li>错误保护(oops)</li>
+</ul>
+<p>当 slave 连接 master 时,可从总是比 master 落后一个固定的时间周期(例如 1 小时),这样就会产生一个 延迟的 slave(Delayed Slave)。如果这时 master 上发生错误,可以找到出错的语句,然后在 slave 执行之前删除它。</p>
+<p>目前很多应用程序中使用复制最重要的场景之一就是 横向扩展 (scale out)。现今的应用程序通常是读密集型的,具有高读写比。为了减少 master 上的负载,你可以搭建一个专门响应读请求的 slave。通过一个负载均衡器,可以将读请求定向到合适的 slave,而写请求则交给 master 处理。</p>
+<p>在横向扩展的场景下使用复制时,理解 MySQL 复制的 异步性 (asynchronous)很重要,即事务首先在 master 上提交,然后复制到 slave 并在 slave 上执行。这意味着 master 和slave 可能并不一致,而且如果复制持续运行,slave 将会落后于 master。</p>
+<p>使用异步复制的好处在于它比同步复制更快、更具可扩展性,但在那些实时数据很重要的情况下,必须处理好不同步的问题以保证信息的时效性。</p>
+<p>然而,读扩展并不足以适用于所有应用程序。随着需求增加,数据库更大,写负载更高,需要扩展的就不只是读操作了。管理大型数据库,提升大型数据库系统的性能,可以通过分片 (sharding)技术来实现。通过分片,可以将数据库划分为若干可管理的数据分片,将数据库分发到多个服务器上,从而增加数据库的规模,并有效地扩展写操作。</p>
+<p>复制的另一个重要应用是通过添加冗余来保证高可用性。最常见的技术是使用 双主配置(dual-master),即通过复制保持一对 master 总是可用,其中每个 master 都是对方的镜像。如果其中一个 master 失效,另一个会立即接手。</p>
+<p>除了双主配置,还有其他与复制无关的高可用性技术,如使用共享存储或复制磁盘。尽管它们不是 MySQL 特有的,但这些技术对于保证高可用性来说也是很重要的工具</p>
+<h3 id="复制解决的问题" class="article-heading"><a href="#复制解决的问题" class="headerlink" title="复制解决的问题"></a>复制解决的问题<a class="article-anchor" href="#复制解决的问题" aria-hidden="true"></a></h3><blockquote>
+<p>复制用例:</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>通过热备份达到高可用性</p>
+</blockquote>
+</blockquote>
+<p>如果服务器宕机,一切都将停止 :不能执行(可能很关键的)事务, 无法得到用户信息,也不能检索其他重要数据。要不惜(几乎)一切代价避免这种情况发生,因为它会严重破坏业务。最简单的方法就是配置一个额外的服务器专门作为热备份(hot standby),在主服务器宕机的时候随时接管业务。</p>
+<p>如果数据库只做了备份，现在数据库坏了，我们要恢复数据库，可能要花几个小时；但是现在我们希望这台数据库坏了，另外一台能够立刻顶上使用，该怎么做呢？</p>
+<p>那就需要我们有一个冗余的环境，备份是备份,冗余是冗余。概念不一样,备份是将数据以隔离的方式保存,备份的缺点,他不是瞬间还原,备份在还原过程中是有耗时的,他不是瞬间还原,例如,我们有几百个 G 的文件要还原回去,慢慢拷吧,几个小时。冗余不一样,主服务器/从服务器,主服务器坏掉,从服务器就顶上工作,所以冗余在可用性上来讲,恢复的速度上来讲,比备份来的快,但是冗余有他的缺点,备份有他的优点,比如我们作主从同步,主服务器和从服务器数据都一样的,如果主服务器上有人错删了一个表,我们把这种操作称为误操作,那么从服务器也会发生误操作,所以呢,冗余不能解决人为的误操作,而备份可以解决。冗余他能解决硬件故障,但是误操作无法解决,备份不是瞬间还原,但是既可以解决硬件故障又能解决误操作,他们各有优劣点,而真实的线上生产环境是两种方法一起使用,既有冗余环境,又有周期性备份,管理员要周期性地进行备份,同时有多台服务器作冗余。</p>
+<blockquote>
+<blockquote>
+<p>产生报表</p>
+</blockquote>
+</blockquote>
+<p>直接用服务器上的数据创建报表将大大降低服务器的性能,在某些情况下尤其显著。如果产生报表需要大量的后台作业,最好创建一个额外的服务器来运行这些作业。停止报表数据库上的复制,然后在不影响主要业务服务器的情况下运行大量查询,从而得到数据库在某一特定时间的快照。例如,如果在每天最后一个事务处理完毕后停止复制,可以提取日报表而其他业务仍正常运转。</p>
+<blockquote>
+<blockquote>
+<p>调试和审计</p>
+</blockquote>
+</blockquote>
+<p>还可以审查服务器上的查询。例如,查看某些查询是否有性能问题,以及服务器是否由于某个糟糕的查询而不同步。</p>
+<h3 id="复制的原理" class="article-heading"><a href="#复制的原理" class="headerlink" title="复制的原理"></a>复制的原理<a class="article-anchor" href="#复制的原理" aria-hidden="true"></a></h3><p>在详细介绍如何设置复制之前，让我门先看看MySQL实际上时如何复制数据的。总的来说，复制有三个步骤：</p>
+<ol>
+<li>在主库上把数据更改记录到二进制日志（Binary Log）中（这写记录被称为二进制日志事件）。</li>
+<li>备库将主库的日志复制到自己的中继日志（Relay Log）中。</li>
+<li>备库读取中继日志中的事件，将其重放/重演到备库数据之上。</li>
+</ol>
+<p>以上只是概述，实际商每一步都很复杂，下图更详细地描述了复制的细节。</p>
+<p><img src="pic/23-replication-how.png" alt="replication-how"></p>
+<h4 id="项目实战1：mariadb-server-5-5-单主从架构" class="article-heading"><a href="#项目实战1：mariadb-server-5-5-单主从架构" class="headerlink" title="项目实战1：mariadb server 5.5 单主从架构"></a>项目实战1：mariadb server 5.5 单主从架构<a class="article-anchor" href="#项目实战1：mariadb-server-5-5-单主从架构" aria-hidden="true"></a></h4><p><img src="pic/62.jpg" alt="62"></p>
+<p><em>单主从步骤</em></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"># 主服务器</span><br><span class="line">1）修改配置文件	log-bin server-id=1（重启服务）</span><br><span class="line">2）授权从机	grant replication slave to slave@172.25.0.12 uplooking</span><br><span class="line">3）初始化数据一致	mysqldump---》传输给从机器</span><br><span class="line"></span><br><span class="line"># 从服务</span><br><span class="line">1）install</span><br><span class="line">2）修改配置文件	server-id=2</span><br><span class="line">3）初始化数据一致	导入全备数据</span><br><span class="line">4）&gt; change master master_host='172.25.0.11'</span><br><span class="line">		master_user='slave'</span><br><span class="line">		master_password='uplooking'</span><br><span class="line">		master_log_file=''</span><br><span class="line">		master_log_pos=''</span><br><span class="line">5)&gt; start slave;</span><br><span class="line">6)&gt; show slave status\G;</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 主服务器</span></span></span><br><span class="line">[root@mastera0 mysql]# vim /etc/my.cnf</span><br><span class="line">[root@mastera0 mysql]# grep -v '^#' /etc/my.cnf|grep -v '^$'</span><br><span class="line">[mysqld]</span><br><span class="line">datadir=/var/lib/mysql</span><br><span class="line">socket=/var/lib/mysql/mysql.sock</span><br><span class="line">symbolic-links=0</span><br><span class="line">log-bin=/var/lib/mysql-log/mastera</span><br><span class="line">server-id=1</span><br><span class="line">[mysqld_safe]</span><br><span class="line">log-error=/var/log/mariadb/mariadb.log</span><br><span class="line">pid-file=/var/run/mariadb/mariadb.pid</span><br><span class="line">!includedir /etc/my.cnf.d</span><br><span class="line"></span><br><span class="line">[root@mastera0 mysql]# systemctl restart mariadb</span><br><span class="line">[root@mastera0 mysql]# mysql -uroot -puplooking</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 2</span><br><span class="line">Server version: 5.5.44-MariaDB-log MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; grant replication slave on *.* to slave@'172.25.0.12' identified by 'uplooking';</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; \q</span><br><span class="line">Bye</span><br><span class="line">[root@mastera0 mysql]# mysqldump -uroot -puplooking -A --single-transaction --master-data=2 --flush-logs &gt; /tmp/mysql.91.sql</span><br><span class="line">[root@mastera0 mysql]# scp /tmp/mysql.91.sql root@172.25.0.12:/tmp</span><br><span class="line">The authenticity of host \'172.25.0.12 (172.25.0.12)\' can\'t be established.</span><br><span class="line">ECDSA key fingerprint is 91:2b:bd:df:0e:17:da:a0:f6:01:ff:5b:09:50:e8:ad.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br><span class="line">Warning: Permanently added '172.25.0.12' (ECDSA) to the list of known hosts.</span><br><span class="line">root@172.25.0.12\'s password:</span><br><span class="line">mysql.91.sql                                                      100%  505KB 504.7KB/s   00:00</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 从服务器</span></span></span><br><span class="line">[root@masterb0 ~]# yum install -y mariadb-server</span><br><span class="line">[root@masterb0 ~]# vi /etc/my.cnf</span><br><span class="line">[root@masterb0 ~]# systemctl start mariadb</span><br><span class="line">[root@masterb0 ~]# mysql &lt; /tmp/mysql.91.sql</span><br><span class="line">[root@masterb0 ~]# mysql</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 3</span><br><span class="line">Server version: 5.5.44-MariaDB MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; \q</span><br><span class="line">Bye</span><br><span class="line">[root@masterb0 ~]# mysql</span><br><span class="line">ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)</span><br><span class="line">[root@masterb0 ~]# mysql -uroot -puplooking</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 5</span><br><span class="line">Server version: 5.5.44-MariaDB MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; change master to master_host='172.25.0.11',master_user='slave',master_password='uplooking',master_log_file='mastera.000028',MASTER_LOG_POS=245;</span><br><span class="line">Query OK, 0 rows affected (0.21 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; start slave;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; show slave status\G;</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 172.25.0.11</span><br><span class="line">                  Master_User: slave</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: mastera.000028</span><br><span class="line">          Read_Master_Log_Pos: 245</span><br><span class="line">               Relay_Log_File: mariadb-relay-bin.000002</span><br><span class="line">                Relay_Log_Pos: 527</span><br><span class="line">        Relay_Master_Log_File: mastera.000028</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB:</span><br><span class="line">          Replicate_Ignore_DB:</span><br><span class="line">           Replicate_Do_Table:</span><br><span class="line">       Replicate_Ignore_Table:</span><br><span class="line">      Replicate_Wild_Do_Table:</span><br><span class="line">  Replicate_Wild_Ignore_Table:</span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error:</span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 245</span><br><span class="line">              Relay_Log_Space: 823</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File:</span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File:</span><br><span class="line">           Master_SSL_CA_Path:</span><br><span class="line">              Master_SSL_Cert:</span><br><span class="line">            Master_SSL_Cipher:</span><br><span class="line">               Master_SSL_Key:</span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error:</span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error:</span><br><span class="line">  Replicate_Ignore_Server_Ids:</span><br><span class="line">             Master_Server_Id: 1</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">ERROR: No query specified</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt;</span><br><span class="line">MariaDB [(none)]&gt; select * from db1.t1;</span><br><span class="line">+-----+</span><br><span class="line">| id  |</span><br><span class="line">+-----+</span><br><span class="line">|   3 |</span><br><span class="line">|   4 |</span><br><span class="line">|   5 |</span><br><span class="line">|   6 |</span><br><span class="line">|   7 |</span><br><span class="line">|   8 |</span><br><span class="line">|   9 |</span><br><span class="line">|  10 |</span><br><span class="line">|  11 |</span><br><span class="line">|  12 |</span><br><span class="line">|  13 |</span><br><span class="line">|  14 |</span><br><span class="line">| 100 |</span><br><span class="line">| 101 |</span><br><span class="line">| 102 |</span><br><span class="line">| 103 |</span><br><span class="line">| 777 |</span><br><span class="line">+-----+</span><br><span class="line">17 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; \q</span><br><span class="line">Bye</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/63.jpg"></p>
+<h4 id="项目实战2：mysql-server-5-7-基于GTID的单主从架构" class="article-heading"><a href="#项目实战2：mysql-server-5-7-基于GTID的单主从架构" class="headerlink" title="项目实战2：mysql server 5.7 基于GTID的单主从架构"></a>项目实战2：mysql server 5.7 基于GTID的单主从架构<a class="article-anchor" href="#项目实战2：mysql-server-5-7-基于GTID的单主从架构" aria-hidden="true"></a></h4><p><img src="pic/64.jpg"></p>
+<table>
+<thead>
+<tr>
+<th align="left">server</th>
+<th align="left">ip</th>
+<th align="left">software</th>
+<th align="left">rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">masterb</td>
+<td align="left">172.25.0.12</td>
+<td align="left">mysql-server 5.7</td>
+<td align="left">master</td>
+</tr>
+<tr>
+<td align="left">slaveb</td>
+<td align="left">172.25.0.14</td>
+<td align="left">mysql-server 5.7</td>
+<td align="left">slave</td>
+</tr>
+</tbody></table>
+<p>配置文件如下：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">Master:</span><br><span class="line">[mysqld]</span><br><span class="line">server-id=1</span><br><span class="line">log-bin=/var/lib/mysql-log/mastera</span><br><span class="line">gitd_mode=on</span><br><span class="line">enforce_gtid_consistency=1</span><br><span class="line"></span><br><span class="line">Slave:</span><br><span class="line">[mysqld]</span><br><span class="line">server-id=2</span><br><span class="line">gtid_mode=on</span><br><span class="line">enforce_gtid_consistency=1</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其他步骤与项目实践类似，再次不再赘述</p>
+<p><img src="pic/65.jpg"></p>
+<h3 id="复制中的延迟问题-重演延迟" class="article-heading"><a href="#复制中的延迟问题-重演延迟" class="headerlink" title="复制中的延迟问题_重演延迟"></a>复制中的延迟问题_重演延迟<a class="article-anchor" href="#复制中的延迟问题-重演延迟" aria-hidden="true"></a></h3><ul>
+<li>mysql5.5之前没有解决方案——单线程</li>
+<li>mysql5.6（mariadb10）开始——一库一线程</li>
+<li>mysql5.7（mariadb10.1）真正解决了——一组一线程</li>
+</ul>
+<p><img src="pic/32.png"></p>
+<h4 id="项目实战3：mysql-server-5-7-基于GTID的并行MTS单主从架构" class="article-heading"><a href="#项目实战3：mysql-server-5-7-基于GTID的并行MTS单主从架构" class="headerlink" title="项目实战3：mysql server 5.7 基于GTID的并行MTS单主从架构"></a>项目实战3：mysql server 5.7 基于GTID的并行MTS单主从架构<a class="article-anchor" href="#项目实战3：mysql-server-5-7-基于GTID的并行MTS单主从架构" aria-hidden="true"></a></h4><p>MySQL 5.7才可称为真正的并行复制，这其中最为主要的原因就是slave服务器的回放与主机是一致的即master服务器上是怎么并行执行的slave上就怎样进行并行回放。</p>
+<p>MTS: Prepared transactions slave parallel applier</p>
+<p>该并行复制的思想最早是由MariaDB的Kristain提出，并已在MariaDB 10中出现，相信很多选择MariaDB的小伙伴最为看重的功能之一就是并行复制。</p>
+<p>MySQL 5.7并行复制的思想简单易懂，一言以蔽之：一个组提交的事务都是可以并行回放，因为这些事务都已进入到事务的prepare阶段，则说明事务之间没有任何冲突（否则就不可能提交）。</p>
+<blockquote>
+<h4 id="设置重演模式slave-parallel-type" class="article-heading"><a href="#设置重演模式slave-parallel-type" class="headerlink" title="设置重演模式slave-parallel-type"></a>设置重演模式<code>slave-parallel-type</code><a class="article-anchor" href="#设置重演模式slave-parallel-type" aria-hidden="true"></a></h4></blockquote>
+<p>为了兼容MySQL 5.6基于库的并行复制，5.7引入了新的变量<code>slave-parallel-type</code>，其可以配置的值有：</p>
+<ul>
+<li>DATABASE：默认值，基于库的并行复制方式</li>
+<li>LOGICAL_CLOCK：基于组提交的并行复制方式</li>
+</ul>
+<p>支持并行复制的GTID</p>
+<p>last_committed</p>
+<p>sequence_number</p>
+<p>并行复制配置与调优<br>master_info_repository</p>
+<blockquote>
+<h4 id="设置重演线程数slave-parallel-workers" class="article-heading"><a href="#设置重演线程数slave-parallel-workers" class="headerlink" title="设置重演线程数slave_parallel_workers"></a>设置重演线程数<code>slave_parallel_workers</code><a class="article-anchor" href="#设置重演线程数slave-parallel-workers" aria-hidden="true"></a></h4></blockquote>
+<ul>
+<li>slave_parallel_workers设置为0，则MySQL 5.7退化为原单线程复制</li>
+<li>slave_parallel_workers设置为1，则SQL线程功能转化为coordinator线程，但是只有1个worker线程进行回放，也是单线程复制。然而，这两种性能却又有一些的区别，因为多了一次coordinator<br>线程的转发，因此slave_parallel_workers=1的性能反而比0还要差</li>
+</ul>
+<blockquote>
+<h4 id="Enhanced-Multi-Threaded-Slave配置总结" class="article-heading"><a href="#Enhanced-Multi-Threaded-Slave配置总结" class="headerlink" title="Enhanced Multi-Threaded Slave配置总结"></a>Enhanced Multi-Threaded Slave配置总结<a class="article-anchor" href="#Enhanced-Multi-Threaded-Slave配置总结" aria-hidden="true"></a></h4></blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">slave</span></span><br><span class="line">slave-parallel-type=LOGICAL_CLOCK</span><br><span class="line">slave-parallel-workers=16</span><br><span class="line">master_info_repository=TABLE</span><br><span class="line">relay_log_info_repository=TABLE</span><br><span class="line">relay_log_recovery=ON</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/66.jpg"></p>
+<blockquote>
+<h4 id="软件安装" class="article-heading"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装<a class="article-anchor" href="#软件安装" aria-hidden="true"></a></h4></blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">host</th>
+<th align="left">ip</th>
+<th align="left">software</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">masterb</td>
+<td align="left">172.25.0.12</td>
+<td align="left">mysql-community-server-5.7</td>
+</tr>
+<tr>
+<td align="left">slaveb</td>
+<td align="left">172.25.0.14</td>
+<td align="left">mysql-community-server-5.7</td>
+</tr>
+</tbody></table>
+<blockquote>
+<h4 id="配置文件" class="article-heading"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件<a class="article-anchor" href="#配置文件" aria-hidden="true"></a></h4></blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># master</span></span></span><br><span class="line">	[mysqld]</span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">AB replication</span></span><br><span class="line">	server-id=1</span><br><span class="line">	log-bin=/var/lib/mysql-log/masterb</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">GTID</span></span><br><span class="line">	gtid_mode=on</span><br><span class="line">	enforce_gtid_consistency=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># slave</span></span></span><br><span class="line">	[mysqld]</span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">AB replication</span></span><br><span class="line">	server-id=2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">open gtid mode</span></span><br><span class="line">	gtid_mode=on</span><br><span class="line">	enforce_gtid_consistency=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">MTS 一组一线程</span></span><br><span class="line">	slave-parallel-type=logical_clock</span><br><span class="line">	slave-parallel-workers=16</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<h4 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h4><p>MySQL 5.7推出的Enhanced Multi-Threaded Slave解决了困扰MySQL长达数十年的复制延迟问题</p>
+</blockquote>
+<h4 id="项目实战4：mysql-server-5-7-基于GTID的并行MTS单主从架构crash-safe参数调优" class="article-heading"><a href="#项目实战4：mysql-server-5-7-基于GTID的并行MTS单主从架构crash-safe参数调优" class="headerlink" title="项目实战4：mysql server 5.7 基于GTID的并行MTS单主从架构crash safe参数调优"></a>项目实战4：mysql server 5.7 基于GTID的并行MTS单主从架构crash safe参数调优<a class="article-anchor" href="#项目实战4：mysql-server-5-7-基于GTID的并行MTS单主从架构crash-safe参数调优" aria-hidden="true"></a></h4><p>Master<br>sync_binlog=1 #强制刷新binlog到磁盘<br>innodb_flush_log_at_trx_commit=1 #强制刷新redolog到磁盘</p>
+<p>Slave<br>relay_log_recovery=1 #如果slave的中继日志出问题，能够再次自动获取master的二进制日志</p>
+<blockquote>
+<h4 id="配置文件-1" class="article-heading"><a href="#配置文件-1" class="headerlink" title="配置文件"></a>配置文件<a class="article-anchor" href="#配置文件-1" aria-hidden="true"></a></h4></blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># master</span></span></span><br><span class="line">	[mysqld]</span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">AB replication</span></span><br><span class="line">	server-id=1</span><br><span class="line">	log-bin=/var/lib/mysql-log/masterb</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">GTID</span></span><br><span class="line">	gtid_mode=on</span><br><span class="line">	enforce_gtid_consistency=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">crash safe</span></span><br><span class="line">	sync_binlog=1</span><br><span class="line">	innodb_flush_log_at_trx_commit=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># slave</span></span></span><br><span class="line">	[mysqld]</span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">AB replication</span></span><br><span class="line">	server-id=2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">open gtid mode</span></span><br><span class="line">	gtid_mode=on</span><br><span class="line">	enforce_gtid_consistency=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">slave crash</span></span><br><span class="line">	relay_log_recovery=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">MTS 一组一线程</span></span><br><span class="line">	slave-parallel-type=logical_clock</span><br><span class="line">	slave-parallel-workers=16</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<h2 id="总结-1" class="article-heading"><a href="#总结-1" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结-1" aria-hidden="true"></a></h2></blockquote>
+<p>crash safe 打开后能够更好的保证在数据库出现断电等特殊情况下，数据尽可能地少丢失！</p>
+<h3 id="复制中的延迟问题-读写分离" class="article-heading"><a href="#复制中的延迟问题-读写分离" class="headerlink" title="复制中的延迟问题_读写分离"></a>复制中的延迟问题_读写分离<a class="article-anchor" href="#复制中的延迟问题-读写分离" aria-hidden="true"></a></h3><p><img src="pic/26-rep4.png" alt="rep1"></p>
+<p>主服务器写入，同步到从服务器，在从服务器中读取数据，一般一台主服务器，多台从服务器(5.7版本以后支持多master，之前都是一个master )</p>
+<p><img src="pic/30.png"></p>
+<p><img src="pic/24-rep1.png" alt="rep2"></p>
+<p>从MySQL5.5开始，MySQL以插件的形式支持半同步复制。</p>
+<p>异步复制（Asynchronous replication）</p>
+<p>MySQL默认的复制即是异步的，主库在执行完客户端提交的事务后会立即将结果返给给客户端，并不关心从库是否已经接收并处理，这样就会有一个问题，主如果crash掉了，此时主上已经提交的事务可能并没有传到从上，如果此时，强行将从提升为主，可能导致新主上的数据不完整。</p>
+<p>全同步复制（Fully synchronous replication）</p>
+<p>指当主库执行完一个事务，所有的从库都执行了该事务才返回给客户端。因为需要等待所有从库执行完该事务才能返回，所以全同步复制的性能必然会收到严重的影响。</p>
+<p>半同步复制（Semisynchronous replication）</p>
+<p>介于异步复制和全同步复制之间，主库在执行完客户端提交的事务后不是立刻返回给客户端，而是等待至少一个从库接收到并写到relay log中才返回给客户端。相对于异步复制，半同步复制提高了数据的安全性，同时它也造成了一定程度的延迟，这个延迟最少是一个TCP/IP往返的时间。所以，半同步复制最好在低延时的网络中使用。</p>
+<h4 id="半同步复制的潜在问题" class="article-heading"><a href="#半同步复制的潜在问题" class="headerlink" title="半同步复制的潜在问题"></a>半同步复制的潜在问题<a class="article-anchor" href="#半同步复制的潜在问题" aria-hidden="true"></a></h4><p>客户端事务在存储引擎层提交后，在得到从库确认的过程中，主库宕机了，此时，可能的情况有两种</p>
+<p>1.事务还没发送到从库上</p>
+<p>此时，客户端会收到事务提交失败的信息，客户端会重新提交该事务到新的主上，当宕机的主库重新启动后，以从库的身份重新加入到该主从结构中，会发现，该事务在从库中被提交了两次，一次是之前作为主的时候，一次是被新主同步过来的。</p>
+<p>2.事务已经发送到从库上</p>
+<p>此时，从库已经收到并应用了该事务，但是客户端仍然会收到事务提交失败的信息，重新提交该事务到新的主上。</p>
+<h4 id="无数据丢失的半同步复制" class="article-heading"><a href="#无数据丢失的半同步复制" class="headerlink" title="无数据丢失的半同步复制"></a>无数据丢失的半同步复制<a class="article-anchor" href="#无数据丢失的半同步复制" aria-hidden="true"></a></h4><p>针对上述潜在问题，MySQL 5.7引入了一种新的半同步方案：Loss-Less半同步复制。</p>
+<p>当然，之前的半同步方案同样支持，MySQL 5.7.2引入了一个新的参数进行控制-<code>rpl_semi_sync_master_wait_point</code></p>
+<p>rpl_semi_sync_master_wait_point有两种取值</p>
+<p><code>AFTER_SYNC</code> 这个即新的半同步方案，Waiting Slave dump在Storage Commit之前。</p>
+<p><code>AFTER_COMMIT</code> 老的半同步方案</p>
+<h4 id="项目实战5：mysql-server-5-7-基于GTID的并行MTS单主从半同步架构" class="article-heading"><a href="#项目实战5：mysql-server-5-7-基于GTID的并行MTS单主从半同步架构" class="headerlink" title="项目实战5：mysql server 5.7 基于GTID的并行MTS单主从半同步架构"></a>项目实战5：mysql server 5.7 基于GTID的并行MTS单主从半同步架构<a class="article-anchor" href="#项目实战5：mysql-server-5-7-基于GTID的并行MTS单主从半同步架构" aria-hidden="true"></a></h4><p>要想使用半同步复制，必须满足以下几个条件：</p>
+<ol>
+<li><p>MySQL 5.5及以上版本</p>
+</li>
+<li><p>变量have_dynamic_loading为YES</p>
+</li>
+<li><p>异步复制已经存在</p>
+</li>
+</ol>
+<p><img src="pic/31.png" alt="31.png"></p>
+<blockquote>
+<h4 id="安装插件" class="article-heading"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件<a class="article-anchor" href="#安装插件" aria-hidden="true"></a></h4></blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">install plugin rpl_semi_sync_master soname <span class="string">'semisync_master.so'</span>;</span></span><br><span class="line">Query OK, 0 rows affected (0.10 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">install plugin rpl_semi_sync_slave soname <span class="string">'semisync_slave.so'</span>;</span></span><br><span class="line">Query OK, 0 rows affected (0.05 sec)</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<h4 id="配置文件-2" class="article-heading"><a href="#配置文件-2" class="headerlink" title="配置文件"></a>配置文件<a class="article-anchor" href="#配置文件-2" aria-hidden="true"></a></h4></blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># master</span></span></span><br><span class="line">	[mysqld]</span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">AB replication</span></span><br><span class="line">	server-id=1</span><br><span class="line">	log-bin=/var/lib/mysql-log/masterb</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">GTID</span></span><br><span class="line">	gtid_mode=on</span><br><span class="line">	enforce_gtid_consistency=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">crash safe</span></span><br><span class="line">	sync_binlog=1</span><br><span class="line">	innodb_flush_log_at_trx_commit=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">半同步模式</span></span><br><span class="line">	rpl_semi_sync_master_enabled=1</span><br><span class="line">	rpl_semi_sync_master_timeout=1000</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># slave</span></span></span><br><span class="line">	[mysqld]</span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">AB replication</span></span><br><span class="line">	server-id=2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">open gtid mode</span></span><br><span class="line">	gtid_mode=on</span><br><span class="line">	enforce_gtid_consistency=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">slave crash</span></span><br><span class="line">	relay_log_recovery=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">MTS 一组一线程</span></span><br><span class="line">	slave-parallel-type=logical_clock</span><br><span class="line">	slave-parallel-workers=16</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">半同步模式</span></span><br><span class="line">	rpl_semi_sync_slave_enabled=1</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<h4 id="测试半同步复制超时后自动切换回异步模式" class="article-heading"><a href="#测试半同步复制超时后自动切换回异步模式" class="headerlink" title="测试半同步复制超时后自动切换回异步模式"></a>测试半同步复制超时后自动切换回异步模式<a class="article-anchor" href="#测试半同步复制超时后自动切换回异步模式" aria-hidden="true"></a></h4></blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">create database db1;</span></span><br><span class="line">Query OK, 1 row affected (0.06 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">create table db1.t1 (<span class="built_in">id</span> int);</span></span><br><span class="line">Query OK, 0 rows affected (0.26 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">insert into db1.t1 values (1);</span></span><br><span class="line">Query OK, 1 row affected (0.23 sec)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将slave关闭后再执行以下操作</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">insert into db1.t1 values (2);</span></span><br><span class="line">Query OK, 1 row affected (1.19 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">insert into db1.t1 values (3);</span></span><br><span class="line">Query OK, 1 row affected (0.36 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">insert into db1.t1 values (4);</span></span><br><span class="line">Query OK, 1 row affected (0.08 sec)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果从机想回到半异步模式，需要重启slave，否则默认还是异步复制。</p>
+<blockquote>
+<h4 id="监控主从是否运行在半同步复制模式下" class="article-heading"><a href="#监控主从是否运行在半同步复制模式下" class="headerlink" title="监控主从是否运行在半同步复制模式下"></a>监控主从是否运行在半同步复制模式下<a class="article-anchor" href="#监控主从是否运行在半同步复制模式下" aria-hidden="true"></a></h4></blockquote>
+<ul>
+<li><code>show status like 'rpl_semi_sync_master_status';</code></li>
+<li><code>show status like 'rpl_semi_sync_slave_status';</code></li>
+</ul>
+<blockquote>
+<h4 id="环境变量" class="article-heading"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量<a class="article-anchor" href="#环境变量" aria-hidden="true"></a></h4></blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">show variables like <span class="string">'%Rpl%'</span>;</span></span><br><span class="line">+-------------------------------------------+------------+</span><br><span class="line">| Variable_name                             | Value      |</span><br><span class="line">+-------------------------------------------+------------+</span><br><span class="line">| rpl_semi_sync_master_enabled              | ON         |</span><br><span class="line">| rpl_semi_sync_master_timeout              | 10000      |</span><br><span class="line">| rpl_semi_sync_master_trace_level          | 32         |</span><br><span class="line">| rpl_semi_sync_master_wait_for_slave_count | 1          |</span><br><span class="line">| rpl_semi_sync_master_wait_no_slave        | ON         |</span><br><span class="line">| rpl_semi_sync_master_wait_point           | AFTER_SYNC |</span><br><span class="line">| rpl_stop_slave_timeout                    | 31536000   |</span><br><span class="line">+-------------------------------------------+------------+</span><br><span class="line">7 rows in set (0.30 sec)</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>rpl_semi_sync_master_wait_for_slave_count</code></p>
+<p>MySQL 5.7.3引入的，该变量设置主需要等待多少个slave应答，才能返回给客户端，默认为1。</p>
+<p><code>rpl_semi_sync_master_wait_no_slave</code></p>
+<p>ON</p>
+<p>默认值，当状态变量Rpl_semi_sync_master_clients中的值小于rpl_semi_sync_master_wait_for_slave_count时，Rpl_semi_sync_master_status依旧显示为ON。</p>
+<p>OFF</p>
+<p>当状态变量Rpl_semi_sync_master_clients中的值于rpl_semi_sync_master_wait_for_slave_count时，Rpl_semi_sync_master_status立即显示为OFF，即异步复制。</p>
+<p>说得直白一点，如果我的架构是1主2从，2个从都采用了半同步复制，且设置的是rpl_semi_sync_master_wait_for_slave_count=2，如果其中一个挂掉了，对于rpl_semi_sync_master_wait_no_slave设置为ON的情况，此时显示的仍然是半同步复制，如果rpl_semi_sync_master_wait_no_slave设置为OFF，则会立刻变成异步复制。</p>
+<blockquote>
+<h4 id="状态变量" class="article-heading"><a href="#状态变量" class="headerlink" title="状态变量"></a>状态变量<a class="article-anchor" href="#状态变量" aria-hidden="true"></a></h4></blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">show status like <span class="string">'%Rpl_semi%'</span>;</span></span><br><span class="line">+--------------------------------------------+-------+</span><br><span class="line">| Variable_name                              | Value |</span><br><span class="line">+--------------------------------------------+-------+</span><br><span class="line">| Rpl_semi_sync_master_clients               | 1     |</span><br><span class="line">| Rpl_semi_sync_master_net_avg_wait_time     | 0     |</span><br><span class="line">| Rpl_semi_sync_master_net_wait_time         | 0     |</span><br><span class="line">| Rpl_semi_sync_master_net_waits             | 6     |</span><br><span class="line">| Rpl_semi_sync_master_no_times              | 1     |</span><br><span class="line">| Rpl_semi_sync_master_no_tx                 | 1     |</span><br><span class="line">| Rpl_semi_sync_master_status                | ON    |</span><br><span class="line">| Rpl_semi_sync_master_timefunc_failures     | 0     |</span><br><span class="line">| Rpl_semi_sync_master_tx_avg_wait_time      | 1120  |</span><br><span class="line">| Rpl_semi_sync_master_tx_wait_time          | 4483  |</span><br><span class="line">| Rpl_semi_sync_master_tx_waits              | 4     |</span><br><span class="line">| Rpl_semi_sync_master_wait_pos_backtraverse | 0     |</span><br><span class="line">| Rpl_semi_sync_master_wait_sessions         | 0     |</span><br><span class="line">| Rpl_semi_sync_master_yes_tx                | 4     |</span><br><span class="line">+--------------------------------------------+-------+</span><br><span class="line">14 rows in set (0.00 sec)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>上述状态变量中，比较重要的有以下几个</p>
+<p><code>Rpl_semi_sync_master_clients</code></p>
+<p>当前半同步复制从的个数，如果是一主多从的架构，并不包含异步复制从的个数。</p>
+<p><code>Rpl_semi_sync_master_no_tx</code></p>
+<p>The number of commits that were not acknowledged successfully by a slave.</p>
+<p>具体到上面的测试中，指的是insert into test.test values(2)这个事务。</p>
+<p><code>Rpl_semi_sync_master_yes_tx</code></p>
+<p>The number of commits that were acknowledged successfully by a slave.</p>
+<blockquote>
+<h3 id="总结-2" class="article-heading"><a href="#总结-2" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结-2" aria-hidden="true"></a></h3></blockquote>
+<ol>
+<li><p>在一主多从的架构中，如果要开启半同步复制，并不要求所有的从都是半同步复制。</p>
+</li>
+<li><p>MySQL 5.7极大的提升了半同步复制的性能。</p>
+<p>5.6版本的半同步复制，dump thread 承担了两份不同且又十分频繁的任务：传送binlog 给slave ，还需要等待slave反馈信息，而且这两个任务是串行的，dump thread 必须等待 slave 返回之后才会传送下一个 events 事务。dump thread 已然成为整个半同步提高性能的瓶颈。在高并发业务场景下，这样的机制会影响数据库整体的TPS 。</p>
+<p>5.7版本的半同步复制中，独立出一个 ack collector thread ，专门用于接收slave 的反馈信息。这样master 上有两个线程独立工作，可以同时发送binlog 到slave ，和接收slave的反馈。</p>
+</li>
+</ol>
+<h3 id="复制中的单点故障问题" class="article-heading"><a href="#复制中的单点故障问题" class="headerlink" title="复制中的单点故障问题"></a>复制中的单点故障问题<a class="article-anchor" href="#复制中的单点故障问题" aria-hidden="true"></a></h3><h4 id="复制拓扑-配置M-S-S" class="article-heading"><a href="#复制拓扑-配置M-S-S" class="headerlink" title="复制拓扑_配置M-S-S"></a>复制拓扑_配置M-S-S<a class="article-anchor" href="#复制拓扑-配置M-S-S" aria-hidden="true"></a></h4><p>有很多复杂的拓扑结构，但即使是最简单的也可能会非常灵活。一种拓扑可以有多种用途。</p>
+<p>接下来我们讨论一些比较普遍的拓扑结构以及它们的优缺点。记住下面的基本原则：</p>
+<ul>
+<li>每个备库必须有一个唯一的服务器ID</li>
+<li>一个主库可以有多个备库</li>
+<li>mysql5.7开始一个备库可以有多个主库(multisource replication)</li>
+<li>如果打开了log_save_updates选项，一个备库可以把其主库上的数据变化传播到其他备库</li>
+</ul>
+<p>一主库多备库的结构，备库之间没有交互，它们仅仅是连接到同一个主库上。</p>
+<p><img src="pic/26-rep5.png" alt="rep5"></p>
+<p>尽管这是非常简单的拓扑结构，但它非常灵活，能满足多种需求。</p>
+<p><em>用途：</em></p>
+<ul>
+<li>为不同的角色使用不同的备库（例如添加不同的索引或使用不同的存储引擎）。</li>
+<li>把一台备库当作待用的主库，除了复制没有其他数据传输。</li>
+<li>将一台备库放到远程数据中心，用作灾难恢复。</li>
+<li>延迟一个或多个备库，以备灾难恢复。</li>
+<li>使用其中一个备库，作为备份、培训或者测试使用服务器。</li>
+</ul>
+<p><em>优点</em> ：避免了很多其他拓扑结构的复杂性。</p>
+<h4 id="复制拓扑-配置M-M" class="article-heading"><a href="#复制拓扑-配置M-M" class="headerlink" title="复制拓扑_配置M-M"></a>复制拓扑_配置M-M<a class="article-anchor" href="#复制拓扑-配置M-M" aria-hidden="true"></a></h4><p><em>主主复制（也叫做双主复制或双向复制）</em> 包含两台服务器，每一个都被配置成对方的主库和备库，还句话说，它们是一对主库。</p>
+<p><img src="pic/26-rep6.png" alt="rep6"></p>
+<p><em>应用场景</em> 通常用于特殊的目的。一个可能的应用场景是两个位于不同地理位置的办公室，并且都需要一份可写的数据拷贝。</p>
+<p><em>最大的问题</em> 两个可写的互主服务器导致的问题非常多。这通常发生在两台服务器同时修改一行记录，或同时在量太服务器上向一个包含<code>auto_increment</code>列的表里插入数据。</p>
+<p>总的来说，允许向两台服务器上写如带来的麻烦远远大于其带来的好处。</p>
+<p><em>双主步骤</em></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">mastera masterb</span><br><span class="line">主	      从     已完成</span><br><span class="line">从	      主</span><br><span class="line">	# 主服务器 masterb</span><br><span class="line">	1）修改配置文件	log-bin=/var/lib/mysql-log/masterb</span><br><span class="line">			server-id=2（重启服务）</span><br><span class="line">			mkdir /var/lib/mysql-log/	--ugo,selinux</span><br><span class="line">	2)&gt; show master status\G;</span><br><span class="line"></span><br><span class="line">	# 从服务 mastera</span><br><span class="line">	1）授权从机	grant replication slave to slave@172.25.0.11 uplooking</span><br><span class="line">			(masterb &gt; show grants for slave@172.25.0.11;)</span><br><span class="line">	2）&gt; change master master_host='172.25.0.12'</span><br><span class="line">			master_user='slave'</span><br><span class="line">			master_password='uplooking'</span><br><span class="line">			master_log_file=''</span><br><span class="line">			master_log_pos=''</span><br><span class="line">	3)&gt; start slave;</span><br><span class="line">	4)&gt; show slave status\G;</span><br><span class="line">	5)测试</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>实现 mariadb 5.5 MySQL AB 复制 M-M部署</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">双主从</span></span><br><span class="line">[root@masterb0 ~]# vi /etc/my.cnf</span><br><span class="line">[root@masterb0 ~]# grep -v '^#' /etc/my.cnf|grep -v '^$'</span><br><span class="line">[mysqld]</span><br><span class="line">datadir=/var/lib/mysql</span><br><span class="line">socket=/var/lib/mysql/mysql.sock</span><br><span class="line">symbolic-links=0</span><br><span class="line">server-id=2</span><br><span class="line">log-bin=/var/lib/mysql-log/masterb</span><br><span class="line">[mysqld_safe]</span><br><span class="line">log-error=/var/log/mariadb/mariadb.log</span><br><span class="line">pid-file=/var/run/mariadb/mariadb.pid</span><br><span class="line">!includedir /etc/my.cnf.d</span><br><span class="line"></span><br><span class="line">[root@masterb0 ~]# mkdir /var/lib/mysql-log/</span><br><span class="line">[root@masterb0 ~]# chown mysql. /var/lib/mysql-log/</span><br><span class="line">[root@masterb0 ~]# getenforce</span><br><span class="line">Permissive</span><br><span class="line">[root@masterb0 ~]# systemctl restart mariadb</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 通过在mastera上添加授权，同步给masterb，允许mastera对masterb有replication slave的权限</span></span></span><br><span class="line"></span><br><span class="line">[root@mastera0 ~]# mysql -uroot -puplooking</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 7</span><br><span class="line">Server version: 5.5.44-MariaDB-log MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; grant replication slave on *.* to slave@'172.25.0.11' identified by 'uplooking';</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 到masterb上检查是否已经同步到对mastera的授权信息</span></span></span><br><span class="line"></span><br><span class="line">[root@masterb0 ~]# mysql -uroot -puplooking</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 4</span><br><span class="line">Server version: 5.5.44-MariaDB-log MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; show grants for slave@172.25.0.11;</span><br><span class="line">+----------------------------------------------------------------------------------------------------------------------------+</span><br><span class="line">| Grants for slave@172.25.0.11                                                                                               |</span><br><span class="line">+----------------------------------------------------------------------------------------------------------------------------+</span><br><span class="line">| GRANT REPLICATION SLAVE ON *.* TO 'slave'@'172.25.0.11' IDENTIFIED BY PASSWORD '*6FF883623B8639D08083FF411D20E6856EB7D2BF' |</span><br><span class="line">+----------------------------------------------------------------------------------------------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 查看当前masterb的日志写到哪里了，哪个位置了</span></span></span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; show master status\G;</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">            File: masterb.000001</span><br><span class="line">        Position: 245</span><br><span class="line">    Binlog_Do_DB:</span><br><span class="line">Binlog_Ignore_DB:</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 在mastera上操作，change master to</span></span></span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; change master to master_host='172.25.0.12',master_user='slave',master_password='uplooking',master_log_file='masterb.000001',master_log_pos=245;</span><br><span class="line">Query OK, 0 rows affected (0.20 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; start slave;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; show slave status\G;</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 172.25.0.12</span><br><span class="line">                  Master_User: slave</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: masterb.000001</span><br><span class="line">          Read_Master_Log_Pos: 245</span><br><span class="line">               Relay_Log_File: mariadb-relay-bin.000002</span><br><span class="line">                Relay_Log_Pos: 527</span><br><span class="line">        Relay_Master_Log_File: masterb.000001</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB:</span><br><span class="line">          Replicate_Ignore_DB:</span><br><span class="line">           Replicate_Do_Table:</span><br><span class="line">       Replicate_Ignore_Table:</span><br><span class="line">      Replicate_Wild_Do_Table:</span><br><span class="line">  Replicate_Wild_Ignore_Table:</span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error:</span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 245</span><br><span class="line">              Relay_Log_Space: 823</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File:</span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File:</span><br><span class="line">           Master_SSL_CA_Path:</span><br><span class="line">              Master_SSL_Cert:</span><br><span class="line">            Master_SSL_Cipher:</span><br><span class="line">               Master_SSL_Key:</span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error:</span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error:</span><br><span class="line">  Replicate_Ignore_Server_Ids:</span><br><span class="line">             Master_Server_Id: 2</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">ERROR: No query specified</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 测试 在masterb上写数据，测试mastera是否能够同步到</span></span></span><br><span class="line">MariaDB [(none)]&gt; insert into db1.t1 values (100);</span><br><span class="line">Query OK, 1 row affected (0.06 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 在mastera上查看db1.t1表是否同步到数据了</span></span></span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; select * from db1.t1;</span><br><span class="line">+-----+</span><br><span class="line">| id  |</span><br><span class="line">+-----+</span><br><span class="line">|   1 |</span><br><span class="line">|   2 |</span><br><span class="line">| 100 |</span><br><span class="line">+-----+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line">ERROR: No query specified</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt;</span><br><span class="line">MariaDB [(none)]&gt; insert into db1.t1 values (100);</span><br><span class="line">Query OK, 1 row affected (0.06 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; select * from db1.t1;</span><br><span class="line">+-----+</span><br><span class="line">| id  |</span><br><span class="line">+-----+</span><br><span class="line">|   1 |</span><br><span class="line">|   2 |</span><br><span class="line">| 100 |</span><br><span class="line">+-----+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt;</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h4 id="复制拓扑-配置M-s-M-s" class="article-heading"><a href="#复制拓扑-配置M-s-M-s" class="headerlink" title="复制拓扑_配置M(s)-M(s)"></a>复制拓扑_配置M(s)-M(s)<a class="article-anchor" href="#复制拓扑-配置M-s-M-s" aria-hidden="true"></a></h4><p><em>拥有备库的主-主结构</em> 为每个主库增加一个备库。</p>
+<p><img src="pic/26-rep7.png" alt="rep7"></p>
+<p>该配置的优点是增加了冗余，对于不同物理位置的复制拓扑，能够消除站点单点失效的问题。还能做读写分离。</p>
+<p>如果在本地为了故障转移使用主-主结构，这种配置同样有用。当主库失效时，用备库来代替主库还是可行的，虽然这优点复杂，同样也库一把备库指向一个不同的主库，但需要考虑增加的复杂度。</p>
+<h4 id="复制拓扑-配置M-M-S-S" class="article-heading"><a href="#复制拓扑-配置M-M-S-S" class="headerlink" title="复制拓扑_配置M-M-S-S"></a>复制拓扑_配置M-M-S-S<a class="article-anchor" href="#复制拓扑-配置M-M-S-S" aria-hidden="true"></a></h4><p><em>MySQL 5.7 开始支持多主库复制</em> 多主库复制（multisource replication）特指一个备库有多个主库。5.7开始支持的，意味着5.7之前的版本不支持。</p>
+<h5 id="项目实战6：mysql-server-5-7-基于GTID的并行MTS多级主从-Multisource-半同步架构" class="article-heading"><a href="#项目实战6：mysql-server-5-7-基于GTID的并行MTS多级主从-Multisource-半同步架构" class="headerlink" title="项目实战6：mysql server 5.7 基于GTID的并行MTS多级主从 Multisource 半同步架构"></a>项目实战6：mysql server 5.7 基于GTID的并行MTS多级主从 Multisource 半同步架构<a class="article-anchor" href="#项目实战6：mysql-server-5-7-基于GTID的并行MTS多级主从-Multisource-半同步架构" aria-hidden="true"></a></h5><p><img src="pic/70.png"></p>
+<table>
+<thead>
+<tr>
+<th align="left">服务器</th>
+<th align="left">ip</th>
+<th align="left">功能</th>
+<th align="left">软件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">mastera</td>
+<td align="left">172.25.0.11</td>
+<td align="left">主</td>
+<td align="left">mysql-community-client 5.7</td>
+</tr>
+<tr>
+<td align="left">masterb</td>
+<td align="left">172.25.0.12</td>
+<td align="left">主</td>
+<td align="left">mysql-community-client 5.7</td>
+</tr>
+<tr>
+<td align="left">slavea</td>
+<td align="left">172.25.0.13</td>
+<td align="left">从</td>
+<td align="left">mysql-community-client 5.7</td>
+</tr>
+<tr>
+<td align="left">slaveb</td>
+<td align="left">172.25.0.14</td>
+<td align="left">从</td>
+<td align="left">mysql-community-client 5.7</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>安装软件</p>
+</blockquote>
+<ol>
+<li>操作系统 RHEL7.2</li>
+<li>下载软件（rpm；本地yum源； 在线yum源；）<br><a target="_blank" rel="noopener" href="http://classroom.example.com/materials/mysql-5.7.repo">http://classroom.example.com/materials/mysql-5.7.repo</a></li>
+<li>/etc/yum.repos.d/</li>
+<li>yum clean all;yum makecache</li>
+<li>yum list|grep mysql<br>mysql-community-server 5.7</li>
+<li>yum install —-报错，软件冲突：mariadb-libs 5.5 /var/lib/mysql/*</li>
+<li>rpm -e –nodeps mariadb-libs</li>
+</ol>
+<blockquote>
+<p>服务器端</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">项目名</th>
+<th align="left">内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">软件名</td>
+<td align="left">mysql-community-server 5.7</td>
+</tr>
+<tr>
+<td align="left">service</td>
+<td align="left">mysqld</td>
+</tr>
+<tr>
+<td align="left">daemon</td>
+<td align="left">mysqld</td>
+</tr>
+<tr>
+<td align="left">配置文件</td>
+<td align="left">/etc/my.cnf，/etc/my.cnf.d/*.cnf</td>
+</tr>
+<tr>
+<td align="left">数据文件</td>
+<td align="left">/var/lib/mysql</td>
+</tr>
+<tr>
+<td align="left">启动日志</td>
+<td align="left">/var/log/mysqld.log</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>客户端</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">项目名</th>
+<th align="left">内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">软件名</td>
+<td align="left">mysql-community-client 5.7</td>
+</tr>
+<tr>
+<td align="left">命令</td>
+<td align="left">mysql,mysqladmin,mysqlbinlog,mysqldump</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>服务端启动服务</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>查看进程<code>ps -ef|grep mysqld</code> 或 <code>systemctl status mysqld</code></p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>查看端口 <code>netstat -lunpt|grep mysqld</code> <code>3306</code></p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>服务端修改初始密码</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">grep password /var/log/mysqld.log</span><br><span class="line">mysqladmin -uroot -p'' password '(Uploo00king)'</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>客户端登陆数据库</p>
+</blockquote>
+<p><code>mysql -uroot -p'(Uploo00king)'</code></p>
+<p>mysql.user表的结构变化了，原先的password列改为了authentication_string列</p>
+<blockquote>
+<blockquote>
+<p>实现半同步，需要先安装半同步插件</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<h3 id="M-M-S-S步骤" class="article-heading"><a href="#M-M-S-S步骤" class="headerlink" title="M-M-S-S步骤"></a>M-M-S-S步骤<a class="article-anchor" href="#M-M-S-S步骤" aria-hidden="true"></a></h3></blockquote>
+<blockquote>
+<blockquote>
+<p>主服务器</p>
+</blockquote>
+</blockquote>
+<ol>
+<li>configure</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">server-id=1</span><br><span class="line">log-bin=/var/lib/mysql-log/mastera</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">GTID</span></span><br><span class="line">gitd_mode=on</span><br><span class="line">enforce_gtid_consistency=1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">crash safe</span></span><br><span class="line">sync_binlog=1 #强制刷新binlog到磁盘</span><br><span class="line">innodb_flush_log_at_trx_commit=1 #强制刷新redolog到磁盘</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">semi <span class="built_in">sync</span></span></span><br><span class="line">rpl-semi_sync_master_enable=1</span><br><span class="line">rpl_semi_sync_master_timeout=1000 #ms</span><br><span class="line">rpl_semi_sync_master_warit_slave_count=num</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li><p>grant replication slave@’172.25.X.%’</p>
+</li>
+<li><p>mysqldump\tar\lvm\innobackupex</p>
+</li>
+</ol>
+<blockquote>
+<blockquote>
+<p>从服务器</p>
+</blockquote>
+</blockquote>
+<ol>
+<li>configure</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">Server-id=2</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">GTID</span></span><br><span class="line">gtid_mode=on</span><br><span class="line">enforce_gtid_consistency=1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">MTS</span></span><br><span class="line">slave-parallel-type=logical_clock</span><br><span class="line">Slave-parallel-workers=16</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">crash safe</span></span><br><span class="line">relay_log_recovery=1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">semi <span class="built_in">sync</span></span></span><br><span class="line">rpl_semi_sync_slave_enable=1</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li><p>mysql -uroot -p’(Uploo00king)’ &lt; mysql.all.sql</p>
+</li>
+<li><p>change mastert to</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">master_host='ip'</span><br><span class="line">master_user='slave'</span><br><span class="line">master_password=''</span><br><span class="line">master_auto_position=1</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>start slave;</li>
+<li>show slave status\G;</li>
+</ol>
+<blockquote>
+<p>详细步骤</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mastera:</span><br><span class="line"></span><br><span class="line">    1  ssh-keygen -t dsa</span><br><span class="line">    2  for i in 11 12 13 14;do ssh-copy-id root@172.25.0.$i;done</span><br><span class="line">    3  for i in 11 12 13 14;do ssh root@172.25.0.$i "setenforce 0;systemctl stop firewalld;yum install -y wget";done</span><br><span class="line">    4  for i in 11 12 13 14;do ssh root@172.25.0.$i "cd /etc/yum.repos.d/;wget http://classroom.example.com/materials/mysql-5.7.repo";done</span><br><span class="line">    5  ls /etc/yum.repos.d/</span><br><span class="line"></span><br><span class="line">    6  for i in 11 12 13 14;do ssh root@172.25.0.$i "rpm -e --nodeps mariadb-libs";done</span><br><span class="line">    7  yum list|grep mysql</span><br><span class="line">    8  for i in 11 12 13 14;do ssh root@172.25.0.$i "yum install -y mysql-community*";done</span><br><span class="line">    9  for i in 11 12 13 14;do ssh root@172.25.0.$i "systemctl start mysqld";done</span><br><span class="line">**********************</span><br><span class="line">每一台都需要修改密码</span><br><span class="line">    1  grep password /var/log/mysqld.log</span><br><span class="line">    2  mysqladmin -uroot -p'wXE?ekekJ3Na' password '(Uploo00king)'</span><br><span class="line">**********************</span><br><span class="line">mastera：</span><br><span class="line">新建库和表，并全备份,复制到masterb、slavea、slaveb</span><br><span class="line"></span><br><span class="line">    1  mysql -uroot -p'(Uploo00king)'</span><br><span class="line">	create database db1;</span><br><span class="line">	use db1;</span><br><span class="line">	create table t1 (id int);</span><br><span class="line">    2  mysqldump -A -uroot -p'(Uploo00king)' &gt; /tmp/mysql.all.sql</span><br><span class="line">    3  for i in 12 13 14 ;do scp /tmp/mysql.all.sql root@172.25.0.$i:/tmp; done</span><br><span class="line">    4  for i in 12 13 14 ;do ssh root@172.25.0.$i "mysql -uroot -p'(Uploo00king)' &lt; /tmp/mysql.all.sql"; done</span><br><span class="line">************************</span><br><span class="line">masterb/slavea/slaveb:</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">修改配置文件</span></span><br><span class="line"></span><br><span class="line">   1  vi /etc/my.cnf</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">mastera:</span></span><br><span class="line">	log-bin=/var/lib/mysql-log/mastera</span><br><span class="line">	server-id=1</span><br><span class="line">	gtid_mode = ON</span><br><span class="line">	enforce_gtid_consistency = 1</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">masterb:</span></span><br><span class="line">	log-bin=/var/lib/mysql-log/serverb</span><br><span class="line">	server-id=2</span><br><span class="line">	gtid_mode = ON</span><br><span class="line">	enforce_gtid_consistency = 1</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">slavea:</span></span><br><span class="line">	server-id=3</span><br><span class="line">	gtid_mode = ON</span><br><span class="line">	enforce_gtid_consistency = 1</span><br><span class="line">	master-info-repository=TABLE</span><br><span class="line">	relay-log-info-repository=TABLE</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">slaveb:</span></span><br><span class="line">	server-id=4</span><br><span class="line">	gtid_mode = ON</span><br><span class="line">	enforce_gtid_consistency = 1</span><br><span class="line">	master-info-repository=TABLE</span><br><span class="line">	relay-log-info-repository=TABLE</span><br><span class="line"></span><br><span class="line">mastera/masterb:</span><br><span class="line">创建二进制日志的目录，并修改权限</span><br><span class="line"></span><br><span class="line">    2  mkdir /var/lib/mysql-log</span><br><span class="line">    3  chown mysql. /var/lib/mysql-log</span><br><span class="line"></span><br><span class="line">mastera：</span><br><span class="line">将四台服务器重新启动服务</span><br><span class="line">    4  for i in 11 12 13 14;do ssh root@172.25.0.$i "systemctl restart mysqld";done</span><br><span class="line"></span><br><span class="line">************************************************</span><br><span class="line"><span class="meta prompt_">mastera--&gt;</span><span class="language-bash">masterb\slavea\slaveb 主从同步</span></span><br><span class="line"><span class="meta prompt_">masterb--&gt;</span><span class="language-bash">mastera双主</span></span><br><span class="line">multi-source</span><br><span class="line"></span><br><span class="line">在mastera上面授权:</span><br><span class="line"></span><br><span class="line">    1  mysql -uroot -p'(Uploo00king)'</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">grant replication slave on *.* to slave@172.25.0.12 identified by <span class="string">'(Uploo00king)'</span>;</span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">grant replication slave on *.* to slave@172.25.0.13 identified by <span class="string">'(Uploo00king)'</span>;</span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">grant replication slave on *.* to slave@172.25.0.14 identified by <span class="string">'(Uploo00king)'</span>;</span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">grant replication slave on *.* to slave@172.25.0.11 identified by <span class="string">'(Uploo00king)'</span>;</span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">flush privileges;</span></span><br><span class="line"></span><br><span class="line">在masterb上面change master:</span><br><span class="line">     2	mysql&gt; change master to master_host="172.25.0.11",master_user="slave",master_password="(Uploo00king)",master_auto_position=1;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">start slave;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">show slave status\G;</span></span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 172.25.0.11</span><br><span class="line">                  Master_User: slave</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: mastera.000002</span><br><span class="line">          Read_Master_Log_Pos: 1188</span><br><span class="line">               Relay_Log_File: masterb0-relay-bin.000002</span><br><span class="line">                Relay_Log_Pos: 1397</span><br><span class="line">        Relay_Master_Log_File: mastera.000002</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB:</span><br><span class="line">          Replicate_Ignore_DB:</span><br><span class="line">           Replicate_Do_Table:</span><br><span class="line">       Replicate_Ignore_Table:</span><br><span class="line">      Replicate_Wild_Do_Table:</span><br><span class="line">  Replicate_Wild_Ignore_Table:</span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error:</span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 1188</span><br><span class="line">              Relay_Log_Space: 1607</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File:</span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File:</span><br><span class="line">           Master_SSL_CA_Path:</span><br><span class="line">              Master_SSL_Cert:</span><br><span class="line">            Master_SSL_Cipher:</span><br><span class="line">               Master_SSL_Key:</span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error:</span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error:</span><br><span class="line">  Replicate_Ignore_Server_Ids:</span><br><span class="line">             Master_Server_Id: 1</span><br><span class="line">                  Master_UUID: ca914200-225d-11e6-a1ab-52540000000b</span><br><span class="line">             Master_Info_File: /var/lib/mysql/master.info</span><br><span class="line">                    SQL_Delay: 0</span><br><span class="line">          SQL_Remaining_Delay: NULL</span><br><span class="line">      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates</span><br><span class="line">           Master_Retry_Count: 86400</span><br><span class="line">                  Master_Bind:</span><br><span class="line">      Last_IO_Error_Timestamp:</span><br><span class="line">     Last_SQL_Error_Timestamp:</span><br><span class="line">               Master_SSL_Crl:</span><br><span class="line">           Master_SSL_Crlpath:</span><br><span class="line">           Retrieved_Gtid_Set: ca914200-225d-11e6-a1ab-52540000000b:1-4</span><br><span class="line">            Executed_Gtid_Set: ca914200-225d-11e6-a1ab-52540000000b:1-4</span><br><span class="line">                Auto_Position: 1</span><br><span class="line">         Replicate_Rewrite_DB:</span><br><span class="line">                 Channel_Name:</span><br><span class="line">           Master_TLS_Version:</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">ERROR:</span><br><span class="line">No query specified</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">在mastera上面change master：</span></span><br><span class="line">    3  mysql&gt; change master to master_host="172.25.0.12",master_user="slave",master_password="(Uploo00king)",master_auto_position=1;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">start slave;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">show slave status\G;</span></span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 172.25.0.12</span><br><span class="line">                  Master_User: slave</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: serverb.000002</span><br><span class="line">          Read_Master_Log_Pos: 154</span><br><span class="line">               Relay_Log_File: mastera0-relay-bin.000002</span><br><span class="line">                Relay_Log_Pos: 363</span><br><span class="line">        Relay_Master_Log_File: serverb.000002</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB:</span><br><span class="line">          Replicate_Ignore_DB:</span><br><span class="line">           Replicate_Do_Table:</span><br><span class="line">       Replicate_Ignore_Table:</span><br><span class="line">      Replicate_Wild_Do_Table:</span><br><span class="line">  Replicate_Wild_Ignore_Table:</span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error:</span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 154</span><br><span class="line">              Relay_Log_Space: 573</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File:</span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File:</span><br><span class="line">           Master_SSL_CA_Path:</span><br><span class="line">              Master_SSL_Cert:</span><br><span class="line">            Master_SSL_Cipher:</span><br><span class="line">               Master_SSL_Key:</span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error:</span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error:</span><br><span class="line">  Replicate_Ignore_Server_Ids:</span><br><span class="line">             Master_Server_Id: 2</span><br><span class="line">                  Master_UUID: e9660793-225d-11e6-996d-52540000000c</span><br><span class="line">             Master_Info_File: /var/lib/mysql/master.info</span><br><span class="line">                    SQL_Delay: 0</span><br><span class="line">          SQL_Remaining_Delay: NULL</span><br><span class="line">      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates</span><br><span class="line">           Master_Retry_Count: 86400</span><br><span class="line">                  Master_Bind:</span><br><span class="line">      Last_IO_Error_Timestamp:</span><br><span class="line">     Last_SQL_Error_Timestamp:</span><br><span class="line">               Master_SSL_Crl:</span><br><span class="line">           Master_SSL_Crlpath:</span><br><span class="line">           Retrieved_Gtid_Set:</span><br><span class="line">            Executed_Gtid_Set: ca914200-225d-11e6-a1ab-52540000000b:1-6</span><br><span class="line">                Auto_Position: 1</span><br><span class="line">         Replicate_Rewrite_DB:</span><br><span class="line">                 Channel_Name:</span><br><span class="line">           Master_TLS_Version:</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">ERROR:</span><br><span class="line">No query specified</span><br><span class="line">=========================================================================================</span><br><span class="line">到此位置mastera和masterb的双主配置好了。可以测试以下。</span><br><span class="line"></span><br><span class="line">接下来配置多级主从，不要用gtid，用老方法master_log_file和master_log_positon</span><br><span class="line">=============================================================================================</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">在mastera上面查看master的状态:</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">show master status\G;</span></span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">             File: mastera.000002</span><br><span class="line">         Position: 1634</span><br><span class="line">     Binlog_Do_DB:</span><br><span class="line"> Binlog_Ignore_DB:</span><br><span class="line">Executed_Gtid_Set: ca914200-225d-11e6-a1ab-52540000000b:1-6,</span><br><span class="line">e9660793-225d-11e6-996d-52540000000c:1-3</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">ERROR:</span><br><span class="line">No query specified</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">在masterb上面去查看master的状态:</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">show master status\G;</span></span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">             File: serverb.000002</span><br><span class="line">         Position: 894</span><br><span class="line">     Binlog_Do_DB:</span><br><span class="line"> Binlog_Ignore_DB:</span><br><span class="line">Executed_Gtid_Set: ca914200-225d-11e6-a1ab-52540000000b:1-6,</span><br><span class="line">e9660793-225d-11e6-996d-52540000000c:1-3</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">ERROR:</span><br><span class="line">No query specified</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">在slavea上面去操作:</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">change master to master_host=<span class="string">"172.25.0.11"</span>,master_user=<span class="string">"slave"</span>,master_password=<span class="string">"(Uploo00king)"</span>,master_log_file=<span class="string">'mastera.000002'</span>,master_log_pos=1634 <span class="keyword">for</span> channel <span class="string">'mastera'</span>;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">change master to master_host=<span class="string">"172.25.0.12"</span>,master_user=<span class="string">"slave"</span>,master_password=<span class="string">"(Uploo00king)"</span>,master_log_file=<span class="string">'serverb.000002'</span>,master_log_pos=894 <span class="keyword">for</span> channel <span class="string">'masterb'</span>;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">start slave;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">show slave status\G;</span></span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 172.25.0.11</span><br><span class="line">                  Master_User: slave</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: mastera.000002</span><br><span class="line">          Read_Master_Log_Pos: 1885</span><br><span class="line">               Relay_Log_File: slavea0-relay-bin-mastera.000002</span><br><span class="line">                Relay_Log_Pos: 569</span><br><span class="line">        Relay_Master_Log_File: mastera.000002</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB:</span><br><span class="line">          Replicate_Ignore_DB:</span><br><span class="line">           Replicate_Do_Table:</span><br><span class="line">       Replicate_Ignore_Table:</span><br><span class="line">      Replicate_Wild_Do_Table:</span><br><span class="line">  Replicate_Wild_Ignore_Table:</span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error:</span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 1885</span><br><span class="line">              Relay_Log_Space: 786</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File:</span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File:</span><br><span class="line">           Master_SSL_CA_Path:</span><br><span class="line">              Master_SSL_Cert:</span><br><span class="line">            Master_SSL_Cipher:</span><br><span class="line">               Master_SSL_Key:</span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error:</span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error:</span><br><span class="line">  Replicate_Ignore_Server_Ids:</span><br><span class="line">             Master_Server_Id: 1</span><br><span class="line">                  Master_UUID: ca914200-225d-11e6-a1ab-52540000000b</span><br><span class="line">             Master_Info_File: mysql.slave_master_info</span><br><span class="line">                    SQL_Delay: 0</span><br><span class="line">          SQL_Remaining_Delay: NULL</span><br><span class="line">      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates</span><br><span class="line">           Master_Retry_Count: 86400</span><br><span class="line">                  Master_Bind:</span><br><span class="line">      Last_IO_Error_Timestamp:</span><br><span class="line">     Last_SQL_Error_Timestamp:</span><br><span class="line">               Master_SSL_Crl:</span><br><span class="line">           Master_SSL_Crlpath:</span><br><span class="line">           Retrieved_Gtid_Set: ca914200-225d-11e6-a1ab-52540000000b:7</span><br><span class="line">            Executed_Gtid_Set: ca914200-225d-11e6-a1ab-52540000000b:7,</span><br><span class="line">e9660793-225d-11e6-996d-52540000000c:4</span><br><span class="line">                Auto_Position: 0</span><br><span class="line">         Replicate_Rewrite_DB:</span><br><span class="line">                 Channel_Name: mastera</span><br><span class="line">           Master_TLS_Version:</span><br><span class="line">*************************** 2. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 172.25.0.12</span><br><span class="line">                  Master_User: slave</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: serverb.000002</span><br><span class="line">          Read_Master_Log_Pos: 1142</span><br><span class="line">               Relay_Log_File: slavea0-relay-bin-masterb.000002</span><br><span class="line">                Relay_Log_Pos: 566</span><br><span class="line">        Relay_Master_Log_File: serverb.000002</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB:</span><br><span class="line">          Replicate_Ignore_DB:</span><br><span class="line">           Replicate_Do_Table:</span><br><span class="line">       Replicate_Ignore_Table:</span><br><span class="line">      Replicate_Wild_Do_Table:</span><br><span class="line">  Replicate_Wild_Ignore_Table:</span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error:</span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 1142</span><br><span class="line">              Relay_Log_Space: 783</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File:</span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File:</span><br><span class="line">           Master_SSL_CA_Path:</span><br><span class="line">              Master_SSL_Cert:</span><br><span class="line">            Master_SSL_Cipher:</span><br><span class="line">               Master_SSL_Key:</span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error:</span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error:</span><br><span class="line">  Replicate_Ignore_Server_Ids:</span><br><span class="line">             Master_Server_Id: 2</span><br><span class="line">                  Master_UUID: e9660793-225d-11e6-996d-52540000000c</span><br><span class="line">             Master_Info_File: mysql.slave_master_info</span><br><span class="line">                    SQL_Delay: 0</span><br><span class="line">          SQL_Remaining_Delay: NULL</span><br><span class="line">      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates</span><br><span class="line">           Master_Retry_Count: 86400</span><br><span class="line">                  Master_Bind:</span><br><span class="line">      Last_IO_Error_Timestamp:</span><br><span class="line">     Last_SQL_Error_Timestamp:</span><br><span class="line">               Master_SSL_Crl:</span><br><span class="line">           Master_SSL_Crlpath:</span><br><span class="line">           Retrieved_Gtid_Set: e9660793-225d-11e6-996d-52540000000c:4</span><br><span class="line">            Executed_Gtid_Set: ca914200-225d-11e6-a1ab-52540000000b:7,</span><br><span class="line">e9660793-225d-11e6-996d-52540000000c:4</span><br><span class="line">                Auto_Position: 0</span><br><span class="line">         Replicate_Rewrite_DB:</span><br><span class="line">                 Channel_Name: masterb</span><br><span class="line">           Master_TLS_Version:</span><br><span class="line">2 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">ERROR:</span><br><span class="line">No query specified</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">在slaveb上面去操作:</span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">change master to master_host=<span class="string">"172.25.0.11"</span>,master_user=<span class="string">"slave"</span>,master_password=<span class="string">"(Uploo00king)"</span>,master_log_file=<span class="string">'mastera.000002'</span>,master_log_pos=1634 <span class="keyword">for</span> channel <span class="string">'mastera'</span>;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">change master to master_host=<span class="string">"172.25.0.12"</span>,master_user=<span class="string">"slave"</span>,master_password=<span class="string">"(Uploo00king)"</span>,master_log_file=<span class="string">'serverb.000002'</span>,master_log_pos=894 <span class="keyword">for</span> channel <span class="string">'masterb'</span>;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">start slave;</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	mysql&gt; </span><span class="language-bash">show slave status\G;</span></span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 172.25.0.11</span><br><span class="line">                  Master_User: slave</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: mastera.000002</span><br><span class="line">          Read_Master_Log_Pos: 1634</span><br><span class="line">               Relay_Log_File: slaveb0-relay-bin-mastera.000002</span><br><span class="line">                Relay_Log_Pos: 318</span><br><span class="line">        Relay_Master_Log_File: mastera.000002</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB:</span><br><span class="line">          Replicate_Ignore_DB:</span><br><span class="line">           Replicate_Do_Table:</span><br><span class="line">       Replicate_Ignore_Table:</span><br><span class="line">      Replicate_Wild_Do_Table:</span><br><span class="line">  Replicate_Wild_Ignore_Table:</span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error:</span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 1634</span><br><span class="line">              Relay_Log_Space: 535</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File:</span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File:</span><br><span class="line">           Master_SSL_CA_Path:</span><br><span class="line">              Master_SSL_Cert:</span><br><span class="line">            Master_SSL_Cipher:</span><br><span class="line">               Master_SSL_Key:</span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error:</span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error:</span><br><span class="line">  Replicate_Ignore_Server_Ids:</span><br><span class="line">             Master_Server_Id: 1</span><br><span class="line">                  Master_UUID: ca914200-225d-11e6-a1ab-52540000000b</span><br><span class="line">             Master_Info_File: mysql.slave_master_info</span><br><span class="line">                    SQL_Delay: 0</span><br><span class="line">          SQL_Remaining_Delay: NULL</span><br><span class="line">      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates</span><br><span class="line">           Master_Retry_Count: 86400</span><br><span class="line">                  Master_Bind:</span><br><span class="line">      Last_IO_Error_Timestamp:</span><br><span class="line">     Last_SQL_Error_Timestamp:</span><br><span class="line">               Master_SSL_Crl:</span><br><span class="line">           Master_SSL_Crlpath:</span><br><span class="line">           Retrieved_Gtid_Set:</span><br><span class="line">            Executed_Gtid_Set:</span><br><span class="line">                Auto_Position: 0</span><br><span class="line">         Replicate_Rewrite_DB:</span><br><span class="line">                 Channel_Name: mastera</span><br><span class="line">           Master_TLS_Version:</span><br><span class="line">*************************** 2. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 172.25.0.12</span><br><span class="line">                  Master_User: slave</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: serverb.000002</span><br><span class="line">          Read_Master_Log_Pos: 894</span><br><span class="line">               Relay_Log_File: slaveb0-relay-bin-masterb.000002</span><br><span class="line">                Relay_Log_Pos: 318</span><br><span class="line">        Relay_Master_Log_File: serverb.000002</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB:</span><br><span class="line">          Replicate_Ignore_DB:</span><br><span class="line">           Replicate_Do_Table:</span><br><span class="line">       Replicate_Ignore_Table:</span><br><span class="line">      Replicate_Wild_Do_Table:</span><br><span class="line">  Replicate_Wild_Ignore_Table:</span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error:</span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 894</span><br><span class="line">              Relay_Log_Space: 535</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File:</span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File:</span><br><span class="line">           Master_SSL_CA_Path:</span><br><span class="line">              Master_SSL_Cert:</span><br><span class="line">            Master_SSL_Cipher:</span><br><span class="line">               Master_SSL_Key:</span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error:</span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error:</span><br><span class="line">  Replicate_Ignore_Server_Ids:</span><br><span class="line">             Master_Server_Id: 2</span><br><span class="line">                  Master_UUID: e9660793-225d-11e6-996d-52540000000c</span><br><span class="line">             Master_Info_File: mysql.slave_master_info</span><br><span class="line">                    SQL_Delay: 0</span><br><span class="line">          SQL_Remaining_Delay: NULL</span><br><span class="line">      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates</span><br><span class="line">           Master_Retry_Count: 86400</span><br><span class="line">                  Master_Bind:</span><br><span class="line">      Last_IO_Error_Timestamp:</span><br><span class="line">     Last_SQL_Error_Timestamp:</span><br><span class="line">               Master_SSL_Crl:</span><br><span class="line">           Master_SSL_Crlpath:</span><br><span class="line">           Retrieved_Gtid_Set:</span><br><span class="line">            Executed_Gtid_Set:</span><br><span class="line">                Auto_Position: 0</span><br><span class="line">         Replicate_Rewrite_DB:</span><br><span class="line">                 Channel_Name: masterb</span><br><span class="line">           Master_TLS_Version:</span><br><span class="line">2 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">ERROR:</span><br><span class="line">No query specified</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<blockquote>
+<p>可以去测试了：</p>
+</blockquote>
+</blockquote>
+<p>mastera: <code>insert into db1.t1 values (2);</code></p>
+<p>masterb slavea slaveb都同步了数据库</p>
+<p>masterb:<code>insert into db1.t1 values (3);</code></p>
+<p>mastera slavea slaveb都同步了数据库</p>
+<p>关闭mastera的数据，对masterb写，slavea和slaveb也能同步数据；再次打开mastera也能同步到数据。</p>
+<h3 id="总结-3" class="article-heading"><a href="#总结-3" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结-3" aria-hidden="true"></a></h3><p>重点掌握</p>
+<ol>
+<li>主从同步的原理以及同步过程中的延迟和数据一致性问题</li>
+<li>mariadb5.5和mysql5.7的主从同步步骤</li>
+</ol>
+<p>难点</p>
+<ol>
+<li>同步过程中的延迟问题和数据一致性问题</li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:28.936Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E6%A6%82%E8%BF%B0"><span class="toc-text">复制概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">复制解决的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-text">复制的原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%981%EF%BC%9Amariadb-server-5-5-%E5%8D%95%E4%B8%BB%E4%BB%8E%E6%9E%B6%E6%9E%84"><span class="toc-text">项目实战1：mariadb server 5.5 单主从架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%982%EF%BC%9Amysql-server-5-7-%E5%9F%BA%E4%BA%8EGTID%E7%9A%84%E5%8D%95%E4%B8%BB%E4%BB%8E%E6%9E%B6%E6%9E%84"><span class="toc-text">项目实战2：mysql server 5.7 基于GTID的单主从架构</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E4%B8%AD%E7%9A%84%E5%BB%B6%E8%BF%9F%E9%97%AE%E9%A2%98-%E9%87%8D%E6%BC%94%E5%BB%B6%E8%BF%9F"><span class="toc-text">复制中的延迟问题_重演延迟</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%983%EF%BC%9Amysql-server-5-7-%E5%9F%BA%E4%BA%8EGTID%E7%9A%84%E5%B9%B6%E8%A1%8CMTS%E5%8D%95%E4%B8%BB%E4%BB%8E%E6%9E%B6%E6%9E%84"><span class="toc-text">项目实战3：mysql server 5.7 基于GTID的并行MTS单主从架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E9%87%8D%E6%BC%94%E6%A8%A1%E5%BC%8Fslave-parallel-type"><span class="toc-text">设置重演模式slave-parallel-type</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E9%87%8D%E6%BC%94%E7%BA%BF%E7%A8%8B%E6%95%B0slave-parallel-workers"><span class="toc-text">设置重演线程数slave_parallel_workers</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Enhanced-Multi-Threaded-Slave%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93"><span class="toc-text">Enhanced Multi-Threaded Slave配置总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="toc-text">软件安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%984%EF%BC%9Amysql-server-5-7-%E5%9F%BA%E4%BA%8EGTID%E7%9A%84%E5%B9%B6%E8%A1%8CMTS%E5%8D%95%E4%B8%BB%E4%BB%8E%E6%9E%B6%E6%9E%84crash-safe%E5%8F%82%E6%95%B0%E8%B0%83%E4%BC%98"><span class="toc-text">项目实战4：mysql server 5.7 基于GTID的并行MTS单主从架构crash safe参数调优</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-1"><span class="toc-text">配置文件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-1"><span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E4%B8%AD%E7%9A%84%E5%BB%B6%E8%BF%9F%E9%97%AE%E9%A2%98-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB"><span class="toc-text">复制中的延迟问题_读写分离</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%8A%E5%90%8C%E6%AD%A5%E5%A4%8D%E5%88%B6%E7%9A%84%E6%BD%9C%E5%9C%A8%E9%97%AE%E9%A2%98"><span class="toc-text">半同步复制的潜在问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1%E7%9A%84%E5%8D%8A%E5%90%8C%E6%AD%A5%E5%A4%8D%E5%88%B6"><span class="toc-text">无数据丢失的半同步复制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%985%EF%BC%9Amysql-server-5-7-%E5%9F%BA%E4%BA%8EGTID%E7%9A%84%E5%B9%B6%E8%A1%8CMTS%E5%8D%95%E4%B8%BB%E4%BB%8E%E5%8D%8A%E5%90%8C%E6%AD%A5%E6%9E%B6%E6%9E%84"><span class="toc-text">项目实战5：mysql server 5.7 基于GTID的并行MTS单主从半同步架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="toc-text">安装插件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-2"><span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E5%8D%8A%E5%90%8C%E6%AD%A5%E5%A4%8D%E5%88%B6%E8%B6%85%E6%97%B6%E5%90%8E%E8%87%AA%E5%8A%A8%E5%88%87%E6%8D%A2%E5%9B%9E%E5%BC%82%E6%AD%A5%E6%A8%A1%E5%BC%8F"><span class="toc-text">测试半同步复制超时后自动切换回异步模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E4%B8%BB%E4%BB%8E%E6%98%AF%E5%90%A6%E8%BF%90%E8%A1%8C%E5%9C%A8%E5%8D%8A%E5%90%8C%E6%AD%A5%E5%A4%8D%E5%88%B6%E6%A8%A1%E5%BC%8F%E4%B8%8B"><span class="toc-text">监控主从是否运行在半同步复制模式下</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-text">环境变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E5%8F%98%E9%87%8F"><span class="toc-text">状态变量</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-2"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E4%B8%AD%E7%9A%84%E5%8D%95%E7%82%B9%E6%95%85%E9%9A%9C%E9%97%AE%E9%A2%98"><span class="toc-text">复制中的单点故障问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91-%E9%85%8D%E7%BD%AEM-S-S"><span class="toc-text">复制拓扑_配置M-S-S</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91-%E9%85%8D%E7%BD%AEM-M"><span class="toc-text">复制拓扑_配置M-M</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91-%E9%85%8D%E7%BD%AEM-s-M-s"><span class="toc-text">复制拓扑_配置M(s)-M(s)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91-%E9%85%8D%E7%BD%AEM-M-S-S"><span class="toc-text">复制拓扑_配置M-M-S-S</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%986%EF%BC%9Amysql-server-5-7-%E5%9F%BA%E4%BA%8EGTID%E7%9A%84%E5%B9%B6%E8%A1%8CMTS%E5%A4%9A%E7%BA%A7%E4%B8%BB%E4%BB%8E-Multisource-%E5%8D%8A%E5%90%8C%E6%AD%A5%E6%9E%B6%E6%9E%84"><span class="toc-text">项目实战6：mysql server 5.7 基于GTID的并行MTS多级主从 Multisource 半同步架构</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#M-M-S-S%E6%AD%A5%E9%AA%A4"><span class="toc-text">M-M-S-S步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-3"><span class="toc-text">总结</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

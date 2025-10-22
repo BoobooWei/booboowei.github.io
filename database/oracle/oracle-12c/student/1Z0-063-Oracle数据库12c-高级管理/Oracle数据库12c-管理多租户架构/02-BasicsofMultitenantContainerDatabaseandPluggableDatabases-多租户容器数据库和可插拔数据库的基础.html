@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理多租户架构 第2课：多租户容器数据库和可插拔数据库的基础 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86%E5%A4%9A%E7%A7%9F%E6%88%B7%E6%9E%B6%E6%9E%84/02-BasicsofMultitenantContainerDatabaseandPluggableDatabases-%E5%A4%9A%E7%A7%9F%E6%88%B7%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E5%8F%AF%E6%8F%92%E6%8B%94%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%9F%BA%E7%A1%80">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86%E5%A4%9A%E7%A7%9F%E6%88%B7%E6%9E%B6%E6%9E%84/02-BasicsofMultitenantContainerDatabaseandPluggableDatabases-%E5%A4%9A%E7%A7%9F%E6%88%B7%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E5%8F%AF%E6%8F%92%E6%8B%94%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%9F%BA%E7%A1%80" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2010.04.21 BoobooWei     第2课：多租户容器数据库和可插拔数据库的基础 练习2：概述 练习2-1：探索CDB的体系结构 总览 任务 1.探索cdb1实例后台进程和多租户容器数据库 2.探索服务 3.显示可插拔数据库 4.查看一些新的观点系列CDB_ xxx 5.检查CDB的所有文件 6.列出所有创建的用户 7.列出CDB的所有角色和特权。          练习2：概述在">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理多租户架构 第2课：多租户容器数据库和可插拔数据库的基础">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86%E5%A4%9A%E7%A7%9F%E6%88%B7%E6%9E%B6%E6%9E%84/02-BasicsofMultitenantContainerDatabaseandPluggableDatabases-%E5%A4%9A%E7%A7%9F%E6%88%B7%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E5%8F%AF%E6%8F%92%E6%8B%94%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%9F%BA%E7%A1%80">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2010.04.21 BoobooWei     第2课：多租户容器数据库和可插拔数据库的基础 练习2：概述 练习2-1：探索CDB的体系结构 总览 任务 1.探索cdb1实例后台进程和多租户容器数据库 2.探索服务 3.显示可插拔数据库 4.查看一些新的观点系列CDB_ xxx 5.检查CDB的所有文件 6.列出所有创建的用户 7.列出CDB的所有角色和特权。          练习2：概述在">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.721Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:09.408Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../../news/" class="main-nav-link">News</a><a href="../../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理多租户架构 第2课：多租户容器数据库和可插拔数据库的基础</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-063-Oracle数据库12c-高级管理/Oracle数据库12c-管理多租户架构/02-BasicsofMultitenantContainerDatabaseandPluggableDatabases-多租户容器数据库和可插拔数据库的基础.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2010.04.21 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#%E7%AC%AC2%E8%AF%BE%EF%BC%9A%E5%A4%9A%E7%A7%9F%E6%88%B7%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E5%8F%AF%E6%8F%92%E6%8B%94%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%9F%BA%E7%A1%80">第2课：多租户容器数据库和可插拔数据库的基础</a><ul>
+<li><a href="#%E7%BB%83%E4%B9%A02%EF%BC%9A%E6%A6%82%E8%BF%B0">练习2：概述</a></li>
+<li><a href="#%E7%BB%83%E4%B9%A02-1%EF%BC%9A%E6%8E%A2%E7%B4%A2cdb%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84">练习2-1：探索CDB的体系结构</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1">任务</a><ul>
+<li><a href="#1%E6%8E%A2%E7%B4%A2cdb1%E5%AE%9E%E4%BE%8B%E5%90%8E%E5%8F%B0%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%A4%9A%E7%A7%9F%E6%88%B7%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%BA%93">1.探索cdb1实例后台进程和多租户容器数据库</a></li>
+<li><a href="#2%E6%8E%A2%E7%B4%A2%E6%9C%8D%E5%8A%A1">2.探索服务</a></li>
+<li><a href="#3%E6%98%BE%E7%A4%BA%E5%8F%AF%E6%8F%92%E6%8B%94%E6%95%B0%E6%8D%AE%E5%BA%93">3.显示可插拔数据库</a></li>
+<li><a href="#4%E6%9F%A5%E7%9C%8B%E4%B8%80%E4%BA%9B%E6%96%B0%E7%9A%84%E8%A7%82%E7%82%B9%E7%B3%BB%E5%88%97cdb_-xxx">4.查看一些新的观点系列CDB_ xxx</a></li>
+<li><a href="#5%E6%A3%80%E6%9F%A5cdb%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6">5.检查CDB的所有文件</a></li>
+<li><a href="#6%E5%88%97%E5%87%BA%E6%89%80%E6%9C%89%E5%88%9B%E5%BB%BA%E7%9A%84%E7%94%A8%E6%88%B7">6.列出所有创建的用户</a></li>
+<li><a href="#7%E5%88%97%E5%87%BAcdb%E7%9A%84%E6%89%80%E6%9C%89%E8%A7%92%E8%89%B2%E5%92%8C%E7%89%B9%E6%9D%83%E3%80%82">7.列出CDB的所有角色和特权。</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="练习2：概述" class="article-heading"><a href="#练习2：概述" class="headerlink" title="练习2：概述"></a>练习2：概述<a class="article-anchor" href="#练习2：概述" aria-hidden="true"></a></h2><p>在这种实践中，您将探索并熟悉CDB和PDB的体系结构。</p>
+<h2 id="练习2-1：探索CDB的体系结构" class="article-heading"><a href="#练习2-1：探索CDB的体系结构" class="headerlink" title="练习2-1：探索CDB的体系结构"></a>练习2-1：探索CDB的体系结构<a class="article-anchor" href="#练习2-1：探索CDB的体系结构" aria-hidden="true"></a></h2><h3 id="总览" class="article-heading"><a href="#总览" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览" aria-hidden="true"></a></h3><p>在本练习中，您将探索cdb1及其可插入数据库的体系结构和结构。</p>
+<h3 id="任务" class="article-heading"><a href="#任务" class="headerlink" title="任务"></a>任务<a class="article-anchor" href="#任务" aria-hidden="true"></a></h3><h4 id="1-探索cdb1实例后台进程和多租户容器数据库" class="article-heading"><a href="#1-探索cdb1实例后台进程和多租户容器数据库" class="headerlink" title="1.探索cdb1实例后台进程和多租户容器数据库"></a>1.探索cdb1实例后台进程和多租户容器数据库<a class="article-anchor" href="#1-探索cdb1实例后台进程和多租户容器数据库" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># a.使用ps –ef | grep Unix命令</span></span><br><span class="line">ps -ef | grep cdb1</span><br><span class="line"><span class="comment"># b.连接到多租户容器数据库cdb1</span></span><br><span class="line">. oraenv</span><br><span class="line">sqlplus / as sysdba</span><br><span class="line"><span class="comment"># c.检查数据库是否为多租户容器数据库。</span></span><br><span class="line"><span class="keyword">select</span> name, cdb, con_id from v<span class="variable">$database</span>;</span><br><span class="line"><span class="comment"># d.检查实例名称。</span></span><br><span class="line"><span class="keyword">select</span> INSTANCE_NAME, STATUS, CON_ID from v<span class="variable">$instance</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="2-探索服务" class="article-heading"><a href="#2-探索服务" class="headerlink" title="2.探索服务"></a>2.探索服务<a class="article-anchor" href="#2-探索服务" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># a.检查侦听器是否已启动。</span></span><br><span class="line">lsnrctl status</span><br><span class="line"><span class="comment"># 如果尚未启动，请使用以下命令启动侦听器：</span></span><br><span class="line">lsnrctl start</span><br><span class="line"><span class="comment"># b.检查服务</span></span><br><span class="line">lsnrctl services</span><br><span class="line"><span class="comment"># c.列出为每个容器自动创建的服务。</span></span><br><span class="line">sqlplus / as sysdba</span><br><span class="line">col name format A20</span><br><span class="line"><span class="keyword">select</span> name, con_id from v<span class="variable">$services</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-显示可插拔数据库" class="article-heading"><a href="#3-显示可插拔数据库" class="headerlink" title="3.显示可插拔数据库"></a>3.显示可插拔数据库<a class="article-anchor" href="#3-显示可插拔数据库" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># a.使用新视图V$PDBS。</span><br><span class="line"><span class="keyword">select</span> CON_ID, NAME, OPEN_MODE <span class="keyword">from</span> v$pdbs;</span><br><span class="line"># b.使用新命令<span class="keyword">SHOW</span> CON_NAME和CON_ID知道您连接到哪个容器</span><br><span class="line"><span class="keyword">show</span> con_name</span><br><span class="line"><span class="keyword">show</span> CON_ID</span><br><span class="line"># 您还可以使用SYS_CONTEXT函数查看CON_NAME和CON_ID会话上下文的属性。</span><br><span class="line"><span class="keyword">SELECT</span> sys_context(<span class="string">'userenv'</span>,<span class="string">'CON_NAME'</span>) <span class="keyword">from</span> dual;</span><br><span class="line"><span class="keyword">SELECT</span> sys_context(<span class="string">'userenv'</span>,<span class="string">'CON_ID'</span>) <span class="keyword">from</span> dual;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="4-查看一些新的观点系列CDB-xxx" class="article-heading"><a href="#4-查看一些新的观点系列CDB-xxx" class="headerlink" title="4.查看一些新的观点系列CDB_ xxx"></a>4.查看一些新的观点系列CDB_ xxx<a class="article-anchor" href="#4-查看一些新的观点系列CDB-xxx" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">col PDB_NAME format a8</span><br><span class="line">col CON_ID format <span class="number">99</span></span><br><span class="line"><span class="keyword">select</span> PDB_ID, PDB_NAME, DBID, GUID, CON_ID <span class="keyword">from</span> cdb_pdbs;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="5-检查CDB的所有文件" class="article-heading"><a href="#5-检查CDB的所有文件" class="headerlink" title="5.检查CDB的所有文件"></a>5.检查CDB的所有文件<a class="article-anchor" href="#5-检查CDB的所有文件" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># a.查看CDB的重做日志文件</span><br><span class="line">col <span class="keyword">MEMBER</span> format A40</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">GROUP</span>#, CON_ID, <span class="keyword">MEMBER</span> <span class="keyword">from</span> v$logfile;</span><br><span class="line"># b.查看CDB的控制文件</span><br><span class="line">col NAME format A60</span><br><span class="line"><span class="keyword">select</span> NAME , CON_ID <span class="keyword">from</span> v$controlfile;</span><br><span class="line"># c.查看CDB的所有数据文件，包括根目录和所有PDB的数据文件。</span><br><span class="line">## <span class="number">1</span>）使用CDB_DATA_FILES视图：</span><br><span class="line">col file_name format A50</span><br><span class="line">col tablespace_name format A8</span><br><span class="line">col file_id format <span class="number">9999</span></span><br><span class="line">col con_id format <span class="number">999</span></span><br><span class="line"><span class="keyword">select</span> FILE_NAME, TABLESPACE_NAME, FILE_ID, con_id <span class="number">2</span> <span class="keyword">from</span> cdb_data_files <span class="keyword">order</span> <span class="keyword">by</span> con_id ;</span><br><span class="line">## 使用ls Unix命令：</span><br><span class="line"><span class="operator">!</span>ls <span class="operator">-</span>l $ORACLE_BASE<span class="operator">/</span>oradata<span class="operator">/</span>cdb1</span><br><span class="line"><span class="operator">!</span>ls <span class="operator">-</span>l $ORACLE_BASE<span class="operator">/</span>oradata<span class="operator">/</span>cdb1<span class="operator">/</span>pdbseed</span><br><span class="line"># d.确保您已连接到根目录；然后使用DBA_DATA_FILES视图。</span><br><span class="line">col file_name format A42</span><br><span class="line"><span class="keyword">select</span> FILE_NAME, TABLESPACE_NAME, FILE_ID <span class="keyword">from</span> dba_data_files;</span><br><span class="line"># e.现在使用V$TABLESPACE和V$DATAFILE视图。</span><br><span class="line">col NAME format A12</span><br><span class="line"><span class="keyword">select</span> FILE#, ts.name, ts.ts#, ts.con_id</span><br><span class="line"><span class="keyword">from</span> v$datafile d, v$tablespace  ts</span><br><span class="line"><span class="keyword">where</span> d.ts#<span class="operator">=</span>ts.ts#</span><br><span class="line"><span class="keyword">and</span>   d.con_id<span class="operator">=</span>ts.con_id</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> <span class="number">4</span>,<span class="number">3</span>;</span><br><span class="line"># 列出CDB的临时文件</span><br><span class="line">col file_name format A57</span><br><span class="line"><span class="keyword">select</span> FILE_NAME, TABLESPACE_NAME, FILE_ID <span class="keyword">from</span> cdb_temp_files;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="6-列出所有创建的用户" class="article-heading"><a href="#6-列出所有创建的用户" class="headerlink" title="6.列出所有创建的用户"></a>6.列出所有创建的用户<a class="article-anchor" href="#6-列出所有创建的用户" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># a.验证是否创建了<span class="keyword">SYSTEM</span>用户。</span><br><span class="line">col username format A22</span><br><span class="line"><span class="keyword">select</span> username, common, con_id <span class="keyword">from</span> cdb_users <span class="keyword">where</span> username <span class="operator">=</span><span class="string">'SYSTEM'</span>;</span><br><span class="line"># 请注意，用户<span class="keyword">SYSTEM</span>作为普通用户存在于所有容器中。</span><br><span class="line"># b.列出CDB的所有普通用户。</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> username <span class="keyword">from</span> cdb_users <span class="keyword">where</span> common <span class="operator">=</span><span class="string">'YES'</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="number">1</span>;</span><br><span class="line"># c.列出CDB的所有本地用户List <span class="keyword">all</span> the <span class="keyword">local</span> users <span class="keyword">of</span> the CDB.</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> username, con_id <span class="keyword">from</span> cdb_users <span class="keyword">where</span> common <span class="operator">=</span><span class="string">'NO'</span>;</span><br><span class="line"># d.列出所有本地用户List the <span class="keyword">local</span> users <span class="keyword">in</span> the root.</span><br><span class="line"># 请注意，根容器中没有本地用户，因为不可能在根中创建任何本地用户。</span><br><span class="line"><span class="keyword">select</span> username, con_id <span class="keyword">from</span> cdb_users <span class="keyword">where</span> common <span class="operator">=</span><span class="string">'NO'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="7-列出CDB的所有角色和特权。" class="article-heading"><a href="#7-列出CDB的所有角色和特权。" class="headerlink" title="7.列出CDB的所有角色和特权。"></a>7.列出CDB的所有角色和特权。<a class="article-anchor" href="#7-列出CDB的所有角色和特权。" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># a.列出CDB的所有角色。</span><br><span class="line"># 注意，根容器中没有本地角色，因为不可能在根中创建任何本地角色。</span><br><span class="line">col role format A30</span><br><span class="line"><span class="keyword">select</span> role, common, con_id <span class="keyword">from</span> cdb_roles <span class="keyword">order</span> <span class="keyword">by</span> <span class="number">3</span>;</span><br><span class="line"># b.确保特权本质上既不是普通的也不是本地的。</span><br><span class="line"># 请注意，没有COMMON列。</span><br><span class="line"><span class="keyword">desc</span> sys.system_privilege_map</span><br><span class="line"><span class="keyword">desc</span> sys.table_privilege_map</span><br><span class="line"># c.验证授予后的特权是否变为普通特权或本地特权。</span><br><span class="line"><span class="keyword">desc</span> CDB_SYS_PRIVS</span><br><span class="line"><span class="keyword">desc</span> CDB_TAB_PRIVS</span><br><span class="line"># d.请注意，角色（尽管取决于角色的创建方式是公共角色还是本地角色），也像特权一样，也可以是公共角色或本地角色。</span><br><span class="line">col grantee format A10</span><br><span class="line">col granted_role format A28</span><br><span class="line"><span class="keyword">select</span> grantee, granted_role, common, con_id <span class="keyword">from</span> cdb_role_privs <span class="keyword">where</span> grantee<span class="operator">=</span><span class="string">'SYSTEM'</span>;</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:09.408Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A02%EF%BC%9A%E6%A6%82%E8%BF%B0"><span class="toc-text">练习2：概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A02-1%EF%BC%9A%E6%8E%A2%E7%B4%A2CDB%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-text">练习2-1：探索CDB的体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1"><span class="toc-text">任务</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%8E%A2%E7%B4%A2cdb1%E5%AE%9E%E4%BE%8B%E5%90%8E%E5%8F%B0%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%A4%9A%E7%A7%9F%E6%88%B7%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">1.探索cdb1实例后台进程和多租户容器数据库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%8E%A2%E7%B4%A2%E6%9C%8D%E5%8A%A1"><span class="toc-text">2.探索服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%98%BE%E7%A4%BA%E5%8F%AF%E6%8F%92%E6%8B%94%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">3.显示可插拔数据库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%9F%A5%E7%9C%8B%E4%B8%80%E4%BA%9B%E6%96%B0%E7%9A%84%E8%A7%82%E7%82%B9%E7%B3%BB%E5%88%97CDB-xxx"><span class="toc-text">4.查看一些新的观点系列CDB_ xxx</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E6%A3%80%E6%9F%A5CDB%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6"><span class="toc-text">5.检查CDB的所有文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E5%88%97%E5%87%BA%E6%89%80%E6%9C%89%E5%88%9B%E5%BB%BA%E7%9A%84%E7%94%A8%E6%88%B7"><span class="toc-text">6.列出所有创建的用户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E5%88%97%E5%87%BACDB%E7%9A%84%E6%89%80%E6%9C%89%E8%A7%92%E8%89%B2%E5%92%8C%E7%89%B9%E6%9D%83%E3%80%82"><span class="toc-text">7.列出CDB的所有角色和特权。</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

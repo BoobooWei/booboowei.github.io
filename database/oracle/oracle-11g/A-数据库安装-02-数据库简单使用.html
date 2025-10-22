@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>数据库简单使用 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/A-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E8%A3%85-02-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/A-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E8%A3%85-02-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="数据库简单使用 第一次连接oracle数据库 解锁scott用户 配置数据库环境 开机自动启动数据库 安装插件rlwrap 美化结果集的脚本文件   客户端sqldeveloper工具的使用      第一次连接oracle数据库 需要.bashrc中的变量 ORACLE_SID&#x3D;”你安装的数据库名” 通过sqlplus来执行   A. 本地匿名登陆 sqlplus &#x2F; ；解释：“">
+<meta property="og:type" content="website">
+<meta property="og:title" content="数据库简单使用">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/A-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E8%A3%85-02-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="数据库简单使用 第一次连接oracle数据库 解锁scott用户 配置数据库环境 开机自动启动数据库 安装插件rlwrap 美化结果集的脚本文件   客户端sqldeveloper工具的使用      第一次连接oracle数据库 需要.bashrc中的变量 ORACLE_SID&#x3D;”你安装的数据库名” 通过sqlplus来执行   A. 本地匿名登陆 sqlplus &#x2F; ；解释：“">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.782Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:40.948Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">数据库简单使用</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/A-数据库安装-02-数据库简单使用.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --><html><head></head><body><ul>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8">数据库简单使用</a><ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E8%BF%9E%E6%8E%A5oracle%E6%95%B0%E6%8D%AE%E5%BA%93">第一次连接oracle数据库</a></li>
+<li><a href="#%E8%A7%A3%E9%94%81scott%E7%94%A8%E6%88%B7">解锁scott用户</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%8E%AF%E5%A2%83">配置数据库环境</a><ul>
+<li><a href="#%E5%BC%80%E6%9C%BA%E8%87%AA%E5%8A%A8%E5%90%AF%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%BA%93">开机自动启动数据库</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6rlwrap">安装插件rlwrap</a></li>
+<li><a href="#%E7%BE%8E%E5%8C%96%E7%BB%93%E6%9E%9C%E9%9B%86%E7%9A%84%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6">美化结果集的脚本文件</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AFsqldeveloper%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8">客户端sqldeveloper工具的使用</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h2 id="第一次连接oracle数据库" class="article-heading"><a href="#第一次连接oracle数据库" class="headerlink" title="第一次连接oracle数据库"></a>第一次连接oracle数据库<a class="article-anchor" href="#第一次连接oracle数据库" aria-hidden="true"></a></h2><ol>
+<li>需要.bashrc中的变量 ORACLE_SID=”你安装的数据库名”</li>
+<li>通过sqlplus来执行</li>
+</ol>
+<ul>
+<li>A. 本地匿名登陆 <code>sqlplus /</code> ；解释：“/”左右为 用户名/密码，现在是匿名登陆</li>
+<li>B. 使用最高权限使用者登陆<code>sqlplus / as sysdba</code> ；解释： <code>as sysdba</code>是指定登陆用户的角色为oracle数据库sys用户，而sys用户在oracle内部的地位就等于root在linux中的地位，最大权限，不受库的限制，是管理用户</li>
+</ul>
+<blockquote>
+<p>为了学习sql语句，我们使用一个scott用户</p>
+</blockquote>
+<h2 id="解锁scott用户" class="article-heading"><a href="#解锁scott用户" class="headerlink" title="解锁scott用户"></a>解锁scott用户<a class="article-anchor" href="#解锁scott用户" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@install0 oracle]$ sqlplus / as sysdba</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.4.0 Production on Fri May 26 16:47:07 2017</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2013, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Connected to:</span><br><span class="line">Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span><br><span class="line">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash">show user;</span></span><br><span class="line">USER is "SYS"</span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash">conn scott/tiger;</span></span><br><span class="line">ERROR:</span><br><span class="line">ORA-28000: the account is locked</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Warning: You are no longer connected to ORACLE.</span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash">conn / as sysdba;</span></span><br><span class="line">Connected.</span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash">alter user scott identified by tiger account unlock;</span></span><br><span class="line"></span><br><span class="line">User altered.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash">conn scott/tiger;</span></span><br><span class="line">Connected.</span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from tab;</span></span><br><span class="line"></span><br><span class="line">TNAME			       TABTYPE	CLUSTERID</span><br><span class="line">------------------------------ ------- ----------</span><br><span class="line">BONUS			       TABLE</span><br><span class="line">DEPT			       TABLE</span><br><span class="line">EMP			       TABLE</span><br><span class="line">SALGRADE		       TABLE</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><code>show user</code>命令可以查看到当前登陆的用户名为<code>sys</code></li>
+<li>oracle中有一个用户叫<code>scott</code>，初始密码为<code>tiger</code>,该用户当前是被锁定的状态；</li>
+<li><code>conn scott/tiger</code> 该命令尝试连接scott用户</li>
+<li><code>conn / as sysdba</code> 该命令重新连接sys用户</li>
+<li><code>alter user scott identified by tiger account unlock;</code> 该命令将scott用户解锁</li>
+<li><code>conn scott/tiger</code> 此时就发现可以连接上scott用户，该用户有很多表，我们可以拿来作sql练习</li>
+<li><code>select * from tab;</code> 查看scott用户有哪些表,里面有四张表，能完成90%的sql语句练习</li>
+</ul>
+<h2 id="配置数据库环境" class="article-heading"><a href="#配置数据库环境" class="headerlink" title="配置数据库环境"></a>配置数据库环境<a class="article-anchor" href="#配置数据库环境" aria-hidden="true"></a></h2><h3 id="开机自动启动数据库" class="article-heading"><a href="#开机自动启动数据库" class="headerlink" title="开机自动启动数据库"></a>开机自动启动数据库<a class="article-anchor" href="#开机自动启动数据库" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vi /etc/oratab</span><br><span class="line">-------------------------------------------</span><br><span class="line">orcl:/u01/app/oracle/product/11.2.0/db_1:Y</span><br><span class="line"></span><br><span class="line">vi /etc/rc.local</span><br><span class="line">-------------------------------------------</span><br><span class="line">su - oracle '-c dbstart $ORACLE_HOME'</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="安装插件rlwrap" class="article-heading"><a href="#安装插件rlwrap" class="headerlink" title="安装插件rlwrap"></a>安装插件rlwrap<a class="article-anchor" href="#安装插件rlwrap" aria-hidden="true"></a></h3><p>使sqlplus可以光标回退，命令回显，使用方向键操作命令行</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">scp rlwrap-0.30-1.el5.i386.rpm root@172.25.0.12:/root</span><br><span class="line">ssh root@172.25.0.12</span><br><span class="line">rpm -ivh rlwrap-0.30-1.el5.i386.rpm</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在.bashrc中增加调用sqlplus的别名</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vi .bashrc</span><br><span class="line">------------------------------------</span><br><span class="line">alias sqlplus='rlwrap sqlplus'</span><br></pre></td></tr></tbody></table></figure>
+
+<p>使.bashrc新增的内容生效</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">source .bashrc</span><br></pre></td></tr></tbody></table></figure>
+
+<p>启动sqlplus</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">sqlplus /nolog</span><br><span class="line">sqlplus / as sysdba</span><br><span class="line">sqlplus scott/tiger</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="美化结果集的脚本文件" class="article-heading"><a href="#美化结果集的脚本文件" class="headerlink" title="美化结果集的脚本文件"></a>美化结果集的脚本文件<a class="article-anchor" href="#美化结果集的脚本文件" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vi /home/oracle/login.sql</span><br><span class="line">-------------------------</span><br><span class="line">set linesize 120</span><br><span class="line">set pagesize 500</span><br></pre></td></tr></tbody></table></figure>
+
+<p>增加环境变量使sqlplus永远能读取/home/oracle/login.sql</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vi .bashrc</span><br><span class="line">---------------------------</span><br><span class="line">export SQLPATH=/home/oracle</span><br></pre></td></tr></tbody></table></figure>
+
+<p>使.bashrc新增的内容生效</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">source .bashrc</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="客户端sqldeveloper工具的使用" class="article-heading"><a href="#客户端sqldeveloper工具的使用" class="headerlink" title="客户端sqldeveloper工具的使用"></a>客户端sqldeveloper工具的使用<a class="article-anchor" href="#客户端sqldeveloper工具的使用" aria-hidden="true"></a></h2><p>oracle 11g中没有了isql/plus（b/s）,而是改为了sqldeveloper（C/S）</p>
+<ol>
+<li>启动监听<code>lsnrctl start</code></li>
+<li>修改<code>alter system register</code></li>
+<li>查看监听状态<code>lsnrctl status</code>，获取监听端口1521和数据库实例db01</li>
+<li>打开sqldeveloper软件<code>$ORACLE_HOME/sqldeveloper/sqldeveloper.sh</code></li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">connection name : scoot</span><br><span class="line">username: scoot</span><br><span class="line">password: triger</span><br><span class="line">save password yes</span><br><span class="line">hostname:172.25.0.11</span><br><span class="line">port:1521</span><br><span class="line">sid:db01</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="如果scott不存在如何创建" class="article-heading"><a href="#如果scott不存在如何创建" class="headerlink" title="如果scott不存在如何创建"></a>如果scott不存在如何创建<a class="article-anchor" href="#如果scott不存在如何创建" aria-hidden="true"></a></h2><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest admin]$ <span class="built_in">pwd</span></span><br><span class="line">/u01/app/oracle/product/11.2.0.4/rdbms/admin</span><br><span class="line">[oracle@oratest admin]$ <span class="built_in">ls</span> scott.sql</span><br><span class="line"><span class="built_in">ls</span>: cannot access scott.sql: No such file or directory</span><br><span class="line">[oracle@oratest admin]$ <span class="built_in">ls</span> utlsampl.sql</span><br><span class="line">utlsampl.sql</span><br><span class="line">[oracle@oratest admin]$ <span class="built_in">echo</span> @<span class="variable">$ORACLE_HOME</span>/rdbms/admin/utlsampl.sql</span><br><span class="line">@/u01/app/oracle/product/11.2.0.4/rdbms/admin/utlsampl.sql</span><br><span class="line">[oracle@oratest admin]$ <span class="built_in">echo</span> @<span class="variable">$ORACLE_HOME</span>/rdbms/admin/utlsampl.sql | sqlplus / as sysdba</span><br><span class="line"></span><br><span class="line">SQL&gt; column username format a20</span><br><span class="line">SQL&gt; column password format a20</span><br><span class="line">SQL&gt; column account_status format a20</span><br><span class="line">SQL&gt; <span class="keyword">select</span> username,password,account_status from dba_users;</span><br><span class="line"></span><br><span class="line">USERNAME	     PASSWORD		  ACCOUNT_STATUS</span><br><span class="line">-------------------- -------------------- --------------------</span><br><span class="line">SYS					  OPEN</span><br><span class="line">SYSTEM					  OPEN</span><br><span class="line">SCOTT					  OPEN</span><br><span class="line">OUTLN					  EXPIRED &amp; LOCKED</span><br><span class="line">APPQOSSYS				  EXPIRED &amp; LOCKED</span><br><span class="line">DBSNMP					  EXPIRED &amp; LOCKED</span><br><span class="line">DIP					  EXPIRED &amp; LOCKED</span><br><span class="line">ORACLE_OCM				  EXPIRED &amp; LOCKED</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="SQLPlus-login-sql" class="article-heading"><a href="#SQLPlus-login-sql" class="headerlink" title="SQLPlus login.sql"></a>SQLPlus login.sql<a class="article-anchor" href="#SQLPlus-login-sql" aria-hidden="true"></a></h2><p><code>sqlplus</code>在启动时会自动运行两个脚本:<code>glogin.sql</code>、<code>login.sql</code>这两个文件</p>
+<p>执行顺序为:</p>
+<ol>
+<li><p>默认在在<code>$ORACLE_HOME/sqlplus/admin</code>路径下查找<code>glogin.sql</code>文件执行</p>
+</li>
+<li><p>默认在在当前路径下查找<code>login.sql</code>文件执行，若未查找到对应文件则执行3</p>
+</li>
+<li><p>判断是否设置<code>SQLPATH</code>环境变量，如果设置了该变量则在对应路径下查找并执行，未找到则停止查找</p>
+</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">define</span> _editor<span class="operator">=</span>vi</span><br><span class="line"><span class="keyword">set</span> serveroutput <span class="keyword">on</span> size <span class="number">1000000</span></span><br><span class="line"><span class="keyword">set</span> trimspool <span class="keyword">on</span></span><br><span class="line"><span class="keyword">set</span> long <span class="number">5000</span></span><br><span class="line"><span class="keyword">set</span> linesize <span class="number">100</span></span><br><span class="line"><span class="keyword">set</span> pagesize <span class="number">9999</span></span><br><span class="line"><span class="keyword">column</span> plan_plus_exp format a80</span><br><span class="line"><span class="keyword">set</span> sqlprompt <span class="string">'&amp;_user.@&amp;_connect_identifier.&gt;'</span></span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:40.948Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E8%BF%9E%E6%8E%A5oracle%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">第一次连接oracle数据库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%94%81scott%E7%94%A8%E6%88%B7"><span class="toc-text">解锁scott用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%8E%AF%E5%A2%83"><span class="toc-text">配置数据库环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E6%9C%BA%E8%87%AA%E5%8A%A8%E5%90%AF%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">开机自动启动数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6rlwrap"><span class="toc-text">安装插件rlwrap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BE%8E%E5%8C%96%E7%BB%93%E6%9E%9C%E9%9B%86%E7%9A%84%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6"><span class="toc-text">美化结果集的脚本文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AFsqldeveloper%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">客户端sqldeveloper工具的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E6%9E%9Cscott%E4%B8%8D%E5%AD%98%E5%9C%A8%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA"><span class="toc-text">如果scott不存在如何创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQLPlus-login-sql"><span class="toc-text">SQLPlus login.sql</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

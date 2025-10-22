@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-备份和恢复研讨 第2课的练习：入门 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8D%E7%A0%94%E8%AE%A8/02-GettingStarted-%E5%85%A5%E9%97%A8%E5%87%86%E5%A4%87">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8D%E7%A0%94%E8%AE%A8/02-GettingStarted-%E5%85%A5%E9%97%A8%E5%87%86%E5%A4%87" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2020-03-02 BoobooWei     第2课的练习：入门 实践概述 练习2-1：以NOARCHIVELOG模式备份 总览 假设条件 任务   练习2-2：创建恢复用的测试用例 总览 假设条件 任务   练习2-3：以NOARCHIVELOG模式进行恢复 总览 假设条件 任务        实践概述在这些实践中，您将执行数据库备份，创建要在恢复操作中使用的测试用例，并执行数据库恢复。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-备份和恢复研讨 第2课的练习：入门">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8D%E7%A0%94%E8%AE%A8/02-GettingStarted-%E5%85%A5%E9%97%A8%E5%87%86%E5%A4%87">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2020-03-02 BoobooWei     第2课的练习：入门 实践概述 练习2-1：以NOARCHIVELOG模式备份 总览 假设条件 任务   练习2-2：创建恢复用的测试用例 总览 假设条件 任务   练习2-3：以NOARCHIVELOG模式进行恢复 总览 假设条件 任务        实践概述在这些实践中，您将执行数据库备份，创建要在恢复操作中使用的测试用例，并执行数据库恢复。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.728Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:05.804Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../../news/" class="main-nav-link">News</a><a href="../../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-备份和恢复研讨 第2课的练习：入门</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-063-Oracle数据库12c-高级管理/Oracle数据库12c-备份和恢复研讨/02-GettingStarted-入门准备.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2020-03-02 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#%E7%AC%AC2%E8%AF%BE%E7%9A%84%E7%BB%83%E4%B9%A0%EF%BC%9A%E5%85%A5%E9%97%A8">第2课的练习：入门</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B5%E6%A6%82%E8%BF%B0">实践概述</a></li>
+<li><a href="#%E7%BB%83%E4%B9%A02-1%EF%BC%9A%E4%BB%A5noarchivelog%E6%A8%A1%E5%BC%8F%E5%A4%87%E4%BB%BD">练习2-1：以NOARCHIVELOG模式备份</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6">假设条件</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1">任务</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%83%E4%B9%A02-2%EF%BC%9A%E5%88%9B%E5%BB%BA%E6%81%A2%E5%A4%8D%E7%94%A8%E7%9A%84%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B">练习2-2：创建恢复用的测试用例</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6">假设条件</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1">任务</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%83%E4%B9%A02-3%EF%BC%9A%E4%BB%A5noarchivelog%E6%A8%A1%E5%BC%8F%E8%BF%9B%E8%A1%8C%E6%81%A2%E5%A4%8D">练习2-3：以NOARCHIVELOG模式进行恢复</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6">假设条件</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1">任务</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="实践概述" class="article-heading"><a href="#实践概述" class="headerlink" title="实践概述"></a>实践概述<a class="article-anchor" href="#实践概述" aria-hidden="true"></a></h2><p>在这些实践中，您将执行数据库备份，创建要在恢复操作中使用的测试用例，并执行数据库恢复。</p>
+<h2 id="练习2-1：以NOARCHIVELOG模式备份" class="article-heading"><a href="#练习2-1：以NOARCHIVELOG模式备份" class="headerlink" title="练习2-1：以NOARCHIVELOG模式备份"></a>练习2-1：以NOARCHIVELOG模式备份<a class="article-anchor" href="#练习2-1：以NOARCHIVELOG模式备份" aria-hidden="true"></a></h2><h3 id="总览" class="article-heading"><a href="#总览" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览" aria-hidden="true"></a></h3><p>在这种强制性做法中，您将调用RMAN客户端并使用默认设置执行数据库备份。备份将在以后的实践中用于执行恢复（在有意引入的“灾难”之后）。</p>
+<h3 id="假设条件" class="article-heading"><a href="#假设条件" class="headerlink" title="假设条件"></a>假设条件<a class="article-anchor" href="#假设条件" aria-hidden="true"></a></h3><p>您从终端窗口开始，其中环境变量指向ORCL实例。（如果不确定如何使用oraenv设置环境变量，请重新使用以前的做法。）</p>
+<h3 id="任务" class="article-heading"><a href="#任务" class="headerlink" title="任务"></a>任务<a class="article-anchor" href="#任务" aria-hidden="true"></a></h3><p>1.SYS用户登陆后解锁SYSBACKUP用户</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">--解锁备份用户sysbackup</span></span><br><span class="line"><span class="keyword">select</span> username,account_status <span class="keyword">from</span> dba_users <span class="keyword">where</span> username <span class="operator">=</span> <span class="string">'SYSBACKUP'</span>;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">user</span> sysbackup identified <span class="keyword">by</span> oracle container<span class="operator">=</span><span class="keyword">all</span>;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">user</span> sysbackup account unlock;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>2.SYSBACKUP用户登陆RMAN尝试备份数据库</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">rman target "'/ as sysbackup'"</span><br><span class="line"><span class="keyword">select</span> name,dbid,log_mode <span class="keyword">from</span> v$database;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">user</span> <span class="keyword">from</span> dual;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">all</span>;</span><br><span class="line">backup database;</span><br><span class="line"><span class="comment">--得到一个报错“RMAN-06149：无法以NOARCHIVELOG模式备份数据库”</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>**注意：**以SYSBACKUP特权登录（将您连接为SYSBACKUP用户），这与SYSDBA特权非常相似，不同之处在于它不包括用户内容表的&nbsp;SELECT&nbsp;特权。默认情况下，&nbsp;SYSDBA&nbsp;可以查看用户表的内容，但&nbsp;SYSBACKUP&nbsp;无法看到。（两者都可以查询数据字典和动态视图。）</p>
+<p>3.MOUNT模式下RMAN备份数据库</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">shutdown immediate;</span><br><span class="line">startup mount;</span><br><span class="line">backup database;</span><br><span class="line"><span class="keyword">ALTER</span> DATABASE <span class="keyword">OPEN</span>;</span><br><span class="line">list backup;</span><br><span class="line"><span class="keyword">delete</span> obsolete;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>问题：备份集中有哪些对象？</p>
+<p>答案：第一个备份集包含数据文件备份。第二个备份集包含控制文件和SPFILE备份。</p>
+<p>使用DELETE OBSOLETE命令确定是否可以通过删除重复项来节省空间</p>
+<h2 id="练习2-2：创建恢复用的测试用例" class="article-heading"><a href="#练习2-2：创建恢复用的测试用例" class="headerlink" title="练习2-2：创建恢复用的测试用例"></a>练习2-2：创建恢复用的测试用例<a class="article-anchor" href="#练习2-2：创建恢复用的测试用例" aria-hidden="true"></a></h2><h3 id="总览-1" class="article-heading"><a href="#总览-1" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览-1" aria-hidden="true"></a></h3><p>在实践中，您将创建第一个测试用例，它是一个新的表空间，用户和一个表。</p>
+<h3 id="假设条件-1" class="article-heading"><a href="#假设条件-1" class="headerlink" title="假设条件"></a>假设条件<a class="article-anchor" href="#假设条件-1" aria-hidden="true"></a></h3><p>您已完成练习2-1（并已在NOARCHIVELOG中备份了已关闭的数据库模式）。</p>
+<p><code>export LABS=/home/oracle/labs</code>除非另有说明，否则请在此目录中开始所有实践。</p>
+<p>脚本路径：<a href="labs">实验脚本路径</a></p>
+<h3 id="任务-1" class="article-heading"><a href="#任务-1" class="headerlink" title="任务"></a>任务<a class="article-anchor" href="#任务-1" aria-hidden="true"></a></h3><p>1.根据自己的实际情况修改脚本中用户密码和服务名等信息后，运行。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">bash setup_02_02.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此脚本创建BAR22用户，BAR22TBS表空间 和BARCOPY表。</p>
+<p>2.查看日志<code>/tmp/setup.log</code>文件</p>
+<p>3.以SYSDBA身份登录到SQL * Plus，模拟误操作删除表空间文件。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">--查看新表,总数应为428</span></span><br><span class="line">conn sys<span class="operator">/</span>oracle<span class="variable">@booboopdb1</span> <span class="keyword">as</span> sysba;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> bar22.barcopy <span class="keyword">where</span> rownum <span class="operator">&lt;</span><span class="number">2</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> bar22.barcopy;</span><br><span class="line"></span><br><span class="line"><span class="comment">--查看归档模式</span></span><br><span class="line">archive log list</span><br><span class="line"></span><br><span class="line"><span class="comment">--强制关闭实例</span></span><br><span class="line">conn <span class="operator">/</span> <span class="keyword">as</span> sysba;</span><br><span class="line">shutdown abort</span><br><span class="line"><span class="comment">--查看实例进程</span></span><br><span class="line"><span class="operator">!</span>pgrep <span class="operator">-</span>lf pmon</span><br><span class="line"><span class="comment">--删除数据文件</span></span><br><span class="line"><span class="operator">!</span>rm <span class="operator">/</span>u01<span class="operator">/</span>backup<span class="operator">/</span>booboo<span class="operator">/</span>bar22tbs01.dbf</span><br><span class="line"></span><br><span class="line"><span class="comment">--启动实例</span></span><br><span class="line">startup</span><br></pre></td></tr></tbody></table></figure>
+
+<p>报错如下：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span>startup</span><br><span class="line">ORACLE instance started.</span><br><span class="line"></span><br><span class="line">Total <span class="keyword">System</span> <span class="keyword">Global</span> Area  <span class="number">855638016</span> bytes</span><br><span class="line">Fixed Size		    <span class="number">8798504</span> bytes</span><br><span class="line">Variable Size		  <span class="number">327159512</span> bytes</span><br><span class="line">Database Buffers	  <span class="number">511705088</span> bytes</span><br><span class="line">Redo Buffers		    <span class="number">7974912</span> bytes</span><br><span class="line">Database mounted.</span><br><span class="line">ORA<span class="number">-01157</span>: cannot identify<span class="operator">/</span>lock data file <span class="number">34</span> <span class="operator">-</span> see DBWR trace file</span><br><span class="line">ORA<span class="number">-01110</span>: data file <span class="number">34</span>: <span class="string">'/u01/backup/booboo/bar22tbs01.dbf'</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="练习2-3：以NOARCHIVELOG模式进行恢复" class="article-heading"><a href="#练习2-3：以NOARCHIVELOG模式进行恢复" class="headerlink" title="练习2-3：以NOARCHIVELOG模式进行恢复"></a>练习2-3：以NOARCHIVELOG模式进行恢复<a class="article-anchor" href="#练习2-3：以NOARCHIVELOG模式进行恢复" aria-hidden="true"></a></h2><h3 id="总览-2" class="article-heading"><a href="#总览-2" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览-2" aria-hidden="true"></a></h3><p>在这种情况下，您将使用RMAN客户端恢复数据库。</p>
+<h3 id="假设条件-2" class="article-heading"><a href="#假设条件-2" class="headerlink" title="假设条件"></a>假设条件<a class="article-anchor" href="#假设条件-2" aria-hidden="true"></a></h3><p>此练习具有用于学习目的的可选步骤。</p>
+<h3 id="任务-2" class="article-heading"><a href="#任务-2" class="headerlink" title="任务"></a>任务<a class="article-anchor" href="#任务-2" aria-hidden="true"></a></h3><p>由于数据库处于NOARCHIVELOG模式，因此恢复数据库有两种方法：</p>
+<p>1）删除缺少的表空间，保证其他表空间完整</p>
+<p>2）恢复整个数据库到上一次备份的时间</p>
+<p>以下步骤选择选项1)：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">--cdb中查看当前实例的status为 mount</span></span><br><span class="line"><span class="keyword">select</span> status <span class="keyword">from</span> v$instance;</span><br><span class="line"></span><br><span class="line"><span class="comment">--切换到pdb中，因为损坏的表空间文件是在pdb中创建。查看数据文件和状态</span></span><br><span class="line"><span class="keyword">alter</span> session <span class="keyword">set</span> container<span class="operator">=</span>booboopdb1;</span><br><span class="line"><span class="keyword">select</span> name,status <span class="keyword">from</span> v$datafile <span class="keyword">where</span> name <span class="keyword">like</span> <span class="string">'%bar22tbs01%'</span>;</span><br><span class="line"><span class="comment">--删除丢失的数据文件</span></span><br><span class="line"><span class="keyword">ALTER</span> DATABASE DATAFILE <span class="string">'/u01/backup/booboo/bar22tbs01.dbf'</span> OFFLINE <span class="keyword">FOR</span> <span class="keyword">DROP</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--切换到根，打开数据库</span></span><br><span class="line"><span class="keyword">alter</span> session <span class="keyword">set</span> container<span class="operator">=</span>cdb$root;</span><br><span class="line"><span class="keyword">ALTER</span> DATABASE <span class="keyword">OPEN</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--切换到pdb中，删除丢失的数据文件所在的表空间</span></span><br><span class="line"><span class="keyword">alter</span> session <span class="keyword">set</span> container<span class="operator">=</span>booboopdb1;</span><br><span class="line"><span class="keyword">DROP</span> TABLESPACE BAR22TBS INCLUDING CONTENTS <span class="keyword">AND</span> DATAFILES;</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:05.804Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E6%A6%82%E8%BF%B0"><span class="toc-text">实践概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A02-1%EF%BC%9A%E4%BB%A5NOARCHIVELOG%E6%A8%A1%E5%BC%8F%E5%A4%87%E4%BB%BD"><span class="toc-text">练习2-1：以NOARCHIVELOG模式备份</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6"><span class="toc-text">假设条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1"><span class="toc-text">任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A02-2%EF%BC%9A%E5%88%9B%E5%BB%BA%E6%81%A2%E5%A4%8D%E7%94%A8%E7%9A%84%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B"><span class="toc-text">练习2-2：创建恢复用的测试用例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88-1"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6-1"><span class="toc-text">假设条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1-1"><span class="toc-text">任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A02-3%EF%BC%9A%E4%BB%A5NOARCHIVELOG%E6%A8%A1%E5%BC%8F%E8%BF%9B%E8%A1%8C%E6%81%A2%E5%A4%8D"><span class="toc-text">练习2-3：以NOARCHIVELOG模式进行恢复</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88-2"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6-2"><span class="toc-text">假设条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1-2"><span class="toc-text">任务</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践6:管理用户 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/06-AdministeringUserSecurity-%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/06-AdministeringUserSecurity-%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 6: Administering User 2020.01.29 BoobooWei     实践6:管理用户 实践6:概览 实践6-1:创建用户和配置文件 Overview Task Practice KnowledgePoint   实践6-2:创建角色 Overview Task Practice KnowledgePoint   实践6-3:创建">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践6:管理用户">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/06-AdministeringUserSecurity-%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 6: Administering User 2020.01.29 BoobooWei     实践6:管理用户 实践6:概览 实践6-1:创建用户和配置文件 Overview Task Practice KnowledgePoint   实践6-2:创建角色 Overview Task Practice KnowledgePoint   实践6-3:创建">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.731Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:55.554Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践6:管理用户</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/06-AdministeringUserSecurity-管理用户.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p><strong>Practices for Lesson 6: Administering User</strong></p>
+<p>2020.01.29 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#%E5%AE%9E%E8%B7%B56%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7">实践6:管理用户</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B56%E6%A6%82%E8%A7%88">实践6:概览</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B56-1%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%92%8C%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">实践6-1:创建用户和配置文件</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#task">Task</a></li>
+<li><a href="#practice">Practice</a></li>
+<li><a href="#knowledgepoint">KnowledgePoint</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9E%E8%B7%B56-2%E5%88%9B%E5%BB%BA%E8%A7%92%E8%89%B2">实践6-2:创建角色</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#task">Task</a></li>
+<li><a href="#practice">Practice</a></li>
+<li><a href="#knowledgepoint">KnowledgePoint</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9E%E8%B7%B56-3%E5%88%9B%E5%BB%BA%E5%92%8C%E9%85%8D%E7%BD%AE%E7%94%A8%E6%88%B7">实践6-3:创建和配置用户</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#task">Task</a></li>
+<li><a href="#practice">Practice</a></li>
+<li><a href="#knowledgepoint">KnowledgePoint</a><ul>
+<li><a href="#em-express-%E5%88%9B%E5%BB%BA%E5%92%8C%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7%E5%B8%90%E6%88%B7">EM Express 创建和管理用户帐户</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E5%85%A8%E6%8C%87%E5%8D%97">数据库安全指南</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9E%E8%B7%B56-4%E4%BD%BF%E7%94%A8%E5%AE%89%E5%85%A8%E7%9A%84%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%A7%92%E8%89%B2">实践6-4:使用安全的应用程序角色</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#task">Task</a></li>
+<li><a href="#practice">Practice</a></li>
+<li><a href="#knowledgepoint">KnowledgePoint</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="实践6-概览" class="article-heading"><a href="#实践6-概览" class="headerlink" title="实践6:概览"></a>实践6:概览<a class="article-anchor" href="#实践6-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 6: Overview</p>
+<p>Background: You need to create a user account for Jenny Goodman, the new human resources department manager. There are also two new clerks in the human resources department, David Hamby and Rachel Pandya. All three must be able to log in to the orcl database and to select data from, and update records in, all the HR schema tables. The manager also needs to be able to insert and delete new HR records. Ensure that if the new users forget to log out at the end of the day, they are automatically logged out after 15 minutes. You also need to create a new user account for the inventory application that you are installing.</p>
+<p>背景:</p>
+<p>1.您需要为以下人员创建用户帐户：</p>
+<ul>
+<li>新上任的人力资源部经理 Jenny Goodman</li>
+<li>人力资源部两位新职员 David Hamby 和 Rachel Pandya</li>
+</ul>
+<p>权限如下：</p>
+<ul>
+<li>所有人能够登录到数据库</li>
+<li>所有人能访问 HR schema中的所有表，并有更新权限</li>
+<li>经理需要能够插入和删除新的HR记录</li>
+<li>如果新用户在一天结束时忘记登出，他们将在15分钟后自动登出。</li>
+</ul>
+<p>2.您还需要为正在安装的inventory应用程序创建一个新的用户帐户。</p>
+<h2 id="实践6-1-创建用户和配置文件" class="article-heading"><a href="#实践6-1-创建用户和配置文件" class="headerlink" title="实践6-1:创建用户和配置文件"></a>实践6-1:创建用户和配置文件<a class="article-anchor" href="#实践6-1-创建用户和配置文件" aria-hidden="true"></a></h2><p>Practice 6-1: Creating a User and a Profile</p>
+<h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><p>In this practice, you create the INVENTORY user to own the new Inventory application. You create a profile to limit the idle time of users. If a user is idle or forgets to log out after 15 minutes, the user session is ended.</p>
+<h3 id="Task" class="article-heading"><a href="#Task" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task" aria-hidden="true"></a></h3><ol>
+<li>Mandatory task: Create the INVENTORY user with a password of oracle_4U.</li>
+<li>Create a profile named HRPROFILE that allows only 15 minutes idle time.<br>. Set the RESOURCE_LIMIT initialization parameter to TRUE so that your profile limits are enforced.</li>
+</ol>
+<h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><ol>
+<li>强制任务:创建用户 <code>INVENTORY</code> 密码 <code>oracle_4U</code></li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># sqlplus <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">alter</span> session <span class="keyword">set</span> container<span class="operator">=</span>booboopdb1;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> inventory identified <span class="keyword">by</span> oracle_4U</span><br><span class="line">  <span class="keyword">default</span> tablespace users</span><br><span class="line">  quota unlimited <span class="keyword">on</span> users;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">connect</span> <span class="keyword">to</span> inventory;</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li><p>创建一个仅允许15分钟空闲时间的名为 <code>HRPROFILE</code> 的配置文件。</p>
+<p>访问 Enterprise Manager Database Express，使用<strong>SYSDBA</strong>用户身份登录，然后执行以下步骤:</p>
+<p>访问 <a target="_blank" rel="noopener" href="http://localhsot:5505/em/login">http://localhsot:5505/em/login</a></p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>EM Express</td>
+<td>Select <strong>Security</strong> &gt; <strong>Profiles</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Profiles</td>
+<td>Select <strong>Create Profile</strong>.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Create Profile Dialog: New Profile</td>
+<td>Enter <strong>HRPROFILE</strong> in the Name field. Click the <strong>Next</strong> icon .</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Create Profile Dialog: General</td>
+<td>Select <strong>15</strong> in the Idle Time (Minutes) menu. Leave all the other fields set to the default value of Unlimited. Click the <strong>Next</strong> icon .</td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Create Profile Dialog: Password</td>
+<td>Review the Password options. All should be set to default values of Unlimited or Null. Click <strong>Show SQL</strong> to review the SQL command for this task.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Confirmation</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>Create Profile Dialog: Password</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>h.</td>
+<td>Confirmation</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+</tbody></table>
+<p><img src="pic/0601.jpg"></p>
+<p><img src="pic/0602.jpg"></p>
+<p><img src="pic/0603.jpg"></p>
+<p><img src="pic/0604.jpg"></p>
+<p><img src="pic/0605.jpg"></p>
+<p><img src="pic/0606.jpg"></p>
+<p><img src="pic/0607.jpg"></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> profile "HRPROFILE" limit</span><br><span class="line">        cpu_per_session UNLIMITED</span><br><span class="line">        cpu_per_call UNLIMITED</span><br><span class="line">        connect_time UNLIMITED</span><br><span class="line">        idle_time <span class="number">15</span></span><br><span class="line">        sessions_per_user UNLIMITED</span><br><span class="line">        logical_reads_per_session UNLIMITED</span><br><span class="line">        logical_reads_per_call UNLIMITED</span><br><span class="line">        private_sga UNLIMITED</span><br><span class="line">        composite_limit UNLIMITED</span><br><span class="line">        password_life_time UNLIMITED</span><br><span class="line">        password_grace_time UNLIMITED</span><br><span class="line">        password_reuse_max UNLIMITED</span><br><span class="line">        password_reuse_time UNLIMITED</span><br><span class="line">        password_verify_function <span class="keyword">NULL</span></span><br><span class="line">        failed_login_attempts UNLIMITED</span><br><span class="line">        password_lock_time UNLIMITED;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>将 <code>RESOURCE_LIMIT</code> 初始化参数设置为 <code>TRUE</code> ，以便执行配置文件限制。</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td></td>
+<td>Select <strong>Configuration</strong> &gt; <strong>Initialization</strong> <strong>Parameters</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Initialization Parameters</td>
+<td>Enter <strong>resource_limit</strong> in the Name field.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Initialization Parameters</td>
+<td>Confirm that resource_limit is set to <strong>true</strong>. If it is not set to true, perform steps d–f.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Initialization Parameters</td>
+<td>Select <strong>resource_limit</strong> Click <strong>Set</strong>.</td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Set Initialization Parameter</td>
+<td>Set Value <strong>true</strong>. Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Confirmation</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+</tbody></table>
+<p><img src="pic/0608.jpg"></p>
+<p><img src="pic/0609.jpg"></p>
+<p><img src="pic/0610.jpg"></p>
+<p><img src="pic/0611.jpg"></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">system</span> <span class="keyword">set</span> "resource_limit"<span class="operator">=</span><span class="literal">true</span> <span class="keyword">scope</span><span class="operator">=</span><span class="keyword">both</span> sid<span class="operator">=</span><span class="string">'*'</span>;</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admqs/managing-pdbs-with-em-express.html#GUID-24A7DC45-7A14-47A1-B14A-E1A7093CE6D9">使用EM Express管理PDB</a></p>
+<h2 id="实践6-2-创建角色" class="article-heading"><a href="#实践6-2-创建角色" class="headerlink" title="实践6-2:创建角色"></a>实践6-2:创建角色<a class="article-anchor" href="#实践6-2-创建角色" aria-hidden="true"></a></h2><p>Practice 6-2: Creating Roles</p>
+<h3 id="Overview-1" class="article-heading"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-1" aria-hidden="true"></a></h3><p>In this practice, you create the HRCLERK and HRMANAGER roles that will be used in the next practice.</p>
+<h3 id="Task-1" class="article-heading"><a href="#Task-1" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-1" aria-hidden="true"></a></h3><ol>
+<li>Create the role named HRCLERK with SELECT and UPDATE permissions on all the HR schema tables.<br>. Create the role named HRMANAGER with INSERT and DELETE permissions on all the HR tables. Grant the HRCLERK role to the HRMANAGER role.</li>
+</ol>
+<h3 id="Practice-1" class="article-heading"><a href="#Practice-1" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-1" aria-hidden="true"></a></h3><p>在此实践中，您将创建将在下一个实践中使用的HRCLERK和HRMANAGER角色。</p>
+<ol>
+<li>创建角色 <code>HRCLERK</code> : 对 <code>HR schema</code> 有 <code>select</code> 和 <code>update</code> 权限。</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> role "HRCLERK" <span class="keyword">NOT</span> IDENTIFIED;</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">SELECT</span>,<span class="keyword">UPDATE</span> <span class="keyword">on</span> "HR"."EMPLOYEES" <span class="keyword">to</span> "HRCLERK";</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">SELECT</span>,<span class="keyword">UPDATE</span> <span class="keyword">on</span> "HR"."T02" <span class="keyword">to</span> "HRCLERK";</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">SELECT</span>,<span class="keyword">UPDATE</span> <span class="keyword">on</span> "HR"."REGIONS" <span class="keyword">to</span> "HRCLERK";</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">SELECT</span>,<span class="keyword">UPDATE</span> <span class="keyword">on</span> "HR"."LOCATIONS" <span class="keyword">to</span> "HRCLERK";</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">SELECT</span>,<span class="keyword">UPDATE</span> <span class="keyword">on</span> "HR"."DEPARTMENTS" <span class="keyword">to</span> "HRCLERK";</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">SELECT</span>,<span class="keyword">UPDATE</span> <span class="keyword">on</span> "HR"."JOBS" <span class="keyword">to</span> "HRCLERK";</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">SELECT</span>,<span class="keyword">UPDATE</span> <span class="keyword">on</span> "HR"."COUNTRIES" <span class="keyword">to</span> "HRCLERK";</span><br><span class="line">  <span class="keyword">grant</span> <span class="keyword">SELECT</span>,<span class="keyword">UPDATE</span> <span class="keyword">on</span> "HR"."JOB_HISTORY" <span class="keyword">to</span> "HRCLERK";</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li>创建角色 <code>HRMANAGER</code> : 对 <code>HR schema</code> 有 <code>insert</code> 和 <code>delete</code> 权限，并将角色 <code>HRCLERK</code> 授权给角色 <code>HRCLERK</code>。</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> role "HRMANAGER" <span class="keyword">NOT</span> IDENTIFIED;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">INSERT</span>,<span class="keyword">DELETE</span> <span class="keyword">on</span> "HR"."EMPLOYEES" <span class="keyword">to</span> "HRMANAGER";</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">INSERT</span>,<span class="keyword">DELETE</span> <span class="keyword">on</span> "HR"."T02" <span class="keyword">to</span> "HRMANAGER";</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">INSERT</span>,<span class="keyword">DELETE</span> <span class="keyword">on</span> "HR"."REGIONS" <span class="keyword">to</span> "HRMANAGER";</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">INSERT</span>,<span class="keyword">DELETE</span> <span class="keyword">on</span> "HR"."LOCATIONS" <span class="keyword">to</span> "HRMANAGER";</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">INSERT</span>,<span class="keyword">DELETE</span> <span class="keyword">on</span> "HR"."DEPARTMENTS" <span class="keyword">to</span> "HRMANAGER";</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">INSERT</span>,<span class="keyword">DELETE</span> <span class="keyword">on</span> "HR"."JOBS" <span class="keyword">to</span> "HRMANAGER";</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">INSERT</span>,<span class="keyword">DELETE</span> <span class="keyword">on</span> "HR"."COUNTRIES" <span class="keyword">to</span> "HRMANAGER";</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">INSERT</span>,<span class="keyword">DELETE</span> <span class="keyword">on</span> "HR"."JOB_HISTORY" <span class="keyword">to</span> "HRMANAGER";</span><br><span class="line"><span class="keyword">grant</span> HRCLERK <span class="keyword">to</span> "HRMANAGER";</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="KnowledgePoint-1" class="article-heading"><a href="#KnowledgePoint-1" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-1" aria-hidden="true"></a></h3><p>使用图形化界面管理确实方便；</p>
+<p>如果使用命令行，如何快速生成授权命令？</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">declare</span></span><br><span class="line"><span class="keyword">cursor</span> c1 <span class="keyword">is</span> <span class="keyword">select</span> owner,table_name <span class="keyword">from</span> dba_tables <span class="keyword">where</span> owner<span class="operator">=</span><span class="string">'HR'</span>;</span><br><span class="line">v1 c1<span class="operator">%</span>rowtype;</span><br><span class="line">n1 number(<span class="number">2</span>);</span><br><span class="line">username <span class="type">varchar</span>(<span class="number">255</span>) :<span class="operator">=</span> <span class="string">'HRCLERK'</span>;</span><br><span class="line">p1 <span class="type">varchar</span>(<span class="number">255</span>) :<span class="operator">=</span> <span class="string">'select'</span>;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line"><span class="keyword">for</span> v1 <span class="keyword">in</span> c1 loop</span><br><span class="line">   dbms_output.put_line(<span class="string">'grant '</span><span class="operator">||</span>p1<span class="operator">||</span><span class="string">' on "'</span> <span class="operator">||</span>v1.owner<span class="operator">||</span><span class="string">'"."'</span><span class="operator">||</span>v1.table_name<span class="operator">||</span><span class="string">'" to "'</span><span class="operator">||</span>username<span class="operator">||</span><span class="string">'" ;'</span>);</span><br><span class="line">   n1:<span class="operator">=</span>c1<span class="operator">%</span>rowcount;</span><br><span class="line"> <span class="keyword">end</span> loop;</span><br><span class="line"> <span class="comment">/*dbms_output.put_line(n1);*/</span></span><br><span class="line"> <span class="keyword">END</span>;</span><br><span class="line"> <span class="operator">/</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="实践6-3-创建和配置用户" class="article-heading"><a href="#实践6-3-创建和配置用户" class="headerlink" title="实践6-3:创建和配置用户"></a>实践6-3:创建和配置用户<a class="article-anchor" href="#实践6-3-创建和配置用户" aria-hidden="true"></a></h2><p>Practice 6-3: Creating and Configuring Users</p>
+<h3 id="Overview-2" class="article-heading"><a href="#Overview-2" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-2" aria-hidden="true"></a></h3><p>In this practice, you create the following users and assign appropriate profiles and roles to these users:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Name</strong></th>
+<th><strong>Username</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>David Hamby</td>
+<td>DHAMBY</td>
+<td>A new HR Clerk</td>
+</tr>
+<tr>
+<td>Rachel Pandya</td>
+<td>RPANDYA</td>
+<td>A new HR Clerk</td>
+</tr>
+<tr>
+<td>Jenny Goodman</td>
+<td>JGOODMAN</td>
+<td>A new HR Manager</td>
+</tr>
+</tbody></table>
+<h3 id="Task-2" class="article-heading"><a href="#Task-2" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-2" aria-hidden="true"></a></h3><ol>
+<li><p>Create an account for David Hamby, a new HR clerk.</p>
+</li>
+<li><p>Create an account for Rachel Pandya, another new HR clerk. Modify the <code>P6script.sql</code> script to create the RPANDYA user.</p>
+</li>
+<li><p>Create an account for Jenny Goodman, the new HR manager. Modify the <code>P6script.sql</code> script to take parameters for the username and role. Execute the script to create the <strong>JGOODMAN</strong> user with the <strong>HRMANAGER</strong> role.</p>
+</li>
+<li><p>Test the new users in SQL*Plus. Connect to the orcl database as the DHAMBY user. Use <strong>oracle_4U</strong> as the new password. Select the row with <strong>EMPLOYEE_ID=197</strong> from the <strong>HR.EMPLOYEES</strong> table. Then attempt to delete it. You should get the “insufficient privileges” error.</p>
+</li>
+<li><p>Repeat the test as the **J**<strong>GOODMAN</strong> user. Use **oracle_4U** as the new password. After deleting the row, issue a rollback, so that you still have the original 107 rows.</p>
+</li>
+<li><p>Use SQL*Plus to connect to the <strong>orcl</strong> database as the <strong>RPANDYA</strong> user. Change the password to <strong>oracle_4U</strong>. (You must change the password, because this is the first connection as RPANDYA.) Leave RPANDYA connected during the next lesson or at the end of the day. HRPROFILE specifies that users whose sessions are inactive for more than 15 minutes will automatically be logged out. Verify that the user was automatically logged out by trying to select from the <strong>HR.EMPLOYEES</strong> table again.</p>
+</li>
+</ol>
+<h3 id="Practice-2" class="article-heading"><a href="#Practice-2" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-2" aria-hidden="true"></a></h3><p>在此实践中，您将创建以下用户并为这些用户分配适当的配置文件和角色:</p>
+<table>
+<thead>
+<tr>
+<th><strong>姓名</strong></th>
+<th><strong>用户名</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>David Hamby</td>
+<td>DHAMBY</td>
+<td>A new HR Clerk</td>
+</tr>
+<tr>
+<td>Rachel Pandya</td>
+<td>RPANDYA</td>
+<td>A new HR Clerk</td>
+</tr>
+<tr>
+<td>Jenny Goodman</td>
+<td>JGOODMAN</td>
+<td>A new HR Manager</td>
+</tr>
+</tbody></table>
+<ol>
+<li><p>使用EM，为David Hamby，一个新的人力资源职员创建一个帐户。</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>EM Express</td>
+<td>Select <strong>Security</strong> &gt; <strong>Users</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Users</td>
+<td>Click <strong>Create User</strong>.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Create User: User Account</td>
+<td>Name: <strong>DHAMBY</strong> Authentication: Select <strong>Password</strong> Password: <strong>newuser</strong> Profile: <strong>HRPROFILE</strong> Select <strong>Password expired</strong> Click the <strong>Next</strong> icon. <strong>Note:</strong> This user will have to change the password.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Create User: Tablespace</td>
+<td>Verify Default Tablespace: <strong>USERS</strong> Temporary Tablespace: <strong>TEMP</strong> Click the <strong>Next</strong> icon.</td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Create User: Privilege</td>
+<td>Select <strong>Connect</strong> and move it to the right pane. Click <strong>Show SQL</strong>.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Confirmation</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>Create User: Privilege</td>
+<td>Select <strong>HRCLERK</strong> and move it to the right pane. Hint: Enter HR in the search/filter box. Click <strong>Show SQL</strong>.</td>
+</tr>
+<tr>
+<td>h.</td>
+<td>Confirmation</td>
+<td>Copy and paste the SQL statements into a gedit window.</td>
+</tr>
+<tr>
+<td>i.</td>
+<td>Linux Desktop (see screenshot below)</td>
+<td>Click <strong>Applications</strong> &gt; <strong>Accessories</strong> &gt; <strong>gedit Text</strong> <strong>Editor</strong> In gedit, click <strong>File</strong> &gt; <strong>Save as</strong> Enter <strong>P6script.sql</strong> as the file name. Save in the default location of <strong>/home/oracle</strong>. Click <strong>Save</strong>. Click <strong>File</strong> &gt; <strong>Quit</strong></td>
+</tr>
+<tr>
+<td>j.</td>
+<td>Confirmation</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>k.</td>
+<td>Create User: Privilege</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>l.</td>
+<td>Confirmation</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+</tbody></table>
+<p><img src="pic/0614.jpg"></p>
+<p><img src="pic/0612.jpg"></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> "DHAMBY" identified <span class="keyword">by</span> "newuser"</span><br><span class="line">profile "HRPROFILE"</span><br><span class="line">password expire</span><br><span class="line">account unlock</span><br><span class="line"><span class="keyword">default</span> tablespace  "USERS"</span><br><span class="line">temporary tablespace "TEMP";</span><br><span class="line"></span><br><span class="line"><span class="keyword">grant</span> "CONNECT" <span class="keyword">to</span> "DHAMBY";</span><br><span class="line"><span class="keyword">grant</span> "HRCLERK" <span class="keyword">to</span> "DHAMBY";</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>通过SQL脚本<code>P6script.sql</code>为另一位新的人力资源职员Rachel Pandya创建一个账户<code>RPANDYA</code>。</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; /home/oracle/P6script.sql &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">create user "RPANDYA" identified by "newuser"</span></span><br><span class="line"><span class="string">profile "HRPROFILE"</span></span><br><span class="line"><span class="string">password expire</span></span><br><span class="line"><span class="string">account unlock</span></span><br><span class="line"><span class="string">default tablespace  "USERS"</span></span><br><span class="line"><span class="string">temporary tablespace "TEMP";</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">grant "CONNECT" to "RPANDYA";</span></span><br><span class="line"><span class="string">grant "HRCLERK" to "RPANDYA";</span></span><br><span class="line"><span class="string">ENDF</span></span><br><span class="line"></span><br><span class="line">sqlplus sys/oracle@booboopdb1 as sysdba @/home/oracle/P6script.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/0613.jpg"></p>
+<ol start="3">
+<li>通过修改脚本<code>P6script.sql</code>为新上任的人力资源经理<code>JGOODMAN</code>开设一个账户，该脚本需要输入用户名和角色参数。执行脚本创建具有<strong>HRMANAGER</strong>角色的<strong>JGOODMAN</strong>用户。</li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; /home/oracle/P6script.sql &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">create user "&amp;&amp;username" identified by "newuser"</span></span><br><span class="line"><span class="string">profile "HRPROFILE"</span></span><br><span class="line"><span class="string">password expire</span></span><br><span class="line"><span class="string">account unlock</span></span><br><span class="line"><span class="string">default tablespace  "USERS"</span></span><br><span class="line"><span class="string">temporary tablespace "TEMP";</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">grant "CONNECT" to "&amp;&amp;username";</span></span><br><span class="line"><span class="string">grant "&amp;&amp;role" to "&amp;&amp;username";</span></span><br><span class="line"><span class="string">ENDF</span></span><br><span class="line"></span><br><span class="line">sqlplus sys/oracle@booboopdb1 as sysdba @/home/oracle/P6script.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行结果：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@oracle01</span> <span class="operator">~</span>]$ sqlplus sys<span class="operator">/</span>oracle<span class="variable">@booboopdb1</span> <span class="keyword">as</span> sysdba @<span class="operator">/</span>home<span class="operator">/</span>oracle<span class="operator">/</span>P6script.sql</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Fri Jan <span class="number">31</span> <span class="number">03</span>:<span class="number">01</span>:<span class="number">10</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line">Connected <span class="keyword">to</span>:</span><br><span class="line">Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"></span><br><span class="line">Enter <span class="keyword">value</span> <span class="keyword">for</span> username: JGOODMAN</span><br><span class="line"><span class="keyword">old</span>   <span class="number">1</span>: <span class="keyword">create</span> <span class="keyword">user</span> "&amp;&amp;username" identified <span class="keyword">by</span> "newuser"</span><br><span class="line"><span class="keyword">new</span>   <span class="number">1</span>: <span class="keyword">create</span> <span class="keyword">user</span> "JGOODMAN" identified <span class="keyword">by</span> "newuser"</span><br><span class="line"></span><br><span class="line"><span class="keyword">User</span> created.</span><br><span class="line"></span><br><span class="line"><span class="keyword">old</span>   <span class="number">1</span>: <span class="keyword">grant</span> "CONNECT" <span class="keyword">to</span> "&amp;&amp;username"</span><br><span class="line"><span class="keyword">new</span>   <span class="number">1</span>: <span class="keyword">grant</span> "CONNECT" <span class="keyword">to</span> "JGOODMAN"</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br><span class="line">Enter <span class="keyword">value</span> <span class="keyword">for</span> role: HRMANAGER</span><br><span class="line"><span class="keyword">old</span>   <span class="number">1</span>: <span class="keyword">grant</span> "&amp;&amp;role" <span class="keyword">to</span> "&amp;&amp;username"</span><br><span class="line"><span class="keyword">new</span>   <span class="number">1</span>: <span class="keyword">grant</span> "HRMANAGER" <span class="keyword">to</span> "JGOODMAN"</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span>exit</span><br><span class="line">Disconnected <span class="keyword">from</span> Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/0615.jpg"></p>
+<ol start="4">
+<li><p>在SQL * Plus 中测试新用户，使用 DHAMBY 用户连接到数据库，使用<strong>oracle_4U</strong>作为新密码尝试从<code>"HR"."EMPLOYEES"</code>中选择具有<code>EMPLOYEE_ID=197</code>的行，然后尝试删除它。您应该得到“权限不足“错误。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@oracle01</span> <span class="operator">~</span>]$ sqlplus DHAMBY<span class="operator">/</span>newuser<span class="variable">@booboopdb1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Fri Jan <span class="number">31</span> <span class="number">03</span>:<span class="number">08</span>:<span class="number">01</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line">ERROR:</span><br><span class="line">ORA<span class="number">-28001</span>: the password has expired</span><br><span class="line"></span><br><span class="line">Changing password <span class="keyword">for</span> DHAMBY</span><br><span class="line"><span class="keyword">New</span> password:</span><br><span class="line">Retype <span class="keyword">new</span> password:</span><br><span class="line">Password changed</span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span>:</span><br><span class="line">Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"></span><br><span class="line">DHAMBY<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tab;</span><br><span class="line"></span><br><span class="line"><span class="keyword">no</span> <span class="keyword">rows</span> selected</span><br><span class="line"></span><br><span class="line">DHAMBY<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> hr.EMPLOYEES <span class="keyword">where</span> EMPLOYEE_ID<span class="operator">=</span><span class="number">197</span>;</span><br><span class="line"></span><br><span class="line">EMPLOYEE_ID FIRST_NAME		 LAST_NAME		   EMAIL</span><br><span class="line"><span class="comment">----------- -------------------- ------------------------- -------------------------</span></span><br><span class="line">PHONE_NUMBER	     HIRE_DATE JOB_ID	      SALARY COMMISSION_PCT MANAGER_ID DEPARTMENT_ID</span><br><span class="line"><span class="comment">-------------------- --------- ---------- ---------- -------------- ---------- -------------</span></span><br><span class="line">	<span class="number">197</span> Kevin		 Feeney 		   KFEENEY</span><br><span class="line"><span class="number">650.507</span><span class="number">.9822</span>	     <span class="number">23</span><span class="operator">-</span>MAY<span class="number">-06</span> SH_CLERK 	<span class="number">3000</span>			   <span class="number">124</span>		  <span class="number">50</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>DHAMBY@booboopdb1&gt;delete from hr.EMPLOYEES where EMPLOYEE_ID=197;<br>delete from hr.EMPLOYEES where EMPLOYEE_ID=197 *<br>ERROR at line 1:<br>ORA-01031: insufficient privileges</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">5. 在SQL * Plus 中测试新用户，使用 JGOODMAN 用户连接到数据库，使用**oracle_4U**作为新密码尝试从`"HR"."EMPLOYEES"`中选择具有`EMPLOYEE_ID=197`的行，然后尝试删除它，删除行后，执行回滚，以便您仍然保留原来的107行。</span><br><span class="line"></span><br><span class="line"> ```sql</span><br><span class="line"> [oracle@oracle01 ~]$ sqlplus JGOODMAN/newuser@booboopdb1</span><br><span class="line"></span><br><span class="line"> SQL*Plus: Release 12.2.0.1.0 Production on Fri Jan 31 03:11:29 2020</span><br><span class="line"></span><br><span class="line"> Copyright (c) 1982, 2016, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line"> ERROR:</span><br><span class="line"> ORA-28001: the password has expired</span><br><span class="line"></span><br><span class="line"> Changing password for JGOODMAN</span><br><span class="line"> New password:</span><br><span class="line"> Retype new password:</span><br><span class="line"> Password changed</span><br><span class="line"></span><br><span class="line"> Connected to:</span><br><span class="line"> Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line"></span><br><span class="line"> JGOODMAN@booboopdb1&gt;select * from hr.EMPLOYEES where EMPLOYEE_ID=197;</span><br><span class="line"></span><br><span class="line"> EMPLOYEE_ID FIRST_NAME		 LAST_NAME		   EMAIL</span><br><span class="line"> ----------- -------------------- ------------------------- -------------------------</span><br><span class="line"> PHONE_NUMBER	     HIRE_DATE JOB_ID	      SALARY COMMISSION_PCT MANAGER_ID DEPARTMENT_ID</span><br><span class="line">-------------------- --------- ---------- ---------- -------------- ---------- -------------</span><br><span class="line"> 	197 Kevin		 Feeney 		   KFEENEY</span><br><span class="line"> 650.507.9822	     23-MAY-06 SH_CLERK 	3000			   124		  50</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> JGOODMAN@booboopdb1&gt;delete from hr.EMPLOYEES where EMPLOYEE_ID=197;</span><br><span class="line"></span><br><span class="line"> 1 row deleted.</span><br><span class="line"></span><br><span class="line"> JGOODMAN@booboopdb1&gt;select * from hr.EMPLOYEES where EMPLOYEE_ID=197;</span><br><span class="line"></span><br><span class="line"> no rows selected</span><br><span class="line"></span><br><span class="line"> JGOODMAN@booboopdb1&gt;rollback;</span><br><span class="line"></span><br><span class="line"> Rollback complete.</span><br><span class="line"></span><br><span class="line"> JGOODMAN@booboopdb1&gt;select * from hr.EMPLOYEES where EMPLOYEE_ID=197;</span><br><span class="line"></span><br><span class="line"> EMPLOYEE_ID FIRST_NAME		 LAST_NAME		   EMAIL</span><br><span class="line">----------- -------------------- ------------------------- -------------------------</span><br><span class="line"> PHONE_NUMBER	     HIRE_DATE JOB_ID	      SALARY COMMISSION_PCT MANAGER_ID DEPARTMENT_ID</span><br><span class="line">-------------------- --------- ---------- ---------- -------------- ---------- -------------</span><br><span class="line"> 	197 Kevin		 Feeney 		   KFEENEY</span><br><span class="line"> 650.507.9822	     23-MAY-06 SH_CLERK 	3000			   124		  50</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="6">
+<li><p>在SQL * Plus 中测试新用户，使用 RPANDYA 用户连接到数据库，使用<strong>oracle_4U</strong>作为新密码。验证概要文件配置中的空闲时间15分钟的含义。</p>
+<p>HRPROFILE指定会话不活动超过15分钟的用户将自动注销。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@oracle01</span> <span class="operator">~</span>]$ sqlplus RPANDYA<span class="operator">/</span>newuser<span class="variable">@booboopdb1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Fri Jan <span class="number">31</span> <span class="number">03</span>:<span class="number">18</span>:<span class="number">08</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line">ERROR:</span><br><span class="line">ORA<span class="number">-28001</span>: the password has expired</span><br><span class="line">Changing password <span class="keyword">for</span> RPANDYA</span><br><span class="line"><span class="keyword">New</span> password:</span><br><span class="line">Retype <span class="keyword">new</span> password:</span><br><span class="line">Password changed</span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span>:</span><br><span class="line">Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"></span><br><span class="line">RPANDYA<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">SELECT</span> salary <span class="keyword">FROM</span> hr.employees <span class="keyword">WHERE</span> EMPLOYEE_ID<span class="operator">=</span><span class="number">197</span>;</span><br><span class="line"></span><br><span class="line">    SALARY</span><br><span class="line"></span><br><span class="line"><span class="comment">----------</span></span><br><span class="line">      <span class="number">3000</span></span><br><span class="line"></span><br><span class="line">RPANDYA<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">select</span> to_char(sysdate,<span class="string">'YYYY-MM-DD HH:mm:ss'</span>) <span class="keyword">from</span> dual;</span><br><span class="line"></span><br><span class="line">TO_CHAR(SYSDATE,<span class="string">'YY</span></span><br><span class="line"><span class="string">-------------------</span></span><br><span class="line"><span class="string">2020-01-31 03:01:42</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">--等待15分钟</span></span><br><span class="line"><span class="string">RPANDYA@booboopdb1&gt;SELECT salary FROM hr.employees WHERE EMPLOYEE_ID=197;</span></span><br><span class="line"><span class="string">ERROR at line 1:</span></span><br><span class="line"><span class="string">ORA-02396: exceeded maximum idle time, please connect again</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h3 id="KnowledgePoint-2" class="article-heading"><a href="#KnowledgePoint-2" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-2" aria-hidden="true"></a></h3><h4 id="EM-Express-创建和管理用户帐户" class="article-heading"><a href="#EM-Express-创建和管理用户帐户" class="headerlink" title="EM Express 创建和管理用户帐户"></a>EM Express 创建和管理用户帐户<a class="article-anchor" href="#EM-Express-创建和管理用户帐户" aria-hidden="true"></a></h4><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admqs/administering-user-accounts-and-security.html#GUID-7FC1D8BE-4BB9-4642-A4CE-29CD2B8A5F23">管理用户帐户和安全性</a></p>
+<p>如何使用Oracle Enterprise Manager Database Express（EM Express）创建和管理用户帐户。它包含以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admqs/administering-user-accounts-and-security.html#GUID-434BA586-DDFC-4C37-B442-C9348C2853AE">关于用户帐户</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admqs/administering-user-accounts-and-security.html#GUID-289A4BF6-F703-4ED5-8357-89F651A6D1DE">关于用户权限和角色</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admqs/administering-user-accounts-and-security.html#GUID-3C78F89D-3616-48FA-B2B8-CE6988D78939">关于行政帐户和特权</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admqs/administering-user-accounts-and-security.html#GUID-3E6BB467-5BCC-4757-A3FC-B38644B20CD7">管理角色</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admqs/administering-user-accounts-and-security.html#GUID-190C93F1-B4CD-4E88-836F-CCD79AA910CD">管理数据库用户帐户</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admqs/administering-user-accounts-and-security.html#GUID-8A884463-CD5E-4344-849E-59730E6AB5AF">设置数据库密码策略</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admqs/administering-user-accounts-and-security.html#GUID-09F303AD-4869-47B1-9264-24A14979FF8E">管理用户帐户和安全性：Oracle示例系列</a></li>
+</ul>
+<h4 id="数据库安全指南" class="article-heading"><a href="#数据库安全指南" class="headerlink" title="数据库安全指南"></a>数据库安全指南<a class="article-anchor" href="#数据库安全指南" aria-hidden="true"></a></h4><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/dbseg/release-changes.html#GUID-256DEEBF-8FBE-4641-BAE3-D23D53ADFB44">数据库安全指南</a></p>
+<h2 id="实践6-4-使用安全的应用程序角色" class="article-heading"><a href="#实践6-4-使用安全的应用程序角色" class="headerlink" title="实践6-4:使用安全的应用程序角色"></a>实践6-4:使用安全的应用程序角色<a class="article-anchor" href="#实践6-4-使用安全的应用程序角色" aria-hidden="true"></a></h2><p><a target="_blank" rel="noopener" href="https://www.oracle.com/technetwork/cn/tutorials/approles-085081-zhs.html">官方文档</a></p>
+<h3 id="Overview-3" class="article-heading"><a href="#Overview-3" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-3" aria-hidden="true"></a></h3><p>在本教程中，您将学习如何使用“安全的应用程序角色”防止将角色授予未授权用户。</p>
+<h3 id="Task-3" class="article-heading"><a href="#Task-3" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-3" aria-hidden="true"></a></h3><p>本教程介绍了 OSRD 的两位员工（即 Karen Partners 和 Louise Doran）如何尝试获取 oe.orders 表中的信息。 角色“ots_role”中定义了该表的访问权限。 由于 Karen 是 Louise 的经理，因此 Karen 将能够访问 oe.orders 中的信息，而 Louise 却不能。</p>
+<ol>
+<li>创建用户并设置表访问权限</li>
+<li>将创建一个数据库角色，并将该角色授予 Karen 而不是 Louise</li>
+<li>创建并使用一个安全的应用程序角色</li>
+</ol>
+<h3 id="Practice-3" class="article-heading"><a href="#Practice-3" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-3" aria-hidden="true"></a></h3><ol>
+<li><p>创建用户并设置表访问权限</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">connect</span> dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> "LOUISE.DORAN@OSRD.COM" cascade;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> "KAREN.PARTNERS@OSRD.COM" cascade;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> "LOUISE.DORAN@OSRD.COM" identified <span class="keyword">by</span> welcome1;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> "KAREN.PARTNERS@OSRD.COM" identified <span class="keyword">by</span> welcome1;</span><br><span class="line"></span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">connect</span>, <span class="keyword">create</span> session <span class="keyword">to</span> "LOUISE.DORAN@OSRD.COM";</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">connect</span>, <span class="keyword">create</span> session <span class="keyword">to</span> "KAREN.PARTNERS@OSRD.COM";</span><br><span class="line"></span><br><span class="line"><span class="keyword">connect</span> hr<span class="operator">/</span>hr<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">update</span> employees <span class="keyword">set</span> email<span class="operator">=</span><span class="string">'LOUISE.DORAN@OSRD.COM'</span> <span class="keyword">where</span> email<span class="operator">=</span><span class="string">'LDORAN'</span>;</span><br><span class="line"><span class="keyword">update</span> employees <span class="keyword">set</span> email<span class="operator">=</span><span class="string">'KAREN.PARTNERS@OSRD.COM'</span> <span class="keyword">where</span> email<span class="operator">=</span><span class="string">'KPARTNER'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/0617.png"></p>
+<p><img src="pic/0616.png"></p>
+</li>
+<li><p>将创建一个数据库角色，并将该角色授予 Karen 而不是 Louise</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">connect</span> oe<span class="operator">/</span>oe<span class="variable">@emrep</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">select</span> <span class="keyword">on</span> oe.orders <span class="keyword">from</span> public;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">select</span> <span class="keyword">on</span> oe.customers <span class="keyword">from</span> public;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">connect</span> hr<span class="operator">/</span>hr<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> hr.employees <span class="keyword">to</span> public;</span><br><span class="line"></span><br><span class="line"><span class="keyword">connect</span> dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">drop</span> role ots_role;</span><br><span class="line"><span class="keyword">create</span> role ots_role;</span><br><span class="line"></span><br><span class="line"><span class="keyword">connect</span> oe<span class="operator">/</span>oe<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> oe.orders <span class="keyword">to</span> ots_role;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> oe.customers <span class="keyword">to</span> ots_role;</span><br><span class="line"></span><br><span class="line"><span class="keyword">connect</span> dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">grant</span> ots_role <span class="keyword">to</span> "KAREN.PARTNERS@OSRD.COM";</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">user</span> "KAREN.PARTNERS@OSRD.COM" <span class="keyword">default</span> role <span class="keyword">none</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">grant</span> ots_role <span class="keyword">to</span> "LOUISE.DORAN@OSRD.COM";</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">user</span> "LOUISE.DORAN@OSRD.COM" <span class="keyword">default</span> role <span class="keyword">none</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>设置 Karen 的角色并对 oe.orders 表执行 select</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">connect</span> "KAREN.PARTNERS@OSRD.COM"<span class="operator">/</span>welcome1<span class="variable">@emrep</span>;</span><br><span class="line"><span class="keyword">set</span> role ots_role;</span><br><span class="line"><span class="keyword">select</span> sales_rep_id, order_total <span class="keyword">from</span> oe.orders <span class="keyword">order</span> <span class="keyword">by</span> order_total <span class="keyword">desc</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>不设置 LOUISE 的角色，对oe.orders表执行 select</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">connect</span> "LOUISE.DORAN@OSRD.COM"<span class="operator">/</span>welcome1<span class="variable">@emrep</span>;</span><br><span class="line"><span class="keyword">select</span> sales_rep_id, order_total <span class="keyword">from</span> oe.orders <span class="keyword">order</span> <span class="keyword">by</span> order_total <span class="keyword">desc</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/0618.png"></p>
+<p>由于 Louise 未被授予<code>ots_role</code>，因此她没有该角色中定义的表的访问权限。 但她只需知道该角色的名称 <code>ots_role</code> 和命令<code>set role</code>便可以自行解决此“问题”。 换言之，她非常轻松地获得了她不应知道的信息的访问权限。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">connect</span> "LOUISE.DORAN@OSRD.COM"<span class="operator">/</span>welcome1<span class="variable">@emrep</span>;</span><br><span class="line"><span class="keyword">set</span> role ots_role;</span><br><span class="line"><span class="keyword">select</span> sales_rep_id, order_total <span class="keyword">from</span> oe.orders <span class="keyword">where</span> rownum <span class="operator">&lt;</span> <span class="number">3</span> <span class="keyword">order</span> <span class="keyword">by</span> order_total <span class="keyword">desc</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/0619.png"></p>
+</li>
+<li><p>创建并使用一个安全的应用程序角色</p>
+<p>删除原来的ot_role,重新创建一个使用安全应用程序的角色</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">connect</span> dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">drop</span> role ots_role;</span><br><span class="line"><span class="keyword">create</span> role ots_role IDENTIFIED <span class="keyword">USING</span> sec_roles;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>注意：<code>IDENTIFIED USING &lt;name&gt;</code> 此处的name可以自定义名称，本质上时一个存储过程的名称，后续需要定义该存储过程。</p>
+<p>您需要授予&nbsp;oe.orders&nbsp;和&nbsp;oe.customers&nbsp;的&nbsp;select&nbsp;访问权限。 然后，向每个用户授予此角色并将他们的配置文件设置为 none。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">connect</span> oe<span class="operator">/</span>oe<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> oe.orders <span class="keyword">to</span> ots_role;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> oe.customers <span class="keyword">to</span> ots_role;</span><br><span class="line"></span><br><span class="line"><span class="keyword">connect</span> dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">grant</span> ots_role <span class="keyword">to</span> "KAREN.PARTNERS@OSRD.COM";</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">user</span> "KAREN.PARTNERS@OSRD.COM" <span class="keyword">default</span> role <span class="keyword">none</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">grant</span> ots_role <span class="keyword">to</span> "LOUISE.DORAN@OSRD.COM";</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">user</span> "LOUISE.DORAN@OSRD.COM" <span class="keyword">default</span> role <span class="keyword">none</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>现在，您可以创建安全性应用程序角色过程。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">connect</span> dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">procedure</span> sec_roles authid <span class="built_in">current_user</span></span><br><span class="line"><span class="keyword">as</span></span><br><span class="line"> v_user          varchar2(<span class="number">50</span>);</span><br><span class="line"> v_manager_id    number :<span class="operator">=</span><span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">begin</span></span><br><span class="line">   v_user :<span class="operator">=</span> (sys_context (<span class="string">'userenv'</span>, <span class="string">'session_user'</span>));</span><br><span class="line">   <span class="keyword">select</span> manager_id <span class="keyword">into</span> v_manager_id <span class="keyword">from</span> hr.employees <span class="keyword">where</span> email<span class="operator">=</span>v_user;</span><br><span class="line">    if v_manager_id <span class="operator">=</span> <span class="number">100</span></span><br><span class="line">     <span class="keyword">then</span></span><br><span class="line">     dbms_session.set_role(<span class="string">'ots_role'</span>);</span><br><span class="line">     <span class="keyword">else</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">end</span> if;</span><br><span class="line"></span><br><span class="line">   exception</span><br><span class="line">   <span class="keyword">when</span> no_data_found <span class="keyword">then</span> v_manager_id:<span class="operator">=</span><span class="number">0</span>;</span><br><span class="line"><span class="keyword">end</span> sec_roles;</span><br><span class="line"><span class="operator">/</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>该存储过程中，限定只有当雇员的manager_id为100时，才可以设置为ots_role角色。拥有查询oe.order 和 oe.customer 的权限。</p>
+<p><img src="pic/0620.png"></p>
+<p>您需要授予此过程的执行权限。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">connect</span> dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">EXECUTE</span> <span class="keyword">ON</span> sec_roles <span class="keyword">to</span> "KAREN.PARTNERS@OSRD.COM";</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">EXECUTE</span> <span class="keyword">ON</span> sec_roles <span class="keyword">to</span> "LOUISE.DORAN@OSRD.COM";</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/0621.png"></p>
+<p>验证</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">connect</span> "KAREN.PARTNERS@OSRD.COM"<span class="operator">/</span>welcome1<span class="variable">@emrep</span>;</span><br><span class="line"><span class="keyword">execute</span> dba1.sec_roles;</span><br><span class="line"><span class="keyword">select</span> sales_rep_id, order_total <span class="keyword">from</span> oe.orders <span class="keyword">where</span> rownum <span class="operator">&lt;</span> <span class="number">3</span> <span class="keyword">order</span> <span class="keyword">by</span> order_total <span class="keyword">desc</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">connect</span> "LOUISE.DORAN@OSRD.COM"<span class="operator">/</span>welcome1<span class="variable">@emrep</span>;</span><br><span class="line"><span class="keyword">execute</span> dba1.sec_roles;</span><br><span class="line"><span class="keyword">select</span> sales_rep_id, order_total <span class="keyword">from</span> oe.orders <span class="keyword">where</span> rownum <span class="operator">&lt;</span> <span class="number">3</span> <span class="keyword">order</span> <span class="keyword">by</span> order_total <span class="keyword">desc</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>提示：sec_roles 存储过程执行后，才会确定当前用户是否能够获取 ots_role。</p>
+<p><img src="pic/0622.png"></p>
+</li>
+<li><p>执行以下步骤清理环境</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">connect</span> dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">drop</span> role ots_role;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">procedure</span> sec_roles;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> "KAREN.PARTNERS@OSRD.COM" cascade;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> "LOUISE.DORAN@OSRD.COM" cascade;</span><br><span class="line"><span class="keyword">connect</span> hr<span class="operator">/</span>hr<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">update</span> employees <span class="keyword">set</span> email<span class="operator">=</span><span class="string">'LDORAN'</span> <span class="keyword">where</span> email<span class="operator">=</span><span class="string">'LOUISE.DORAN@OSRD.COM'</span>;</span><br><span class="line"><span class="keyword">update</span> employees <span class="keyword">set</span> email<span class="operator">=</span><span class="string">'KPARTNER'</span> <span class="keyword">where</span> email<span class="operator">=</span><span class="string">'KAREN.PARTNERS@OSRD.COM'</span>;</span><br><span class="line">exit;</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h3 id="KnowledgePoint-3" class="article-heading"><a href="#KnowledgePoint-3" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-3" aria-hidden="true"></a></h3><p>角色是一种用于在 Oracle 数据库管理权限的强大方法。Oracle 在十多年前首次于 Oracle7 中引入了数据库角色。角色可以授予用户和其他角色。将角色授予用户后，角色可以被设置为默认角色，当用户成功地通过数据库访问权限验证时将激活与角色关联的权限。如果未将角色设置为默认角色，可以使用“set_role”命令调用它。</p>
+<p>Oracle9<em>i</em> 向数据库角色引入了一个称为“安全应用程序角色”的强大增强功能。要创建安全应用程序角色，可以使用“create role”语法指定程序包名：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">create role acme_hr_role identified using approles_package</span><br></pre></td></tr></tbody></table></figure>
+
+<p>一旦授予了安全应用程序角色，用户必须有权执行与该角色相关的程序包以便使其激活。在本例中，approles_package 由数据库管理员或安全官使用 PL/SQL 进行定义。该程序包可以执行任何次数的安全检查，包括在 Oracle Application Context 中定义的应用程序特定的参数，从而使其难于规避。</p>
+<p>这是保护角色的最安全的方式，因为数据库制定的决策基于您的安全策略的实现，而且这些定义存储在一个中心位置，而不是存储在您所有的应用程序中。这还提供了其他好处：如果该策略需要更新，则在数据库中只能进行一次。此外，无论用户如何连接到数据库，结果都是相同的，因为该策略是绑定到该角色的。</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:55.554Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B56-%E6%A6%82%E8%A7%88"><span class="toc-text">实践6:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B56-1-%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%92%8C%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">实践6-1:创建用户和配置文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B56-2-%E5%88%9B%E5%BB%BA%E8%A7%92%E8%89%B2"><span class="toc-text">实践6-2:创建角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-1"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-1"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-1"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-1"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B56-3-%E5%88%9B%E5%BB%BA%E5%92%8C%E9%85%8D%E7%BD%AE%E7%94%A8%E6%88%B7"><span class="toc-text">实践6-3:创建和配置用户</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-2"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-2"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-2"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-2"><span class="toc-text">KnowledgePoint</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#EM-Express-%E5%88%9B%E5%BB%BA%E5%92%8C%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7%E5%B8%90%E6%88%B7"><span class="toc-text">EM Express 创建和管理用户帐户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E5%85%A8%E6%8C%87%E5%8D%97"><span class="toc-text">数据库安全指南</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B56-4-%E4%BD%BF%E7%94%A8%E5%AE%89%E5%85%A8%E7%9A%84%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%A7%92%E8%89%B2"><span class="toc-text">实践6-4:使用安全的应用程序角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-3"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-3"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-3"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-3"><span class="toc-text">KnowledgePoint</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

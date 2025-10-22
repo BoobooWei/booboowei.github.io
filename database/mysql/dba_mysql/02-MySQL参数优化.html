@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>参数优化 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/dba_mysql/02-MySQL%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/dba_mysql/02-MySQL%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="MySQL参数检测报告 mysql&gt; show global status;mysql&gt; show variables;  查看消耗内存高的事件和线程介绍如何查看消耗内存高的事件和线程，为您解决内存相关问题提供参考。 将performance_schema参数值修改为ON在左侧导航栏中单击 参数设置。 将performance_schema参数值修改为ON，如果已经为ON请忽略此步骤。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="参数优化">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/dba_mysql/02-MySQL%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="MySQL参数检测报告 mysql&gt; show global status;mysql&gt; show variables;  查看消耗内存高的事件和线程介绍如何查看消耗内存高的事件和线程，为您解决内存相关问题提供参考。 将performance_schema参数值修改为ON在左侧导航栏中单击 参数设置。 将performance_schema参数值修改为ON，如果已经为ON请忽略此步骤。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.830Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:38.549Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">参数优化</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/dba_mysql/02-MySQL参数优化.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><p><a target="_blank" rel="noopener" href="https://github.com/BoobooWei/mysql-tools-python2">MySQL参数检测报告</a></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status;</span><br><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> variables;</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="查看消耗内存高的事件和线程" class="article-heading"><a href="#查看消耗内存高的事件和线程" class="headerlink" title="查看消耗内存高的事件和线程"></a>查看消耗内存高的事件和线程<a class="article-anchor" href="#查看消耗内存高的事件和线程" aria-hidden="true"></a></h1><p>介绍如何查看消耗内存高的事件和线程，为您解决内存相关问题提供参考。</p>
+<h2 id="将performance-schema参数值修改为ON" class="article-heading"><a href="#将performance-schema参数值修改为ON" class="headerlink" title="将performance_schema参数值修改为ON"></a>将performance_schema参数值修改为ON<a class="article-anchor" href="#将performance-schema参数值修改为ON" aria-hidden="true"></a></h2><p>在左侧导航栏中单击 参数设置。</p>
+<p>将performance_schema参数值修改为ON，如果已经为ON请忽略此步骤。</p>
+<p>提示：该操作会重启实例，造成连接中断，重启前请做好业务安排，谨慎操作。</p>
+<p>单击performance_schema参数右侧的修改按钮，将值修改为ON，然后单击 确定。</p>
+<p>单击页面右上角 提交参数，等待实例重启完成即可。</p>
+<h2 id="打开内存监控" class="article-heading"><a href="#打开内存监控" class="headerlink" title="打开内存监控"></a>打开内存监控<a class="article-anchor" href="#打开内存监控" aria-hidden="true"></a></h2><p>使用DMS或客户端连接MySQL实例，依次执行如下SQL语句，打开内存监控。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">update</span> performance_schema.setup_instruments <span class="keyword">set</span> enabled <span class="operator">=</span> <span class="string">'yes'</span> <span class="keyword">where</span> name <span class="keyword">like</span> <span class="string">'memory%'</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> performance_schema.setup_instruments <span class="keyword">where</span> name <span class="keyword">like</span> <span class="string">'memory%innodb%'</span> limit <span class="number">5</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>注：该命令是在线打开内存统计，所以只会统计打开后新增的内存对象，打开前的内存对象不会统计，建议您打开后等待一段时间再执行后续步骤，便于找出内存使用高的线程。<br>您可以参考如下SQL语句统计事件和线程的内存消耗量，并进行排序展示。</p>
+<h2 id="统计事件消耗内存" class="article-heading"><a href="#统计事件消耗内存" class="headerlink" title="统计事件消耗内存"></a>统计事件消耗内存<a class="article-anchor" href="#统计事件消耗内存" aria-hidden="true"></a></h2><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> event_name,</span><br><span class="line">       SUM_NUMBER_OF_BYTES_ALLOC</span><br><span class="line"><span class="keyword">from</span> performance_schema.memory_summary_global_by_event_name</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> SUM_NUMBER_OF_BYTES_ALLOC <span class="keyword">desc</span></span><br><span class="line">LIMIT <span class="number">10</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="统计线程消耗内存" class="article-heading"><a href="#统计线程消耗内存" class="headerlink" title="统计线程消耗内存"></a>统计线程消耗内存<a class="article-anchor" href="#统计线程消耗内存" aria-hidden="true"></a></h2><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> thread_id,</span><br><span class="line">       event_name,</span><br><span class="line">       SUM_NUMBER_OF_BYTES_ALLOC</span><br><span class="line"><span class="keyword">from</span> performance_schema.memory_summary_by_thread_by_event_name</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> SUM_NUMBER_OF_BYTES_ALLOC <span class="keyword">desc</span></span><br><span class="line">limit <span class="number">20</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>系统显示类似如下。</p>
+<h2 id="查看详细的监控信息" class="article-heading"><a href="#查看详细的监控信息" class="headerlink" title="查看详细的监控信息"></a>查看详细的监控信息<a class="article-anchor" href="#查看详细的监控信息" aria-hidden="true"></a></h2><p>您也可以参考如下SQL语句，查看详细的监控信息。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> sys.x$memory_by_host_by_current_bytes;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> sys.x$memory_by_thread_by_current_bytes;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> sys.x$memory_by_user_by_current_bytes;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> sys.x$memory_global_by_current_bytes;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> sys.x$memory_global_total;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> performance_schema.memory_summary_by_account_by_event_name;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> performance_schema.memory_summary_by_host_by_event_name;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> performance_schema.memory_summary_by_thread_by_event_name;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> performance_schema.memory_summary_by_user_by_event_name;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> performance_schema.memory_summary_global_by_event_name;</span><br><span class="line"><span class="keyword">select</span> event_name,</span><br><span class="line">       current_alloc</span><br><span class="line"><span class="keyword">from</span> sys.memory_global_by_current_bytes</span><br><span class="line"><span class="keyword">where</span> event_name <span class="keyword">like</span> <span class="string">'%innodb%'</span>;</span><br><span class="line"><span class="keyword">select</span> event_name,current_alloc <span class="keyword">from</span> sys.memory_global_by_current_bytes limit <span class="number">5</span>;</span><br><span class="line"><span class="keyword">select</span> m.thread_id tid,</span><br><span class="line">       <span class="keyword">USER</span>,</span><br><span class="line">       esc.DIGEST_TEXT,</span><br><span class="line">       total_allocated</span><br><span class="line"><span class="keyword">FROM</span> sys.memory_by_thread_by_current_bytes m,</span><br><span class="line">     performance_schema.events_statements_current esc</span><br><span class="line"><span class="keyword">WHERE</span> m.`thread_id` <span class="operator">=</span> esc.THREAD_ID \G</span><br></pre></td></tr></tbody></table></figure>
+
+<p>找到问题事件或线程后，您可以排查业务代码和环境，解决内存高的问题。</p>
+<h1 id="慢查询" class="article-heading"><a href="#慢查询" class="headerlink" title="慢查询"></a>慢查询<a class="article-anchor" href="#慢查询" aria-hidden="true"></a></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> variables <span class="keyword">like</span> ‘<span class="operator">%</span>slow<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+-------+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　 <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+-------+</span></span><br><span class="line"><span class="operator">|</span> log_slow_queries <span class="operator">|</span> <span class="keyword">ON</span>　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> slow_launch_time <span class="operator">|</span> <span class="number">2</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+-------+</span></span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘<span class="operator">%</span>slow<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　　　 <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Slow_launch_threads <span class="operator">|</span> <span class="number">0</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Slow_queries　　　　　　　　 <span class="operator">|</span> <span class="number">4148</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>配置中打开了记录慢查询，执行时间超过2秒的即为慢查询，系统显示有4148个慢查询，你可以分析慢查询日志，找出有问题的SQL语句，慢查询时间不宜设置过长，否则意义不大，最好在5秒以内，如果你需要微秒级别的慢查询，可以考虑给MySQL打补丁：<a target="_blank" rel="noopener" href="http://www.percona.com/docs/wiki/release:start%EF%BC%8C%E8%AE%B0%E5%BE%97%E6%89%BE%E5%AF%B9%E5%BA%94%E7%9A%84%E7%89%88%E6%9C%AC%E3%80%82">http://www.percona.com/docs/wiki/release:start，记得找对应的版本。</a></p>
+<p>打开慢查询日志可能会对系统性能有一点点影响，如果你的MySQL是主－从结构，可以考虑打开其中一台从服务器的慢查询日志，这样既可以监控慢查询，对系统性能影响又小。</p>
+<h1 id="连接数" class="article-heading"><a href="#连接数" class="headerlink" title="连接数"></a>连接数<a class="article-anchor" href="#连接数" aria-hidden="true"></a></h1><p>经常会遇见”MySQL: ERROR 1040: Too many connections”的情况，一种是访问量确实很高，MySQL服务器抗不住，这个时候就要考虑增加从服务器分散读压力，另外一种情况是MySQL配置文件中max_connections值过小：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> variables <span class="keyword">like</span> ‘max_connections‘;</span><br><span class="line"><span class="operator">+</span>—————–<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　 <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————–<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> max_connections <span class="operator">|</span> <span class="number">256</span>　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————–<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>这台MySQL服务器最大连接数是256，然后查询一下服务器响应的最大连接数：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘Max_used_connections‘;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>MySQL服务器过去的最大连接数是245，没有达到服务器连接数上限256，应该没有出现1040错误，比较理想的设置是</p>
+<p>Max_used_connections / max_connections * 100% ≈ 85%</p>
+<p>最大连接数占上限连接数的85％左右，如果发现比例在10%以下，MySQL服务器连接数上限设置的过高了。</p>
+<h1 id="Key-buffer-size" class="article-heading"><a href="#Key-buffer-size" class="headerlink" title="Key_buffer_size"></a>Key_buffer_size<a class="article-anchor" href="#Key-buffer-size" aria-hidden="true"></a></h1><p>key_buffer_size是对MyISAM表性能影响最大的一个参数，下面一台以MyISAM为主要存储引擎服务器的配置：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> variables <span class="keyword">like</span> ‘key_buffer_size‘;<span class="operator">+</span>—————–<span class="operator">+</span>————<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　 <span class="operator">|</span> <span class="keyword">Value</span>　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————–<span class="operator">+</span>————<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> key_buffer_size <span class="operator">|</span> <span class="number">536870912</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————–<span class="operator">+</span>————<span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>分配了512MB内存给key_buffer_size，我们再看一下key_buffer_size的使用情况：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘key_read<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span>————————<span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　　　　　　 <span class="operator">|</span> <span class="keyword">Value</span>　　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>————————<span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Key_read_requests　　　　　　 <span class="operator">|</span> <span class="number">27813678764</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Key_reads　　　　　　　　　　　　　　 <span class="operator">|</span> <span class="number">6798830</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>————————<span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>一共有27813678764个索引读取请求，有6798830个请求在内存中没有找到直接从硬盘读取索引，计算索引未命中缓存的概率：</p>
+<p>key_cache_miss_rate ＝ Key_reads / Key_read_requests * 100%</p>
+<p>比如上面的数据，key_cache_miss_rate为0.0244%，4000个索引读取请求才有一个直接读硬盘，已经很BT了，key_cache_miss_rate在0.1%以下都很好（每1000个请求有一个直接读硬盘），如果key_cache_miss_rate在0.01%以下的话，key_buffer_size分配的过多，可以适当减少。</p>
+<p>MySQL服务器还提供了key<em>blocks</em>*参数：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘key_blocks_u<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span>————————<span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　　　　　　 <span class="operator">|</span> <span class="keyword">Value</span>　　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>————————<span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Key_blocks_unused　　　　　　 <span class="operator">|</span> <span class="number">0</span>　　　　　　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Key_blocks_used　　　　　　　　 <span class="operator">|</span> <span class="number">413543</span>　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>————————<span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>Key_blocks_unused表示未使用的缓存簇(blocks)数，Key_blocks_used表示曾经用到的最大的blocks数，比如这台服务器，所有的缓存都用到了，要么增加key_buffer_size，要么就是过渡索引了，把缓存占满了。比较理想的设置：</p>
+<p>Key_blocks_used / (Key_blocks_unused + Key_blocks_used) * 100% ≈ 80%</p>
+<h1 id="临时表" class="article-heading"><a href="#临时表" class="headerlink" title="临时表"></a>临时表<a class="article-anchor" href="#临时表" aria-hidden="true"></a></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘created_tmp<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span>————————<span class="operator">-</span><span class="operator">+</span>———<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　　　　　　　 <span class="operator">|</span> <span class="keyword">Value</span>　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>————————<span class="operator">-</span><span class="operator">+</span>———<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Created_tmp_disk_tables <span class="operator">|</span> <span class="number">21197</span>　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Created_tmp_files　　　　　　　 <span class="operator">|</span> <span class="number">58</span>　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Created_tmp_tables　　　　　　 <span class="operator">|</span> <span class="number">1771587</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>————————<span class="operator">-</span><span class="operator">+</span>———<span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>每次创建临时表，Created_tmp_tables增加，如果是在磁盘上创建临时表，Created_tmp_disk_tables也增加,Created_tmp_files表示MySQL服务创建的临时文件文件数，比较理想的配置是：</p>
+<p>Created_tmp_disk_tables / Created_tmp_tables _ 100% &lt;= 25%比如上面的服务器Created_tmp_disk_tables / Created_tmp_tables _ 100% ＝ 1.20%，应该相当好了。我们再看一下MySQL服务器对临时表的配置：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> variables <span class="keyword">where</span> Variable_name <span class="keyword">in</span> (‘tmp_table_size‘, ‘max_heap_table_size‘);</span><br><span class="line"><span class="operator">+</span>———————<span class="operator">+</span>———–<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　　　 <span class="operator">|</span> <span class="keyword">Value</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>———————<span class="operator">+</span>———–<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> max_heap_table_size <span class="operator">|</span> <span class="number">268435456</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> tmp_table_size　　　　　　 <span class="operator">|</span> <span class="number">536870912</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>———————<span class="operator">+</span>———–<span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>只有256MB以下的临时表才能全部放内存，超过的就会用到硬盘临时表。</p>
+<h1 id="Open-Table情况" class="article-heading"><a href="#Open-Table情况" class="headerlink" title="Open Table情况"></a>Open Table情况<a class="article-anchor" href="#Open-Table情况" aria-hidden="true"></a></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘<span class="keyword">open</span><span class="operator">%</span>tables<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Open_tables　　　 <span class="operator">|</span> <span class="number">919</span>　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Opened_tables <span class="operator">|</span> <span class="number">1951</span>　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>Open_tables表示打开表的数量，Opened_tables表示打开过的表数量，如果Opened_tables数量过大，说明配置中table_cache(5.1.3之后这个值叫做table_open_cache)值可能太小，我们查询一下服务器table_cache值：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> variables <span class="keyword">like</span> ‘table_cache‘;</span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> table_cache　　　 <span class="operator">|</span> <span class="number">2048</span>　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>比较合适的值为：</p>
+<p>Open_tables / Opened_tables * 100% &gt;= 85%</p>
+<p>Open_tables / table_cache * 100% &lt;= 95%</p>
+<h1 id="进程使用情况" class="article-heading"><a href="#进程使用情况" class="headerlink" title="进程使用情况"></a>进程使用情况<a class="article-anchor" href="#进程使用情况" aria-hidden="true"></a></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘Thread<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　 <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Threads_cached　　　　 <span class="operator">|</span> <span class="number">46</span>　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Threads_connected <span class="operator">|</span> <span class="number">2</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Threads_created　　　 <span class="operator">|</span> <span class="number">570</span>　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Threads_running　　　 <span class="operator">|</span> <span class="number">1</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果我们在MySQL服务器配置文件中设置了thread_cache_size，当客户端断开之后，服务器处理此客户的线程将会缓存起来以响应下一个客户而不是销毁（前提是缓存数未达上限）。Threads_created表示创建过的线程数，如果发现Threads_created值过大的话，表明MySQL服务器一直在创建线程，这也是比较耗资源，可以适当增加配置文件中thread_cache_size值，查询服务器thread_cache_size配置：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> variables <span class="keyword">like</span> ‘thread_cache_size‘;</span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　 <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> thread_cache_size <span class="operator">|</span> <span class="number">64</span>　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>示例中的服务器还是挺健康的。</p>
+<h1 id="查询缓存-query-cache" class="article-heading"><a href="#查询缓存-query-cache" class="headerlink" title="查询缓存(query cache)"></a>查询缓存(query cache)<a class="article-anchor" href="#查询缓存-query-cache" aria-hidden="true"></a></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘qcache<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span>————————<span class="operator">-</span><span class="operator">+</span>———–<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　　　　　　　 <span class="operator">|</span> <span class="keyword">Value</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>————————<span class="operator">-</span><span class="operator">+</span>———–<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Qcache_free_blocks　　　　　　 <span class="operator">|</span> <span class="number">22756</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Qcache_free_memory　　　　　　 <span class="operator">|</span> <span class="number">76764704</span>　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Qcache_hits　　　　　　　　　　　　　 <span class="operator">|</span> <span class="number">213028692</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Qcache_inserts　　　　　　　　　　 <span class="operator">|</span> <span class="number">208894227</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Qcache_lowmem_prunes　　　　 <span class="operator">|</span> <span class="number">4010916</span>　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Qcache_not_cached　　　　　　　 <span class="operator">|</span> <span class="number">13385031</span>　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Qcache_queries_in_cache <span class="operator">|</span> <span class="number">43560</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Qcache_total_blocks　　　　　 <span class="operator">|</span> <span class="number">111212</span>　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>————————<span class="operator">-</span><span class="operator">+</span>———–<span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>MySQL查询缓存变量解释：</p>
+<p>Qcache_free_blocks：缓存中相邻内存块的个数。数目大说明可能有碎片。FLUSH QUERY CACHE会对缓存中的碎片进行整理，从而得到一个空闲块。</p>
+<p>Qcache_free_memory：缓存中的空闲内存。</p>
+<p>Qcache_hits：每次查询在缓存中命中时就增大</p>
+<p>Qcache_inserts：每次插入一个查询时就增大。命中次数除以插入次数就是不中比率。</p>
+<p>Qcache_lowmem_prunes：缓存出现内存不足并且必须要进行清理以便为更多查询提供空间的次数。这个数字最好长时间来看；如果这个数字在不断增长，就表示可能碎片非常严重，或者内存很少。（上面的 free_blocks和free_memory可以告诉您属于哪种情况）</p>
+<p>Qcache_not_cached：不适合进行缓存的查询的数量，通常是由于这些查询不是 SELECT 语句或者用了now()之类的函数。</p>
+<p>Qcache_queries_in_cache：当前缓存的查询（和响应）的数量。</p>
+<p>Qcache_total_blocks：缓存中块的数量。</p>
+<p>我们再查询一下服务器关于query_cache的配置：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> variables <span class="keyword">like</span> ‘query_cache<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span>——————————<span class="operator">+</span>———–<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　　　　　　　　　　　　 <span class="operator">|</span> <span class="keyword">Value</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>——————————<span class="operator">+</span>———–<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> query_cache_limit　　　　　　　　　　　　 <span class="operator">|</span> <span class="number">2097152</span>　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> query_cache_min_res_unit　　　　　 <span class="operator">|</span> <span class="number">4096</span>　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> query_cache_size　　　　　　　　　　　　　 <span class="operator">|</span> <span class="number">203423744</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> query_cache_type　　　　　　　　　　　　　 <span class="operator">|</span> <span class="keyword">ON</span>　　　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> query_cache_wlock_invalidate <span class="operator">|</span> OFF　　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>——————————<span class="operator">+</span>———–<span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>各字段的解释：</p>
+<p>query_cache_limit：超过此大小的查询将不缓存</p>
+<p>query_cache_min_res_unit：缓存块的最小大小</p>
+<p>query_cache_size：查询缓存大小</p>
+<p>query_cache_type：缓存类型，决定缓存什么样的查询，示例中表示不缓存 select sql_no_cache 查询</p>
+<p>query_cache_wlock_invalidate：当有其他客户端正在对MyISAM表进行写操作时，如果查询在query cache中，是否返回cache结果还是等写操作完成再读表获取结果。</p>
+<p>query_cache_min_res_unit的配置是一柄”双刃剑”，默认是4KB，设置值大对大数据查询有好处，但如果你的查询都是小数据查询，就容易造成内存碎片和浪费。</p>
+<p>查询缓存碎片率 = Qcache_free_blocks / Qcache_total_blocks * 100%</p>
+<p>如果查询缓存碎片率超过20%，可以用FLUSH QUERY CACHE整理缓存碎片，或者试试减小query_cache_min_res_unit，如果你的查询都是小数据量的话。</p>
+<p>查询缓存利用率 = (query_cache_size – Qcache_free_memory) / query_cache_size * 100%</p>
+<p>查询缓存利用率在25%以下的话说明query_cache_size设置的过大，可适当减小；查询缓存利用率在80％以上而且Qcache_lowmem_prunes &gt; 50的话说明query_cache_size可能有点小，要不就是碎片太多。</p>
+<p>查询缓存命中率 = (Qcache_hits – Qcache_inserts) / Qcache_hits * 100%</p>
+<p>示例服务器 查询缓存碎片率 ＝ 20.46％，查询缓存利用率 ＝ 62.26％，查询缓存命中率 ＝ 1.94％，命中率很差，可能写操作比较频繁吧，而且可能有些碎片。</p>
+<h1 id="排序使用情况" class="article-heading"><a href="#排序使用情况" class="headerlink" title="排序使用情况"></a>排序使用情况<a class="article-anchor" href="#排序使用情况" aria-hidden="true"></a></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘sort<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>————<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　 <span class="operator">|</span> <span class="keyword">Value</span>　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>————<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Sort_merge_passes <span class="operator">|</span> <span class="number">29</span>　　　　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Sort_range　　　　　　　　 <span class="operator">|</span> <span class="number">37432840</span>　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Sort_rows　　　　　　　　　 <span class="operator">|</span> <span class="number">9178691532</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Sort_scan　　　　　　　　　 <span class="operator">|</span> <span class="number">1860569</span>　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>————<span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>Sort_merge_passes 包括两步。MySQL 首先会尝试在内存中做排序，使用的内存大小由系统变量 Sort_buffer_size 决定，如果它的大小不够把所有的记录都读到内存中，MySQL 就会把每次在内存中排序的结果存到临时文件中，等 MySQL 找到所有记录之后，再把临时文件中的记录做一次排序。这再次排序就会增加 Sort_merge_passes。实际上，MySQL 会用另一个临时文件来存再次排序的结果，所以通常会看到 Sort_merge_passes 增加的数值是建临时文件数的两倍。因为用到了临时文件，所以速度可能会比较慢，增加 Sort_buffer_size 会减少 Sort_merge_passes 和 创建临时文件的次数。但盲目的增加 Sort_buffer_size 并不一定能提高速度，见 How fast can you sort data with MySQL?（引自<a target="_blank" rel="noopener" href="http://qroom.blogspot.com/2007/09/mysql-select-sort.html%EF%BC%8C%E8%B2%8C%E4%BC%BC%E8%A2%AB%E5%A2%99%EF%BC%89">http://qroom.blogspot.com/2007/09/mysql-select-sort.html，貌似被墙）</a></p>
+<p>另外，增加read_rnd_buffer_size(3.2.3是record_rnd_buffer_size)的值对排序的操作也有一点的好处，参见：<a target="_blank" rel="noopener" href="http://www.mysqlperformanceblog.com/2007/07/24/what-exactly-is-read_rnd_buffer_size/">http://www.mysqlperformanceblog.com/2007/07/24/what-exactly-is-read_rnd_buffer_size/</a></p>
+<h1 id="文件打开数-open-files" class="article-heading"><a href="#文件打开数-open-files" class="headerlink" title="文件打开数(open_files)"></a>文件打开数(open_files)<a class="article-anchor" href="#文件打开数-open-files" aria-hidden="true"></a></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘open_files‘;</span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Open_files　　　　 <span class="operator">|</span> <span class="number">1410</span>　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> variables <span class="keyword">like</span> ‘open_files_limit‘;</span><br><span class="line"><span class="operator">+</span>——————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　 <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>——————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> open_files_limit <span class="operator">|</span> <span class="number">4590</span>　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>——————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>比较合适的设置：Open_files / open_files_limit * 100% &lt;= 75％</p>
+<h1 id="表锁情况" class="article-heading"><a href="#表锁情况" class="headerlink" title="表锁情况"></a>表锁情况<a class="article-anchor" href="#表锁情况" aria-hidden="true"></a></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘table_locks<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span>———————–<span class="operator">+</span>———–<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　　　　　 <span class="operator">|</span> <span class="keyword">Value</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>———————–<span class="operator">+</span>———–<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Table_locks_immediate <span class="operator">|</span> <span class="number">490206328</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Table_locks_waited　　　　 <span class="operator">|</span> <span class="number">2084912</span>　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>———————–<span class="operator">+</span>———–<span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>Table_locks_immediate表示立即释放表锁数，Table_locks_waited表示需要等待的表锁数，如果Table_locks_immediate / Table_locks_waited &gt; 5000，最好采用InnoDB引擎，因为InnoDB是行锁而MyISAM是表锁，对于高并发写入的应用InnoDB效果会好些。示例中的服务器Table_locks_immediate / Table_locks_waited ＝ 235，MyISAM就足够了。</p>
+<h1 id="表扫描情况" class="article-heading"><a href="#表扫描情况" class="headerlink" title="表扫描情况"></a>表扫描情况<a class="article-anchor" href="#表扫描情况" aria-hidden="true"></a></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘handler_read<span class="operator">%</span>‘;</span><br><span class="line"><span class="operator">+</span>———————–<span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name　　　　　　　　　 <span class="operator">|</span> <span class="keyword">Value</span>　　　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>———————–<span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Handler_read_first　　　　 <span class="operator">|</span> <span class="number">5803750</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Handler_read_key　　　　　　 <span class="operator">|</span> <span class="number">6049319850</span>　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Handler_read_next　　　　　 <span class="operator">|</span> <span class="number">94440908210</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Handler_read_prev　　　　　 <span class="operator">|</span> <span class="number">34822001724</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Handler_read_rnd　　　　　　 <span class="operator">|</span> <span class="number">405482605</span>　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Handler_read_rnd_next <span class="operator">|</span> <span class="number">18912877839</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>———————–<span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>各字段解释参见<a target="_blank" rel="noopener" href="http://hi.baidu.com/thinkinginlamp/blog/item/31690cd7c4bc5cdaa144df9c.html%EF%BC%8C%E8%B0%83%E5%87%BA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%8C%E6%88%90%E7%9A%84%E6%9F%A5%E8%AF%A2%E8%AF%B7%E6%B1%82%E6%AC%A1%E6%95%B0%EF%BC%9A">http://hi.baidu.com/thinkinginlamp/blog/item/31690cd7c4bc5cdaa144df9c.html，调出服务器完成的查询请求次数：</a></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> ‘com_select‘;</span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>———–<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Variable_name <span class="operator">|</span> <span class="keyword">Value</span>　　　　　 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>———–<span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Com_select　　　　 <span class="operator">|</span> <span class="number">222693559</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————<span class="operator">+</span>———–<span class="operator">+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>计算表扫描率：</p>
+<p>表扫描率 ＝ Handler_read_rnd_next / Com_select</p>
+<p>如果表扫描率超过4000，说明进行了太多表扫描，很有可能索引没有建好，增加read_buffer_size值会有一些好处，但最好不要超过8MB。</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:38.549Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%B6%88%E8%80%97%E5%86%85%E5%AD%98%E9%AB%98%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%92%8C%E7%BA%BF%E7%A8%8B"><span class="toc-text">查看消耗内存高的事件和线程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86performance-schema%E5%8F%82%E6%95%B0%E5%80%BC%E4%BF%AE%E6%94%B9%E4%B8%BAON"><span class="toc-text">将performance_schema参数值修改为ON</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E5%BC%80%E5%86%85%E5%AD%98%E7%9B%91%E6%8E%A7"><span class="toc-text">打开内存监控</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%9F%E8%AE%A1%E4%BA%8B%E4%BB%B6%E6%B6%88%E8%80%97%E5%86%85%E5%AD%98"><span class="toc-text">统计事件消耗内存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%9F%E8%AE%A1%E7%BA%BF%E7%A8%8B%E6%B6%88%E8%80%97%E5%86%85%E5%AD%98"><span class="toc-text">统计线程消耗内存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%AF%A6%E7%BB%86%E7%9A%84%E7%9B%91%E6%8E%A7%E4%BF%A1%E6%81%AF"><span class="toc-text">查看详细的监控信息</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%85%A2%E6%9F%A5%E8%AF%A2"><span class="toc-text">慢查询</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E6%95%B0"><span class="toc-text">连接数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Key-buffer-size"><span class="toc-text">Key_buffer_size</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%B4%E6%97%B6%E8%A1%A8"><span class="toc-text">临时表</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Open-Table%E6%83%85%E5%86%B5"><span class="toc-text">Open Table情况</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5"><span class="toc-text">进程使用情况</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98-query-cache"><span class="toc-text">查询缓存(query cache)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5"><span class="toc-text">排序使用情况</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%89%93%E5%BC%80%E6%95%B0-open-files"><span class="toc-text">文件打开数(open_files)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A1%A8%E9%94%81%E6%83%85%E5%86%B5"><span class="toc-text">表锁情况</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A1%A8%E6%89%AB%E6%8F%8F%E6%83%85%E5%86%B5"><span class="toc-text">表扫描情况</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

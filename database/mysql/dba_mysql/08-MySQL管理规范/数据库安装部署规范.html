@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>数据库安装部署规范 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E8%A7%84%E8%8C%83">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E8%A7%84%E8%8C%83" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="资源存储运维环境安装配置所需的源码、安装包、插件等统一存放至运维oss中。 相应的脚本、程序、代码统一存放至gitlab中，脚本wget oss中的源码完成安装。 脚本库、软件安装规范相应环境安装配置，统一采用gitlab中脚本完成，包含系统初始化、系统配置等。 数据库安装部署脚本需求，对接到DBA组，DBA组需要至多一个工作日内提供安装脚本（特殊复杂软件脚本除外），上传至gitlab中。 MyS">
+<meta property="og:type" content="website">
+<meta property="og:title" content="数据库安装部署规范">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E8%A7%84%E8%8C%83">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="资源存储运维环境安装配置所需的源码、安装包、插件等统一存放至运维oss中。 相应的脚本、程序、代码统一存放至gitlab中，脚本wget oss中的源码完成安装。 脚本库、软件安装规范相应环境安装配置，统一采用gitlab中脚本完成，包含系统初始化、系统配置等。 数据库安装部署脚本需求，对接到DBA组，DBA组需要至多一个工作日内提供安装脚本（特殊复杂软件脚本除外），上传至gitlab中。 MyS">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.824Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:07.856Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">数据库安装部署规范</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/dba_mysql/08-MySQL管理规范/数据库安装部署规范.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h1 id="资源存储" class="article-heading"><a href="#资源存储" class="headerlink" title="资源存储"></a>资源存储<a class="article-anchor" href="#资源存储" aria-hidden="true"></a></h1><p>运维环境安装配置所需的源码、安装包、插件等统一存放至运维oss中。</p>
+<p>相应的脚本、程序、代码统一存放至gitlab中，脚本wget oss中的源码完成安装。</p>
+<h1 id="脚本库、软件安装规范" class="article-heading"><a href="#脚本库、软件安装规范" class="headerlink" title="脚本库、软件安装规范"></a>脚本库、软件安装规范<a class="article-anchor" href="#脚本库、软件安装规范" aria-hidden="true"></a></h1><p>相应环境安装配置，统一采用gitlab中脚本完成，包含系统初始化、系统配置等。</p>
+<p>数据库安装部署脚本需求，对接到DBA组，DBA组需要至多一个工作日内提供安装脚本（特殊复杂软件脚本除外），上传至gitlab中。</p>
+<h1 id="MySQL安装部署" class="article-heading"><a href="#MySQL安装部署" class="headerlink" title="MySQL安装部署"></a>MySQL安装部署<a class="article-anchor" href="#MySQL安装部署" aria-hidden="true"></a></h1><h2 id="如何为MySQL选择合适的云服务器" class="article-heading"><a href="#如何为MySQL选择合适的云服务器" class="headerlink" title="如何为MySQL选择合适的云服务器"></a>如何为MySQL选择合适的云服务器<a class="article-anchor" href="#如何为MySQL选择合适的云服务器" aria-hidden="true"></a></h2><h3 id="CPU选型" class="article-heading"><a href="#CPU选型" class="headerlink" title="CPU选型"></a>CPU选型<a class="article-anchor" href="#CPU选型" aria-hidden="true"></a></h3><h4 id="应用是否是CPU密集型-？" class="article-heading"><a href="#应用是否是CPU密集型-？" class="headerlink" title="应用是否是CPU密集型 ？"></a>应用是否是CPU密集型 ？<a class="article-anchor" href="#应用是否是CPU密集型-？" aria-hidden="true"></a></h4><p>若是CPU密集型应用，我们需要的是加快SQL语句的处理速度，显然我们需要的<strong>更好的</strong>CPU而不是<strong>更多的</strong>CPU。另外，截止于2018年止，MYSQL不支持多CPU对同一SQL并发处理，也就是说，不管CPU多强或多弱，我们也只能用一个CPU核心来处理这一条SQL</p>
+<p>多个CPU对提高一个SQL的处理效率是没有帮助的</p>
+<h4 id="系统的并发量是多少-？" class="article-heading"><a href="#系统的并发量是多少-？" class="headerlink" title="系统的并发量是多少 ？"></a>系统的并发量是多少 ？<a class="article-anchor" href="#系统的并发量是多少-？" aria-hidden="true"></a></h4><p>为了提高系统的并发处理量（吞吐量），我们就需要CPU越多越好。<br>如，一个CPU处理一个SQL，那10个CPU就能同时处理10个SQL的并发（QPS：每秒处理SQL的数量），在WAB应用中，面对的是高访问量，这个时候，CPU数量就显得重要了</p>
+<h4 id="所使用的MYSQL是什么版本-？" class="article-heading"><a href="#所使用的MYSQL是什么版本-？" class="headerlink" title="所使用的MYSQL是什么版本 ？"></a>所使用的MYSQL是什么版本 ？<a class="article-anchor" href="#所使用的MYSQL是什么版本-？" aria-hidden="true"></a></h4><p>为了更好的发挥多核CPU的效果，请使用最新的MYSQL版本，至少也要升级到5.6或以上，我们就是可以放心的使用16或者32核的CPU</p>
+<h4 id="选择32位还是64位的CPU-？" class="article-heading"><a href="#选择32位还是64位的CPU-？" class="headerlink" title="选择32位还是64位的CPU ？"></a>选择32位还是64位的CPU ？<a class="article-anchor" href="#选择32位还是64位的CPU-？" aria-hidden="true"></a></h4><p>选择 64 位CPU，这样才可以安装 64 位操作系统，有了 64 位操作系统才能利用好更大的内存。</p>
+<h4 id="64位使用32位服务器版本的情况-？" class="article-heading"><a href="#64位使用32位服务器版本的情况-？" class="headerlink" title="64位使用32位服务器版本的情况 ？"></a>64位使用32位服务器版本的情况 ？<a class="article-anchor" href="#64位使用32位服务器版本的情况-？" aria-hidden="true"></a></h4><p>有些云服务器或者一些公司服务器会出现64位却装着32位系统版本的情况…请重装…</p>
+<h3 id="内存选型" class="article-heading"><a href="#内存选型" class="headerlink" title="内存选型"></a>内存选型<a class="article-anchor" href="#内存选型" aria-hidden="true"></a></h3><p><img src="demo/pic/mysqlxx01.png"></p>
+<h3 id="磁盘的配置和选择" class="article-heading"><a href="#磁盘的配置和选择" class="headerlink" title="磁盘的配置和选择"></a>磁盘的配置和选择<a class="article-anchor" href="#磁盘的配置和选择" aria-hidden="true"></a></h3><p><img src="demo/pic/mysqlxx02.png"></p>
+<p><img src="demo/pic/mysqlxx03.png"></p>
+<h2 id="MySQL推荐配置文件" class="article-heading"><a href="#MySQL推荐配置文件" class="headerlink" title="MySQL推荐配置文件"></a>MySQL推荐配置文件<a class="article-anchor" href="#MySQL推荐配置文件" aria-hidden="true"></a></h2><p>首先根据《调研表格》填写信息，然后登陆到 自动生成配置文件连接地址：<a target="_blank" rel="noopener" href="http://imysql.cn/my_cnf_generator">http://imysql.cn/my_cnf_generator</a> 登陆后根据调研信息填写后，一键生成。</p>
+<h3 id="注意事项" class="article-heading"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项<a class="article-anchor" href="#注意事项" aria-hidden="true"></a></h3><ol>
+<li>个别建议可能需要根据实际情况作调整，请自行判断或联系我，本人不对这些建议结果负相应责任</li>
+<li>本配置文件主要适用于MySQL 5.7/8.0版本</li>
+</ol>
+<h3 id="调研表格" class="article-heading"><a href="#调研表格" class="headerlink" title="调研表格"></a>调研表格<a class="article-anchor" href="#调研表格" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th align="left">No.</th>
+<th align="left">Q</th>
+<th align="left">默认值</th>
+<th align="left">客户填写</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1</td>
+<td align="left">您的服务器物理内存(单位：GB)</td>
+<td align="left">8核</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">您的MySQL版本 (5.7 or 8.0)</td>
+<td align="left">5.7</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left">您的服务器架构, x86 或 x86-64</td>
+<td align="left">x86-64</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left">该服务器是跑MySQL专属的吗</td>
+<td align="left">是</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="left">MySQL安装文件路径</td>
+<td align="left">/data/mysql</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left">MySQL数据文件路径</td>
+<td align="left">/data/mysql/data</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="left">MySQL监听端口</td>
+<td align="left">3306</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="left">MySQL SOCKET 文件位置</td>
+<td align="left">/data/mysql/mysql.sock</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="left">该实例预计有多少个数据表</td>
+<td align="left">512</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="left">该实例预计最大并发连接数</td>
+<td align="left">512</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">11</td>
+<td align="left">binlog保留多久(单位：天)</td>
+<td align="left">7</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">12</td>
+<td align="left">排序(ORDER BY)、分组(GROUP BY)之类的查询多吗</td>
+<td align="left">不多</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">13</td>
+<td align="left">MySQL异常宕机时怕丢数据不？</td>
+<td align="left">怕</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h2 id="主从复制参数大全" class="article-heading"><a href="#主从复制参数大全" class="headerlink" title="主从复制参数大全"></a>主从复制参数大全<a class="article-anchor" href="#主从复制参数大全" aria-hidden="true"></a></h2><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">master所有参数</span><br><span class="line">1 log-bin=mysql-bin</span><br><span class="line">1、控制master的是否开启binlog记录功能；</span><br><span class="line">2、二进制文件最好放在单独的目录下，这不但方便优化、更方便维护。</span><br><span class="line">3、重新命名二进制日志很简单，只需要修改[mysqld]里的log_bin选项，</span><br><span class="line">如下例子：要重新调整logbin的路径为“/home/mysql/binlog”</span><br><span class="line">[mysqld]</span><br><span class="line">log_bin=/home/mysql/binlog/binlog.log</span><br><span class="line"></span><br><span class="line">ll /home/mysql/binlog</span><br><span class="line">-rw-rw---- 1 mysql mysql 98 Mar 7 17:24 binlog.000001</span><br><span class="line">-rw-rw---- 1 mysql mysql 33 Mar 7 17:24 binlog.index</span><br><span class="line"></span><br><span class="line">需要注意：指定目录时候一定要以*.<span class="built_in">log</span>结尾，即不能仅仅指定到文件夹的级别，否则在重启mysql时会报错。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2. server-id=1</span><br><span class="line">每个server服务的标识，在master/slave环境中，此变量一定要不一样</span><br><span class="line"></span><br><span class="line">3. expire_logs_days=15</span><br><span class="line">通过此来实现master自动删除binlog</span><br><span class="line"></span><br><span class="line">4. innodb_flush_log_at_trx_commit=1</span><br><span class="line">此参数表示在事务提交时，处理重做日志的方式；此变量有三个可选值0，1，2：</span><br><span class="line">0：当事务提交时，并不将事务的重做日志写入日志文件，而是等待每秒刷新一次</span><br><span class="line">1：当事务提交时，将重做日志缓存的内容同步写到磁盘日志文件，为了保证数据一致性，在replication环境中使用此值。</span><br><span class="line">2：当事务提交时，将重做日志缓存的内容异步写到磁盘日志文件（写到文件系统缓存中）</span><br><span class="line">建议必须设置innodb_flush_log_at_trx_commit=1</span><br><span class="line"></span><br><span class="line">5.sync_binlog=1</span><br><span class="line">1、此参数表示每写缓冲多少次就同步到磁盘；</span><br><span class="line">2、sync_binlog=1表示同步写缓冲和磁盘二进制日志文件，不使用文件系统缓存</span><br><span class="line">在使用innodb事务引擎时，在复制环境中，为了保证最大的可用性，都设置为“1”，但会对影响io的性能。</span><br><span class="line">3、即使设置为“1”，也会有问题发生：</span><br><span class="line">假如当二进制日志写入磁盘，但事务还没有commit，这个时候宕机，</span><br><span class="line">当服务再次起来的恢复的时候，无法回滚以及记录到二进制日志的未提交的内容；</span><br><span class="line">这个时候就会造成master和slave数据不一致</span><br><span class="line">解决方案：</span><br><span class="line">需要参数innodb_support_xa=1来保证。建议必须设置</span><br><span class="line"></span><br><span class="line">6 .innodb_support_xa=1</span><br><span class="line">此参数与XA事务有关，它保证了二进制日志和innodb数据文件的同步，保证复制环境中数据一致性。建议必须设置</span><br><span class="line"></span><br><span class="line">7.binlog-do-db=skate_db</span><br><span class="line">只记录指定数据库的更新到二进制日志中</span><br><span class="line"></span><br><span class="line">8. binlog-do-table=skate_tab</span><br><span class="line">只记录指定表的更新到二进制日志中</span><br><span class="line"></span><br><span class="line">9. binlog-ignore-db=skate_db</span><br><span class="line">忽略指定数据库的更新到二进制日志中</span><br><span class="line"></span><br><span class="line">10.log_slave_updates=1</span><br><span class="line">此参数控制slave数据库是否把从master接受到的<span class="built_in">log</span>并在本slave执行的内容记录到slave的二进制日志中</span><br><span class="line">在级联复制环境中（包括双master环境），这个参数是必须的</span><br><span class="line"></span><br><span class="line">11.binlog_format=statement|row|mixed</span><br><span class="line">控制以什么格式记录二进制日志的内容，默认是mixed</span><br><span class="line"></span><br><span class="line">12. max_binlog_size</span><br><span class="line">master的每个二进制日志文件的大小，默认1G</span><br><span class="line"></span><br><span class="line">13.binlog_cache_size</span><br><span class="line">1、所有未提交的事务都会被记录到一个缓存或临时文件中，待提交时，统一同步到二进制日志中，</span><br><span class="line">2、此变量是基于session的，每个会话开启一个binlog_cache_size大小的缓存。</span><br><span class="line">3、通过变量“Binlog_cache_disk_use”和“Binlog_cache_use”来设置binlog_cache_size的大小。</span><br><span class="line">说明：</span><br><span class="line">Binlog_cache_disk_use： 使用临时文件写二进制日志的次数</span><br><span class="line">Binlog_cache_use： 使用缓冲记写二进制的次数</span><br><span class="line"></span><br><span class="line">14.auto_increment_increment=2 //增长的步长</span><br><span class="line">auto_increment_offset=1 //起始位置</span><br><span class="line">在双master环境下可以防止键值冲突</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">slave所用参数</span><br><span class="line">1.server-id=2</span><br><span class="line">和master的含义一样，服务标识</span><br><span class="line"></span><br><span class="line">2.log-bin=mysql-bin</span><br><span class="line">和master的含义一样，开启二进制</span><br><span class="line"></span><br><span class="line">3.relay-log=relay-bin</span><br><span class="line">中继日志文件的路径名称</span><br><span class="line"></span><br><span class="line">4. relay-log-index=relay-bin</span><br><span class="line">中继日志索引文件的路径名称</span><br><span class="line"></span><br><span class="line">5. log_slave_updates=1</span><br><span class="line">和master的含义一样，如上</span><br><span class="line"></span><br><span class="line">6.read_only=1</span><br><span class="line">1、使数据库只读，此参数在slave的复制环境和具有super权限的用户不起作用，</span><br><span class="line">2、对于复制环境设置read_only=1非常有用，它可以保证slave只接受master的更新，而不接受client的更新。</span><br><span class="line">3、客户端设置：</span><br><span class="line">mysq&gt; <span class="built_in">set</span> global read_only=1</span><br><span class="line"></span><br><span class="line">7. skip_slave_start</span><br><span class="line">使slave在mysql启动时不启动复制进程，mysql起来之后使用 start slave启动，建议必须</span><br><span class="line"></span><br><span class="line">8.replicate-do-db</span><br><span class="line">只复制指定db</span><br><span class="line"></span><br><span class="line">9.replicate-do-table</span><br><span class="line">只复制指定表</span><br><span class="line"></span><br><span class="line">10. replicate-ingore-table</span><br><span class="line">忽略指定表</span><br><span class="line"></span><br><span class="line">11. replicate_wild_do_table=skatedb.%</span><br><span class="line">模糊匹配复制指定db</span><br><span class="line"></span><br><span class="line">12. auto_increment_increment=2</span><br><span class="line">auto_increment_offset=1</span><br><span class="line">和master含义一样，参考如上</span><br><span class="line"></span><br><span class="line">13. log_slow_slave_statements</span><br><span class="line">在slave上开启慢查询日志，在query的时间大于long_query_time时，记录在慢查询日志里</span><br><span class="line"></span><br><span class="line">14. max_relay_log_size</span><br><span class="line">slave上的relay <span class="built_in">log</span>的大小，默认是1G</span><br><span class="line"></span><br><span class="line">15.relay_log_info_file</span><br><span class="line">中继日志状态信息文件的路径名称</span><br><span class="line"></span><br><span class="line">16. relay_log_purge</span><br><span class="line">当relay <span class="built_in">log</span>不被需要时就删除，默认是on</span><br><span class="line">SET GLOBAL relay_log_purge=1</span><br><span class="line"></span><br><span class="line">17.replicate-rewrite-db=from_name-&gt;to_name</span><br><span class="line">数据库的重定向，可以把分库汇总到主库便于统计分析</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="卸载MySQL冲突软件" class="article-heading"><a href="#卸载MySQL冲突软件" class="headerlink" title="卸载MySQL冲突软件"></a>卸载MySQL冲突软件<a class="article-anchor" href="#卸载MySQL冲突软件" aria-hidden="true"></a></h2><p>MySQL的版本非常多，例如MySQL、Mariadb、Percona Server等，每个厂商又有很多不同的版本，版本之间不兼容问题可能会导致新装环境的失败，因此在安装之前请根据系统环境选择卸载。</p>
+<p>若对已安装的软件熟悉，则根据实际清空进行卸载，例如通过包管理器进行安装的软件，可以使用卸载命令将其他MySQL数据库卸载，例如Redhat系列使用rpm\yum,Ubuntu选择apt 。</p>
+<p>RedHat系列</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">rpm -e --nodeps 软件包</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Ubuntu系列</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">apt remove 软件包</span><br></pre></td></tr></tbody></table></figure>
+
+<p>若为二进制安装且已清楚安装环境，需要卸载的软件包如何检测呢？</p>
+<ul>
+<li>全系统查找mysql开头的文件</li>
+<li>批量删除相关文件</li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">find / -name <span class="string">'mysql*'</span> 2&gt; /dev/null &gt; pre.file</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> line; <span class="built_in">rm</span> -rf <span class="variable">$line</span>;<span class="keyword">done</span> &lt; pre.file</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="Oracle安装部署" class="article-heading"><a href="#Oracle安装部署" class="headerlink" title="Oracle安装部署"></a>Oracle安装部署<a class="article-anchor" href="#Oracle安装部署" aria-hidden="true"></a></h1><ul>
+<li>单实例安装</li>
+<li>DG安装</li>
+<li>RAC安装</li>
+</ul>
+<h1 id="Redis" class="article-heading"><a href="#Redis" class="headerlink" title="Redis"></a>Redis<a class="article-anchor" href="#Redis" aria-hidden="true"></a></h1><ul>
+<li>单实例安装</li>
+<li>主从安装</li>
+<li>集群安装</li>
+</ul>
+<h1 id="Mongodb安装部署" class="article-heading"><a href="#Mongodb安装部署" class="headerlink" title="Mongodb安装部署"></a>Mongodb安装部署<a class="article-anchor" href="#Mongodb安装部署" aria-hidden="true"></a></h1><p>MongoDB的安装包括单机环境的安装、副本集环境的安装配置以及分片集环境的安装配置，下面分别进行描述。</p>
+<ul>
+<li>基本安装</li>
+<li>副本集安装配置</li>
+<li>集群按安装配置</li>
+</ul>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:07.856Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E5%AD%98%E5%82%A8"><span class="toc-text">资源存储</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%84%9A%E6%9C%AC%E5%BA%93%E3%80%81%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E8%A7%84%E8%8C%83"><span class="toc-text">脚本库、软件安装规范</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2"><span class="toc-text">MySQL安装部署</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%B8%BAMySQL%E9%80%89%E6%8B%A9%E5%90%88%E9%80%82%E7%9A%84%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">如何为MySQL选择合适的云服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CPU%E9%80%89%E5%9E%8B"><span class="toc-text">CPU选型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E6%98%AF%E5%90%A6%E6%98%AFCPU%E5%AF%86%E9%9B%86%E5%9E%8B-%EF%BC%9F"><span class="toc-text">应用是否是CPU密集型 ？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%B9%B6%E5%8F%91%E9%87%8F%E6%98%AF%E5%A4%9A%E5%B0%91-%EF%BC%9F"><span class="toc-text">系统的并发量是多少 ？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84MYSQL%E6%98%AF%E4%BB%80%E4%B9%88%E7%89%88%E6%9C%AC-%EF%BC%9F"><span class="toc-text">所使用的MYSQL是什么版本 ？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%89%E6%8B%A932%E4%BD%8D%E8%BF%98%E6%98%AF64%E4%BD%8D%E7%9A%84CPU-%EF%BC%9F"><span class="toc-text">选择32位还是64位的CPU ？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#64%E4%BD%8D%E4%BD%BF%E7%94%A832%E4%BD%8D%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%89%88%E6%9C%AC%E7%9A%84%E6%83%85%E5%86%B5-%EF%BC%9F"><span class="toc-text">64位使用32位服务器版本的情况 ？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E9%80%89%E5%9E%8B"><span class="toc-text">内存选型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A3%81%E7%9B%98%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E9%80%89%E6%8B%A9"><span class="toc-text">磁盘的配置和选择</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MySQL%E6%8E%A8%E8%8D%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">MySQL推荐配置文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%A0%94%E8%A1%A8%E6%A0%BC"><span class="toc-text">调研表格</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E5%8F%82%E6%95%B0%E5%A4%A7%E5%85%A8"><span class="toc-text">主从复制参数大全</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B8%E8%BD%BDMySQL%E5%86%B2%E7%AA%81%E8%BD%AF%E4%BB%B6"><span class="toc-text">卸载MySQL冲突软件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Oracle%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2"><span class="toc-text">Oracle安装部署</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis"><span class="toc-text">Redis</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Mongodb%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2"><span class="toc-text">Mongodb安装部署</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

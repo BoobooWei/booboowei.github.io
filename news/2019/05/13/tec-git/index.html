@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Git版本控制 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/news/2019/05/13/tec-git/">
+  <!-- Alternate links -->
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="版本控制的历史及作用 GIT的安装 GIT的初始化 第一次提交文件 GIT的工作区、暂存区、版本库 GIT的常用基本命令 GIT分支 GIT克隆 9.GITHUB的使用    Git是一个免费的开源 分布式版本控制系统，旨在快速高效地处理从小型到大型项目的所有内容。 Git 易于学习， 占地面积小，具有闪电般的快速性能。它具有诸如Subversion，CVS，Perforce和ClearCa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git版本控制">
+<meta property="og:url" content="http://www.toberoot.com/news/2019/05/13/tec-git/">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="版本控制的历史及作用 GIT的安装 GIT的初始化 第一次提交文件 GIT的工作区、暂存区、版本库 GIT的常用基本命令 GIT分支 GIT克隆 9.GITHUB的使用    Git是一个免费的开源 分布式版本控制系统，旨在快速高效地处理从小型到大型项目的所有内容。 Git 易于学习， 占地面积小，具有闪电般的快速性能。它具有诸如Subversion，CVS，Perforce和ClearCa">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2019-05-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-10-20T17:00:02.078Z">
+<meta property="article:author" content="魏亚萍">
+<meta property="article:tag" content="Git">
+<meta property="article:tag" content="Github">
+<meta property="article:tag" content="Gitlab">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <div class="article-content" itemprop="articleBody">
+                <article class="article post" itemscope itemtype="http://schema.org/Article">
+  <header class="article-header">
+    
+      <h1 class="article-title" itemprop="name">Git版本控制</h1>
+    
+    <a href="" class="article-date"><time datetime="2019-05-12T16:00:00.000Z">2019-05-12</time></a>
+  </header>
+  <div class="article-content" itemprop="articleBody">
+    <!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 --><html><head></head><body><ul>
+<li><a href="#%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%9A%84%E5%8E%86%E5%8F%B2%E5%8F%8A%E4%BD%9C%E7%94%A8">版本控制的历史及作用</a></li>
+<li><a href="#git%E7%9A%84%E5%AE%89%E8%A3%85">GIT的安装</a></li>
+<li><a href="#git%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96">GIT的初始化</a></li>
+<li><a href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%8F%90%E4%BA%A4%E6%96%87%E4%BB%B6">第一次提交文件</a></li>
+<li><a href="#git%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8C%BA%E3%80%81%E6%9A%82%E5%AD%98%E5%8C%BA%E3%80%81%E7%89%88%E6%9C%AC%E5%BA%93">GIT的工作区、暂存区、版本库</a></li>
+<li><a href="#git%E7%9A%84%E5%B8%B8%E7%94%A8%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4">GIT的常用基本命令</a></li>
+<li><a href="#git%E5%88%86%E6%94%AF">GIT分支</a></li>
+<li><a href="#git%E5%85%8B%E9%9A%86">GIT克隆</a></li>
+<li><a href="#9github%E7%9A%84%E4%BD%BF%E7%94%A8">9.GITHUB的使用</a></li>
+</ul>
+<!-- /MDTOC -->
+
+<p>Git是一个免费的开源 分布式版本控制系统，旨在快速高效地处理从小型到大型项目的所有内容。</p>
+<p>Git 易于学习， 占地面积小，具有闪电般的快速性能。它具有诸如Subversion，CVS，Perforce和ClearCase之类的SCM工具，并且具有廉价的本地分支，方便的暂存区域和 多个工作流等功能。</p>
+<h2 id="版本控制的历史及作用" class="article-heading"><a href="#版本控制的历史及作用" class="headerlink" title="版本控制的历史及作用"></a>版本控制的历史及作用<a class="article-anchor" href="#版本控制的历史及作用" aria-hidden="true"></a></h2><p><strong>版本控制的作用：</strong></p>
+<p>对于IT这个行业来说，经常会遇到一个问题：代码分散的拷贝在各个分区之中，不知道哪个代码文件是最新的，哪个代码文件是最优的。失败的复制、替换经常会导致原来尚能运行的代码遭到破坏。于是，针对以上的问题就产生了一种解决方案，这种方案我们成为版本控制。版本控制系统是能够随着时间的推进记录一系列文件的变化以便于你以后想要的退回到某个版本的系统。</p>
+<p><strong>版本控制的历史：</strong></p>
+<p>1）CVS：最早期的版本控制工具称为CVS，于1985年由荷兰阿姆斯特丹VU大学的Dick Grune教授完成开发，奠定了后续版本控制软件的模型基础。CVS采用C/S模型，版本库位于服务端，实际上存储的文件可以理解为一个RCS容器。每一个RCS文件以’.v‘作为后缀，保存该文件的每一次更改历史，使得其存储十分有效。然而CVS也存在如下缺点：1.效率不高，服务端文件越多，处理速度越慢。2.合并困难重重，经常会遇到严重冲突。3.不能直接对文件和目录的重命名进行版本控制，会破坏数据。</p>
+<p>2）SVN：SVN全名为subversion，由collabNet公司于2000年开发，目的是为了弥补CVS的不足，创建一个性能更加强大的版本控制系统来取代CVS。到了2001年的时候，SVN已经可以用于市场环境。SVN拥有以下几个特征：1.轻量级拷贝。2.以授权文件的方式来实现版本库的授权。2.在工作区的隐藏目录下会保存一份冗余的原始拷贝。然而，SVB比起CVS在本质上并没有突破。到2009年年底，SVN被交由APACHE社区管理，至此svn成为了apache的一个子项目。</p>
+<p>3）GIT：GIT由linux之父linus于2005年开发，在结构上比起SVN和CVS有很大的提升。可以说GIT是世界上目前最优秀的版本控制系统之一。GIT的每个功能都作为一条独立的命令，导致git庞大的命令集，但这并不妨碍各大程序人员对于GIT的喜爱，原因就在于它一个分布式的版本控制系统。此外：GIT虽然是基于linux操作系统开发的，但目前已经可以跨平台运行在多种操作系统之上，包括linux，MAC OS X，Windows等。</p>
+<p><strong>版本控制系统的分类：</strong></p>
+<p>版本控制主要分为三大类：本地版本控制系统，集中式版本控制系统和分布式版本控制系统。</p>
+<p>本地版本控制：将文件的各个版本以一定的数据格式存储在本地的磁盘，这种方式在一定的程度上解决了手动复制黏贴的问题，但无法解决多人协作的问题。</p>
+<p>集中式版本控制：比起本地版本控制多了一个中央服务器，各个版本的数据存储在中央服务器，管理员可以控制开发人员的权限，而开发人员也可以从中央服务器拉取数据。集中式版本控制解决了团队协作问题，但缺点是所有数据存储在中央服务器，服务器一旦宕机，会造成不可估量的损失。SVN和CVS都是集中式版本控制。</p>
+<p>分布式版本控制，系统保存的不是文件变化的差两，而是文件的快照。分布式版本控制系统是分布式的，当你从中央服务器拷贝下来代码时，你拷贝的是一个完整的版本库，包括历史纪录，提交记录等，即使某一台机器宕机，也能够找到文件的完整备份。GIT就是分布式版本控制。</p>
+<h2 id="GIT的安装" class="article-heading"><a href="#GIT的安装" class="headerlink" title="GIT的安装"></a>GIT的安装<a class="article-anchor" href="#GIT的安装" aria-hidden="true"></a></h2><p>git该软件光盘自带，直接通过yum的方式去安装即可，目前我们采用的git版本是1.8.3.1版本。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# yum -y install git</span><br><span class="line">[root@servera ~]# git --version</span><br><span class="line">git version 1.8.3.1</span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以通过以下方式完成命令补全：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# cp /usr/share/doc/git-1.8.3.1/contrib/completion/git-completion.bash /etc/bash_completion.d</span><br><span class="line">[root@servera ~]# source /etc/bash_completion.d/git-completion.bash</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="GIT的初始化" class="article-heading"><a href="#GIT的初始化" class="headerlink" title="GIT的初始化"></a>GIT的初始化<a class="article-anchor" href="#GIT的初始化" aria-hidden="true"></a></h2><p>1）设置下git的配置变量，告诉git当前用户的姓名和邮件地址，配置的用户名和邮件地址将会在版本库提交时候用到。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera .git]# git config --global user.name "carol"</span><br><span class="line">[root@servera .git]# git config --global user.email lijiayi@uplooking.com</span><br></pre></td></tr></tbody></table></figure>
+
+<p>2）创建工作目录并初始化</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# cd /root</span><br><span class="line">[root@servera ~]# ls</span><br><span class="line">anaconda-ks.cfg</span><br><span class="line">[root@servera ~]# mkdir workspace</span><br><span class="line">[root@servera ~]# cd workspace/</span><br><span class="line">[root@servera workspace]# git init</span><br><span class="line">Initialized empty Git repository in /root/workspace/.git/</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里/root/workspace目录就是工作区。git ini为初始化命令，在执行完成之后会在该目录下生成一个.git的版本库。</p>
+<h2 id="第一次提交文件" class="article-heading"><a href="#第一次提交文件" class="headerlink" title="第一次提交文件"></a>第一次提交文件<a class="article-anchor" href="#第一次提交文件" aria-hidden="true"></a></h2><p>1）先在工作区生成一个文件</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera workspace]# echo hello &gt; welcome.txt</span><br><span class="line">[root@servera workspace]# ls</span><br><span class="line">welcome.txt</span><br><span class="line">[root@servera workspace]# cat welcome.txt</span><br><span class="line">hello</span><br></pre></td></tr></tbody></table></figure>
+
+<p>2）为了将这个新建立的文件添加到版本库，需要执行以下指令</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera workspace]# git add welcome.txt</span><br><span class="line">[root@servera workspace]# git commit -m "first"</span><br><span class="line">[master c5171b5] first</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br><span class="line"> create mode 100644 welcome.txt</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="GIT的工作区、暂存区、版本库" class="article-heading"><a href="#GIT的工作区、暂存区、版本库" class="headerlink" title="GIT的工作区、暂存区、版本库"></a>GIT的工作区、暂存区、版本库<a class="article-anchor" href="#GIT的工作区、暂存区、版本库" aria-hidden="true"></a></h2><p><img src="git/1.png" alt="1"></p>
+<p>在这里有三个概念。1.工作区 2.版本库 3.暂存区</p>
+<p>实际上在上一个实践之中，我们经历了两次提交，主要和这个设计模式有关。</p>
+<p>当工作区执行git add命令时，咱群出的目录树将被更新，同时工作区的文件内容会被写入到对象库中的一个新的对象中，而该对象的ID被记录在暂存区的文件索引中。</p>
+<p>当执行git commit操作时候，暂存区的目录树会写到版本库中，最新指向的目录树就是提交时暂存区的目录树。</p>
+<p>实际上，暂存区局像是一个虚拟的工作区，在这个虚拟工作区的目录树中，文件.git/index实际记录了文件名和文件的状态信息（时间戳、文件长度等等），文件的内容并没有实际存储其中，而是保存在了git对象库(.git/objects)中，文件索引建立起了对象库和实体对象之间的对应。图显示了工作区、暂存区和版本库之间的关系。</p>
+<h2 id="GIT的常用基本命令" class="article-heading"><a href="#GIT的常用基本命令" class="headerlink" title="GIT的常用基本命令"></a>GIT的常用基本命令<a class="article-anchor" href="#GIT的常用基本命令" aria-hidden="true"></a></h2><p>1）git diff：用来显示工作区和暂存区文件的差异</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera workspace]# echo test  &gt;&gt; welcome.txt</span><br><span class="line">[root@servera workspace]# ls</span><br><span class="line">welcome.txt</span><br><span class="line">[root@servera workspace]# cat welcome.txt</span><br><span class="line">hello</span><br><span class="line">test</span><br><span class="line">[root@servera workspace]# ls</span><br><span class="line">welcome.txt</span><br><span class="line">[root@servera workspace]# git diff welcome.txt</span><br><span class="line">diff --git a/welcome.txt b/welcome.txt</span><br><span class="line">index ce01362..b2b9cc9 100644</span><br><span class="line">--- a/welcome.txt</span><br><span class="line">+++ b/welcome.txt</span><br><span class="line">@@ -1 +1,2 @@</span><br><span class="line"> hello</span><br><span class="line">+test</span><br></pre></td></tr></tbody></table></figure>
+
+<p>2）git status：用来查看改过的内容</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera workspace]# git status</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">On branch master</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Changes not staged <span class="keyword">for</span> commit:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">  (use <span class="string">"git add &lt;file&gt;..."</span> to update what will be committed)</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">  (use <span class="string">"git checkout -- &lt;file&gt;..."</span> to discard changes <span class="keyword">in</span> working directory)</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"><span class="comment">#	modified:   welcome.txt</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash">no changes added to commit (use <span class="string">"git add"</span> and/or <span class="string">"git commit -a"</span>)</span></span><br><span class="line">[root@servera workspace]#</span><br></pre></td></tr></tbody></table></figure>
+
+<p>3）git log： 用来查看历史提交的日志</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera workspace]# git log</span><br><span class="line">commit a7a778652b1457b838beeca66e4334c35d97e826</span><br><span class="line">Author: carol &lt;lijiayi@uplooking.com&gt;</span><br><span class="line">Date:   Sun Nov 20 07:01:51 2016 -0500</span><br><span class="line"></span><br><span class="line">    first</span><br></pre></td></tr></tbody></table></figure>
+
+<p>4）git reset 用来做回滚</p>
+<p>恢复工作区的文件到上一个提交的版本：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera workspace]# echo test &gt;&gt; welcome.txt</span><br><span class="line">[root@servera workspace]# cat welcome.txt</span><br><span class="line">hello</span><br><span class="line">test</span><br><span class="line">[root@servera workspace]# git add welcome.txt</span><br><span class="line">[root@servera workspace]# git commit -m "second"  # 以上的操作为再添加一个版本</span><br><span class="line">[master 0d10fd9] second</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br><span class="line">[root@servera workspace]# cat welcome.txt</span><br><span class="line">hello</span><br><span class="line">test</span><br><span class="line">[root@servera workspace]# git reset --hard HEAD^   # ^代表上一个版本，^^代表上上一个版本，当然往上100个版本写100个^比较容易数不过来，所以可以写成HEAD~100</span><br><span class="line">HEAD is now at a7a7786 first</span><br><span class="line">[root@servera workspace]# ls</span><br><span class="line">welcome.txt</span><br><span class="line">[root@servera workspace]# cat welcome.txt</span><br><span class="line">hello</span><br></pre></td></tr></tbody></table></figure>
+
+<p>恢复工作区到指定版本：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera workspace]# echo testok &gt;&gt; welcome.txt</span><br><span class="line">[root@servera workspace]# echo testok &gt;&gt; welcome.txt</span><br><span class="line">[root@servera workspace]# git add welcome.txt</span><br><span class="line">[root@servera workspace]# git commit -m "third"  # 这里再添加一个版本</span><br><span class="line">[master 3c3b1d9] third</span><br><span class="line"> 1 file changed, 2 insertions(+)</span><br><span class="line">[root@servera workspace]# git log --graph --oneline  # 可以通过该参数查看到每个操作对应的ID</span><br><span class="line">* 3c3b1d9 third</span><br><span class="line">* a7a7786 first</span><br><span class="line">[root@servera workspace]# git reset --hard a7a7786</span><br><span class="line">HEAD is now at a7a7786 first</span><br><span class="line">[root@servera workspace]# ls</span><br><span class="line">welcome.txt</span><br><span class="line">[root@servera workspace]# cat welcome.txt</span><br><span class="line">hello</span><br></pre></td></tr></tbody></table></figure>
+
+<p>5）git reflog用来查看历史记录，可以结合reset完成恢复数据的操作</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera workspace]# git reflog</span><br><span class="line">a7a7786 HEAD@{0}: reset: moving to a7a7786</span><br><span class="line">3c3b1d9 HEAD@{1}: commit: third</span><br><span class="line">a7a7786 HEAD@{2}: reset: moving to HEAD^</span><br><span class="line">0d10fd9 HEAD@{3}: commit: second</span><br><span class="line">a7a7786 HEAD@{4}: reset: moving to HEAD^</span><br><span class="line">4d65b14 HEAD@{5}: commit: second</span><br><span class="line">a7a7786 HEAD@{6}: commit (initial): first</span><br><span class="line">[root@servera workspace]# cat welcome.txt</span><br><span class="line">hello</span><br><span class="line">[root@servera workspace]# git reset --hard HEAD@{1}</span><br><span class="line">HEAD is now at 3c3b1d9 third</span><br><span class="line">[root@servera workspace]# ls</span><br><span class="line">welcome.txt</span><br><span class="line">[root@servera workspace]# cat welcome.txt</span><br><span class="line">hello</span><br><span class="line">testok</span><br><span class="line">testok</span><br></pre></td></tr></tbody></table></figure>
+
+<p>6）git checkout 可以丢弃工作区的修改</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera workspace]# echo carol &gt;&gt; welcome.txt</span><br><span class="line">[root@servera workspace]# git add welcome.txt</span><br><span class="line">[root@servera workspace]# cat welcome.txt</span><br><span class="line">hello</span><br><span class="line">testok</span><br><span class="line">testok</span><br><span class="line">carol #重新提交一个修改后的文件至工作区</span><br><span class="line">[root@servera workspace]# git reset HEAD welcome.txt #如果已经提交给缓存区，则必须要做这步</span><br><span class="line">Unstaged changes after reset:</span><br><span class="line">M	welcome.txt</span><br><span class="line">[root@servera workspace]# git checkout -- welcome.txt</span><br><span class="line">[root@servera workspace]# cat welcome.txt</span><br><span class="line">hello</span><br><span class="line">testok</span><br><span class="line">testok</span><br></pre></td></tr></tbody></table></figure>
+
+<p>7）git rm 从版本库中删除文件</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera workspace]# git rm welcome.txt</span><br><span class="line">rm 'welcome.txt'</span><br><span class="line">[root@servera workspace]# git commit -m "delete welcome"</span><br><span class="line">[master ba79342] delete welcome</span><br><span class="line"> 1 file changed, 3 deletions(-)</span><br><span class="line"> delete mode 100644 welcome.txt</span><br><span class="line">[root@servera workspace]# ls</span><br><span class="line">[root@servera workspace]# ls</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="GIT分支" class="article-heading"><a href="#GIT分支" class="headerlink" title="GIT分支"></a>GIT分支<a class="article-anchor" href="#GIT分支" aria-hidden="true"></a></h2><p>通常情况下，一套分支只用来存放一套代码，为了保证每套代码的独立性，我们会建立多个分支来分开管理。</p>
+<table>
+<thead>
+<tr>
+<th>查看分支</th>
+<th>创建分支</th>
+<th>切换分支</th>
+<th>合并某分支到当前分支</th>
+<th>删除分支</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>git branch</td>
+<td>git branch name</td>
+<td>git checkout name</td>
+<td>git merge name</td>
+<td>git branch -d name</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera workspace]# git branch  # 查看fenzhi</span><br><span class="line">* master</span><br><span class="line">[root@servera workspace]# git branch a #创建名为a的分支</span><br><span class="line">[root@servera workspace]# git branch</span><br><span class="line">  a</span><br><span class="line">* master   # * 代表当前分支</span><br><span class="line">[root@servera workspace]# git checkout a  # 切换分支</span><br><span class="line">Switched to branch 'a'</span><br><span class="line">[root@servera workspace]# git branch</span><br><span class="line">* a</span><br><span class="line">  master</span><br><span class="line">[root@servera workspace]# echo test &gt; testfile</span><br><span class="line">[root@servera workspace]# git add testfile</span><br><span class="line">[root@servera workspace]# git commit -m 'a'　　# 重新提交个文件</span><br><span class="line">[a 92abcd8] a</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br><span class="line"> create mode 100644 testfile</span><br><span class="line">[root@servera workspace]# ls</span><br><span class="line">testfile</span><br><span class="line">[root@servera workspace]# git status  # 可以看到已经提交给了a这个分支</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">On branch a</span></span><br><span class="line">nothing to commit, working directory clean</span><br><span class="line">[root@servera workspace]# cd .git/</span><br><span class="line">[root@servera .git]# ls</span><br><span class="line">branches        config       HEAD   index  logs     ORIG_HEAD</span><br><span class="line">COMMIT_EDITMSG  description  hooks  info   objects  refs</span><br><span class="line">[root@servera .git]# cat HEAD</span><br><span class="line">ref: refs/heads/a   # 可以看到当前分支头部指向了a</span><br><span class="line"></span><br><span class="line">[root@servera workspace]# git checkout master</span><br><span class="line">Switched to branch 'master'</span><br><span class="line">[root@servera workspace]# git merge a  # 合并分支，不建议这样做，可能会有冲突。</span><br><span class="line">Updating ba79342..92abcd8</span><br><span class="line">Fast-forward</span><br><span class="line"> testfile | 1 +</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br><span class="line"> create mode 100644 testfile</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="GIT克隆" class="article-heading"><a href="#GIT克隆" class="headerlink" title="GIT克隆"></a>GIT克隆<a class="article-anchor" href="#GIT克隆" aria-hidden="true"></a></h2><p>git克隆的作用：备份，在分布式的集中化管理机制里，就可以通过克隆的方式，将远程的git版本库克隆至本地来进行修改。</p>
+<p>1）克隆</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# git clone /root/workspace/ /backup</span><br><span class="line">Cloning into '/backup'...</span><br><span class="line">done.</span><br><span class="line">[root@servera ~]# cd /backup/</span><br><span class="line">[root@servera backup]# ls</span><br><span class="line">testfile</span><br></pre></td></tr></tbody></table></figure>
+
+<p>2）拉取和推送</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">推送：</span><br><span class="line">[root@servera workspace]# git push /backup</span><br><span class="line">warning: push.default is unset; its implicit value is changing in</span><br><span class="line">Git 2.0 from 'matching' to 'simple'. To squelch this message</span><br><span class="line">and maintain the current behavior after the default changes, use:</span><br><span class="line"></span><br><span class="line">  git config --global push.default matching</span><br><span class="line"></span><br><span class="line">To squelch this message and adopt the new behavior now, use:</span><br><span class="line"></span><br><span class="line">  git config --global push.default simple</span><br><span class="line"></span><br><span class="line">See 'git help config' and search for 'push.default' for further information.</span><br><span class="line">(the 'simple' mode was introduced in Git 1.7.11. Use the similar mode</span><br><span class="line">'current' instead of 'simple' if you sometimes use older versions of Git)</span><br><span class="line"></span><br><span class="line">Counting objects: 4, done.</span><br><span class="line">Delta compression using up to 2 threads.</span><br><span class="line">Compressing objects: 100% (2/2), done.</span><br><span class="line">Writing objects: 100% (3/3), 272 bytes | 0 bytes/s, done.</span><br><span class="line">Total 3 (delta 0), reused 0 (delta 0)</span><br><span class="line">remote: error: refusing to update checked out branch: refs/heads/master</span><br><span class="line">remote: error: By default, updating the current branch in a non-bare repository</span><br><span class="line">remote: error: is denied, because it will make the index and work tree inconsistent</span><br><span class="line">remote: error: with what you pushed, and will require 'git reset --hard' to match</span><br><span class="line">remote: error: the work tree to HEAD.</span><br><span class="line">remote: error:</span><br><span class="line">remote: error: You can set 'receive.denyCurrentBranch' configuration variable t</span><br><span class="line">remote: error: 'ignore' or 'warn' in the remote repository to allow pushing int</span><br><span class="line">remote: error: its current branch; however, this is not recommended unless you</span><br><span class="line">remote: error: arranged to update its work tree to match what you pushed in som</span><br><span class="line">remote: error: other way.</span><br><span class="line">remote: error:</span><br><span class="line">remote: error: To squelch this message and still keep the default behaviour, se</span><br><span class="line">remote: error: 'receive.denyCurrentBranch' configuration variable to 'refuse'.</span><br><span class="line">To /backup</span><br><span class="line"> ! [remote rejected] master -&gt; master (branch is currently checked out)</span><br><span class="line">error: failed to push some refs to '/backup'</span><br></pre></td></tr></tbody></table></figure>
+
+<p>报错的原因：</p>
+<p>默认更新非裸版本库的当前分支是不被允许的，因为这样会导致暂存区和工作区与你推送至版本库的新提交不一致。太古怪了。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">拉取：</span><br><span class="line">[root@servera workspace]# cd /backup</span><br><span class="line">[root@servera backup]# ls</span><br><span class="line">testfile</span><br><span class="line">[root@servera backup]# git pull /root/workspace/</span><br><span class="line">From /root/workspace</span><br><span class="line"> * branch            HEAD       -&gt; FETCH_HEAD</span><br><span class="line">Updating 92abcd8..3191ffc</span><br><span class="line">Fast-forward</span><br><span class="line"> hello | 1 +</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br><span class="line"> create mode 100644 hello</span><br><span class="line">[root@servera backup]# ls</span><br><span class="line">hello  testfile</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="9-GITHUB的使用" class="article-heading"><a href="#9-GITHUB的使用" class="headerlink" title="9.GITHUB的使用"></a>9.GITHUB的使用<a class="article-anchor" href="#9-GITHUB的使用" aria-hidden="true"></a></h2><p>GitHub 是一个面向开源及私有软件项目的托管平台，因为只支持 Git 作为唯一的版本库格式进行托管，故名 GitHub</p>
+<p>网站地址：<a target="_blank" rel="noopener" href="https://github.com/">https://github.com/</a></p>
+<ol>
+<li><p>将本地版本库上传至github保存</p>
+</li>
+<li><p>先打开github，自行注册</p>
+</li>
+<li><p>在github上通过图形化界面配置一个版本库 <img src="git/2.png" alt="2"></p>
+</li>
+<li><p>将本地的版本库通过push的方式上传至远程</p>
+</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera backup]# git remote add carol https://github.com/atheling004/test1.git  #添加执行用户</span><br><span class="line">[root@servera backup]# git push -u carol master</span><br><span class="line">Username for 'https://github.com': atheling004</span><br><span class="line">Password for 'https://atheling004@github.com':   # 输入用户名和密码</span><br><span class="line">Counting objects: 4, done.</span><br><span class="line">Delta compression using up to 2 threads.</span><br><span class="line">Compressing objects: 100% (2/2), done.</span><br><span class="line">Writing objects: 100% (4/4), 248 bytes | 0 bytes/s, done.</span><br><span class="line">Total 4 (delta 0), reused 0 (delta 0)</span><br><span class="line">To https://github.com/atheling004/test1.git</span><br><span class="line"> * [new branch]      master -&gt; master</span><br><span class="line">Branch master set up to track remote branch master from carol.</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>查看结果</li>
+</ol>
+<p><img src="git/4.png" alt="3">2）将远程github版本库中保存的文件存放至本地</p>
+<p>1.现在github上通过create new file选项自行创建一个新文件，这里创建的文件名称为zazazazazazaza</p>
+<p>2.执行以下操作</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera backup]# git pull https://github.com/atheling004/test1.git</span><br><span class="line">remote: Counting objects: 3, done.</span><br><span class="line">remote: Compressing objects: 100% (2/2), done.</span><br><span class="line">remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0</span><br><span class="line">Unpacking objects: 100% (3/3), done.</span><br><span class="line">From https://github.com/atheling004/test1</span><br><span class="line"> * branch            HEAD       -&gt; FETCH_HEAD</span><br><span class="line">Updating 92a7721..33a62ba</span><br><span class="line">Fast-forward</span><br><span class="line"> zazazazazazaza | 1 +</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br><span class="line"> create mode 100644 zazazazazazaza</span><br><span class="line">[root@foundation0 workspace]# ls</span><br><span class="line">hello  testfile  zazazazazazaza</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>3.github的版本克隆（即远程版本克隆）</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@foundation0 ~]# mkdir /test</span><br><span class="line">[root@foundation0 ~]# cd /test/</span><br><span class="line">[root@foundation0 test]# ls</span><br><span class="line">[root@foundation0 test]# git clone https://github.com/atheling004/test1.git</span><br><span class="line">Cloning into 'test1'...</span><br><span class="line">remote: Counting objects: 7, done.</span><br><span class="line">remote: Compressing objects: 100% (4/4), done.</span><br><span class="line">remote: Total 7 (delta 1), reused 3 (delta 0), pack-reused 0</span><br><span class="line">Unpacking objects: 100% (7/7), done.</span><br><span class="line">[root@foundation0 test]# ls</span><br><span class="line">test1</span><br><span class="line">[root@foundation0 test]# cd test1/</span><br><span class="line">[root@foundation0 test1]# ls</span><br><span class="line">hello  testfile  zazazazazazaza</span><br><span class="line">[root@foundation0 test1]#</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>4.在本地版本库发生变更后上传</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@foundation0 test1]# cat 1</span><br><span class="line">testfile</span><br><span class="line">[root@foundation0 test1]# git add 1</span><br><span class="line">[root@foundation0 test1]# git commit -m 1</span><br><span class="line">[root@foundation0 test1]# git push https://github.com/atheling004/test1.git</span><br><span class="line">warning: push.default is unset; its implicit value is changing in</span><br><span class="line">Git 2.0 from 'matching' to 'simple'. To squelch this message</span><br><span class="line">and maintain the current behavior after the default changes, use:</span><br><span class="line"></span><br><span class="line">  git config --global push.default matching</span><br><span class="line"></span><br><span class="line">To squelch this message and adopt the new behavior now, use:</span><br><span class="line"></span><br><span class="line">  git config --global push.default simple</span><br><span class="line"></span><br><span class="line">See 'git help config' and search for 'push.default' for further information.</span><br><span class="line">(the 'simple' mode was introduced in Git 1.7.11. Use the similar mode</span><br><span class="line">'current' instead of 'simple' if you sometimes use older versions of Git)</span><br><span class="line"></span><br><span class="line">Username for 'https://github.com': atheling004</span><br><span class="line">Password for 'https://atheling004@github.com':</span><br><span class="line">Counting objects: 4, done.</span><br><span class="line">Delta compression using up to 2 threads.</span><br><span class="line">Compressing objects: 100% (2/2), done.</span><br><span class="line">Writing objects: 100% (3/3), 252 bytes | 0 bytes/s, done.</span><br><span class="line">Total 3 (delta 1), reused 0 (delta 0)</span><br><span class="line">remote: Resolving deltas: 100% (1/1), completed with 1 local objects.</span><br><span class="line">To https://github.com/atheling004/test1.git</span><br><span class="line">   33a62ba..85c6527  master -&gt; master</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>结果如下</p>
+<p><img src="git/5.png"></p>
+</body></html>
+  </div>
+  
+</article>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-20T17:00:02.078Z" itemprop="dateModified">Last updated: 2025-10-20</time>
+                
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+             <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%9A%84%E5%8E%86%E5%8F%B2%E5%8F%8A%E4%BD%9C%E7%94%A8"><span class="toc-text">版本控制的历史及作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GIT%E7%9A%84%E5%AE%89%E8%A3%85"><span class="toc-text">GIT的安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GIT%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">GIT的初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%8F%90%E4%BA%A4%E6%96%87%E4%BB%B6"><span class="toc-text">第一次提交文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GIT%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8C%BA%E3%80%81%E6%9A%82%E5%AD%98%E5%8C%BA%E3%80%81%E7%89%88%E6%9C%AC%E5%BA%93"><span class="toc-text">GIT的工作区、暂存区、版本库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GIT%E7%9A%84%E5%B8%B8%E7%94%A8%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4"><span class="toc-text">GIT的常用基本命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GIT%E5%88%86%E6%94%AF"><span class="toc-text">GIT分支</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GIT%E5%85%8B%E9%9A%86"><span class="toc-text">GIT克隆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-GITHUB%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">9.GITHUB的使用</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

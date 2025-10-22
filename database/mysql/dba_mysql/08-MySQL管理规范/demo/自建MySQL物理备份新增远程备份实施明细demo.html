@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>自建MySQL物理备份新增远程备份实施明细demo | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/demo/%E8%87%AA%E5%BB%BAMySQL%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%96%B0%E5%A2%9E%E8%BF%9C%E7%A8%8B%E5%A4%87%E4%BB%BD%E5%AE%9E%E6%96%BD%E6%98%8E%E7%BB%86demo">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/demo/%E8%87%AA%E5%BB%BAMySQL%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%96%B0%E5%A2%9E%E8%BF%9C%E7%A8%8B%E5%A4%87%E4%BB%BD%E5%AE%9E%E6%96%BD%E6%98%8E%E7%BB%86demo" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="备份服务器 新建备份存放目录&#x2F;alidata&#x2F;backup&#x2F; 新建备份用户mysqlbackup密码mysqlbackup 新建备份过期脚本&#x2F;alidata&#x2F;script&#x2F;clean_backup.sh 设置crontab每日3点59分开始清理30天之前的备份  [root@app-20-3 ~]# useradd mysqlbackup[root@app-20-3 ~]# passwd mysq">
+<meta property="og:type" content="website">
+<meta property="og:title" content="自建MySQL物理备份新增远程备份实施明细demo">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/demo/%E8%87%AA%E5%BB%BAMySQL%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%96%B0%E5%A2%9E%E8%BF%9C%E7%A8%8B%E5%A4%87%E4%BB%BD%E5%AE%9E%E6%96%BD%E6%98%8E%E7%BB%86demo">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="备份服务器 新建备份存放目录&#x2F;alidata&#x2F;backup&#x2F; 新建备份用户mysqlbackup密码mysqlbackup 新建备份过期脚本&#x2F;alidata&#x2F;script&#x2F;clean_backup.sh 设置crontab每日3点59分开始清理30天之前的备份  [root@app-20-3 ~]# useradd mysqlbackup[root@app-20-3 ~]# passwd mysq">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.816Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:05.130Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">自建MySQL物理备份新增远程备份实施明细demo</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/dba_mysql/08-MySQL管理规范/demo/自建MySQL物理备份新增远程备份实施明细demo.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h1 id="备份服务器" class="article-heading"><a href="#备份服务器" class="headerlink" title="备份服务器"></a>备份服务器<a class="article-anchor" href="#备份服务器" aria-hidden="true"></a></h1><ul>
+<li>新建备份存放目录<code>/alidata/backup/</code></li>
+<li>新建备份用户<code>mysqlbackup</code>密码<code>mysqlbackup</code></li>
+<li>新建备份过期脚本<code>/alidata/script/clean_backup.sh</code></li>
+<li>设置<code>crontab</code>每日3点59分开始清理30天之前的备份</li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@app-20-3 ~]# useradd mysqlbackup</span><br><span class="line">[root@app-20-3 ~]# passwd mysqlbackup</span><br><span class="line">Changing password <span class="keyword">for</span> user mysqlbackup.</span><br><span class="line">New password:</span><br><span class="line">BAD PASSWORD: The password contains the user name <span class="keyword">in</span> some form</span><br><span class="line">Retype new password:</span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br><span class="line"></span><br><span class="line">[root@app-20-3 ~]# <span class="built_in">mkdir</span> /alidata/backup -p</span><br><span class="line">[root@app-20-3 ~]# <span class="built_in">chown</span> mysqlbackup. /alidata/backup</span><br><span class="line">[root@app-20-3 ~]# ll -d /alidata/backup</span><br><span class="line">drwxr-xr-x. 2 mysqlbackup mysqlbackup 10 Mar 20 02:00 /alidata/backup</span><br><span class="line"></span><br><span class="line">[root@app-20-3 ~]# <span class="built_in">mkdir</span> /alidata/script/</span><br><span class="line">[root@app-20-3 ~]# <span class="built_in">touch</span> /alidata/script/clean_backup.sh</span><br><span class="line">[root@app-20-3 ~]# vim /alidata/script/clean_backup.sh</span><br><span class="line">[root@app-20-3 ~]# <span class="built_in">cat</span> /alidata/script/clean_backup.sh</span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line">BackupPath=/alidata/backup</span><br><span class="line">find <span class="string">"<span class="variable">$BackupPath</span>"</span> -<span class="built_in">type</span> f -mtime +30 -<span class="built_in">exec</span> <span class="built_in">ls</span> {} \;</span><br><span class="line"></span><br><span class="line">[root@app-20-3 ~]# crontab -u root -l</span><br><span class="line">59 3 * * * /bin/bash /alidata/script/clean_backup.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="数据库只读实例" class="article-heading"><a href="#数据库只读实例" class="headerlink" title="数据库只读实例"></a>数据库只读实例<a class="article-anchor" href="#数据库只读实例" aria-hidden="true"></a></h2><ul>
+<li>配置无密钥登陆备份服务器<a href="mailto:mysqlbackup@192.168.20.3">mysqlbackup@192.168.20.3</a></li>
+<li>新建包含远程备份的物理备份脚本mysql_increment_hot_backup2.sh</li>
+<li>修改crontab配置</li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 无密钥登陆配置</span></span><br><span class="line">[root@data-20-2 ~]# ssh-keygen</span><br><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file <span class="keyword">in</span> <span class="built_in">which</span> to save the key (/root/.ssh/id_rsa):</span><br><span class="line">Enter passphrase (empty <span class="keyword">for</span> no passphrase):</span><br><span class="line">Enter same passphrase again:</span><br><span class="line">Your identification has been saved <span class="keyword">in</span> /root/.ssh/id_rsa.</span><br><span class="line">Your public key has been saved <span class="keyword">in</span> /root/.ssh/id_rsa.pub.</span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:XRASsJgUYiLUuJqXe5zw5QKz3PjqocvQ5dBwsRpHui8 root@data-20-2</span><br><span class="line">The key<span class="string">'s randomart image is:</span></span><br><span class="line"><span class="string">+---[RSA 2048]----+</span></span><br><span class="line"><span class="string">|+.= =...o.o.     |</span></span><br><span class="line"><span class="string">|.+ * = . . .     |</span></span><br><span class="line"><span class="string">|  = * .     .   |</span></span><br><span class="line"><span class="string">| . O     . .     |</span></span><br><span class="line"><span class="string">|..+.o   S .     |</span></span><br><span class="line"><span class="string">|o.*= .         |</span></span><br><span class="line"><span class="string">|.oE@o+           |</span></span><br><span class="line"><span class="string">|o.=oB .         |</span></span><br><span class="line"><span class="string">|o+o+..           |</span></span><br><span class="line"><span class="string">+----[SHA256]-----+</span></span><br><span class="line"><span class="string">[root@data-20-2 ~]# ssh-copy-id mysqlbackup@192.168.20.3</span></span><br><span class="line"><span class="string">/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/root/.ssh/id_rsa.pub"</span></span><br><span class="line"><span class="string">The authenticity of host '</span>192.168.20.3 (192.168.20.3)<span class="string">' can'</span>t be established.</span><br><span class="line">ECDSA key fingerprint is SHA256:rRjbzDPuw8l3yj+XYvN6oqpijFKOqZSPWHCDR2KGwJM.</span><br><span class="line">ECDSA key fingerprint is MD5:c3:d8:f8:5d:d5:17:be:d7:66:7f:34:d2:34:3d:64:58.</span><br><span class="line">Are you sure you want to <span class="built_in">continue</span> connecting (<span class="built_in">yes</span>/no)? <span class="built_in">yes</span></span><br><span class="line">/usr/bin/ssh-copy-id: INFO: attempting to <span class="built_in">log</span> <span class="keyword">in</span> with the new key(s), to filter out any that are already installed</span><br><span class="line">/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- <span class="keyword">if</span> you are prompted now it is to install the new keys</span><br><span class="line">mysqlbackup@192.168.20.3<span class="string">'s password:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Number of key(s) added: 1</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Now try logging into the machine, with:   "ssh '</span>mysqlbackup@192.168.20.3<span class="string">'"</span></span><br><span class="line"><span class="string">and check to make sure that only the key(s) you wanted were added.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[root@data-20-2 ~]# ssh mysqlbackup@192.168.20.3 "date"</span></span><br><span class="line"><span class="string">Tue Mar 20 02:04:20 CST 2018</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 新增脚本</span></span><br><span class="line"><span class="string">[root@data-20-2 ~]# cd /alidata/xtrabackup_cron/</span></span><br><span class="line"><span class="string">[root@data-20-2 xtrabackup_cron]# ls</span></span><br><span class="line"><span class="string">bin conf log readme.md var</span></span><br><span class="line"><span class="string">[root@data-20-2 xtrabackup_cron]# cd bin</span></span><br><span class="line"><span class="string">[root@data-20-2 bin]# ls</span></span><br><span class="line"><span class="string">mysql_increment_hot_backup.sh</span></span><br><span class="line"><span class="string">[root@data-20-2 bin]# cp mysql_increment_hot_backup.sh mysql_increment_hot_backup2.sh</span></span><br><span class="line"><span class="string">[root@data-20-2 bin]# vim mysql_increment_hot_backup2.sh</span></span><br><span class="line"><span class="string">[root@data-20-2 bin]# &gt; mysql_increment_hot_backup2.sh</span></span><br><span class="line"><span class="string">[root@data-20-2 bin]# vim mysql_increment_hot_backup2.sh</span></span><br><span class="line"><span class="string">[root@data-20-2 bin]# cat mysql_increment_hot_backup2.sh</span></span><br><span class="line"><span class="string">#!/usr/bin/env bash</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># Program: MySQL 增量备份脚本 使用 percona xtrabackup</span></span><br><span class="line"><span class="string"># Date   : 2018-03-19</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">cd /alidata/xtrabackup_cron/bin</span></span><br><span class="line"><span class="string"># 读取配置文件中的所有变量值, 设置为全局变量</span></span><br><span class="line"><span class="string"># 配置文件</span></span><br><span class="line"><span class="string">conf_file="../conf/mysql_increment_hot_backup.conf"</span></span><br><span class="line"><span class="string"># mysql 用户</span></span><br><span class="line"><span class="string">user=`sed '</span>/^user=/!d;s/.*=//<span class="string">' $conf_file`</span></span><br><span class="line"><span class="string"># mysql 密码</span></span><br><span class="line"><span class="string">password=`sed '</span>/^password=/!d;s/.*=//<span class="string">' $conf_file`</span></span><br><span class="line"><span class="string"># mysql 备份目录</span></span><br><span class="line"><span class="string">backup_dir=`sed '</span>/^backup_dir=/!d;s/.*=//<span class="string">' $conf_file`</span></span><br><span class="line"><span class="string"># percona-xtrabackup 备份软件路径</span></span><br><span class="line"><span class="string">xtrabackup_dir=`sed '</span>/^xtrabackup_dir=/!d;s/.*=//<span class="string">' $conf_file`</span></span><br><span class="line"><span class="string"># 全备是在一周的第几天</span></span><br><span class="line"><span class="string">full_backup_week_day=`sed '</span>/^full_backup_week_day=/!d;s/.*=//<span class="string">' $conf_file`</span></span><br><span class="line"><span class="string"># mysql 全备前缀标识</span></span><br><span class="line"><span class="string">full_backup_prefix=`sed '</span>/^full_backup_prefix=/!d;s/.*=//<span class="string">' $conf_file`</span></span><br><span class="line"><span class="string"># mysql 增量备前缀标识</span></span><br><span class="line"><span class="string">increment_prefix=`sed '</span>/^increment_prefix=/!d;s/.*=//<span class="string">' $conf_file`</span></span><br><span class="line"><span class="string"># mysql 配置文件</span></span><br><span class="line"><span class="string">mysql_conf_file=`sed '</span>/^mysql_conf_file=/!d;s/.*=//<span class="string">' $conf_file`</span></span><br><span class="line"><span class="string"># 备份错误日志文件</span></span><br><span class="line"><span class="string">error_log=`sed '</span>/^error_log=/!d;s/.*=//<span class="string">' $conf_file`</span></span><br><span class="line"><span class="string"># 备份索引文件</span></span><br><span class="line"><span class="string">index_file=`sed '</span>/^index_file=/!d;s/.*=//<span class="string">' $conf_file`</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 备份日期</span></span><br><span class="line"><span class="string">backup_date=`date +%F`</span></span><br><span class="line"><span class="string"># 备份日期</span></span><br><span class="line"><span class="string">backup_time=`date +%H-%M-%S`</span></span><br><span class="line"><span class="string"># 备份日期</span></span><br><span class="line"><span class="string">backup_week_day=`date +%u`</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 创建相关目录</span></span><br><span class="line"><span class="string">log_dir=../log</span></span><br><span class="line"><span class="string">var_dir=../var</span></span><br><span class="line"><span class="string">mkdir -p $backup_dir</span></span><br><span class="line"><span class="string">mkdir -p $log_dir</span></span><br><span class="line"><span class="string">mkdir -p $var_dir</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 全量备份</span></span><br><span class="line"><span class="string">function full_backup() {</span></span><br><span class="line"><span class="string">  backup_folder=${full_backup_prefix}_${backup_date}_${backup_time}_${backup_week_day}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  mkdir -p $backup_dir/$backup_folder</span></span><br><span class="line"><span class="string">  $xtrabackup_dir/bin/innobackupex \</span></span><br><span class="line"><span class="string">    --defaults-file=$mysql_conf_file \</span></span><br><span class="line"><span class="string">    --user=$user \</span></span><br><span class="line"><span class="string">    --password=$password \</span></span><br><span class="line"><span class="string">    --no-timestamp \</span></span><br><span class="line"><span class="string">    $backup_dir/$backup_folder &gt; $log_dir/${backup_folder}.log 2&gt;&amp;1</span></span><br><span class="line"><span class="string"> return $?</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 增量备份</span></span><br><span class="line"><span class="string">function increment_backup() {</span></span><br><span class="line"><span class="string">  backup_folder=${increment_prefix}_${backup_date}_${backup_time}_${backup_week_day}</span></span><br><span class="line"><span class="string">  incr_base_folder=`sed -n '</span><span class="variable">$p</span><span class="string">' $index_file | \</span></span><br><span class="line"><span class="string">                   awk -F '</span>[, {}]*<span class="string">' '</span>{<span class="built_in">print</span> <span class="variable">$3</span>}<span class="string">' | \</span></span><br><span class="line"><span class="string">                   awk -F '</span>:<span class="string">' '</span>{<span class="built_in">print</span> <span class="variable">$2</span>}<span class="string">'`</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  mkdir -p $backup_dir/$backup_folder</span></span><br><span class="line"><span class="string">  $xtrabackup_dir/bin/innobackupex \</span></span><br><span class="line"><span class="string">    --defaults-file=$mysql_conf_file \</span></span><br><span class="line"><span class="string">    --user=$user \</span></span><br><span class="line"><span class="string">    --password=$password \</span></span><br><span class="line"><span class="string">    --no-timestamp \</span></span><br><span class="line"><span class="string">    --incremental \</span></span><br><span class="line"><span class="string">    $backup_dir/$backup_folder \</span></span><br><span class="line"><span class="string">    --incremental-basedir=$backup_dir/$incr_base_folder &gt; $log_dir/${backup_folder}.log 2&gt;&amp;1</span></span><br><span class="line"><span class="string"> return $?</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 删除之前的备份(一般在全备完成后使用)</span></span><br><span class="line"><span class="string">function delete_before_backup() {</span></span><br><span class="line"><span class="string">  cat $index_file | awk -F '</span>[, {}]*<span class="string">' '</span>{<span class="built_in">print</span> <span class="variable">$3</span>}<span class="string">' | \</span></span><br><span class="line"><span class="string">    awk -v backup_dir=$backup_dir -F '</span>:<span class="string">' '</span>{<span class="keyword">if</span>(<span class="variable">$2</span>!=<span class="string">""</span>){<span class="built_in">printf</span>(<span class="string">"rm -rf %s/%s\n"</span>, backup_dir, <span class="variable">$2</span>)}}<span class="string">' | \</span></span><br><span class="line"><span class="string">   /bin/bash</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  cat $index_file | awk -F '</span>[, {}]*<span class="string">' '</span>{<span class="built_in">print</span> <span class="variable">$3</span>}<span class="string">' | \</span></span><br><span class="line"><span class="string">    awk -v log_dir=$log_dir -F '</span>:<span class="string">' '</span>{<span class="keyword">if</span>(<span class="variable">$2</span>!=<span class="string">""</span>){<span class="built_in">printf</span>(<span class="string">"rm -rf %s/%s.log\n"</span>, log_dir, <span class="variable">$2</span>)}}<span class="string">' | \</span></span><br><span class="line"><span class="string">   /bin/bash</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 备份索引文件</span></span><br><span class="line"><span class="string">function backup_index_file() {</span></span><br><span class="line"><span class="string">  cp $index_file ${index_file}_$(date -d "1 day ago" +%F)</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># send索引文件</span></span><br><span class="line"><span class="string">function send_index_file_to_remote() {</span></span><br><span class="line"><span class="string"> scp $index_file mysqlbackup@192.168.20.3:/alidata/backup/mysql_increment_hot_backup.index_${backup_date}_${backup_time}_${backup_week_day}</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 添加索引, 索引记录了当前最新的备份</span></span><br><span class="line"><span class="string">function append_index_to_file() {</span></span><br><span class="line"><span class="string">  echo "{week_day:$backup_week_day, \</span></span><br><span class="line"><span class="string">         dir:${1}_${backup_date}_${backup_time}_${backup_week_day}, \</span></span><br><span class="line"><span class="string">         type:${1}, \</span></span><br><span class="line"><span class="string">         date:${backup_date}}" &gt;&gt; $index_file</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 记录 错误消息到文件</span></span><br><span class="line"><span class="string">function logging_backup_err() {</span></span><br><span class="line"><span class="string">  echo "{week_day:$backup_week_day, \</span></span><br><span class="line"><span class="string">         dir:${1}_${backup_date}_${backup_time}_${backup_week_day}, \</span></span><br><span class="line"><span class="string">         type:${1}, \</span></span><br><span class="line"><span class="string">         date:${backup_date}}" &gt;&gt; $error_log</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 清空索引</span></span><br><span class="line"><span class="string">function purge_index_from_file() {</span></span><br><span class="line"><span class="string"> &gt; $index_file</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 清空错误日志信息</span></span><br><span class="line"><span class="string">function purge_err_log() {</span></span><br><span class="line"><span class="string"> &gt; $error_log</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 打包备份</span></span><br><span class="line"><span class="string">function tar_backup_file() {</span></span><br><span class="line"><span class="string"> tar -jcf ${1}.tar.bz2 $1</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 发送备份到远程</span></span><br><span class="line"><span class="string">function send_backup_to_remote() {</span></span><br><span class="line"><span class="string"> scp $1 mysqlbackup@192.168.20.3:/alidata/backup/</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 判断是应该全备还是增量备份</span></span><br><span class="line"><span class="string"># 0:full, 1:incr</span></span><br><span class="line"><span class="string">function get_backup_type() {</span></span><br><span class="line"><span class="string">  full_backup_week_day=`sed '</span>/^full_backup_week_day=/!d;s/.*=//<span class="string">' $conf_file`</span></span><br><span class="line"><span class="string">  backup_type=0</span></span><br><span class="line"><span class="string">  if [ "$full_backup_week_day" -eq `date +%u` ]; then</span></span><br><span class="line"><span class="string">    backup_type=0</span></span><br><span class="line"><span class="string">  else</span></span><br><span class="line"><span class="string">    backup_type=1</span></span><br><span class="line"><span class="string">  fi</span></span><br><span class="line"><span class="string">  if [ ! -n "`cat $index_file`" ]; then</span></span><br><span class="line"><span class="string">    backup_type=0</span></span><br><span class="line"><span class="string">  fi</span></span><br><span class="line"><span class="string"> return $backup_type</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 测试配置文件正确性</span></span><br><span class="line"><span class="string">function test_conf_file() {</span></span><br><span class="line"><span class="string">  # 判断每个变量是否在配置文件中有配置，没有则退出程序</span></span><br><span class="line"><span class="string">  if [ ! -n "$user" ]; then echo '</span>fail: configure file user not <span class="built_in">set</span><span class="string">'; exit 2; fi</span></span><br><span class="line"><span class="string">  if [ ! -n "$password" ]; then echo '</span>fail: configure file password not <span class="built_in">set</span><span class="string">'; exit 2; fi</span></span><br><span class="line"><span class="string">  if [ ! -n "$backup_dir" ]; then echo '</span>fail: configure file backup_dir not <span class="built_in">set</span><span class="string">'; exit 2; fi</span></span><br><span class="line"><span class="string">  if [ ! -n "$full_backup_week_day" ]; then echo '</span>fail: configure file full_backup_week_day not <span class="built_in">set</span><span class="string">'; exit 2; fi</span></span><br><span class="line"><span class="string">  if [ ! -n "$full_backup_prefix" ]; then echo '</span>fail: configure file full_backup_prefix not <span class="built_in">set</span><span class="string">'; exit 2; fi</span></span><br><span class="line"><span class="string">  if [ ! -n "$increment_prefix" ]; then echo '</span>fail: configure file increment_prefix not <span class="built_in">set</span><span class="string">'; exit 2; fi</span></span><br><span class="line"><span class="string">  if [ ! -n "$mysql_conf_file" ]; then echo '</span>fail: configure file mysql_conf_file not <span class="built_in">set</span><span class="string">'; exit 2; fi</span></span><br><span class="line"><span class="string">  if [ ! -n "$error_log" ]; then echo '</span>fail: configure file error_log not <span class="built_in">set</span><span class="string">'; exit 2; fi</span></span><br><span class="line"><span class="string">  if [ ! -n "$index_file" ]; then echo '</span>fail: configure file index_file not <span class="built_in">set</span><span class="string">'; exit 2; fi</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 执行</span></span><br><span class="line"><span class="string">function run() {</span></span><br><span class="line"><span class="string">  # 检测配置文件值</span></span><br><span class="line"><span class="string"> test_conf_file</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  # 判断是执行全备还是曾量备份</span></span><br><span class="line"><span class="string"> get_backup_type</span></span><br><span class="line"><span class="string">  backup_type=$?</span></span><br><span class="line"><span class="string"> case $backup_type in</span></span><br><span class="line"><span class="string">    0 )</span></span><br><span class="line"><span class="string">      # 全量备份</span></span><br><span class="line"><span class="string">     full_backup</span></span><br><span class="line"><span class="string">      backup_ok=$?</span></span><br><span class="line"><span class="string">      if [ 0 -eq "$backup_ok" ]; then</span></span><br><span class="line"><span class="string">      # 全备成功</span></span><br><span class="line"><span class="string">        # 打包最新备份</span></span><br><span class="line"><span class="string">       tar_backup_file ${backup_dir}/${full_backup_prefix}_${backup_date}_${backup_time}_${backup_week_day}</span></span><br><span class="line"><span class="string"> #echo ${backup_dir}/${full_backup_prefix}_${backup_date}_${backup_time}_${backup_week_day}</span></span><br><span class="line"><span class="string">        # 将tar备份发送到远程</span></span><br><span class="line"><span class="string">       send_backup_to_remote ${backup_dir}/${full_backup_prefix}_${backup_date}_${backup_time}_${backup_week_day}.tar.bz2</span></span><br><span class="line"><span class="string"> # delete tar</span></span><br><span class="line"><span class="string"> rm -rf ${backup_dir}/${full_backup_prefix}_${backup_date}_${backup_time}_${backup_week_day}.tar.bz2</span></span><br><span class="line"><span class="string">        # 备份索引文件</span></span><br><span class="line"><span class="string">       backup_index_file</span></span><br><span class="line"><span class="string">        # 清除之前的备份</span></span><br><span class="line"><span class="string">       delete_before_backup</span></span><br><span class="line"><span class="string">        # 清除索引文件</span></span><br><span class="line"><span class="string">       purge_index_from_file</span></span><br><span class="line"><span class="string">        # 添加索引, 索引记录了当前最新的备份</span></span><br><span class="line"><span class="string">       append_index_to_file $full_backup_prefix</span></span><br><span class="line"><span class="string">        # 发送索引文件到远程</span></span><br><span class="line"><span class="string">       send_index_file_to_remote</span></span><br><span class="line"><span class="string">      else</span></span><br><span class="line"><span class="string">      # 全备失败</span></span><br><span class="line"><span class="string">        # 删除备份目录</span></span><br><span class="line"><span class="string">        rm -rf ${backup_dir}/${full_backup_prefix}_${backup_date}_${backup_time}_${backup_week_day}</span></span><br><span class="line"><span class="string">        # 记录错误日志</span></span><br><span class="line"><span class="string">       logging_backup_err $full_backup_prefix</span></span><br><span class="line"><span class="string">      fi</span></span><br><span class="line"><span class="string">     ;;</span></span><br><span class="line"><span class="string">    1 )</span></span><br><span class="line"><span class="string">      # 增量备份</span></span><br><span class="line"><span class="string">     increment_backup</span></span><br><span class="line"><span class="string">      backup_ok=$?</span></span><br><span class="line"><span class="string">      if [ 0 -eq "$backup_ok" ]; then</span></span><br><span class="line"><span class="string">      # 增量备份成功</span></span><br><span class="line"><span class="string">        # 打包最新备份</span></span><br><span class="line"><span class="string">       tar_backup_file ${backup_dir}/${increment_prefix}_${backup_date}_${backup_time}_${backup_week_day}</span></span><br><span class="line"><span class="string"> #echo ${backup_dir}/${increment_prefix}_${backup_date}_${backup_time}_${backup_week_day}</span></span><br><span class="line"><span class="string">        # 将tar备份发送到远程</span></span><br><span class="line"><span class="string">       send_backup_to_remote ${backup_dir}/${increment_prefix}_${backup_date}_${backup_time}_${backup_week_day}.tar.bz2</span></span><br><span class="line"><span class="string"> # delete tar</span></span><br><span class="line"><span class="string"> rm -rf ${backup_dir}/${increment_prefix}_${backup_date}_${backup_time}_${backup_week_day}.tar.bz2</span></span><br><span class="line"><span class="string">        # 添加索引, 索引记录了当前最新的备份</span></span><br><span class="line"><span class="string">       append_index_to_file $increment_prefix</span></span><br><span class="line"><span class="string">        # 发送索引文件到远程</span></span><br><span class="line"><span class="string">       send_index_file_to_remote</span></span><br><span class="line"><span class="string">      else</span></span><br><span class="line"><span class="string">      # 增量备份失败</span></span><br><span class="line"><span class="string">        # 删除备份目录</span></span><br><span class="line"><span class="string">        rm -rf ${backup_dir}/${increment_prefix}_${backup_date}_${backup_time}_${backup_week_day}</span></span><br><span class="line"><span class="string">        # 记录错误日志</span></span><br><span class="line"><span class="string">       logging_backup_err $increment_prefix</span></span><br><span class="line"><span class="string">      fi</span></span><br><span class="line"><span class="string">     ;;</span></span><br><span class="line"><span class="string">  esac</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">run</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 测试新脚本运行</span></span><br><span class="line"><span class="string">[root@data-20-2 bin]# ll /alidata/backup/</span></span><br><span class="line"><span class="string">total 4</span></span><br><span class="line"><span class="string">drwxr-xr-x. 22 root root 4096 Mar 19 01:59 full_2018-03-19_01-59-02_1</span></span><br><span class="line"><span class="string">[root@data-20-2 bin]# cat ../var/mysql_increment_hot_backup.index</span></span><br><span class="line"><span class="string">{week_day:1,         dir:full_2018-03-19_01-59-02_1,         type:full,         date:2018-03-19}</span></span><br><span class="line"><span class="string">[root@data-20-2 bin]# bash mysql_increment_hot_backup2.sh</span></span><br><span class="line"><span class="string">tar: Removing leading `/'</span> from member names</span><br><span class="line">full_2018-03-19_22-08-04_1.tar.bz2                                                                                                                     100% 1398KB  88.7MB/s   00:00</span><br><span class="line">mysql_increment_hot_backup.index                                                                                                                       100%  100   133.0KB/s   00:00</span><br><span class="line">[root@data-20-2 bin]# ll /alidata/backup/</span><br><span class="line">total 4</span><br><span class="line">drwxr-xr-x. 22 root root 4096 Mar 19 22:08 full_2018-03-19_22-08-04_1</span><br><span class="line">[root@data-20-2 bin]# <span class="built_in">cat</span> ../var/mysql_increment_hot_backup.index</span><br><span class="line">{week_day:1,         <span class="built_in">dir</span>:full_2018-03-19_22-08-04_1,         <span class="built_in">type</span>:full,         <span class="built_in">date</span>:2018-03-19}</span><br><span class="line">[root@data-20-2 bin]# <span class="built_in">date</span></span><br><span class="line">Mon Mar 19 22:08:50 CST 2018</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 成功备份在本地并发送压缩包到备份服务器</span></span><br><span class="line">[mysqlbackup@app-20-3 backup]$ ll</span><br><span class="line">total 1404</span><br><span class="line">-rw-r--r--. 1 mysqlbackup mysqlbackup 1431932 Mar 20 02:09 full_2018-03-19_22-08-04_1.tar.bz2</span><br><span class="line">-rw-r--r--. 1 mysqlbackup mysqlbackup     100 Mar 20 02:09 mysql_increment_hot_backup.index_2018-03-19_22-08-04_1</span><br><span class="line"></span><br><span class="line"><span class="comment">#修改crontab配置</span></span><br><span class="line">[root@data-20-2 bin]# crontab -l</span><br><span class="line">59 01 * * * /bin/bash /alidata/xtrabackup_cron/bin/mysql_increment_hot_backup2.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h1><ol>
+<li>主库备份存放本地，保留7天</li>
+<li>从库备份存放本地，保留7天</li>
+<li>从库备份存放至远程服务器192.168.20.3，保留30天</li>
+<li>发送备份文件至备份服务器通过<code>scp</code>实现（<em>配置了无密钥登陆<code>mysqlbackup@192.168.20.3</code></em>）</li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:05.130Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">备份服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8F%AA%E8%AF%BB%E5%AE%9E%E4%BE%8B"><span class="toc-text">数据库只读实例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

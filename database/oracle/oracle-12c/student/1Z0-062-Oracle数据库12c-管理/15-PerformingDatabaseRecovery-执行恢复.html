@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践15:执行恢复 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/15-PerformingDatabaseRecovery-%E6%89%A7%E8%A1%8C%E6%81%A2%E5%A4%8D">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/15-PerformingDatabaseRecovery-%E6%89%A7%E8%A1%8C%E6%81%A2%E5%A4%8D" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 15: Performing Database Recovery 2020.01.29 BoobooWei     实践15:执行恢复 实践15:概览 实践15-1:从数据文件丢失中恢复 Overview Task Practice KnowledgePoint        实践15:概览Practices for Lesson 15: Overvie">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践15:执行恢复">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/15-PerformingDatabaseRecovery-%E6%89%A7%E8%A1%8C%E6%81%A2%E5%A4%8D">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 15: Performing Database Recovery 2020.01.29 BoobooWei     实践15:执行恢复 实践15:概览 实践15-1:从数据文件丢失中恢复 Overview Task Practice KnowledgePoint        实践15:概览Practices for Lesson 15: Overvie">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.730Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:59.422Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践15:执行恢复</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/15-PerformingDatabaseRecovery-执行恢复.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p><strong>Practices for Lesson 15: Performing Database Recovery</strong></p>
+<p>2020.01.29 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#%E5%AE%9E%E8%B7%B515%E6%89%A7%E8%A1%8C%E6%81%A2%E5%A4%8D">实践15:执行恢复</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B515%E6%A6%82%E8%A7%88">实践15:概览</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B515-1%E4%BB%8E%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E4%B8%A2%E5%A4%B1%E4%B8%AD%E6%81%A2%E5%A4%8D">实践15-1:从数据文件丢失中恢复</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#task">Task</a></li>
+<li><a href="#practice">Practice</a></li>
+<li><a href="#knowledgepoint">KnowledgePoint</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="实践15-概览" class="article-heading"><a href="#实践15-概览" class="headerlink" title="实践15:概览"></a>实践15:概览<a class="article-anchor" href="#实践15-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 15: Overview</p>
+<p>In these practices, you will use the Data Recovery Advisor to recover a lost data file.</p>
+<p>在这个实践中，您将使用Data Recovery Advisor来恢复丢失的数据文件。</p>
+<h2 id="实践15-1-从数据文件丢失中恢复" class="article-heading"><a href="#实践15-1-从数据文件丢失中恢复" class="headerlink" title="实践15-1:从数据文件丢失中恢复"></a>实践15-1:从数据文件丢失中恢复<a class="article-anchor" href="#实践15-1-从数据文件丢失中恢复" aria-hidden="true"></a></h2><p>Practice 15-1: Recovering from the Loss of a Data File</p>
+<h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><p>In this practice, you recover from the loss of a data file belonging to the EXAMPLE tablespace.</p>
+<p>在这个实践中，EXAMPLE 表空间数据丢失，对其进行恢复。</p>
+<h3 id="Task" class="article-heading"><a href="#Task" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task" aria-hidden="true"></a></h3><ol>
+<li><p>Log in to SQL*Plus as the <strong>HR</strong> user and query the <strong>REGIONS</strong> table.</p>
+</li>
+<li><p>Now connect as the DBA1 user using the SYSDBA role.</p>
+</li>
+<li><p>Execute the <strong>$LABS/P15/lab_15_01_03.sql</strong> script to create a procedure that will be used later in this practice.</p>
+</li>
+<li><p>Execute the <strong>$LABS/P15/lab_15_01_04.sql</strong> script. This script simulates a failure in the database environment by deleting a data file.</p>
+</li>
+<li><p>Invoke SQL*Plus again and log in as the <strong>HR</strong> user. Again query the REGIONS table.</p>
+</li>
+<li><p>Use Enterprise Manager Cloud Control to troubleshoot the error and recover the data file. Launch Enterprise Manager Cloud Control and log in as the <strong>ADMIN</strong> user.</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Launch Enterprise Manager Cloud Control and log in as the <strong>ADMIN</strong> user.</td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Navigate to the orcl database home page.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Log in with your saved database credentials.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Expand <strong>Oracle Database</strong>. Select <strong>Monitoring</strong> &gt; <strong>Incident Manager</strong>. Note that there is a critical error listed, indicating a data failure.</td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Expand <strong>Availability</strong>. Select <strong>Backup &amp; Recovery</strong> &gt; <strong>Perform Recovery</strong>.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Specify a named host credential, or enter <strong>oracle</strong> as the username and your OS</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>Click the “<strong>Database Failures</strong>” link.</td>
+</tr>
+<tr>
+<td>i.</td>
+<td>Click “<strong>Continue with Advise</strong>.”</td>
+</tr>
+<tr>
+<td>j.</td>
+<td>Review the RMAN script that will be used to restore the file and perform recovery. Click <strong>Continue</strong>.</td>
+</tr>
+<tr>
+<td>k.</td>
+<td>Review the information, and then click “<strong>Submit Recovery Job</strong>.”</td>
+</tr>
+<tr>
+<td>l.</td>
+<td>A processing page appears, and then the Job Activity page appears. Click the job name link.</td>
+</tr>
+<tr>
+<td>m.</td>
+<td>On the Job Run page, verify that the status is “Succeeded.” Then return to the <strong>orcl</strong> database home page.</td>
+</tr>
+<tr>
+<td>n.</td>
+<td>Return to your SQL<em>Plus session. Once again query the <strong>HR.REGIONS</strong> table to verify that the data file has been restored and recovered. Exit from SQL</em>Plus.</td>
+</tr>
+<tr>
+<td>o.</td>
+<td>Return to Enterprise Manager Cloud Control. Expand <strong>Oracle Database</strong>. Select <strong>Monitoring</strong> &gt; <strong>Incident Manager</strong>. Select the data failure incident and click <strong>Clear</strong>.</td>
+</tr>
+<tr>
+<td>p.</td>
+<td>Select “Clear and do not send e-mail or page notifications.” Click <strong>OK</strong> to confirm.</td>
+</tr>
+<tr>
+<td>q.</td>
+<td>Return to the <strong>orcl</strong> database home page.</td>
+</tr>
+</tbody></table>
+<h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><ol>
+<li><p>以<strong>HR</strong>用户身份登录SQL*Plus，查询<strong>REGIONS</strong>表。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">sqlplus hr<span class="operator">/</span>hr<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> regions;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>现在使用SYSDBA角色的DBA1用户连接。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">conn dba1<span class="operator">/</span>oracle <span class="keyword">as</span> sysdba</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>执行<code> $LABS/P15/lab_15_01_03.sql</code>创建一个存储过程，待后续使用。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE JAVA SOURCE NAMED "ExecuteCmd" <span class="keyword">as</span></span><br><span class="line"> import java.lang.Runtime;</span><br><span class="line"> import java.lang.Process;</span><br><span class="line"> import java.io.IOException;</span><br><span class="line"> import java.lang.InterruptedException;</span><br><span class="line"> public class ExecuteCmd {</span><br><span class="line">      public <span class="keyword">static</span> void main(String args[]) {</span><br><span class="line">          System.out.println("Start executing");</span><br><span class="line">          try {</span><br><span class="line">              Process p <span class="operator">=</span> Runtime.getRuntime().<span class="keyword">exec</span>(args[<span class="number">0</span>]);</span><br><span class="line">                try {</span><br><span class="line">                p.waitFor();}</span><br><span class="line">              catch (InterruptedException intexc) {</span><br><span class="line">                 System.out.println("Interrupted Exception on waitFor: " <span class="operator">+</span>  intexc.getMessage());}</span><br><span class="line">                 System.out.println("Return code from process: "<span class="operator">+</span> p.exitValue());</span><br><span class="line">                 System.out.println("Done executing");}</span><br><span class="line">              catch (IOException e) {</span><br><span class="line">                 System.out.println("IO Exception from exec: " <span class="operator">+</span> e.getMessage());</span><br><span class="line">                 e.printStackTrace();}</span><br><span class="line">              }</span><br><span class="line">     }</span><br><span class="line"> <span class="operator">/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--Create a PL/SQL wrapper function to call the java stored procedure</span></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">PROCEDURE</span> execcmd (S1 VARCHAR2)</span><br><span class="line">   <span class="keyword">AS</span> <span class="keyword">LANGUAGE</span> JAVA</span><br><span class="line">   name <span class="string">'ExecuteCmd.main(java.lang.String[])'</span>;</span><br><span class="line"><span class="operator">/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--Grant the JVM permission to interface with the operating system. Notice the first</span></span><br><span class="line"><span class="comment">--   grants give the JVM permission to call rm,ls and kill. You will have to add any OS commands</span></span><br><span class="line"><span class="comment">--   that you want executed using this format.</span></span><br><span class="line"><span class="keyword">exec</span> dbms_java.grant_permission( <span class="string">'SYSTEM'</span>, <span class="string">'SYS:java.io.FilePermission'</span>, <span class="string">'/bin/rm'</span>,<span class="string">'execute'</span>)</span><br><span class="line"><span class="keyword">exec</span> dbms_java.grant_permission( <span class="string">'SYSTEM'</span>, <span class="string">'SYS:java.io.FilePermission'</span>, <span class="string">'/bin/ls'</span>,<span class="string">'execute'</span>)</span><br><span class="line"><span class="keyword">exec</span> dbms_java.grant_permission( <span class="string">'SYSTEM'</span>, <span class="string">'SYS:java.io.FilePermission'</span>, <span class="string">'/bin/kill'</span>,<span class="string">'execute'</span>)</span><br><span class="line"><span class="keyword">exec</span> dbms_java.grant_permission( <span class="string">'SYSTEM'</span>, <span class="string">'SYS:java.io.FilePermission'</span>, <span class="string">'&lt;&lt;ALL FILES&gt;&gt;'</span>, <span class="string">'execute'</span> )</span><br><span class="line"><span class="keyword">exec</span> dbms_java.grant_permission( <span class="string">'SYSTEM'</span>,<span class="string">'SYS:java.lang.RuntimePermission'</span>, <span class="string">'writeFileDescriptor'</span>, <span class="string">''</span> )</span><br><span class="line"><span class="keyword">exec</span> dbms_java.grant_permission( <span class="string">'SYSTEM'</span>,<span class="string">'SYS:java.lang.RuntimePermission'</span>, <span class="string">'readFileDescriptor'</span>, <span class="string">''</span> )</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> public synonym execcmd <span class="keyword">for</span> execcmd;</span><br><span class="line"></span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">execute</span> <span class="keyword">on</span> execcmd <span class="keyword">to</span> public;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>执行<code> $LABS/P15/lab_15_01_04.sql</code>，此脚本通过删除数据文件来模拟数据库环境中的故障。</p>
+<blockquote>
+<p>执行前确保已经创建了 EXAMPLE 的表空间；且hr.region表使用的是该表空间。</p>
+</blockquote>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> termout <span class="keyword">on</span></span><br><span class="line"><span class="keyword">set</span> feed <span class="keyword">on</span></span><br><span class="line"><span class="comment">--set feed off</span></span><br><span class="line"><span class="keyword">set</span> echo off</span><br><span class="line"><span class="comment">--set termout off</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">DECLARE</span></span><br><span class="line">        v_cmd varchar2(<span class="number">300</span>);</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">        <span class="keyword">execute</span> immediate <span class="string">'alter system switch logfile'</span>;</span><br><span class="line">        <span class="keyword">execute</span> immediate <span class="string">'alter system switch logfile'</span>;</span><br><span class="line">        <span class="keyword">select</span> <span class="string">'/bin/rm -f '</span><span class="operator">||</span>dfile <span class="keyword">into</span> v_cmd <span class="keyword">from</span></span><br><span class="line">           (<span class="keyword">select</span> rownum "NUM",a.name "DFILE", b.name "TBS"</span><br><span class="line">            <span class="keyword">from</span> v$datafile a <span class="keyword">join</span> v$tablespace b <span class="keyword">using</span> (ts#)</span><br><span class="line">            <span class="keyword">where</span> b.name<span class="operator">=</span><span class="string">'EXAMPLE'</span></span><br><span class="line">            <span class="keyword">and</span> a.name <span class="keyword">not</span> <span class="keyword">like</span> <span class="string">'+%'</span>)</span><br><span class="line">            <span class="keyword">where</span> num<span class="operator">=</span><span class="number">1</span>;</span><br><span class="line">         dbms_output.put_line(v_cmd);</span><br><span class="line">         execcmd(v_cmd);</span><br><span class="line">         <span class="keyword">execute</span> immediate <span class="string">'alter system flush buffer_cache'</span>;</span><br><span class="line">         <span class="keyword">execute</span> immediate <span class="string">'alter system checkpoint'</span>;</span><br><span class="line"> <span class="keyword">END</span>;</span><br><span class="line"> <span class="operator">/</span></span><br><span class="line"></span><br><span class="line">PROMPT "Data file deleted. Wait a couple minutes before proceeding."</span><br><span class="line">PROMPT "Database should be open."</span><br><span class="line"></span><br><span class="line">exit</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>再次调用SQL*Plus并作为<strong>HR</strong>用户登录。再次查询区域表。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">sqlplus hr<span class="operator">/</span>hr<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> regions;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>1-5执行结果</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@ocm</span> trace]$ sqlplus hr<span class="operator">/</span>hr<span class="variable">@emrep</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Tue Feb <span class="number">4</span> <span class="number">18</span>:<span class="number">20</span>:<span class="number">09</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line"><span class="keyword">Last</span> Successful login <span class="type">time</span>: Tue Feb <span class="number">04</span> <span class="number">2020</span> <span class="number">18</span>:<span class="number">19</span>:<span class="number">24</span> <span class="operator">+</span><span class="number">08</span>:<span class="number">00</span></span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span>:</span><br><span class="line">Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> regions;</span><br><span class="line"></span><br><span class="line"> REGION_ID REGION_NAME</span><br><span class="line"><span class="comment">---------- -------------------------</span></span><br><span class="line">	 <span class="number">1</span> Europe</span><br><span class="line">	 <span class="number">2</span> Americas</span><br><span class="line">	 <span class="number">3</span> Asia</span><br><span class="line">	 <span class="number">4</span> Middle East <span class="keyword">and</span> Africa</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn dba1<span class="operator">/</span>oracle <span class="keyword">as</span> sysdba</span><br><span class="line">Connected.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn dba1<span class="operator">/</span>oracle <span class="keyword">as</span> sysdba</span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> @<span class="operator">/</span>u01<span class="operator">/</span>software<span class="operator">/</span>labs<span class="operator">/</span>P15<span class="operator">/</span>lab_15_01_03.sql</span><br><span class="line">Connected.</span><br><span class="line">Java created.</span><br><span class="line"><span class="keyword">Procedure</span> created.</span><br><span class="line">PL<span class="operator">/</span><span class="keyword">SQL</span> <span class="keyword">procedure</span> successfully completed.</span><br><span class="line">PL<span class="operator">/</span><span class="keyword">SQL</span> <span class="keyword">procedure</span> successfully completed.</span><br><span class="line">PL<span class="operator">/</span><span class="keyword">SQL</span> <span class="keyword">procedure</span> successfully completed.</span><br><span class="line">PL<span class="operator">/</span><span class="keyword">SQL</span> <span class="keyword">procedure</span> successfully completed.</span><br><span class="line">PL<span class="operator">/</span><span class="keyword">SQL</span> <span class="keyword">procedure</span> successfully completed.</span><br><span class="line">PL<span class="operator">/</span><span class="keyword">SQL</span> <span class="keyword">procedure</span> successfully completed.</span><br><span class="line">Synonym created.</span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> @<span class="operator">/</span>u01<span class="operator">/</span>software<span class="operator">/</span>labs<span class="operator">/</span>P15<span class="operator">/</span>lab_15_01_04.sql</span><br><span class="line"></span><br><span class="line">PL<span class="operator">/</span><span class="keyword">SQL</span> <span class="keyword">procedure</span> successfully completed.</span><br><span class="line"></span><br><span class="line">"Data file deleted. Wait a couple minutes before proceeding."</span><br><span class="line">"Database should be open."</span><br><span class="line">Disconnected <span class="keyword">from</span> Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> hr.regions;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> hr.regions</span><br><span class="line"><span class="operator">*</span></span><br><span class="line">ERROR <span class="keyword">at</span> line <span class="number">1</span>:</span><br><span class="line">ORA<span class="number">-01116</span>: error <span class="keyword">in</span> opening database file <span class="number">5</span></span><br><span class="line">ORA<span class="number">-01110</span>: data file <span class="number">5</span>:</span><br><span class="line"><span class="string">'/u01/app/oracle/oradata/booboo./booboopdb1/example01.dbf'</span></span><br><span class="line">ORA<span class="number">-27041</span>: unable <span class="keyword">to</span> <span class="keyword">open</span> file</span><br><span class="line">Linux<span class="operator">-</span>x86_64 Error: <span class="number">2</span>: <span class="keyword">No</span> such file <span class="keyword">or</span> directory</span><br><span class="line">Additional information: <span class="number">3</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用Enterprise Manager Cloud Control对错误进行故障排除并恢复数据文件。启动企业管理器云控制，以<strong>ADMIN</strong>用户登录。</p>
+<p><img src="pic/1501.png"></p>
+<p><img src="pic/1502.png" alt="1502.png"><br><img src="pic/1503.png" alt="1503.png"><br><img src="pic/1504.png" alt="1504.png"><br><img src="pic/1505.png" alt="1505.png"><br><img src="pic/1506.png" alt="1506.png"><br><img src="pic/1507.png" alt="1507.png"><br><img src="pic/1508.png" alt="1508.png"></p>
+</li>
+</ol>
+<h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3><ol>
+<li>某个表空间无意中被删除</li>
+<li>通过控制体进行恢复</li>
+<li>通过rman手动恢复<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">sql</span> <span class="string">'EMREP'</span> <span class="string">'alter database datafile 28 offline'</span>;</span><br><span class="line">restore ( datafile <span class="number">28</span> );</span><br><span class="line">recover datafile <span class="number">28</span>;</span><br><span class="line"><span class="keyword">sql</span> <span class="string">'EMREP'</span> <span class="string">'alter database datafile 28 online'</span>;</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:59.422Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B515-%E6%A6%82%E8%A7%88"><span class="toc-text">实践15:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B515-1-%E4%BB%8E%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E4%B8%A2%E5%A4%B1%E4%B8%AD%E6%81%A2%E5%A4%8D"><span class="toc-text">实践15-1:从数据文件丢失中恢复</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

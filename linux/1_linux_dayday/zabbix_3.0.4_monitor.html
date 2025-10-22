@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>MySQL-Monitor-Zabbix | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/1_linux_dayday/zabbix_3.0.4_monitor">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/1_linux_dayday/zabbix_3.0.4_monitor" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="监控后端两台数据库服务器     server ip OS software role    mastera 172.25.0.11 rhel7.2 mysql 5.7.17 zabbix 客户端   masterb 172.25.0.12 rhel7.2 mysql 8.0.0 zabbix 客户端   workstation 172.25.0.10 rhel7.2 zabbix 3.0.4">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MySQL-Monitor-Zabbix">
+<meta property="og:url" content="http://www.toberoot.com/linux/1_linux_dayday/zabbix_3.0.4_monitor">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="监控后端两台数据库服务器     server ip OS software role    mastera 172.25.0.11 rhel7.2 mysql 5.7.17 zabbix 客户端   masterb 172.25.0.12 rhel7.2 mysql 8.0.0 zabbix 客户端   workstation 172.25.0.10 rhel7.2 zabbix 3.0.4">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.029Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:02.243Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../docs/" class="main-nav-link">Hexo</a><a href="../../news/" class="main-nav-link">News</a><a href="../../api/" class="main-nav-link">MySQL8.0</a><a href="../../database/" class="main-nav-link">Database</a><a href="../../linux/" class="main-nav-link">Linux</a><a href="../../cloud/" class="main-nav-link">Cloud</a><a href="../../singapore/" class="main-nav-link">Singapore</a><a href="../../amy/" class="main-nav-link">AMY</a><a href="../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">MySQL-Monitor-Zabbix</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/1_linux_dayday/zabbix_3.0.4_monitor.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>监控后端两台数据库服务器</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">server</th>
+<th align="left">ip</th>
+<th align="left">OS</th>
+<th align="left">software</th>
+<th align="left">role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">mastera</td>
+<td align="left">172.25.0.11</td>
+<td align="left">rhel7.2</td>
+<td align="left">mysql 5.7.17</td>
+<td align="left">zabbix 客户端</td>
+</tr>
+<tr>
+<td align="left">masterb</td>
+<td align="left">172.25.0.12</td>
+<td align="left">rhel7.2</td>
+<td align="left">mysql 8.0.0</td>
+<td align="left">zabbix 客户端</td>
+</tr>
+<tr>
+<td align="left">workstation</td>
+<td align="left">172.25.0.10</td>
+<td align="left">rhel7.2</td>
+<td align="left">zabbix 3.0.4</td>
+<td align="left">web服务器、zabbix服务器、数据库</td>
+</tr>
+</tbody></table>
+<h2 id="安装软件" class="article-heading"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件<a class="article-anchor" href="#安装软件" aria-hidden="true"></a></h2><h3 id="解决依赖关系" class="article-heading"><a href="#解决依赖关系" class="headerlink" title="解决依赖关系"></a>解决依赖关系<a class="article-anchor" href="#解决依赖关系" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th align="left">Pre-requisite</th>
+<th align="left">Minimum</th>
+<th align="left">value Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">PHP version</td>
+<td align="left">5.4.0</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">PHP memory_limit option</td>
+<td align="left">128MB</td>
+<td align="left">In php.ini:memory_limit = 128M</td>
+</tr>
+<tr>
+<td align="left">PHP post_max_size option</td>
+<td align="left">16MB</td>
+<td align="left">In php.ini:post_max_size = 16M</td>
+</tr>
+<tr>
+<td align="left">PHP upload_max_filesize option</td>
+<td align="left">2MB</td>
+<td align="left">In php.ini:upload_max_filesize = 2M</td>
+</tr>
+<tr>
+<td align="left">PHP max_execution_time option</td>
+<td align="left">300 seconds</td>
+<td align="left">(values 0 and -1 are allowed)</td>
+</tr>
+<tr>
+<td align="left">PHP max_input_time option</td>
+<td align="left">300 seconds (values 0 and -1 are allowed)</td>
+<td align="left">In php.ini:max_input_time = 300</td>
+</tr>
+<tr>
+<td align="left">PHP session.auto_start option</td>
+<td align="left">must be disabled</td>
+<td align="left">In php.ini:session.auto_start = 0</td>
+</tr>
+<tr>
+<td align="left">Database support</td>
+<td align="left">One of: IBM DB2, MySQL, Oracle, PostgreSQL, SQLite</td>
+<td align="left">One of the following modules must be installed:ibm_db2, mysql, oci8, pgsql, sqlite3</td>
+</tr>
+<tr>
+<td align="left">bcmath</td>
+<td align="left"></td>
+<td align="left">php-bcmath</td>
+</tr>
+<tr>
+<td align="left">mbstring</td>
+<td align="left"></td>
+<td align="left">php-mbstring</td>
+</tr>
+<tr>
+<td align="left">PHP mbstring.func_overload option</td>
+<td align="left">must be disabled</td>
+<td align="left">In php.ini:mbstring.func_overload = 0</td>
+</tr>
+<tr>
+<td align="left">PHP always_populate_raw_post_data option</td>
+<td align="left">must be disabled</td>
+<td align="left">Required only for PHP versions 5.6.0 or newer.</td>
+</tr>
+<tr>
+<td align="left">sockets</td>
+<td align="left"></td>
+<td align="left">php-net-socket. Required for user script support.</td>
+</tr>
+<tr>
+<td align="left">gd</td>
+<td align="left">2.0 or higher</td>
+<td align="left">php-gd. PHP GD extension must support PNG images (–with-png-dir), JPEG (–with-jpeg-dir) images and FreeType 2 (–with-freetype-dir).</td>
+</tr>
+<tr>
+<td align="left">libxml</td>
+<td align="left">2.6.15</td>
+<td align="left">php-xml or php5-dom</td>
+</tr>
+<tr>
+<td align="left">xmlwriter</td>
+<td align="left"></td>
+<td align="left">php-xmlwriter</td>
+</tr>
+<tr>
+<td align="left">xmlreader</td>
+<td align="left"></td>
+<td align="left">php-xmlreader</td>
+</tr>
+<tr>
+<td align="left">ctype</td>
+<td align="left"></td>
+<td align="left">php-ctype</td>
+</tr>
+<tr>
+<td align="left">session</td>
+<td align="left"></td>
+<td align="left">php-session</td>
+</tr>
+<tr>
+<td align="left">gettext</td>
+<td align="left"></td>
+<td align="left">php-gettext Since Zabbix 2.2.1, the PHP gettext extension is not a mandatory requirement for installing Zabbix. If gettext is not installed, the frontend will work as usual, however, the translations will not be available.</td>
+</tr>
+</tbody></table>
+<p>根据上表安装需要的依赖包，注意版本,并进行相应设置，以及下面<code>[]</code>表示ini中的默认配置值</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">yum install -y httpd mariadb-server php php-mysql php-bcmath php-mbstring php-gd php-xml php-xmlwriter php-xmlreader  php-ctype php-session php-gettext</span><br><span class="line"></span><br><span class="line">vim /etc/php.ini</span><br><span class="line">memory_limit = 128M</span><br><span class="line">post_max_size = 16M [8M]</span><br><span class="line">upload_max_filesize = 2M</span><br><span class="line">max_execution_time = 300 [30]</span><br><span class="line">max_input_time = 300 [60]</span><br><span class="line">session.auto_start = 0</span><br><span class="line">mbstring.func_overload = 0</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">always_populate_raw_post_data参数只有在 PHP versions 5.6.0 以上需要设置为 -1</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">always_populate_raw_post_data = -1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>安装软件,有些软件是本地yum源中没有的:</p>
+<ul>
+<li><input disabled="" type="checkbox"> <code>php-bcmath</code></li>
+<li><input disabled="" type="checkbox"> <code>php-mbstring</code></li>
+<li><input disabled="" type="checkbox"> <code>php-net-socket</code></li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@workstation zabbix-3.0.4]# yum install -y httpd mariadb-server php php-mysql php-bcmath php-mbstring php-gd php-xml php-xmlwriter php-xmlreader  php-ctype php-session php-gettext</span><br><span class="line">Loaded plugins: langpacks, product-id, search-disabled-repos, subscription-manager</span><br><span class="line">This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.</span><br><span class="line">Package httpd-2.4.6-40.el7.x86_64 already installed and latest version</span><br><span class="line">Package 1:mariadb-server-5.5.44-2.el7.x86_64 already installed and latest version</span><br><span class="line">Package php-5.4.16-36.el7_1.x86_64 already installed and latest version</span><br><span class="line">Package php-mysql-5.4.16-36.el7_1.x86_64 already installed and latest version</span><br><span class="line">No package php-bcmath available.</span><br><span class="line">No package php-mbstring available.</span><br><span class="line">Package php-gd-5.4.16-36.el7_1.x86_64 already installed and latest version</span><br><span class="line">Package php-xml-5.4.16-36.el7_1.x86_64 already installed and latest version</span><br><span class="line">Package php-xml-5.4.16-36.el7_1.x86_64 already installed and latest version</span><br><span class="line">Package php-xml-5.4.16-36.el7_1.x86_64 already installed and latest version</span><br><span class="line">Package php-common-5.4.16-36.el7_1.x86_64 already installed and latest version</span><br><span class="line">Package php-common-5.4.16-36.el7_1.x86_64 already installed and latest version</span><br><span class="line">Package php-common-5.4.16-36.el7_1.x86_64 already installed and latest version</span><br><span class="line">Nothing to do</span><br><span class="line"></span><br><span class="line">[root@workstation zabbix-3.0.4]# ls /software/monitor/</span><br><span class="line">graylog-2.2.1.tgz                  php-bcmath-5.4.16-36.el7_1.x86_64.rpm    zabbix-3.0.4</span><br><span class="line">graylog-2.2-repository_latest.rpm  php-mbstring-5.4.16-36.el7_1.x86_64.rpm  zabbix-3.0.4.tar.gz</span><br><span class="line">[root@workstation zabbix-3.0.4]# rpm -ivh /software/monitor/php-bcmath-5.4.16-36.el7_1.x86_64.rpm /software/monitor/php-mbstring-5.4.16-36.el7_1.x86_64.rpm</span><br><span class="line">warning: /software/monitor/php-bcmath-5.4.16-36.el7_1.x86_64.rpm: Header V4 DSA/SHA1 Signature, key ID 192a7d7d: NOKEY</span><br><span class="line">warning: /software/monitor/php-mbstring-5.4.16-36.el7_1.x86_64.rpm: Header V3 RSA/SHA256 Signature, key ID f4a80eb5: NOKEY</span><br><span class="line">Preparing...                          ################################# [100%]</span><br><span class="line">Updating / installing...</span><br><span class="line">   1:php-mbstring-5.4.16-36.el7_1     ################################# [ 50%]</span><br><span class="line">   2:php-bcmath-5.4.16-36.el7_1       ################################# [100%]</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">观察当前php配置文件的参数设置情况,并修改</span></span><br><span class="line">[root@workstation ~]# grep -v '^#' /etc/php.ini | grep -v '^$'| grep -v '^;'</span><br><span class="line">[root@workstation zabbix-3.0.4]# sed -i 's@post_max_size.*@post_max_size = 16M@g' /etc/php.ini</span><br><span class="line">[root@workstation zabbix-3.0.4]# sed -i 's@max_input_time.*@max_input_time = 300M@g' /etc/php.ini|grep max_input_time</span><br><span class="line">[root@workstation zabbix-3.0.4]# sed -i 's@max_execution_time.*@max_execution_time = 300@g' /etc/php.ini</span><br><span class="line">[root@workstation zabbix-3.0.4]# sed -i 's@;mbstring.func_overload@mbstring.func_overload@g' /etc/php.ini</span><br><span class="line">[root@workstation zabbix-3.0.4]# sed -n '/post_max_size/p;/max_execution_time/p;/max_input_time/p' /etc/php.ini</span><br><span class="line">; max_input_time</span><br><span class="line">max_execution_time = 300</span><br><span class="line">max_input_time = 300M</span><br><span class="line">post_max_size = 16M</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="安装-zabbix-server-agent" class="article-heading"><a href="#安装-zabbix-server-agent" class="headerlink" title="安装 zabbix server/agent"></a>安装 zabbix server/agent<a class="article-anchor" href="#安装-zabbix-server-agent" aria-hidden="true"></a></h3><blockquote>
+<h4 id="1-下载源码" class="article-heading"><a href="#1-下载源码" class="headerlink" title="1 下载源码"></a>1 下载源码<a class="article-anchor" href="#1-下载源码" aria-hidden="true"></a></h4></blockquote>
+<p>下载地址: <a target="_blank" rel="noopener" href="http://www.zabbix.com/download">http://www.zabbix.com/download</a></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@workstation ~]# tar -xf /software/monitor/zabbix-3.0.4.tar.gz -C /opt</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<h4 id="2-编译源码" class="article-heading"><a href="#2-编译源码" class="headerlink" title="2 编译源码"></a>2 编译源码<a class="article-anchor" href="#2-编译源码" aria-hidden="true"></a></h4></blockquote>
+<p>编译之前，需要确认：</p>
+<ul>
+<li><input disabled="" type="checkbox"> 服务端和客户端在同一台机器上</li>
+<li><input disabled="" type="checkbox"> 仅是服务端</li>
+<li><input disabled="" type="checkbox"> 仅是客户端</li>
+<li><input disabled="" type="checkbox"> 仅是代理端</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">服务端和客户端在同一台机器上</span></span><br><span class="line">./configure --enable-server --enable-agent --with-mysql --enable-ipv6 --with-net-snmp --with-libcurl --with-libxml2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">仅是服务端</span></span><br><span class="line">./configure --enable-server --with-mysql --with-net-snmp</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">仅是客户端</span></span><br><span class="line">./configure --enable-agent</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">./configure --prefix=/usr --enable-proxy --with-net-snmp --with-sqlite3 --with-ssh2</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>还以通过<code>--prefix=/home/zabbix</code>指定安装路径</p>
+<blockquote>
+<h4 id="3-安装" class="article-heading"><a href="#3-安装" class="headerlink" title="3 安装"></a>3 安装<a class="article-anchor" href="#3-安装" aria-hidden="true"></a></h4></blockquote>
+<p>Running make install will by default install the daemon binaries (zabbix_server, zabbix_agentd,zabbix_proxy) in /usr/local/sbin and the client binaries (zabbix_get, zabbix_sender) in /usr/local/bin.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@workstation ~]# cd /opt/zabbix-3.0.4</span><br><span class="line">[root@workstation zabbix-3.0.4]# ./configure --prefix=/usr/local/mysql --enable-server --with-mysql=/usr/bin/mysql_config --with-net-snmp</span><br><span class="line">[root@workstation zabbix-3.0.4]# make install</span><br><span class="line">[root@workstation zabbix-3.0.4]# ll /usr/local/zabbix/</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x. 3 root root 58 Feb 24 15:08 etc</span><br><span class="line">drwxr-xr-x. 2 root root  6 Feb 24 15:08 lib</span><br><span class="line">drwxr-xr-x. 2 root root 26 Feb 24 15:08 sbin</span><br><span class="line">drwxr-xr-x. 4 root root 29 Feb 24 15:08 share</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="安装-zabbix-web" class="article-heading"><a href="#安装-zabbix-web" class="headerlink" title="安装 zabbix web"></a>安装 zabbix web<a class="article-anchor" href="#安装-zabbix-web" aria-hidden="true"></a></h3><blockquote>
+<h4 id="复制php文件" class="article-heading"><a href="#复制php文件" class="headerlink" title="复制php文件"></a>复制php文件<a class="article-anchor" href="#复制php文件" aria-hidden="true"></a></h4></blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir &lt;htdocs&gt;/zabbix</span><br><span class="line">cd frontends/php</span><br><span class="line">cp -a . &lt;htdocs&gt;/zabbix</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="修改配置并启动服务" class="article-heading"><a href="#修改配置并启动服务" class="headerlink" title="修改配置并启动服务"></a>修改配置并启动服务<a class="article-anchor" href="#修改配置并启动服务" aria-hidden="true"></a></h2><h3 id="配置数据库" class="article-heading"><a href="#配置数据库" class="headerlink" title="配置数据库"></a>配置数据库<a class="article-anchor" href="#配置数据库" aria-hidden="true"></a></h3><p>数据文件存放在database中，需要注意导入顺序</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">数据库需要新建数据库供zabbix使用</span></span><br><span class="line">[root@workstation ~]# systemctl start mariadb</span><br><span class="line">[root@workstation ~]# systemctl enable mariadb</span><br><span class="line">[root@workstation ~]# mysqladmin -uroot password 'uplooking'</span><br><span class="line">[root@workstation ~]# mysql -uroot -puplooking -e 'create database zabbix default charset utf8'</span><br><span class="line">[root@workstation ~]# mysql -uroot -puplooking -e "grant all on zabbix.* to zabbix@localhost identified by 'uplooking'"</span><br><span class="line">[root@workstation ~]# mysql -uroot -puplooking  zabbix &lt; /usr/local/zabbix/database/mysql/schema.sql</span><br><span class="line">[root@workstation ~]# mysql -uroot -puplooking  zabbix &lt; /usr/local/zabbix/database/mysql/images.sql</span><br><span class="line">[root@workstation ~]# mysql -uroot -puplooking  zabbix &lt; /usr/local/zabbix/database/mysql/data.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="配置zabbix-server" class="article-heading"><a href="#配置zabbix-server" class="headerlink" title="配置zabbix server"></a>配置zabbix server<a class="article-anchor" href="#配置zabbix-server" aria-hidden="true"></a></h3><ul>
+<li>Zabbix server configuration file /usr/local/zabbix/etc/zabbix_server.conf</li>
+</ul>
+<h4 id="创建用户账户" class="article-heading"><a href="#创建用户账户" class="headerlink" title="创建用户账户"></a>创建用户账户<a class="article-anchor" href="#创建用户账户" aria-hidden="true"></a></h4><p>server端用户和agent端用户最好不要用一个名字，为了安全。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@workstation ~]# groupadd -g 201 zabbix</span><br><span class="line">[root@workstation ~]# useradd -g zabbix -u 201 zabbix -s /sbin/nologin</span><br><span class="line">[root@workstation ~]# id zabbix</span><br><span class="line">uid=201(zabbix) gid=201(zabbix) groups=201(zabbix)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="创建链接" class="article-heading"><a href="#创建链接" class="headerlink" title="创建链接"></a>创建链接<a class="article-anchor" href="#创建链接" aria-hidden="true"></a></h4><p>为了方便使用，可以设置一个软连接到对应的目录</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@workstation zabbix-3.0.4]# ln -s /usr/local/zabbix/etc /etc/zabbix</span><br><span class="line">[root@workstation zabbix-3.0.4]# ln -s /usr/local/zabbix/sbin/* /usr/sbin/</span><br><span class="line">[root@workstation zabbix-3.0.4]# mkdir /var/log/zabbix</span><br><span class="line">[root@workstation zabbix-3.0.4]# chown zabbix. /var/log/zabbix</span><br><span class="line">[root@workstation zabbix-3.0.4]# cp /opt/zabbix-3.0.4/misc/init.d/fedora/core/zabbix_server /etc/init.d</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="修改服务启动脚本" class="article-heading"><a href="#修改服务启动脚本" class="headerlink" title="修改服务启动脚本"></a>修改服务启动脚本<a class="article-anchor" href="#修改服务启动脚本" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@workstation zabbix-3.0.4]# sed -i 's@BASEDIR=/usr/local@BASEDIR=/usr/local/zabbix@g' /etc/init.d/zabbix_server</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="修改配置文件" class="article-heading"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件<a class="article-anchor" href="#修改配置文件" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@workstation zabbix-3.0.4]# sed -i 's@LogFile=/tmp/zabbix_server.log@LogFile=/var/log/zabbix/zabbix_server.log@g' /etc/zabbix/zabbix_server.conf</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">与数据库有关的参数，观察</span></span><br><span class="line">[root@workstation zabbix-3.0.4]# grep -v '^#' /etc/zabbix/zabbix_server.conf|grep -v '^$'</span><br><span class="line">LogFile=/var/log/zabbix/zabbix_server.log</span><br><span class="line">DBName=zabbix</span><br><span class="line">DBUser=zabbix</span><br><span class="line">Timeout=4</span><br><span class="line">LogSlowQueries=3000</span><br><span class="line">[root@workstation zabbix-3.0.4]# grep Password /etc/zabbix/zabbix_server.conf</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">	For SQLite3 path to database file must be provided. DBUser and DBPassword are ignored.</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">## Option: DBPassword</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">DBPassword=</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">通过sed修改</span></span><br><span class="line">[root@workstation zabbix-3.0.4]# sed -i 's@# DBPassword=@DBPassword=uplooking@g' /etc/zabbix/zabbix_server.conf</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="启动服务" class="article-heading"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务<a class="article-anchor" href="#启动服务" aria-hidden="true"></a></h4><ul>
+<li>zabbix_server</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@workstation zabbix-3.0.4]# service zabbix_server start</span><br><span class="line">Reloading systemd:                                         [  OK  ]</span><br><span class="line">Starting zabbix_server (via systemctl):                    [  OK  ]</span><br><span class="line">[root@workstation zabbix-3.0.4]# ss -luntp|grep zabbix</span><br><span class="line">tcp    LISTEN     0      128       *:10051                 *:*                   users:(("zabbix_server",pid=31074,fd=4),("zabbix_server",pid=31073,fd=4),("zabbix_server",pid=31071,fd=4),("zabbix_server",pid=31067,fd=4),("zabbix_server",pid=31058,fd=4),("zabbix_server",pid=31057,fd=4),("zabbix_server",pid=31056,fd=4),("zabbix_server",pid=31055,fd=4),("zabbix_server",pid=31054,fd=4),("zabbix_server",pid=31052,fd=4),("zabbix_server",pid=31050,fd=4),("zabbix_server",pid=31049,fd=4),("zabbix_server",pid=31047,fd=4),("zabbix_server",pid=31045,fd=4),("zabbix_server",pid=31042,fd=4),("zabbix_server",pid=31040,fd=4),("zabbix_server",pid=31039,fd=4),("zabbix_server",pid=31038,fd=4),("zabbix_server",pid=31037,fd=4),("zabbix_server",pid=31036,fd=4),("zabbix_server",pid=31035,fd=4),("zabbix_server",pid=31034,fd=4),("zabbix_server",pid=31033,fd=4),("zabbix_server",pid=31030,fd=4),("zabbix_server",pid=31029,fd=4),("zabbix_server",pid=31028,fd=4),("zabbix_server",pid=31019,fd=4))</span><br><span class="line">[root@workstation zabbix-3.0.4]# chkconfig zabbix_server on</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="配置zabbix-agent" class="article-heading"><a href="#配置zabbix-agent" class="headerlink" title="配置zabbix agent"></a>配置zabbix agent<a class="article-anchor" href="#配置zabbix-agent" aria-hidden="true"></a></h3><ul>
+<li>Zabbix agent configuration file /usr/local/zabbix_agent/etc/zabbix_agentd.conf</li>
+</ul>
+<p>agent的安装只需要解压编译即可，不需要依赖关系包</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera zabbix-3.0.4]# ls /usr/local/zabbix_agent</span><br><span class="line">bin  etc  lib  sbin  share</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="创建用户账户-1" class="article-heading"><a href="#创建用户账户-1" class="headerlink" title="创建用户账户"></a>创建用户账户<a class="article-anchor" href="#创建用户账户-1" aria-hidden="true"></a></h4><p>server端用户和agent端用户最好不要用一个名字，为了安全。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera ~]# groupadd -g 201 zabbixagent</span><br><span class="line">[root@mastera ~]# useradd -g 201 -u 201 zabbixagent -s /sbin/nologin</span><br><span class="line">[root@mastera ~]# id zabbixagent</span><br><span class="line">uid=201(zabbixagent) gid=201(zabbixagent) groups=201(zabbixagent)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="创建链接-1" class="article-heading"><a href="#创建链接-1" class="headerlink" title="创建链接"></a>创建链接<a class="article-anchor" href="#创建链接-1" aria-hidden="true"></a></h4><p>为了方便使用，可以设置一个软连接到对应的目录</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera ~]# ln -s /usr/local/zabbix_agent/etc /etc/zabbix_agent</span><br><span class="line">[root@mastera ~]# ln -s /usr/local/zabbix_agent/sbin/* /usr/sbin/</span><br><span class="line">[root@mastera ~]# ln -s /usr/local/zabbix_agent/bin/* /usr/bin/</span><br><span class="line">[root@mastera ~]# cp /opt/zabbix-3.0.4/misc/init.d/fedora/core/zabbix_agentd /etc/init.d</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="修改服务启动脚本-1" class="article-heading"><a href="#修改服务启动脚本-1" class="headerlink" title="修改服务启动脚本"></a>修改服务启动脚本<a class="article-anchor" href="#修改服务启动脚本-1" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera ~]# sed -i 's@BASEDIR=/usr/local@BASEDIR=/usr/local/zabbix_agent@g' /etc/init.d/zabbix_agentd</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="修改配置文件-1" class="article-heading"><a href="#修改配置文件-1" class="headerlink" title="修改配置文件"></a>修改配置文件<a class="article-anchor" href="#修改配置文件-1" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera ~]# sed -i 's@Server=127.0.0.1@Server=192.168.58.10@g' /etc/zabbix_agent/zabbix_agentd.conf</span><br><span class="line">[root@mastera ~]# sed -i 's@ServerActive=127.0.0.1@ServerActive=192.168.58.10@g' /etc/zabbix_agent/zabbix_agentd.conf</span><br><span class="line">[root@mastera ~]# sed -i 's@Hostname=Zabbix server@Hostname=mastera.uplooking.com@g' /etc/zabbix_agent/zabbix_agentd.conf</span><br><span class="line">[root@mastera ~]# echo UnsafeUserParameters=1 &gt;&gt; /etc/zabbix_agent/zabbix_agentd.conf</span><br><span class="line">[root@mastera ~]# grep -v '^#' /etc/zabbix_agent/zabbix_agentd.conf|grep -v "^$"</span><br><span class="line">LogFile=/tmp/zabbix_agentd.log</span><br><span class="line">Server=192.168.58.10</span><br><span class="line">ServerActive=192.168.58.10</span><br><span class="line">Hostname=mastera.uplooking.com</span><br><span class="line">UnsafeUserParameters=1</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><code>Server=</code>Zabbix Server 端主机名或 IP 地址</li>
+<li><code>ServerActive= </code>Zabbix Server 端主机名或 IP 地址</li>
+<li><code>Hostname=</code> Agent 端的主机名</li>
+<li><code>UnsafeUserParameters=1</code> 是否限制用户自定义 keys 使用特殊字符</li>
+</ul>
+<h4 id="启动服务-1" class="article-heading"><a href="#启动服务-1" class="headerlink" title="启动服务"></a>启动服务<a class="article-anchor" href="#启动服务-1" aria-hidden="true"></a></h4><ul>
+<li>zabbix_agentd</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera ~]# service zabbix_agentd start</span><br><span class="line">Reloading systemd:                                         [  OK  ]</span><br><span class="line">Starting zabbix_agentd (via systemctl):                    [  OK  ]</span><br><span class="line">[root@mastera ~]# chkconfig zabbix_agentd on</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="配置zabbix-web" class="article-heading"><a href="#配置zabbix-web" class="headerlink" title="配置zabbix web"></a>配置zabbix web<a class="article-anchor" href="#配置zabbix-web" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@workstation ~]# echo php_value date.timezone Asia/Shanghai &gt; /etc/httpd/conf.d/zabbix.conf</span><br><span class="line">[root@workstation ~]# mkdir /var/www/html/zabbix</span><br><span class="line">[root@workstation ~]# cp -r /opt/zabbix-3.0.4/frontends/php/ /var/www/html/zabbix</span><br><span class="line">[root@workstation ~]# chown apache. /var/www/html/zabbix -R</span><br><span class="line">[root@workstation ~]# systemctl start httpd</span><br><span class="line">[root@workstation ~]# systemctl enable httpd</span><br></pre></td></tr></tbody></table></figure>
+
+<p>In your browser, open Zabbix URL: http://<server_ip_or_name>/zabbix</server_ip_or_name></p>
+<p>The default user name is Admin, password zabbix.</p>
+<h2 id="数据库监控项目" class="article-heading"><a href="#数据库监控项目" class="headerlink" title="数据库监控项目"></a>数据库监控项目<a class="article-anchor" href="#数据库监控项目" aria-hidden="true"></a></h2></body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:02.243Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6"><span class="toc-text">安装软件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB"><span class="toc-text">解决依赖关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-zabbix-server-agent"><span class="toc-text">安装 zabbix server&#x2F;agent</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%8B%E8%BD%BD%E6%BA%90%E7%A0%81"><span class="toc-text">1 下载源码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81"><span class="toc-text">2 编译源码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%AE%89%E8%A3%85"><span class="toc-text">3 安装</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-zabbix-web"><span class="toc-text">安装 zabbix web</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6php%E6%96%87%E4%BB%B6"><span class="toc-text">复制php文件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E5%B9%B6%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="toc-text">修改配置并启动服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">配置数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEzabbix-server"><span class="toc-text">配置zabbix server</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E8%B4%A6%E6%88%B7"><span class="toc-text">创建用户账户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E9%93%BE%E6%8E%A5"><span class="toc-text">创建链接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC"><span class="toc-text">修改服务启动脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">修改配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="toc-text">启动服务</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEzabbix-agent"><span class="toc-text">配置zabbix agent</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E8%B4%A6%E6%88%B7-1"><span class="toc-text">创建用户账户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E9%93%BE%E6%8E%A5-1"><span class="toc-text">创建链接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC-1"><span class="toc-text">修改服务启动脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-1"><span class="toc-text">修改配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1-1"><span class="toc-text">启动服务</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEzabbix-web"><span class="toc-text">配置zabbix web</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%91%E6%8E%A7%E9%A1%B9%E7%9B%AE"><span class="toc-text">数据库监控项目</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../docs/" class="mobile-nav-link">Hexo</a><a href="../../news/" class="mobile-nav-link">News</a><a href="../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../database/" class="mobile-nav-link">Database</a><a href="../../linux/" class="mobile-nav-link">Linux</a><a href="../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../amy/" class="mobile-nav-link">AMY</a><a href="../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../js/lang_select.js"></script>
+
+
+<script src="../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

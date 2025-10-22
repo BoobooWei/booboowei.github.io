@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>HASH TABLES 哈希表 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/nosql/dba_redis/0_hash_tables">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/nosql/dba_redis/0_hash_tables" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2017-09-29 BoobooWei  Hash Table 简介哈希表（Hash table，也叫散列表）:是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。  Hash Table的查询速度非常的快，几乎是O(1)的时间复杂度。 hash函数（散列法）">
+<meta property="og:type" content="website">
+<meta property="og:title" content="HASH TABLES 哈希表">
+<meta property="og:url" content="http://www.toberoot.com/database/nosql/dba_redis/0_hash_tables">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2017-09-29 BoobooWei  Hash Table 简介哈希表（Hash table，也叫散列表）:是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。  Hash Table的查询速度非常的快，几乎是O(1)的时间复杂度。 hash函数（散列法）">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.873Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:32.696Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">HASH TABLES 哈希表</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/nosql/dba_redis/0_hash_tables.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2017-09-29 BoobooWei</p>
+</blockquote>
+<h2 id="Hash-Table-简介" class="article-heading"><a href="#Hash-Table-简介" class="headerlink" title="Hash Table 简介"></a>Hash Table 简介<a class="article-anchor" href="#Hash-Table-简介" aria-hidden="true"></a></h2><p>哈希表（Hash table，也叫散列表）:是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。</p>
+<ul>
+<li>Hash Table的查询速度非常的快，几乎是O(1)的时间复杂度。</li>
+<li>hash函数（散列法）就是找到一种数据内容和数据存放地址之间的映射关系。</li>
+</ul>
+<h2 id="Hash-Table-的应用" class="article-heading"><a href="#Hash-Table-的应用" class="headerlink" title="Hash Table 的应用"></a>Hash Table 的应用<a class="article-anchor" href="#Hash-Table-的应用" aria-hidden="true"></a></h2><p>你在哪里遇到过hash这个词语呢？</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/chenmh/p/5644496.html">MySQL HASH分区</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/olinux/p/5161826.html">MySQL中自适应哈希索引</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.itmmd.com/201501/454.html">mysql哈希索引</a></li>
+<li><a target="_blank" rel="noopener" href="http://redisbook.com/preview/dict/datastruct.html">Redis 的字典</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/cywosp/article/details/23397179/">Redis Cluster 一致性hash</a></li>
+<li><a target="_blank" rel="noopener" href="https://foofish.net/python_dict_implements.html">Python字典对象实现原理</a></li>
+</ul>
+<p><strong>应用场景总结</strong></p>
+<ol>
+<li><p>Hash主要用于<strong>信息安全领域中加密算法</strong>，它把一些不同长度的信息转化成杂乱的128位的编码,这些编码值叫做Hash值. 也可以说，Hash就是找到一种数据内容和数据存放地址之间的映射关系。</p>
+</li>
+<li><p><strong>查找</strong>：哈希表，又称为散列，是一种更加快捷的查找技术。</p>
+</li>
+<li><p>Hash表在<strong>海量数据处理</strong>中有着广泛应用。</p>
+</li>
+</ol>
+<h2 id="Hash-Table-的原理" class="article-heading"><a href="#Hash-Table-的原理" class="headerlink" title="Hash Table 的原理"></a>Hash Table 的原理<a class="article-anchor" href="#Hash-Table-的原理" aria-hidden="true"></a></h2><p><strong>建立一个哈希表之前需要解决两个主要问题：</strong></p>
+<p><strong>构造一个合适的哈希函数：</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%9D%87%E5%8C%80%E6%80%A7"> 均匀性</a> H（key）的值均匀分布在哈希表中；</li>
+<li>简单以提高地址计算的速度</li>
+</ul>
+<p><strong>冲突的处理：</strong></p>
+<ul>
+<li>冲突：在哈希表中，不同的关键字值对应到同一个存储位置的现象。即关键字K1≠K2，但H（K1）= H（K2）。</li>
+<li>均匀的哈希函数可以减少冲突，但不能避免冲突。发生冲突后，必须解决；也即必须寻找下一个可用地址。</li>
+</ul>
+<p><img src="pic/h01.png"></p>
+<h3 id="Hash函数" class="article-heading"><a href="#Hash函数" class="headerlink" title="Hash函数"></a>Hash函数<a class="article-anchor" href="#Hash函数" aria-hidden="true"></a></h3><blockquote>
+<p>重点掌握以下Hash函数：</p>
+<ul>
+<li>平方取中法</li>
+<li>除留余数法（取模）</li>
+</ul>
+</blockquote>
+<p>哈希表中元素是由哈希函数确定的。将数据元素的关键字Key作为自变量，通过一定的函数关系（称为哈希函数），计算出的值，即为该元素的存储地址。表示为：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">Addr = H（key）</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="直接定址法" class="article-heading"><a href="#直接定址法" class="headerlink" title="直接定址法"></a>直接定址法<a class="article-anchor" href="#直接定址法" aria-hidden="true"></a></h4><p>直接定址法是以数据元素关键字k本身或它的线性函数作为它的哈希地址</p>
+<p><strong>适于：地址集合的大小 = = 关键字集合的大小，其中a和b为常数。</strong></p>
+<p>公式：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">H（k）=k  或 H（k）=a×k+b</span><br><span class="line">其中 a , b 为常数</span><br></pre></td></tr></tbody></table></figure>
+
+<p>举例：</p>
+<p>有一个人口统计表，记录了从1岁到100岁的人口数目，其中年龄作为关键字，哈希函数取关键字本身，如图<br>可以看到，当需要查找某一年龄的人数时，直接查找相应的项即可。如查找99岁的老人数，则直接读出第99项即可。</p>
+<p>如果我们要统计的是80后出生的人口数，如上表所示，那么我们对出生年份这个关键字可以用年份减去1980来作为地址，此时f(key)=key-1980<br>这种哈希函数简单，并且对于不同的关键字不会产生冲突，但可以看出这是一种较为特殊的哈希函数，实际生活中，关键字的元素很少是连续的。用该方法产生的哈希表会造成空间大量的浪费，因此这种方法适应性并不强。</p>
+<h4 id="数字分析法" class="article-heading"><a href="#数字分析法" class="headerlink" title="数字分析法"></a>数字分析法<a class="article-anchor" href="#数字分析法" aria-hidden="true"></a></h4><p>假设关键字集合中的每个关键字都是由 s 位数字组成 (u1, u2, …, us)，分析关键字集中的全体，并从中提取分布均匀的若干位或它们的组合作为地址。</p>
+<p>数字分析法是取数据元素关键字中某些取值较均匀的数字位作为哈希地址的方法。即当关键字的位数很多时，可以通过对关键字的各位进行分析，丢掉分布不均匀的位，作为哈希值。它只适合于所有关键字值已知的情况。通过分析分布情况把关键字取值区间转化为一个较小的关键字取值区间。</p>
+<p><strong>适于：能预先估计出全体关键字的每一位上各种数字出现的频度。</strong></p>
+<p>举例：</p>
+<p>要构造一个数据元素个数n=80,哈希长度m=100的哈希表。不失一般性，我们这里只给出其中8个关键字进行分析，8个关键字如下所示：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">K1=61317602      K2=61326875      K3=62739628      K4=61343634</span><br><span class="line">K5=62706815      K6=62774638      K7=61381262      K8=61394220</span><br></pre></td></tr></tbody></table></figure>
+
+<p>分析上述8个关键字可知，关键字从左到右的第1、2、3、6位取值比较集中，不宜作为哈希地址，剩余的第4、5、7、8位取值较均匀，可选取其中的两位作为哈希地址。设选取最后两位作为哈希地址，则这8个关键字的哈希地址分别为：2，75，28，34，15，38，62，20。</p>
+<h4 id="平方取中法" class="article-heading"><a href="#平方取中法" class="headerlink" title="平方取中法"></a>平方取中法<a class="article-anchor" href="#平方取中法" aria-hidden="true"></a></h4><blockquote>
+<p>这是一种常用的哈希函数构造方法。</p>
+</blockquote>
+<p>先取关键字的平方，然后根据可使用空间的大小，选取平方数是中间几位为哈希地址。</p>
+<p><strong>适于：关键字中的每一位都有某些数字重复出现频度很高的现象</strong></p>
+<p>公式：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">H(key)=key^2的中间几位</span><br></pre></td></tr></tbody></table></figure>
+
+<p>原理是通过取平方扩大差别，平方值的中间几位和这个数的每一位都相关，则对不同的关键字得到的哈希函数值不易产生冲突，由此产生的哈希地址<strong>也较为均匀</strong>。</p>
+<p>举例：</p>
+<p>若设哈希表长为1000则可取关键字平方值的中间三位，如图所示：</p>
+<table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>关键字的平方</th>
+<th>哈希函数值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1234</td>
+<td>1522756</td>
+<td>227</td>
+</tr>
+<tr>
+<td>2143</td>
+<td>4592449</td>
+<td>924</td>
+</tr>
+<tr>
+<td>4132</td>
+<td>17073424</td>
+<td>734</td>
+</tr>
+<tr>
+<td>3214</td>
+<td>10329796</td>
+<td>297</td>
+</tr>
+</tbody></table>
+<h4 id="折叠法" class="article-heading"><a href="#折叠法" class="headerlink" title="折叠法"></a>折叠法<a class="article-anchor" href="#折叠法" aria-hidden="true"></a></h4><p>将关键字分割成若干部分，然后取它们的叠加和为哈希地址。两种叠加处理的方法：</p>
+<ul>
+<li>移位叠加：将分 割后的几部分低位对齐相加；</li>
+<li>边界叠加：从一端沿分割界来回折叠，然后对齐相加。</li>
+</ul>
+<p>所谓折叠法是将关键字分割成位数相同的几部分（最后一部分的位数可以不同），然后取这几部分的叠加和（舍去进位），这方法称为折叠法。</p>
+<p><strong>适于：关键字位数较多，而且关键字中每一位上数字分布大致均匀的情况。</strong></p>
+<p>举例：</p>
+<p>当哈希表长为1000时，关键字key=110108331119891，允许的地址空间为三位十进制数，则这两种叠加情况如图：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">    移位叠加                              边界叠加</span><br><span class="line">    8 9 1                                     8 9 1</span><br><span class="line">    1 1 9                                     9 1 1</span><br><span class="line">    3 3 1                                     3 3 1</span><br><span class="line">    1 0 8                                     8 0 1</span><br><span class="line"> +  1 1 0                                   + 1 1 0</span><br><span class="line">(1) 5 5 9                                  (3)0 4 4</span><br></pre></td></tr></tbody></table></figure>
+
+<p>由折叠法求哈希地址</p>
+<p>用移位叠加得到的哈希地址是559，而用边界叠加所得到的哈希地址是44。如果关键字不是数值而是字符串，则可先转化为数。转化的办法可以用ASCⅡ字符或字符的次序值。</p>
+<h4 id="除留余数法" class="article-heading"><a href="#除留余数法" class="headerlink" title="除留余数法"></a>除留余数法<a class="article-anchor" href="#除留余数法" aria-hidden="true"></a></h4><p>取关键字被某个不大于哈希表表长m的数p除后所得余数为哈希地址。</p>
+<p><strong>适于：</strong></p>
+<p>公式：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">H(key)=key MOD p (p&lt;=m)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>举例：</p>
+<p>已知待散列元素为（18，75，60，43，54，90，46），表长m=10，p=7，则有</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">h(18)=18 % 7=4    h(75)=75 % 7=5    h(60)=60 % 7=4</span><br><span class="line">h(43)=43 % 7=1    h(54)=54 % 7=5    h(90)=90 % 7=6</span><br><span class="line">h(46)=46 % 7=4</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此时冲突较多。为减少冲突，可取较大的m值和p值，如m=p=13，结果如下：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">h(18)=18 % 13=5    h(75)=75 % 13=10    h(60)=60 % 13=8</span><br><span class="line">h(43)=43 % 13=4    h(54)=54 % 13=2    h(90)=90 % 13=12</span><br><span class="line">h(46)=46 % 13=7</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此时没有冲突，如下所示。</p>
+<table>
+<thead>
+<tr>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+<th>11</th>
+<th>12</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+<td>54</td>
+<td></td>
+<td>43</td>
+<td>18</td>
+<td></td>
+<td>46</td>
+<td>60</td>
+<td></td>
+<td>75</td>
+<td></td>
+<td>90</td>
+</tr>
+</tbody></table>
+<p>除留余数法求哈希地址理论研究表明，除留余数法的模p取不大于表长且最接近表长m素数时效果最好，且p最好取1.1n～1.7n之间的一个素数（n为存在的数据元素个数）</p>
+<h4 id="随机数法" class="article-heading"><a href="#随机数法" class="headerlink" title="随机数法"></a>随机数法<a class="article-anchor" href="#随机数法" aria-hidden="true"></a></h4><p>选择一个随机函数，取关键字的随机函数值为它的哈希地址。</p>
+<p><strong>适于：对长度不等的关键字构造哈希函数。</strong></p>
+<p>公式：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">H(key)=random(key）,其中random为随机函数</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="其他算法" class="article-heading"><a href="#其他算法" class="headerlink" title="其他算法"></a>其他算法<a class="article-anchor" href="#其他算法" aria-hidden="true"></a></h4><ul>
+<li>旋转法</li>
+<li>字符串数值哈希法</li>
+<li>随机乘数法</li>
+</ul>
+<h3 id="冲突的处理" class="article-heading"><a href="#冲突的处理" class="headerlink" title="冲突的处理"></a>冲突的处理<a class="article-anchor" href="#冲突的处理" aria-hidden="true"></a></h3><ol>
+<li>链接法（拉链法）</li>
+<li>开放定址法</li>
+<li>桶定址法</li>
+<li>多哈希法</li>
+<li>探测再散列</li>
+<li>建域法</li>
+</ol>
+<h4 id="拉链法" class="article-heading"><a href="#拉链法" class="headerlink" title="拉链法"></a>拉链法<a class="article-anchor" href="#拉链法" aria-hidden="true"></a></h4><p>拉链法是最常用的一种方，我们可以理解为“链表的数组”，如图：</p>
+<p><img src="http://img.blog.csdn.net/20160603152626346?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="img"></p>
+<p>左边很明显是个数组，数组的每个成员包括一个指针，指向一个链表的头，当然这个链表可能为空，也可能元素很多。我们根据元素的一些特征把元素分配到不同的链表中去，也是根据这些特征，找到正确的链表，再从链表中找出这个元素。</p>
+<h3 id="Hash-Table-的插入和查找步骤" class="article-heading"><a href="#Hash-Table-的插入和查找步骤" class="headerlink" title="Hash Table 的插入和查找步骤"></a>Hash Table 的插入和查找步骤<a class="article-anchor" href="#Hash-Table-的插入和查找步骤" aria-hidden="true"></a></h3><h4 id="查找步骤" class="article-heading"><a href="#查找步骤" class="headerlink" title="查找步骤"></a>查找步骤<a class="article-anchor" href="#查找步骤" aria-hidden="true"></a></h4><ol>
+<li>当存储记录时，通过散列函数计算出记录的散列地址</li>
+<li>当查找记录时，我们通过同样的是散列函数计算记录的散列地址，并按此散列地址访问该记录</li>
+</ol>
+<h4 id="插入步骤" class="article-heading"><a href="#插入步骤" class="headerlink" title="插入步骤"></a>插入步骤<a class="article-anchor" href="#插入步骤" aria-hidden="true"></a></h4><p>若已知哈希函数及冲突处理方法，哈希表的建立步骤如下：</p>
+<ol>
+<li><p>取出一个数据元素的关键字key，计算其在哈希表中的存储地址D=H(key）。若存储地址为D的存储空间还没有被占用，则将该数据元素存入；否则发生冲突，执行Step2。</p>
+</li>
+<li><p>根据规定的冲突处理方法，计算关键字为key的数据元素之下一个存储地址。若该存储地址的存储空间没有被占用，则存入；否则继续执行Step2，直到找出一个存储空间没有被占用的存储地址为止。</p>
+</li>
+</ol>
+<h3 id="优缺点" class="article-heading"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点<a class="article-anchor" href="#优缺点" aria-hidden="true"></a></h3><p>优点：</p>
+<ul>
+<li><p>不论哈希表中有多少数据，查找、插入、删除（有时包括删除）只需要接近常量的时间即0(1）的时间级。实际上，这只需要几条机器指令。</p>
+</li>
+<li><p>哈希表运算得非常快，在计算机程序中，如果需要在一秒种内查找上千条记录通常使用哈希表（例如拼写检查器)哈希表的速度明显比树快，树的操作通常需要O(N)的时间级。哈希表不仅速度快，编程实现也相对容易。</p>
+</li>
+<li><p>如果不需要有序遍历数据，并且可以提前预测数据量的大小。那么哈希表在速度和易用性方面是无与伦比的。</p>
+</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>它是基于数组的，数组创建后难于扩展，某些哈希表被基本填满时，性能下降得非常严重，所以程序员必须要清楚表中将要存储多少数据（或者准备好定期地把数据转移到更大的哈希表中，这是个费时的过程）。</li>
+</ul>
+<h2 id="实例（海量数据处理）" class="article-heading"><a href="#实例（海量数据处理）" class="headerlink" title="实例（海量数据处理）"></a>实例（海量数据处理）<a class="article-anchor" href="#实例（海量数据处理）" aria-hidden="true"></a></h2><p>我们知道hash 表在海量数据处理中有着广泛的应用，下面，请看另一道百度面试题题目：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">海量日志数据，提取出某日访问百度次数最多的那个IP。</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>方案</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">首先过滤出 "指定的天" and "访问百度" 的日志中的IP取出来，逐个写入到一个大文件中。</span><br><span class="line"></span><br><span class="line">如下阐述（作者雪域之鹰）：</span><br><span class="line">算法思想：分而治之+Hash</span><br><span class="line">1.IP地址最多有2^32=4G种取值情况，所以不能完全加载到内存中处理；</span><br><span class="line">2.可以考虑采用“分而治之”的思想，按照IP地址的Hash(IP)%1024值，把海量IP日志分别存储到1024个小文件中。这样，每个小文件最多包含4MB个IP地址；</span><br><span class="line">3.对于每一个小文件，可以构建一个IP为key，出现次数为value的Hash map，同时记录当前出现次数最多的那个IP地址；</span><br><span class="line">4.可以得到1024个小文件中的出现次数最多的IP，再依据常规的排序算法得到总体上出现次数最多的IP；</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>Python代码实现</strong></p>
+<blockquote>
+<p>使用了 readlines 将文件分块读入内存，然后hash并序列化保存(这里为了方便用了JSON序列化缓存到文本，IO开销很大，在真实的使用环境中可以缓存到数据库)，在python3.x中使用了readlines后 tell 不能再用了，两个函数冲突。</p>
+<p>在py2.7中open函数没有encoding参数，要注明 encoding 必须使用codecs模块的codecs.open。</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">coding:utf-8</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">py3.x</span></span><br><span class="line">import re</span><br><span class="line">import json</span><br><span class="line">import time</span><br><span class="line">import os</span><br><span class="line"></span><br><span class="line">def run(logpath, hashcode,topnum=100):</span><br><span class="line">    for i in range(0, hashcode):</span><br><span class="line">        with open(str(i), 'w', encoding='utf-8') as f:</span><br><span class="line">            f.write('{}')</span><br><span class="line">    h = 50*1024 * 1024#50MB</span><br><span class="line">    with open(logpath, 'r', encoding='utf-8-sig') as f:</span><br><span class="line">        lines=f.readlines(h)</span><br><span class="line">        while lines:</span><br><span class="line">            lineshandler(lines, hashcode)</span><br><span class="line">            lines=f.readlines(h)</span><br><span class="line">    return orderresult(hashcode,topnum)</span><br><span class="line"></span><br><span class="line">def lineshandler(lines,hashcode):</span><br><span class="line">    ipreg=re.compile('\d+\.\d+\.\d+\.\d+')</span><br><span class="line">    d={}</span><br><span class="line">    for i in range(0,hashcode):</span><br><span class="line">        with open(str(i),'r',encoding='utf-8') as f:</span><br><span class="line">            d[i]=json.loads(f.read())</span><br><span class="line">    for line in lines:</span><br><span class="line">        if line.startswith('#'):</span><br><span class="line">            continue</span><br><span class="line">        else:</span><br><span class="line">            ips=re.findall(ipreg,line)</span><br><span class="line">            if len(ips)&lt;2:</span><br><span class="line">                continue</span><br><span class="line">            else:</span><br><span class="line">                ip=ips[1]</span><br><span class="line">            hid=hash(ip)%hashcode</span><br><span class="line">            d[hid].setdefault(ip,0)</span><br><span class="line">            d[hid][ip]+=1</span><br><span class="line">    for hid in d.keys():</span><br><span class="line">        with open(str(hid),'w',encoding='utf-8') as f:</span><br><span class="line">            f.write(json.dumps(d[hid]))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def orderresult(hashcode,topnum):</span><br><span class="line">    l=[]</span><br><span class="line">    for i in range(0, hashcode):</span><br><span class="line">        with open(str(i), 'r', encoding='utf-8') as f:</span><br><span class="line">            d=json.loads(f.read())</span><br><span class="line">            for key in d.keys():</span><br><span class="line">                if len(l)&lt;topnum:</span><br><span class="line">                    l.append((key,d[key]))</span><br><span class="line">                    if len(l)==topnum:</span><br><span class="line">                        l=sorted(l,key=lambda x:x[1],reverse=True)</span><br><span class="line">                else:</span><br><span class="line">                    if l[topnum-1][1]&lt;d[key]:</span><br><span class="line">                        l.pop(topnum-1)</span><br><span class="line">                        l.append((key,d[key]))</span><br><span class="line">                        l=sorted(l,key=lambda x:x[1],reverse=True)</span><br><span class="line">        os.remove(str(i))</span><br><span class="line">    return l</span><br><span class="line"></span><br><span class="line">t1=time.time()</span><br><span class="line">rs = run('u_ex130702.log',9,10)</span><br><span class="line">t2=time.time()</span><br><span class="line">print(rs)</span><br><span class="line">print('共用时'+str(t2-t1)+"秒")</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:32.696Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Hash-Table-%E7%AE%80%E4%BB%8B"><span class="toc-text">Hash Table 简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hash-Table-%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-text">Hash Table 的应用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hash-Table-%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-text">Hash Table 的原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash%E5%87%BD%E6%95%B0"><span class="toc-text">Hash函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B4%E6%8E%A5%E5%AE%9A%E5%9D%80%E6%B3%95"><span class="toc-text">直接定址法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E5%88%86%E6%9E%90%E6%B3%95"><span class="toc-text">数字分析法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B9%B3%E6%96%B9%E5%8F%96%E4%B8%AD%E6%B3%95"><span class="toc-text">平方取中法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%98%E5%8F%A0%E6%B3%95"><span class="toc-text">折叠法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%99%A4%E7%95%99%E4%BD%99%E6%95%B0%E6%B3%95"><span class="toc-text">除留余数法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%B3%95"><span class="toc-text">随机数法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E7%AE%97%E6%B3%95"><span class="toc-text">其他算法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%B2%E7%AA%81%E7%9A%84%E5%A4%84%E7%90%86"><span class="toc-text">冲突的处理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%89%E9%93%BE%E6%B3%95"><span class="toc-text">拉链法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash-Table-%E7%9A%84%E6%8F%92%E5%85%A5%E5%92%8C%E6%9F%A5%E6%89%BE%E6%AD%A5%E9%AA%A4"><span class="toc-text">Hash Table 的插入和查找步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE%E6%AD%A5%E9%AA%A4"><span class="toc-text">查找步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E6%AD%A5%E9%AA%A4"><span class="toc-text">插入步骤</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-text">优缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%EF%BC%88%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%EF%BC%89"><span class="toc-text">实例（海量数据处理）</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

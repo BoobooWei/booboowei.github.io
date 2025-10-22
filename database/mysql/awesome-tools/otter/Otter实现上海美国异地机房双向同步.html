@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Otter实现上海美国异地机房双向同步 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/awesome-tools/otter/Otter%E5%AE%9E%E7%8E%B0%E4%B8%8A%E6%B5%B7%E7%BE%8E%E5%9B%BD%E5%BC%82%E5%9C%B0%E6%9C%BA%E6%88%BF%E5%8F%8C%E5%90%91%E5%90%8C%E6%AD%A5">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/awesome-tools/otter/Otter%E5%AE%9E%E7%8E%B0%E4%B8%8A%E6%B5%B7%E7%BE%8E%E5%9B%BD%E5%BC%82%E5%9C%B0%E6%9C%BA%E6%88%BF%E5%8F%8C%E5%90%91%E5%90%8C%E6%AD%A5" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="双向同步业务场景上海&#x2F;美国异地机房双向同步  业务性 隔离性 关联数据 双A写入 事务性 异构性（支持MySQL&#x2F;Oracle）  中美异地机房同步性能指标： a. 100tps ， 延迟2s b. 5000tps ，延迟10s  双向同步业务架构图  Otter异地机房复制示意图  搭建明细新建虚拟机测试环境中，使用的虚拟机均为centos7.2 $ clone-vm.sh">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Otter实现上海美国异地机房双向同步">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/awesome-tools/otter/Otter%E5%AE%9E%E7%8E%B0%E4%B8%8A%E6%B5%B7%E7%BE%8E%E5%9B%BD%E5%BC%82%E5%9C%B0%E6%9C%BA%E6%88%BF%E5%8F%8C%E5%90%91%E5%90%8C%E6%AD%A5">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="双向同步业务场景上海&#x2F;美国异地机房双向同步  业务性 隔离性 关联数据 双A写入 事务性 异构性（支持MySQL&#x2F;Oracle）  中美异地机房同步性能指标： a. 100tps ， 延迟2s b. 5000tps ，延迟10s  双向同步业务架构图  Otter异地机房复制示意图  搭建明细新建虚拟机测试环境中，使用的虚拟机均为centos7.2 $ clone-vm.sh">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.854Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:53.922Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Otter实现上海美国异地机房双向同步</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/awesome-tools/otter/Otter实现上海美国异地机房双向同步.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h2 id="双向同步业务场景" class="article-heading"><a href="#双向同步业务场景" class="headerlink" title="双向同步业务场景"></a>双向同步业务场景<a class="article-anchor" href="#双向同步业务场景" aria-hidden="true"></a></h2><p>上海/美国异地机房双向同步</p>
+<ul>
+<li>业务性</li>
+<li>隔离性</li>
+<li>关联数据</li>
+<li>双A写入</li>
+<li>事务性</li>
+<li>异构性（支持MySQL/Oracle）</li>
+</ul>
+<p>中美异地机房同步性能指标：</p>
+<p>a. 100tps ， 延迟2s</p>
+<p>b. 5000tps ，延迟10s</p>
+<hr>
+<h2 id="双向同步业务架构图" class="article-heading"><a href="#双向同步业务架构图" class="headerlink" title="双向同步业务架构图"></a>双向同步业务架构图<a class="article-anchor" href="#双向同步业务架构图" aria-hidden="true"></a></h2><p><img src="pic/01.png"></p>
+<hr>
+<h2 id="Otter异地机房复制示意图" class="article-heading"><a href="#Otter异地机房复制示意图" class="headerlink" title="Otter异地机房复制示意图"></a>Otter异地机房复制示意图<a class="article-anchor" href="#Otter异地机房复制示意图" aria-hidden="true"></a></h2><p><img src="pic/02.jpg"></p>
+<hr>
+<h2 id="搭建明细" class="article-heading"><a href="#搭建明细" class="headerlink" title="搭建明细"></a>搭建明细<a class="article-anchor" href="#搭建明细" aria-hidden="true"></a></h2><h3 id="新建虚拟机" class="article-heading"><a href="#新建虚拟机" class="headerlink" title="新建虚拟机"></a>新建虚拟机<a class="article-anchor" href="#新建虚拟机" aria-hidden="true"></a></h3><p>测试环境中，使用的虚拟机均为centos7.2</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">clone-vm.sh SH_01</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">clone-vm.sh SH_02</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">clone-vm.sh AM_01</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">clone-vm.sh AM_02</span></span><br></pre></td></tr></tbody></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>hostname</th>
+<th>ip</th>
+<th>software</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SH_01</td>
+<td>10.200.6.30</td>
+<td>MySQL;zookeeper</td>
+</tr>
+<tr>
+<td>SH_02</td>
+<td>10.200.6.31</td>
+<td>otter_manager;otter_node</td>
+</tr>
+<tr>
+<td>AM_01</td>
+<td>10.200.6.33</td>
+<td>MySQL;zookeeper</td>
+</tr>
+<tr>
+<td>AM_02</td>
+<td>10.200.6.32</td>
+<td>otter_node</td>
+</tr>
+</tbody></table>
+<h3 id="软件安装" class="article-heading"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装<a class="article-anchor" href="#软件安装" aria-hidden="true"></a></h3><blockquote>
+<p>下面列出主要的几款软件的一般安装方法</p>
+</blockquote>
+<h4 id="安装MySQL" class="article-heading"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL<a class="article-anchor" href="#安装MySQL" aria-hidden="true"></a></h4><blockquote>
+<p>安装MySQL5.7.17</p>
+</blockquote>
+<p><strong>1. 卸载mariadb冲突包<code>rpm -e --nodeps mariadb-libs ; yum install -y tar gzip bzip2 wget libaio</code></strong></p>
+<p><strong>2. 新建mysql安装脚本<code>mysql.sh</code></strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">DIR=`pwd`</span><br><span class="line">DATE=`date +%Y%m%d%H%M%S`</span><br><span class="line"></span><br><span class="line">\mv /alidata/mysql /alidata/mysql.bak.$DATE &amp;&gt; /dev/null</span><br><span class="line">mkdir -p /alidata/mysql</span><br><span class="line">mkdir -p /alidata/mysql/data</span><br><span class="line">mkdir -p /alidata/mysql/log</span><br><span class="line">mkdir -p /alidata/install</span><br><span class="line">mkdir -p /usr/local/mysql/bin</span><br><span class="line"></span><br><span class="line">cd /alidata/install</span><br><span class="line">if [ `uname -m` == "x86_64" ];then</span><br><span class="line">  rm -rf mysql-5.7.17-linux-glibc2.5-x86_64</span><br><span class="line">  if [ ! -f mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz ];then</span><br><span class="line">	 wget http://zy-res.oss-cn-hangzhou.aliyuncs.com/mysql/mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz</span><br><span class="line">  fi</span><br><span class="line">  tar -xzvf mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz</span><br><span class="line">  mv mysql-5.7.17-linux-glibc2.5-x86_64/* /alidata/mysql</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="keyword">else</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"> <span class="built_in">rm</span> -rf mysql-5.7.17-linux-glibc2.5-i686</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"> <span class="keyword">if</span> [ ! -f mysql-5.7.17-linux-glibc2.5-i686.tar.gz ];<span class="keyword">then</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"> wget http://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.17-linux-glibc2.5-i686.tar.gz</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"> <span class="keyword">fi</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"> tar -xzvf mysql-5.7.17-linux-glibc2.5-i686.tar.gz</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"> <span class="built_in">mv</span> mysql-5.7.17-linux-glibc2.5-i686/* /alidata/mysql</span></span><br><span class="line"></span><br><span class="line">fi</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">install mysql</span></span><br><span class="line">groupadd mysql</span><br><span class="line">useradd -g mysql -s /sbin/nologin mysql</span><br><span class="line"></span><br><span class="line">\cp -f /alidata/mysql/support-files/mysql.server /etc/init.d/mysqld</span><br><span class="line">sed -i 's#^basedir=$#basedir=/alidata/mysql#' /etc/init.d/mysqld</span><br><span class="line">sed -i 's#^datadir=$#datadir=/alidata/mysql/data#' /etc/init.d/mysqld</span><br><span class="line">cat &gt; /etc/my.cnf &lt;&lt;END</span><br><span class="line">[client]</span><br><span class="line">port	= 3306</span><br><span class="line">socket	= /tmp/mysql.sock</span><br><span class="line"></span><br><span class="line">[mysql]</span><br><span class="line">prompt="\u@MySQL-01 \R:\m:\s [\d]&gt; "</span><br><span class="line">no-auto-rehash</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">user	= mysql</span><br><span class="line">port	= 3306</span><br><span class="line">basedir	= /alidata/mysql</span><br><span class="line">datadir	= /alidata/mysql/data</span><br><span class="line">socket	= /tmp/mysql.sock</span><br><span class="line">pid-file = MySQL-01.pid</span><br><span class="line">character-set-server = utf8mb4</span><br><span class="line">skip_name_resolve = 1</span><br><span class="line">slow_query_log = 1</span><br><span class="line">slow_query_log_file = /alidata/mysql/dataslow.log</span><br><span class="line">log-error = /alidata/mysql/dataerror.log</span><br><span class="line">long_query_time = 0.1</span><br><span class="line">log_queries_not_using_indexes =1</span><br><span class="line">log_throttle_queries_not_using_indexes = 60</span><br><span class="line">server-id = 1 # 建议改成ip地址的主机位</span><br><span class="line">log-bin = /alidata/mysql/mybinlog</span><br><span class="line">binlog_format = row</span><br><span class="line">sync_binlog = 1</span><br><span class="line">expire_logs_days = 30</span><br><span class="line">master_info_repository = TABLE</span><br><span class="line">relay_log_info_repository = TABLE</span><br><span class="line">gtid_mode = on</span><br><span class="line">enforce_gtid_consistency = 1</span><br><span class="line">log_slave_updates</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[mysqldump]</span><br><span class="line">quick</span><br><span class="line">max_allowed_packet = 32M</span><br><span class="line">END</span><br><span class="line"></span><br><span class="line">chown -R mysql:mysql /alidata/mysql/</span><br><span class="line">chown -R mysql:mysql /alidata/mysql/data/</span><br><span class="line">chown -R mysql:mysql /alidata/mysql/log</span><br><span class="line">/alidata/mysql/bin/mysqld --initialize-insecure --datadir=/alidata/mysql/data/  --user=mysql</span><br><span class="line">ln -s /alidata/mysql/bin/mysqld /usr/local/mysql/bin/mysqld</span><br><span class="line">chmod 755 /etc/init.d/mysqld</span><br><span class="line">/etc/init.d/mysqld start</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">add PATH</span></span><br><span class="line">if ! cat /etc/profile | grep "export PATH=\$PATH:/alidata/mysql/bin" &amp;&gt; /dev/null;then</span><br><span class="line">	echo "export PATH=\$PATH:/alidata/mysql/bin" &gt;&gt; /etc/profile</span><br><span class="line">fi</span><br><span class="line">source /etc/profile</span><br><span class="line">cd $DIR</span><br><span class="line">bash</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>3. 执行安装脚本<code>bash mysql.sh</code></strong></p>
+<h4 id="安装zookeeper" class="article-heading"><a href="#安装zookeeper" class="headerlink" title="安装zookeeper"></a>安装zookeeper<a class="article-anchor" href="#安装zookeeper" aria-hidden="true"></a></h4><blockquote>
+<p>安装单实例</p>
+</blockquote>
+<p><strong>1. 编写安装脚本<code>jdk.sh</code>并执行</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">SRC_URI="http://zy-res.oss-cn-hangzhou.aliyuncs.com/java/jdk-7u71-linux-x64.tar.gz"</span><br><span class="line">PKG_NAME=`basename $SRC_URI`</span><br><span class="line">DIR=`pwd`</span><br><span class="line">DATE=`date +%Y%m%d%H%M%S`</span><br><span class="line"></span><br><span class="line">\mv /alidata/java /alidata/java.bak.$DATE &amp;&gt; /dev/null</span><br><span class="line">mkdir -p /alidata/java</span><br><span class="line"></span><br><span class="line">if [ ! -s $PKG_NAME ]; then</span><br><span class="line">  wget -c $SRC_URI</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">mv jdk1.7.0_71 jdk1.7.0_71_bak.$DATE &amp;&gt; /dev/null</span><br><span class="line"></span><br><span class="line">tar zxvf $PKG_NAME</span><br><span class="line">mv jdk1.7.0_71/*  /alidata/java</span><br><span class="line">rm -rf jdk1.7.0_71</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">add PATH</span></span><br><span class="line">if ! cat /etc/profile | grep 'export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH' &amp;&gt; /dev/null;then</span><br><span class="line">	echo "export JAVA_HOME=/alidata/java" &gt;&gt; /etc/profile</span><br><span class="line">	echo "export JRE_HOME=/alidata/java/jre" &gt;&gt; /etc/profile</span><br><span class="line">	echo 'export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH' &gt;&gt; /etc/profile</span><br><span class="line">	echo 'export PATH=$PATH:$JAVA_HOME/bin' &gt;&gt; /etc/profile</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">cd $DIR</span><br><span class="line">source /etc/profile</span><br><span class="line">bash</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>2. 编写zookeeper安装脚本<code>zookeeper.sh</code>并执行</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">SRC_URI="http://zy-res.oss-cn-hangzhou.aliyuncs.com/zookeeper/zookeeper-3.4.6.tar.gz"</span><br><span class="line">PKG_NAME=`basename $SRC_URI`</span><br><span class="line">DIR=`pwd`</span><br><span class="line">DATE=`date +%Y%m%d%H%M%S`</span><br><span class="line">CPU_NUM=$(cat /proc/cpuinfo | grep processor | wc -l)</span><br><span class="line"></span><br><span class="line">\mv /alidata/zookeeper /alidata/zookeeper.bak.$DATE</span><br><span class="line"></span><br><span class="line">mkdir -p /alidata/zookeeper</span><br><span class="line">mkdir -p /alidata/zoodata</span><br><span class="line">mkdir -p /alidata/install</span><br><span class="line"></span><br><span class="line">cd /alidata/install</span><br><span class="line"></span><br><span class="line">if [ ! -s $PKG_NAME ]; then</span><br><span class="line">  wget -c $SRC_URI</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">cd /alidata/install</span><br><span class="line">tar xvf $PKG_NAME</span><br><span class="line">mv zookeeper-3.4.6/* /alidata/zookeeper/</span><br><span class="line">rm -rf zookeeper-3.4.6/</span><br><span class="line">cp -a /alidata/zookeeper/conf/zoo_sample.cfg /alidata/zookeeper/conf/zoo.cfg</span><br><span class="line">sed -i 's#dataDir=/tmp/zookeeper#dataDir=/alidata/zoodata#g' /alidata/zookeeper/conf/zoo.cfg</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">start zookeeper</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">. /alidata/zookeeper/bin/zkServer.sh start</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">/etc/rc.local</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="keyword">if</span> ! <span class="built_in">cat</span> /etc/rc.local | grep <span class="string">"/alidata/zookeeper/bin/zkServer.sh start"</span> &amp;&gt; /dev/null ;<span class="keyword">then</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">  <span class="built_in">echo</span> <span class="string">"bash /alidata/zookeeper/bin/zkServer.sh start"</span> &gt;&gt; /etc/rc.local</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="keyword">fi</span></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="built_in">cd</span> <span class="variable">$DIR</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">bash</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="安装otter-manager" class="article-heading"><a href="#安装otter-manager" class="headerlink" title="安装otter_manager"></a>安装otter_manager<a class="article-anchor" href="#安装otter-manager" aria-hidden="true"></a></h4><blockquote>
+<p>环境准备：</p>
+<ul>
+<li>jdk</li>
+</ul>
+</blockquote>
+<p><strong>1. 下载otter-manager-schema.sql并导入数据库</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">wget https://raw.github.com/alibaba/otter/master/manager/deployer/src/main/resources/sql/otter-manager-schema.sql</span><br><span class="line">mysql -uroot -puplooking &lt; otter-manager-schema.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>2. 下载manager二进制包</strong></p>
+<blockquote>
+<p>下载地址 <a target="_blank" rel="noopener" href="https://github.com/alibaba/otter/releases/">https://github.com/alibaba/otter/releases/</a></p>
+<p><img src="pic/02.png"></p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">wget https://github.com/alibaba/otter/releases/download/otter-x.y.z/manager.deployer-x.y.z.tar.gz</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>3. 解压缩</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir /alidata/manager</span><br><span class="line">tar zxvf manager.deployer-$version.tar.gz  -C /alidata/manager</span><br></pre></td></tr></tbody></table></figure>
+
+<p>**4. 配置修改 **</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter manager domain name #修改为正确访问ip，生成URL使用</span></span></span><br><span class="line">otter.domainName = 127.0.0.1</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter manager http port</span></span></span><br><span class="line">otter.port = 8080</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># jetty web config xml</span></span></span><br><span class="line">otter.jetty = jetty.xml</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">otter manager database config ，修改为正确数据库信息</span></span><br><span class="line">otter.database.driver.class.name = com.mysql.jdbc.Driver</span><br><span class="line">otter.database.driver.url = jdbc:mysql://127.0.01:3306/ottermanager</span><br><span class="line">otter.database.driver.username = root</span><br><span class="line">otter.database.driver.password = hello</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">otter communication port</span></span><br><span class="line">otter.communication.manager.port = 1099</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">otter communication pool size</span></span><br><span class="line">otter.communication.pool.size = 10</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">default zookeeper address，修改为正确的地址，手动选择一个地域就近的zookeeper集群列表</span></span><br><span class="line">otter.zookeeper.cluster.default = 127.0.0.1:2181</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">default zookeeper session <span class="built_in">timeout</span> = 90s</span></span><br><span class="line">otter.zookeeper.sessionTimeout = 90000</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">otter arbitrate connect manager config</span></span><br><span class="line">otter.manager.address = ${otter.domainName}:${otter.communication.manager.port}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>5. 准备启动</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">sh startup.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>6. 查看日志</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vi logs/manager.log</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">2013-08-14 13:19:45.911 [] WARN  com.alibaba.otter.manager.deployer.JettyEmbedServer - ##Jetty Embed Server is startup!</span><br><span class="line">2013-08-14 13:19:45.911 [] WARN  com.alibaba.otter.manager.deployer.OtterManagerLauncher - ## the manager server is running now ......</span><br></pre></td></tr></tbody></table></figure>
+
+<p>出现类似日志，代表启动成功</p>
+<p><strong>7. 验证</strong></p>
+<p>访问： <a target="_blank" rel="noopener" href="http://127.0.0.1:8080/%EF%BC%8C%E5%87%BA%E7%8E%B0otter%E7%9A%84%E9%A1%B5%E9%9D%A2%EF%BC%8C%E5%8D%B3%E4%BB%A3%E8%A1%A8%E5%90%AF%E5%8A%A8%E6%88%90%E5%8A%9F">http://127.0.0.1:8080/，出现otter的页面，即代表启动成功</a></p>
+<p><img src="pic/03.png"></p>
+<p>访问：<a target="_blank" rel="noopener" href="http://127.0.0.1:8080/login.htm%EF%BC%8C%E5%88%9D%E5%A7%8B%E5%AF%86%E7%A0%81%E4%B8%BA%EF%BC%9Aadmin/admin%EF%BC%8C%E5%8D%B3%E5%8F%AF%E5%AE%8C%E6%88%90%E7%99%BB%E5%BD%95">http://127.0.0.1:8080/login.htm，初始密码为：admin/admin，即可完成登录</a>. 目前：匿名用户只有只读查看的权限，登录为管理员才可以有操作权限</p>
+<p><strong>8. 关闭</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">sh stop.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="安装otter-node" class="article-heading"><a href="#安装otter-node" class="headerlink" title="安装otter_node"></a>安装otter_node<a class="article-anchor" href="#安装otter-node" aria-hidden="true"></a></h4><p><a target="_blank" rel="noopener" href="https://github.com/alibaba/otter/wiki/QuickStart">https://github.com/alibaba/otter/wiki/QuickStart</a></p>
+<blockquote>
+<p>环境准备：</p>
+<ul>
+<li>jdk</li>
+<li>gcc-c++</li>
+</ul>
+</blockquote>
+<p><strong>1. manager管理界面添加node节点</strong></p>
+<p><img src="pic/04.png" alt="img"></p>
+<p>几点说明：</p>
+<ul>
+<li>机器名称：可以随意定义，方便自己记忆即可</li>
+<li>机器ip：对应node节点将要部署的机器ip，如果有多ip时，可选择其中一个ip进行暴露. (此ip是整个集群通讯的入口，实际情况千万别使用127.0.0.1，否则多个机器的node节点会无法识别)</li>
+<li>机器端口：对应node节点将要部署时启动的数据通讯端口，建议值：2088</li>
+<li>下载端口：对应node节点将要部署时启动的数据下载端口，建议值：9090</li>
+<li>外部ip ：对应node节点将要部署的机器ip，存在的一个外部ip，允许通讯的时候走公网处理。</li>
+<li>zookeeper集群：为提升通讯效率，不同机房的机器可选择就近的zookeeper集群.</li>
+</ul>
+<p>node这种设计，是为解决单机部署多实例而设计的，允许单机多node指定不同的端口</p>
+<p><strong>机器添加完成后，跳转到机器列表页面，获取对应的机器序号nid</strong></p>
+<p><img src="pic/06.png" alt="img"></p>
+<p><strong>通过这两部操作，获取到了node节点对应的唯一标示，称之为node id，简称：nid. 记录该nid，后续启动nid时会使用</strong></p>
+<p><strong>2. 安装aria2c</strong></p>
+<p>aria2 官方首页： <a target="_blank" rel="noopener" href="http://aria2.sourceforge.net/">http://aria2.sourceforge.net/</a></p>
+<p>下载页面： <a target="_blank" rel="noopener" href="http://sourceforge.net/projects/aria2/files/stable/">http://sourceforge.net/projects/aria2/files/stable/</a></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">wget https://sourceforge.net/projects/aria2/files/stable/aria2-1.19.0/aria2-1.19.0.tar.gz/download -O aria2-1.19.0.tar.gz</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">tar -xf aria2-1.19.0.tar.gz -C /alidata/</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> /alidata/aria2-1.19.0</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">./configure</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">make</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">make install</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>**3. 安装canal **</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/alibaba/canal/wiki/QuickStart">https://github.com/alibaba/canal/wiki/QuickStart</a></p>
+</blockquote>
+<ul>
+<li>a. canal的原理是基于mysql binlog技术，所以这里一定需要开启mysql的binlog写入功能，建议配置binlog模式为row.</li>
+</ul>
+<p><strong>针对阿里云RDS账号默认已经有binlog dump权限,不需要任何权限或者binlog设置,可以直接跳过这一步</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">log-bin=mysql-bin #添加这一行就ok</span><br><span class="line">binlog-format=ROW #选择row模式</span><br><span class="line">server_id=1 #配置mysql replaction需要定义，不能和canal的slaveId重复</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>b. canal的原理是模拟自己为mysql slave，所以这里一定需要做为mysql slave的相关权限.</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">CREATE USER canal IDENTIFIED BY 'canal';</span><br><span class="line">GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';</span><br><span class="line">-- GRANT ALL PRIVILEGES ON *.* TO 'canal'@'%' ;</span><br><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><p>c.下载canal</p>
+<p>访问：<a target="_blank" rel="noopener" href="https://github.com/alibaba/canal/releases">https://github.com/alibaba/canal/releases</a>&nbsp;，会列出所有历史的发布版本包 下载方式，比如以1.0.17版本为例子：</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">wget https://github.com/alibaba/canal/releases/download/canal-1.0.17/canal.deployer-1.0.17.tar.gz</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>d. 解压缩</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">mkdir /alidata/canal</span><br><span class="line">tar zxvf canal.deployer-$version.tar.gz  -C /aliata/canal</span><br></pre></td></tr></tbody></table></figure>
+
+<p>解压完成后，进入/tmp/canal目录，可以看到如下结构：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">drwxr-xr-x 2 jianghang jianghang  136 2013-02-05 21:51 bin</span><br><span class="line">drwxr-xr-x 4 jianghang jianghang  160 2013-02-05 21:51 conf</span><br><span class="line">drwxr-xr-x 2 jianghang jianghang 1.3K 2013-02-05 21:51 lib</span><br><span class="line">drwxr-xr-x 2 jianghang jianghang   48 2013-02-05 21:29 logs</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>e. 配置修改</li>
+</ul>
+<p>应用参数：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">vi conf/example/instance.properties</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">#################################################</span><br><span class="line">## mysql serverId</span><br><span class="line">canal.instance.mysql.slaveId = 1234</span><br><span class="line"></span><br><span class="line">position info，需要改成自己的数据库信息</span><br><span class="line">canal.instance.master.address = 127.0.0.1:3306</span><br><span class="line">canal.instance.master.journal.name =</span><br><span class="line">canal.instance.master.position =</span><br><span class="line">canal.instance.master.timestamp =</span><br><span class="line">#canal.instance.standby.address =</span><br><span class="line">#canal.instance.standby.journal.name =</span><br><span class="line">#canal.instance.standby.position =</span><br><span class="line">#canal.instance.standby.timestamp =</span><br><span class="line"></span><br><span class="line">username/password，需要改成自己的数据库信息</span><br><span class="line">canal.instance.dbUsername = canal</span><br><span class="line"></span><br><span class="line">canal.instance.dbPassword = canal</span><br><span class="line">canal.instance.defaultDatabaseName =</span><br><span class="line">canal.instance.connectionCharset = UTF-8</span><br><span class="line"></span><br><span class="line">table regex</span><br><span class="line">canal.instance.filter.regex = .\..</span><br><span class="line">#################################################</span><br></pre></td></tr></tbody></table></figure>
+
+<p>说明：</p>
+<p>​ canal.instance.connectionCharset 代表数据库的编码方式对应到java中的编码类型，比如UTF-8，GBK , ISO-8859-1</p>
+<ul>
+<li>f. 准备启动</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">sh bin/startup.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>g. 查看日志</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">vi logs/canal/canal.log</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">2013-02-05 22:45:27.967 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## start the canal server.</span><br><span class="line">2013-02-05 22:45:28.113 [main] INFO  com.alibaba.otter.canal.deployer.CanalController - ## start the canal server[10.1.29.120:11111]</span><br><span class="line">2013-02-05 22:45:28.210 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## the canal server is running now ......</span><br></pre></td></tr></tbody></table></figure>
+
+<p>具体instance的日志：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">vi logs/example/example.log</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">2013-02-05 22:50:45.636 [main] INFO  c.a.o.c.i.spring.support.PropertyPlaceholderConfigurer - Loading properties file from class path resource [canal.properties]</span><br><span class="line">2013-02-05 22:50:45.641 [main] INFO  c.a.o.c.i.spring.support.PropertyPlaceholderConfigurer - Loading properties file from class path resource [example/instance.properties]</span><br><span class="line">2013-02-05 22:50:45.803 [main] INFO  c.a.otter.canal.instance.spring.CanalInstanceWithSpring - start CannalInstance for 1-example</span><br><span class="line">2013-02-05 22:50:45.810 [main] INFO  c.a.otter.canal.instance.spring.CanalInstanceWithSpring - start successful....</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>h. 关闭</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">sh bin/stop.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>4. 下载otter node二进制包</strong></p>
+<p>直接下载 ，可访问：<a target="_blank" rel="noopener" href="https://github.com/alibaba/otter/releases">https://github.com/alibaba/otter/releases</a> ，会列出所有历史的发布版本包下载方式，比如以x.y.z版本为例子：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">wget https://github.com/alibaba/otter/releases/download/otter-x.y.z/node.deployer-x.y.z.tar.gz</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>5. 解压缩</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">mkdir /alidata/node</span><br><span class="line">tar zxvf node.deployer-$version.tar.gz  -C /alidata/node</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>6. 修改配置</strong></p>
+<p>a. nid配置 (将环境准备中添加机器后获取到的序号，保存到conf目录下的nid文件，比如我添加的机器对应序号为1</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">echo 1 &gt; conf/nid</span><br></pre></td></tr></tbody></table></figure>
+
+<p>​ b. otter.properties配置修改</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"># otter node root dir</span><br><span class="line">otter.nodeHome = ${user.dir}/../node</span><br><span class="line">## otter node dir</span><br><span class="line">otter.htdocs.dir = ${otter.nodeHome}/htdocs</span><br><span class="line">otter.download.dir = ${otter.nodeHome}/download</span><br><span class="line">otter.extend.dir= ${otter.nodeHome}/extend</span><br><span class="line"></span><br><span class="line">default zookeeper sesstion timeout = 90s</span><br><span class="line">otter.zookeeper.sessionTimeout = 90000</span><br><span class="line"></span><br><span class="line">otter communication pool size</span><br><span class="line">otter.communication.pool.size = 10</span><br><span class="line"></span><br><span class="line">otter arbitrate &amp; node connect manager config ， 修改为正确的manager服务地址</span><br><span class="line">otter.manager.address = 127.0.0.1:1099</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>7. 准备启动</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">sh startup.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>8. 查看日志</strong></p>
+<p>如果manager页面的ip配置不正确，会出现类似错误：</p>
+<p>打开日志： vi logs/node/node.log</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Exception in thread "main" java.lang.IllegalArgumentException: node[1] ip[127.0.0.1] port[2088] , but your host ip[10.12.48.215] is not matched!</span><br><span class="line">        at com.alibaba.otter.node.etl.OtterController.checkNidVaild(OtterController.java:245)</span><br><span class="line">        at com.alibaba.otter.node.etl.OtterController.initNid(OtterController.java:230)</span><br><span class="line">        at com.alibaba.otter.node.etl.OtterController.start(OtterController.java:73)</span><br><span class="line">        at com.alibaba.otter.node.deployer.OtterLauncher.main(OtterLauncher.java:25)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此时修改ip为对应的host ip后，再次启动即可。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">vi logs/node/node.log</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">2013-08-14 15:42:16.886 [main] INFO  com.alibaba.otter.node.deployer.OtterLauncher - INFO ## the otter server is running now ......</span><br></pre></td></tr></tbody></table></figure>
+
+<p>看到如下日志，代表node启动完成.</p>
+<p><strong>9. 验证</strong></p>
+<p>访问： <a target="_blank" rel="noopener" href="http://127.0.0.1:8080/node_list.htm%EF%BC%8C%E6%9F%A5%E7%9C%8B%E5%AF%B9%E5%BA%94%E7%9A%84%E8%8A%82%E7%82%B9%E7%8A%B6%E6%80%81%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%8F%98%E4%B8%BA%E4%BA%86%E5%B7%B2%E5%90%AF%E5%8A%A8%EF%BC%8C%E4%BB%A3%E8%A1%A8%E5%B7%B2%E7%BB%8F%E6%AD%A3%E5%B8%B8%E5%90%AF%E5%8A%A8%E3%80%82(*%E5%A6%82%E6%9E%9C%E6%98%AF%E6%9C%AA%E5%90%AF%E5%8A%A8%EF%BC%8C%E4%BC%9A%E6%98%AF%E4%B8%80%E4%B8%AA%E7%BA%A2%E8%89%B2%E9%AB%98%E4%BA%AE*)">http://127.0.0.1:8080/node_list.htm，查看对应的节点状态，如果变为了已启动，代表已经正常启动。(*如果是未启动，会是一个红色高亮*)</a></p>
+<p><img src="pic/05.png" alt="img"></p>
+<p><strong>10. 关闭</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">sh stop.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="部署明细" class="article-heading"><a href="#部署明细" class="headerlink" title="部署明细"></a>部署明细<a class="article-anchor" href="#部署明细" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th>server</th>
+<th>mysql</th>
+<th>jdk</th>
+<th>zookeeper</th>
+<th>otter-manager</th>
+<th>otter-node</th>
+<th>canal</th>
+<th>aria2c</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sh_01</td>
+<td><strong>√</strong></td>
+<td><strong>√</strong></td>
+<td><strong>√</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>sh_02</td>
+<td></td>
+<td><strong>√</strong></td>
+<td></td>
+<td><strong>√</strong></td>
+<td><strong>√</strong></td>
+<td><strong>√</strong></td>
+<td><strong>√</strong></td>
+</tr>
+<tr>
+<td>am_01</td>
+<td><strong>√</strong></td>
+<td><strong>√</strong></td>
+<td><strong>√</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>am_02</td>
+<td></td>
+<td><strong>√</strong></td>
+<td></td>
+<td></td>
+<td><strong>√</strong></td>
+<td><strong>√</strong></td>
+<td><strong>√</strong></td>
+</tr>
+</tbody></table>
+<h4 id="SH-01" class="article-heading"><a href="#SH-01" class="headerlink" title="SH_01"></a>SH_01<a class="article-anchor" href="#SH-01" aria-hidden="true"></a></h4><p>上海机房的MySQL生产库，并部署zookeeper实例；</p>
+<p>sh_02上部署的otter-manager需要使用数据库，因此将sh_01的数据库供sh_02使用，提前将库表新建好。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@sh_01 ~]# bash mysql.sh</span><br><span class="line">[root@sh_01 ~]# bash jdk.sh</span><br><span class="line">[root@sh_01 ~]# bash zookeeper.sh</span><br><span class="line">[root@sh_01 ~]# mysql_secure_installation</span><br><span class="line">[root@sh_01 ~]# mysql -uroot -puplooking</span><br><span class="line">root@MySQL-01 09:58:  [(none)]&gt; select user,host from mysql.user;</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| user      | host      |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">| mysql.sys | localhost |</span><br><span class="line">| root      | localhost |</span><br><span class="line">+-----------+-----------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 09:58:  [(none)]&gt; grant all on *.* to otter@'10.200.6.31' identified by 'uplooking';</span><br><span class="line">Query OK, 0 rows affected, 1 warning (0.01 sec)</span><br><span class="line"></span><br><span class="line">root@MySQL-01 09:59:  [(none)]&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">[root@sh_01 ~]# wget https://raw.github.com/alibaba/otter/master/manager/deployer/src/main/resources/sql/otter-manager-schema.sql</span><br><span class="line">[root@sh_01 ~]# mysql -uroot -puplooking &lt; otter-manager-schema.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<p>官方表示otter-manager连接的数据库要求mysql5.6，只需要修改脚本中与mysql5.7不兼容给的地方，例如<code>timestamp not null default 00-00-00 00:00:00 </code> 改为 <code>timestamp not null DEFAULT CURRENT_TIMESTAMP </code></p>
+<h4 id="SH-02" class="article-heading"><a href="#SH-02" class="headerlink" title="SH_02"></a>SH_02<a class="article-anchor" href="#SH-02" aria-hidden="true"></a></h4><p>作为上海机房的otter-manager和otter-node1</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@sh_02 ~]# wget https://github.com/alibaba/otter/releases/download/otter-4.2.16-preview-1/manager.deployer-4.2.16-SNAPSHOT.tar.gz</span><br><span class="line">[root@sh_02 ~]# mkdir /alidata/manager</span><br><span class="line">[root@sh_02 ~]# tar -xf manager.deployer-4.2.16-SNAPSHOT.tar.gz -C /alidata/manager/</span><br><span class="line">[root@sh_02 ~]# cd /alidata/manager/</span><br><span class="line">[root@sh_02 manager]# ll</span><br><span class="line">total 8</span><br><span class="line">drwxr-xr-x. 2 root root   58 Jun 14 11:44 bin</span><br><span class="line">drwxr-xr-x. 2 root root   66 Jun 14 11:44 conf</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jun 14 11:44 lib</span><br><span class="line">drwxr-xr-x. 8 root root   89 Jun 14 11:44 webapp</span><br><span class="line"></span><br><span class="line">[root@sh_02 manager]# vim conf/otter.properties</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter manager domain name</span></span></span><br><span class="line">otter.domainName = 10.200.6.31</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter manager http port</span></span></span><br><span class="line">otter.port = 8080</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># jetty web config xml</span></span></span><br><span class="line">otter.jetty = jetty.xml</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter manager database config</span></span></span><br><span class="line">otter.database.driver.class.name = com.mysql.jdbc.Driver</span><br><span class="line">otter.database.driver.url = jdbc:mysql://10.200.6.30:3306/otter</span><br><span class="line">otter.database.driver.username = otter</span><br><span class="line">otter.database.driver.password = uplooking</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter communication port</span></span></span><br><span class="line">otter.communication.manager.port = 1099</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter communication payload size (default = 8388608)</span></span></span><br><span class="line">otter.communication.payload = 8388608</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter communication pool size</span></span></span><br><span class="line">otter.communication.pool.size = 10</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># default zookeeper address</span></span></span><br><span class="line">otter.zookeeper.cluster.default = 10.200.6.30:2181</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># default zookeeper sesstion timeout = 60s</span></span></span><br><span class="line">otter.zookeeper.sessionTimeout = 60000</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter arbitrate connect manager config</span></span></span><br><span class="line">otter.manager.address = ${otter.domainName}:${otter.communication.manager.port}</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># should run in product mode , true/false</span></span></span><br><span class="line">otter.manager.productionMode = true</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># self-monitor enable or disable</span></span></span><br><span class="line">otter.manager.monitor.self.enable = true</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># self-montir interval , default 120s</span></span></span><br><span class="line">otter.manager.monitor.self.interval = 120</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># auto-recovery paused enable or disable</span></span></span><br><span class="line">otter.manager.monitor.recovery.paused = true</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">manager email user config</span></span><br><span class="line">otter.manager.monitor.email.host = smtp.gmail.com</span><br><span class="line">otter.manager.monitor.email.username =</span><br><span class="line">otter.manager.monitor.email.password =</span><br><span class="line">otter.manager.monitor.email.stmp.port = 465</span><br><span class="line">[root@sh_02 manager]# systemctl stop firewalld;setenforce 0</span><br><span class="line">[root@sh_02 manager]# bin/startup.sh</span><br><span class="line">cd to /alidata/manager/bin for workaround relative path</span><br><span class="line">LOG CONFIGURATION : /alidata/manager/bin/../conf/logback.xml</span><br><span class="line">otter conf : /alidata/manager/bin/../conf/otter.properties</span><br><span class="line">CLASSPATH :/alidata/manager/bin/..:/alidata/manager/bin/../conf:/alidata/manager/bin/../lib/zookeeper-3.4.5.jar:/alidata/manager/bin/../lib/zkclient-0.10.jar:/alidata/manager/bin/../lib/velocity-1.7.jar:/alidata/manager/bin/../lib/spring-webmvc-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-web-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-tx-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-test-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-orm-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-jdbc-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-expression-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-core-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-context-support-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-context-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-beans-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-asm-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/spring-aop-3.1.2.RELEASE.jar:/alidata/manager/bin/../lib/slf4j-api-1.7.12.jar:/alidata/manager/bin/../lib/shared.push-4.2.16-SNAPSHOT.jar:/alidata/manager/bin/../lib/shared.communication-4.2.16-SNAPSHOT.jar:/alidata/manager/bin/../lib/shared.common-4.2.16-SNAPSHOT.jar:/alidata/manager/bin/../lib/shared.arbitrate-4.2.16-SNAPSHOT.jar:/alidata/manager/bin/../lib/protobuf-java-2.6.1.jar:/alidata/manager/bin/../lib/oro-2.0.8.jar:/alidata/manager/bin/../lib/ojdbc6.jar:/alidata/manager/bin/../lib/ojdbc6-11.1.0.7.0.jar:/alidata/manager/bin/../lib/netty-all-4.1.6.Final.jar:/alidata/manager/bin/../lib/netty-3.2.2.Final.jar:/alidata/manager/bin/../lib/mysql-connector-java-5.1.40.jar:/alidata/manager/bin/../lib/manager.web-4.2.16-SNAPSHOT.jar:/alidata/manager/bin/../lib/manager.deployer-4.2.16-SNAPSHOT.jar:/alidata/manager/bin/../lib/manager.biz-4.2.16-SNAPSHOT.jar:/alidata/manager/bin/../lib/mail-1.4.7.jar:/alidata/manager/bin/../lib/logback-core-1.1.3.jar:/alidata/manager/bin/../lib/logback-classic-1.1.3.jar:/alidata/manager/bin/../lib/jopt-simple-4.6.jar:/alidata/manager/bin/../lib/jmh-core-1.21.jar:/alidata/manager/bin/../lib/jetty-xml-8.1.7.v20120910.jar:/alidata/manager/bin/../lib/jetty-webapp-8.1.7.v20120910.jar:/alidata/manager/bin/../lib/jetty-util-8.1.7.v20120910.jar:/alidata/manager/bin/../lib/jetty-servlet-8.1.7.v20120910.jar:/alidata/manager/bin/../lib/jetty-server-8.1.7.v20120910.jar:/alidata/manager/bin/../lib/jetty-security-8.1.7.v20120910.jar:/alidata/manager/bin/../lib/jetty-io-8.1.7.v20120910.jar:/alidata/manager/bin/../lib/jetty-http-8.1.7.v20120910.jar:/alidata/manager/bin/../lib/jetty-continuation-8.1.7.v20120910.jar:/alidata/manager/bin/../lib/jcl-over-slf4j-1.7.12.jar:/alidata/manager/bin/../lib/javax.servlet-3.0.0.v201112011016.jar:/alidata/manager/bin/../lib/javassist-3.15.0-GA.jar:/alidata/manager/bin/../lib/ibatis-sqlmap-2.3.4.726.jar:/alidata/manager/bin/../lib/httpcore-4.4.3.jar:/alidata/manager/bin/../lib/httpclient-4.5.1.jar:/alidata/manager/bin/../lib/h2-1.4.196.jar:/alidata/manager/bin/../lib/guava-18.0.jar:/alidata/manager/bin/../lib/fastsql-2.0.0_preview_366.jar:/alidata/manager/bin/../lib/fastjson-1.2.28.jar:/alidata/manager/bin/../lib/ecs-1.4.2.jar:/alidata/manager/bin/../lib/dwr-2.0.10.jar:/alidata/manager/bin/../lib/dubbo-2.5.3.jar:/alidata/manager/bin/../lib/druid-1.1.9.jar:/alidata/manager/bin/../lib/dom4j-1.6.1.jar:/alidata/manager/bin/../lib/ddlutils-1.0.jar:/alidata/manager/bin/../lib/commons-pool-1.5.4.jar:/alidata/manager/bin/../lib/commons-math3-3.2.jar:/alidata/manager/bin/../lib/commons-logging-1.1.1.jar:/alidata/manager/bin/../lib/commons-lang-2.6.jar:/alidata/manager/bin/../lib/commons-jexl-2.1.1.jar:/alidata/manager/bin/../lib/commons-io-2.4.jar:/alidata/manager/bin/../lib/commons-fileupload-1.2.2.jar:/alidata/manager/bin/../lib/commons-dbcp-1.4.jar:/alidata/manager/bin/../lib/commons-compress-1.9.jar:/alidata/manager/bin/../lib/commons-collections-3.2.2.jar:/alidata/manager/bin/../lib/commons-codec-1.9.jar:/alidata/manager/bin/../lib/commons-beanutils-1.8.3.jar:/alidata/manager/bin/../lib/citrus-webx-all-3.2.0.jar:/alidata/manager/bin/../lib/cglib-nodep-2.2.jar:/alidata/manager/bin/../lib/canal.store-1.0.26-SNAPSHOT.jar:/alidata/manager/bin/../lib/canal.sink-1.0.26-SNAPSHOT.jar:/alidata/manager/bin/../lib/canal.protocol-1.0.26-SNAPSHOT.jar:/alidata/manager/bin/../lib/canal.parse.driver-1.0.26-SNAPSHOT.jar:/alidata/manager/bin/../lib/canal.parse.dbsync-1.0.26-SNAPSHOT.jar:/alidata/manager/bin/../lib/canal.parse-1.0.26-SNAPSHOT.jar:/alidata/manager/bin/../lib/canal.meta-1.0.26-SNAPSHOT.jar:/alidata/manager/bin/../lib/canal.instance.manager-1.0.26-SNAPSHOT.jar:/alidata/manager/bin/../lib/canal.instance.core-1.0.26-SNAPSHOT.jar:/alidata/manager/bin/../lib/canal.filter-1.0.26-SNAPSHOT.jar:/alidata/manager/bin/../lib/canal.common-1.0.26-SNAPSHOT.jar:/alidata/manager/bin/../lib/aviator-2.2.1.jar:/alidata/manager/bin/../lib/aopalliance-1.0.jar:/alidata/manager/bin/../lib/annotations-9.0.4.jar:/alidata/manager/bin/../lib/activation-1.1.jar:.:/alidata/java/lib/dt.jar:/alidata/java/lib/tools.jar:/alidata/java/lib:/alidata/java/jre/lib:</span><br><span class="line">cd to /alidata/manager for continue</span><br><span class="line"></span><br><span class="line">[root@sh_02 manager]# cat logs/manager.log</span><br><span class="line">2018-06-14 11:47:17.982 [] INFO  com.alibaba.otter.manager.deployer.OtterManagerLauncher - ## start the manager server.</span><br><span class="line">Thu Jun 14 11:47:24 CST 2018 WARN: Establishing SSL connection without server's identity verification is not recommended. According to MySQL 5.5.45+, 5.6.26+ and 5.7.6+ requirements SSL connection must be established by default if explicit option isn't set. For compliance with existing applications not using SSL the verifyServerCertificate property is set to 'false'. You need either to explicitly disable SSL by setting useSSL=false, or set useSSL=true and provide truststore for server certificate verification.</span><br><span class="line">2018-06-14 11:47:26.046 [] INFO  com.alibaba.otter.manager.deployer.JettyEmbedServer - ##Jetty Embed Server is startup!</span><br><span class="line">2018-06-14 11:47:26.046 [] INFO  com.alibaba.otter.manager.deployer.OtterManagerLauncher - ## the manager server is running now ......</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>通过8080端口访问otter-manager的web界面；</p>
+<p><img src="pic/07.png"></p>
+<p>默认admin用户密码为admin；</p>
+<p><img src="pic/08.png"></p>
+<p>添加zookeeper管理节点；</p>
+<p><img src="pic/09.png"></p>
+<p>点击添加</p>
+<p><img src="pic/10.png"></p>
+<p>到sh_01中查看zookeeper的监听端口为2181，注意格式<code>ip:port;</code>分号少了就会报错</p>
+<p><img src="pic/11.png"></p>
+<p>可以查看到zookeeper管理节点已经添加好了</p>
+<p><img src="pic/12.png"></p>
+<p>开始添加node1</p>
+<p><img src="pic/13.png"></p>
+<p>点击添加按钮</p>
+<p><img src="pic/14.png"></p>
+<p>输入node1的相关参数</p>
+<p><img src="pic/15.png"></p>
+<p>查看到当前node1节点还没有启动，因为我们还没有安装otter-node节点</p>
+<p><img src="pic/16.png"></p>
+<p>同样的再添加一个node2，node2会部署在美国的AM_02上面。</p>
+<p><img src="pic/17.png"></p>
+<hr>
+<p>开始安装otter-node1</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装aria2</span></span><br><span class="line">[root@sh_02 ~]# yum install -y gcc-c++</span><br><span class="line">[root@sh_02 ~]# wget https://sourceforge.net/projects/aria2/files/stable/aria2-1.19.0/aria2-1.19.0.tar.gz/download -O aria2-1.19.0.tar.gz</span><br><span class="line">[root@sh_02 ~]# tar -xf aria2-1.19.0.tar.gz -C /alidata/</span><br><span class="line">[root@sh_02 ~]# cd /alidata/aria2-1.19.0/</span><br><span class="line">[root@sh_02 aria2-1.19.0]# make &amp;&amp; make install</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装canal</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sh_01上对数据库添加授权</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO <span class="string">'canal'</span>@<span class="string">'%'</span> identified by <span class="string">'(Uploo00king)'</span>;</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">flush privileges;</span></span><br><span class="line"></span><br><span class="line">[root@sh_02 ~]#  wget https://github.com/alibaba/canal/releases/download/canal-1.0.26-preview-3/canal.deployer-1.0.26-SNAPSHOT.tar.gz</span><br><span class="line">[root@sh_02 ~]# mkdir /alidata/canal</span><br><span class="line">[root@sh_02 ~]# tar -xf canal.deployer-1.0.26-SNAPSHOT.tar.gz -C /alidata/canal/</span><br><span class="line">[root@sh_02 ~]# cd /alidata/canal/</span><br><span class="line">[root@sh_02 canal]# ll</span><br><span class="line">total 4</span><br><span class="line">drwxr-xr-x. 2 root root   58 Jun 14 14:50 bin</span><br><span class="line">drwxr-xr-x. 4 root root   78 Jun 14 14:50 conf</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jun 14 14:50 lib</span><br><span class="line">drwxrwxrwx. 2 root root    6 Jun 12 13:52 logs</span><br><span class="line">[root@sh_02 canal]# vim conf/example/instance.properties</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">################################################</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># mysql serverId</span></span></span><br><span class="line">canal.instance.mysql.slaveId=0</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">position info</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">源数据库的ip:port</span></span><br><span class="line">canal.instance.master.address=10.200.6.30:3306</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">enable</span> gtid use <span class="literal">true</span>/false</span></span><br><span class="line">canal.instance.gtidon=false</span><br><span class="line">canal.instance.master.journal.name=</span><br><span class="line">canal.instance.master.position=</span><br><span class="line">canal.instance.master.timestamp=</span><br><span class="line">canal.instance.master.gtid=</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">table meta tsdb info</span></span><br><span class="line">canal.instance.tsdb.enable=true</span><br><span class="line">canal.instance.tsdb.dir=${canal.file.data.dir:../conf}/${canal.instance.destination:}</span><br><span class="line">canal.instance.tsdb.url=jdbc:h2:${canal.instance.tsdb.dir}/h2;CACHE_SIZE=1000;MODE=MYSQL;</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.tsdb.url=jdbc:mysql://10.200.6.30:3306/canal_tsdb</span></span><br><span class="line">canal.instance.tsdb.dbUsername=</span><br><span class="line">canal.instance.tsdb.dbPassword=</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.standby.address =</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.standby.journal.name =</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.standby.position =</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.standby.timestamp =</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.standby.gtid=</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">username/password</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">数据库的用户名和密码</span></span><br><span class="line">canal.instance.dbUsername=canal</span><br><span class="line">canal.instance.dbPassword=(Uploo00king)</span><br><span class="line">canal.instance.defaultDatabaseName=mysql</span><br><span class="line">canal.instance.connectionCharset=UTF-8</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">table regex</span></span><br><span class="line">canal.instance.filter.regex=.*\\..*</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">table black regex</span></span><br><span class="line">canal.instance.filter.black.regex=</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">################################################</span></span></span><br><span class="line"></span><br><span class="line">[root@sh_02 canal]# bin/startup.sh</span><br><span class="line">cd to /alidata/canal/bin for workaround relative path</span><br><span class="line">LOG CONFIGURATION : /alidata/canal/bin/../conf/logback.xml</span><br><span class="line">canal conf : /alidata/canal/bin/../conf/canal.properties</span><br><span class="line">CLASSPATH :/alidata/canal/bin/../conf:/alidata/canal/bin/../lib/zookeeper-3.4.5.jar:/alidata/canal/bin/../lib/zkclient-0.10.jar:/alidata/canal/bin/../lib/spring-tx-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-orm-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-jdbc-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-expression-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-core-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-context-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-beans-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-aop-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/slf4j-api-1.7.12.jar:/alidata/canal/bin/../lib/protobuf-java-2.6.1.jar:/alidata/canal/bin/../lib/oro-2.0.8.jar:/alidata/canal/bin/../lib/netty-all-4.1.6.Final.jar:/alidata/canal/bin/../lib/netty-3.2.2.Final.jar:/alidata/canal/bin/../lib/mysql-connector-java-5.1.40.jar:/alidata/canal/bin/../lib/logback-core-1.1.3.jar:/alidata/canal/bin/../lib/logback-classic-1.1.3.jar:/alidata/canal/bin/../lib/jopt-simple-4.6.jar:/alidata/canal/bin/../lib/jmh-core-1.21.jar:/alidata/canal/bin/../lib/jcl-over-slf4j-1.7.12.jar:/alidata/canal/bin/../lib/ibatis-sqlmap-2.3.4.726.jar:/alidata/canal/bin/../lib/httpcore-4.4.3.jar:/alidata/canal/bin/../lib/httpclient-4.5.1.jar:/alidata/canal/bin/../lib/h2-1.4.196.jar:/alidata/canal/bin/../lib/guava-18.0.jar:/alidata/canal/bin/../lib/fastsql-2.0.0_preview_371.jar:/alidata/canal/bin/../lib/fastjson-1.2.28.jar:/alidata/canal/bin/../lib/druid-1.1.9.jar:/alidata/canal/bin/../lib/commons-math3-3.2.jar:/alidata/canal/bin/../lib/commons-logging-1.1.3.jar:/alidata/canal/bin/../lib/commons-lang-2.6.jar:/alidata/canal/bin/../lib/commons-io-2.4.jar:/alidata/canal/bin/../lib/commons-compress-1.9.jar:/alidata/canal/bin/../lib/commons-codec-1.9.jar:/alidata/canal/bin/../lib/commons-beanutils-1.8.2.jar:/alidata/canal/bin/../lib/canal.store-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.sink-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.server-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.protocol-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.parse.driver-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.parse.dbsync-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.parse-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.meta-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.instance.spring-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.instance.manager-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.instance.core-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.filter-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.deployer-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.common-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/aviator-2.2.1.jar:/alidata/canal/bin/../lib/aopalliance-1.0.jar:.:/alidata/java/lib/dt.jar:/alidata/java/lib/tools.jar:/alidata/java/lib:/alidata/java/jre/lib:</span><br><span class="line">cd to /alidata/canal for continue</span><br><span class="line"></span><br><span class="line">[root@sh_02 canal]# cat logs/canal/canal.log</span><br><span class="line">2018-06-27 10:11:16.749 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## set default uncaught exception handler</span><br><span class="line">2018-06-27 10:11:16.845 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## load canal configurations</span><br><span class="line">2018-06-27 10:11:16.846 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## start the canal server.</span><br><span class="line">2018-06-27 10:11:16.906 [main] INFO  com.alibaba.otter.canal.deployer.CanalController - ## start the canal server[10.200.6.31:11111]</span><br><span class="line">2018-06-27 10:11:58.956 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## the canal server is running now ......</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">日志中没有报错说明启动成功</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装otter-node</span></span><br><span class="line">[root@sh_02 ~]# wget https://github.com/alibaba/otter/releases/download/otter-4.2.16-preview-1/node.deployer-4.2.16-SNAPSHOT.tar.gz</span><br><span class="line">[root@sh_02 ~]# mkdir /alidata/node</span><br><span class="line">[root@sh_02 ~]# tar -xf node.deployer-4.2.16-SNAPSHOT.tar.gz -C /alidata/node/</span><br><span class="line">[root@sh_02 ~]# cd /alidata/node/</span><br><span class="line">[root@sh_02 node]# echo 1 &gt; conf/nid</span><br><span class="line">[root@sh_02 node]# vim conf/otter.properties</span><br><span class="line">[root@sh_02 node]# cat conf/otter.properties</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">otter node root <span class="built_in">dir</span></span></span><br><span class="line">otter.nodeHome = ${user.dir}/../</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter node dir</span></span></span><br><span class="line">otter.htdocs.dir = ${otter.nodeHome}/htdocs</span><br><span class="line">otter.download.dir = ${otter.nodeHome}/download</span><br><span class="line">otter.extend.dir= ${otter.nodeHome}/extend</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># default zookeeper sesstion timeout = 60s</span></span></span><br><span class="line">otter.zookeeper.sessionTimeout = 60000</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter communication payload size (default = 8388608)</span></span></span><br><span class="line">otter.communication.payload = 8388608</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter communication pool size</span></span></span><br><span class="line">otter.communication.pool.size = 10</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter arbitrate &amp; node connect manager config</span></span></span><br><span class="line">otter.manager.address = 10.200.6.31:1099</span><br><span class="line"></span><br><span class="line">[root@sh_02 node]# bash bin/startup.sh</span><br><span class="line">LOG CONFIGURATION : /alidata/node/bin/../conf/logback.xml</span><br><span class="line">Otter nodeId file : /alidata/node/bin/../conf/nid</span><br><span class="line">CLASSPATH :/alidata/node/bin/../conf:/alidata/node/bin/../lib/zookeeper-3.4.5.jar:/alidata/node/bin/../lib/zkclient-0.10.jar:/alidata/node/bin/../lib/xz-1.0.jar:/alidata/node/bin/../lib/truezip-6.8.4.jar:/alidata/node/bin/../lib/spring-tx-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-test-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-orm-3.2.9.RELEASE.jar:/alidata/node/bin/../lib/spring-jdbc-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-expression-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-core-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-context-support-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-context-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-beans-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-asm-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-aop-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/slf4j-api-1.7.12.jar:/alidata/node/bin/../lib/shared.push-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/shared.etl-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/shared.communication-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/shared.common-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/shared.arbitrate-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/protobuf-java-2.6.1.jar:/alidata/node/bin/../lib/oro-2.0.8.jar:/alidata/node/bin/../lib/ojdbc6.jar:/alidata/node/bin/../lib/ojdbc6-11.1.0.7.0.jar:/alidata/node/bin/../lib/node.extend-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/node.etl-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/node.deployer-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/node.common-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/node.canal-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/netty-all-4.1.6.Final.jar:/alidata/node/bin/../lib/netty-3.2.2.Final.jar:/alidata/node/bin/../lib/mysql-connector-java-5.1.40.jar:/alidata/node/bin/../lib/logback-core-1.1.3.jar:/alidata/node/bin/../lib/logback-classic-1.1.3.jar:/alidata/node/bin/../lib/jopt-simple-4.6.jar:/alidata/node/bin/../lib/jmh-core-1.21.jar:/alidata/node/bin/../lib/jetty-xml-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-util-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-servlet-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-server-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-security-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-io-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-http-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-continuation-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jcl-over-slf4j-1.7.12.jar:/alidata/node/bin/../lib/javax.servlet-3.0.0.v201112011016.jar:/alidata/node/bin/../lib/javassist-3.15.0-GA.jar:/alidata/node/bin/../lib/ibatis-sqlmap-2.3.4.726.jar:/alidata/node/bin/../lib/httpcore-4.4.3.jar:/alidata/node/bin/../lib/httpclient-4.5.1.jar:/alidata/node/bin/../lib/h2-1.4.196.jar:/alidata/node/bin/../lib/guava-18.0.jar:/alidata/node/bin/../lib/fastsql-2.0.0_preview_366.jar:/alidata/node/bin/../lib/fastjson-1.2.28.jar:/alidata/node/bin/../lib/dubbo-2.5.3.jar:/alidata/node/bin/../lib/druid-1.1.9.jar:/alidata/node/bin/../lib/ddlutils-1.0.jar:/alidata/node/bin/../lib/commons-pool-1.5.4.jar:/alidata/node/bin/../lib/commons-math3-3.2.jar:/alidata/node/bin/../lib/commons-logging-1.1.1.jar:/alidata/node/bin/../lib/commons-lang-2.6.jar:/alidata/node/bin/../lib/commons-io-2.4.jar:/alidata/node/bin/../lib/commons-dbcp-1.4.jar:/alidata/node/bin/../lib/commons-compress-1.4.1.jar:/alidata/node/bin/../lib/commons-collections-3.2.2.jar:/alidata/node/bin/../lib/commons-codec-1.9.jar:/alidata/node/bin/../lib/commons-beanutils-1.8.3.jar:/alidata/node/bin/../lib/cglib-nodep-2.2.jar:/alidata/node/bin/../lib/canal.store-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.sink-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.server-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.protocol-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.parse.driver-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.parse.dbsync-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.parse-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.meta-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.instance.spring-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.instance.manager-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.instance.core-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.filter-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.common-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/aviator-2.2.1.jar:/alidata/node/bin/../lib/aopalliance-1.0.jar:.:/alidata/java/lib/dt.jar:/alidata/java/lib/tools.jar:/alidata/java/lib:/alidata/java/jre/lib:</span><br><span class="line">cd to /alidata/node/bin for workaround relative path</span><br><span class="line">cd to /alidata/node for continue</span><br><span class="line">[root@sh_02 node]# cat logs/node/node.log</span><br><span class="line">2018-06-14 15:22:58.305 [main] INFO  com.alibaba.otter.node.deployer.OtterLauncher - INFO ## the otter server is running now ......</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/18.png"></p>
+<p>查看对应的节点状态，变为了已启动，代表已经正常启动。</p>
+<h4 id="AM-01" class="article-heading"><a href="#AM-01" class="headerlink" title="AM _01"></a>AM _01<a class="article-anchor" href="#AM-01" aria-hidden="true"></a></h4><p>美国机房的MySQL生产库和zookeeper单实例</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">搭建步骤与SH_01一样</span></span><br><span class="line">1. 安装mysql5.7</span><br><span class="line">2. 安装zookeeper单实例</span><br><span class="line">[root@am_01 ~]# bash mysql.sh</span><br><span class="line">[root@am_01 ~]# bash jdk.sh</span><br><span class="line">[root@am_01 ~]# bash zookeeper.sh</span><br><span class="line">[root@am_01 ~]# mysql_secure_installation</span><br><span class="line">[root@am_01 ~]# mysql -uroot -p'(Uploo00king)'</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection id is 3</span><br><span class="line">Server version: 5.7.17-log MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">root@AM_MySQL-01 10:34:  [(none)]&gt; show databases;</span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+--------------------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@AM_MySQL-01 10:52:  [booboo]&gt; grant all on *.* to root@'%' identified by '(Uploo00king)' ;</span><br><span class="line">Query OK, 0 rows affected, 1 warning (0.01 sec)</span><br><span class="line"></span><br><span class="line">root@AM_MySQL-01 11:09:  [booboo]&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">[root@am_01 ~]# ss -luntp|grep java</span><br><span class="line">tcp    LISTEN     0      50       :::2181                 :::*                   users:(("java",pid=5768,fd=21))</span><br><span class="line">tcp    LISTEN     0      50       :::33385                :::*                   users:(("java",pid=5768,fd=16))</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="AM-02" class="article-heading"><a href="#AM-02" class="headerlink" title="AM_02"></a>AM_02<a class="article-anchor" href="#AM-02" aria-hidden="true"></a></h4><blockquote>
+<p>美国机房部署otter-node2节点</p>
+</blockquote>
+<p>搭建otter-node2</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装aria2</span></span><br><span class="line">[root@am_02 ~]# yum install -y gcc-c++</span><br><span class="line">[root@am_02 ~]# wget https://sourceforge.net/projects/aria2/files/stable/aria2-1.19.0/aria2-1.19.0.tar.gz/download -O aria2-1.19.0.tar.gz</span><br><span class="line">[root@am_02 ~]# tar -xf aria2-1.19.0.tar.gz -C /alidata/</span><br><span class="line">[root@am_02 ~]# cd /alidata/aria2-1.19.0/</span><br><span class="line">[root@am_02 aria2-1.19.0]# make &amp;&amp; make install</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装canal</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">am_01上对数据库添加授权</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO <span class="string">'canal'</span>@<span class="string">'%'</span> identified by <span class="string">'(Uploo00king)'</span>;</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">flush privileges;</span></span><br><span class="line"></span><br><span class="line">[root@am_02 ~]#  wget https://github.com/alibaba/canal/releases/download/canal-1.0.26-preview-3/canal.deployer-1.0.26-SNAPSHOT.tar.gz</span><br><span class="line">[root@am_02 ~]# mkdir /alidata/canal</span><br><span class="line">[root@am_02 ~]# tar -xf canal.deployer-1.0.26-SNAPSHOT.tar.gz -C /alidata/canal/</span><br><span class="line">[root@am_02 ~]# cd /alidata/canal/</span><br><span class="line">[root@am_02 canal]# ll</span><br><span class="line">total 4</span><br><span class="line">drwxr-xr-x. 2 root root   58 Jun 14 14:50 bin</span><br><span class="line">drwxr-xr-x. 4 root root   78 Jun 14 14:50 conf</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jun 14 14:50 lib</span><br><span class="line">drwxrwxrwx. 2 root root    6 Jun 12 13:52 logs</span><br><span class="line">[root@sh_02 canal]# vim conf/example/instance.properties</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">################################################</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># mysql serverId</span></span></span><br><span class="line">canal.instance.mysql.slaveId=0</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">position info</span></span><br><span class="line">canal.instance.master.address=10.200.6.33:3306</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">enable</span> gtid use <span class="literal">true</span>/false</span></span><br><span class="line">canal.instance.gtidon=false</span><br><span class="line">canal.instance.master.journal.name=</span><br><span class="line">canal.instance.master.position=</span><br><span class="line">canal.instance.master.timestamp=</span><br><span class="line">canal.instance.master.gtid=</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">table meta tsdb info</span></span><br><span class="line">canal.instance.tsdb.enable=true</span><br><span class="line">canal.instance.tsdb.dir=${canal.file.data.dir:../conf}/${canal.instance.destination:}</span><br><span class="line">canal.instance.tsdb.url=jdbc:h2:${canal.instance.tsdb.dir}/h2;CACHE_SIZE=1000;MODE=MYSQL;</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.tsdb.url=jdbc:mysql://10.200.6.33:3306/mysql</span></span><br><span class="line">canal.instance.tsdb.dbUsername=</span><br><span class="line">canal.instance.tsdb.dbPassword=</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.standby.address =</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.standby.journal.name =</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.standby.position =</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.standby.timestamp =</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">canal.instance.standby.gtid=</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">username/password</span></span><br><span class="line">canal.instance.dbUsername=canal</span><br><span class="line">canal.instance.dbPassword=(Uploo00king)</span><br><span class="line">canal.instance.defaultDatabaseName=test</span><br><span class="line">canal.instance.connectionCharset=UTF-8</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">table regex</span></span><br><span class="line">canal.instance.filter.regex=.*\\..*</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">table black regex</span></span><br><span class="line">canal.instance.filter.black.regex=</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">################################################</span></span></span><br><span class="line">[root@am_02 canal]# bin/startup.sh</span><br><span class="line">cd to /alidata/canal/bin for workaround relative path</span><br><span class="line">LOG CONFIGURATION : /alidata/canal/bin/../conf/logback.xml</span><br><span class="line">canal conf : /alidata/canal/bin/../conf/canal.properties</span><br><span class="line">CLASSPATH :/alidata/canal/bin/../conf:/alidata/canal/bin/../lib/zookeeper-3.4.5.jar:/alidata/canal/bin/../lib/zkclient-0.10.jar:/alidata/canal/bin/../lib/spring-tx-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-orm-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-jdbc-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-expression-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-core-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-context-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-beans-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/spring-aop-3.2.9.RELEASE.jar:/alidata/canal/bin/../lib/slf4j-api-1.7.12.jar:/alidata/canal/bin/../lib/protobuf-java-2.6.1.jar:/alidata/canal/bin/../lib/oro-2.0.8.jar:/alidata/canal/bin/../lib/netty-all-4.1.6.Final.jar:/alidata/canal/bin/../lib/netty-3.2.2.Final.jar:/alidata/canal/bin/../lib/mysql-connector-java-5.1.40.jar:/alidata/canal/bin/../lib/logback-core-1.1.3.jar:/alidata/canal/bin/../lib/logback-classic-1.1.3.jar:/alidata/canal/bin/../lib/jopt-simple-4.6.jar:/alidata/canal/bin/../lib/jmh-core-1.21.jar:/alidata/canal/bin/../lib/jcl-over-slf4j-1.7.12.jar:/alidata/canal/bin/../lib/ibatis-sqlmap-2.3.4.726.jar:/alidata/canal/bin/../lib/httpcore-4.4.3.jar:/alidata/canal/bin/../lib/httpclient-4.5.1.jar:/alidata/canal/bin/../lib/h2-1.4.196.jar:/alidata/canal/bin/../lib/guava-18.0.jar:/alidata/canal/bin/../lib/fastsql-2.0.0_preview_371.jar:/alidata/canal/bin/../lib/fastjson-1.2.28.jar:/alidata/canal/bin/../lib/druid-1.1.9.jar:/alidata/canal/bin/../lib/commons-math3-3.2.jar:/alidata/canal/bin/../lib/commons-logging-1.1.3.jar:/alidata/canal/bin/../lib/commons-lang-2.6.jar:/alidata/canal/bin/../lib/commons-io-2.4.jar:/alidata/canal/bin/../lib/commons-compress-1.9.jar:/alidata/canal/bin/../lib/commons-codec-1.9.jar:/alidata/canal/bin/../lib/commons-beanutils-1.8.2.jar:/alidata/canal/bin/../lib/canal.store-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.sink-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.server-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.protocol-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.parse.driver-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.parse.dbsync-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.parse-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.meta-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.instance.spring-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.instance.manager-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.instance.core-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.filter-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.deployer-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/canal.common-1.0.26-SNAPSHOT.jar:/alidata/canal/bin/../lib/aviator-2.2.1.jar:/alidata/canal/bin/../lib/aopalliance-1.0.jar:.:/alidata/java/lib/dt.jar:/alidata/java/lib/tools.jar:/alidata/java/lib:/alidata/java/jre/lib:</span><br><span class="line">cd to /alidata/canal for continue</span><br><span class="line">[root@am_02 canal]# cat logs/canal/canal.log</span><br><span class="line">[root@am_02 canal]# cat logs/canal/canal.log</span><br><span class="line">2018-06-27 10:41:38.175 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## set default uncaught exception handler</span><br><span class="line">2018-06-27 10:41:38.218 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## load canal configurations</span><br><span class="line">2018-06-27 10:41:38.228 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## start the canal server.</span><br><span class="line">2018-06-27 10:41:38.276 [main] INFO  com.alibaba.otter.canal.deployer.CanalController - ## start the canal server[10.200.6.32:11111]</span><br><span class="line">2018-06-27 10:41:38.652 [main] WARN  o.s.beans.GenericTypeAwarePropertyDescriptor - Invalid JavaBean property 'connectionCharset' being accessed! Ambiguous write methods found next to actually used [public void com.alibaba.otter.canal.parse.inbound.mysql.AbstractMysqlEventParser.setConnectionCharset(java.nio.charset.Charset)]: [public void com.alibaba.otter.canal.parse.inbound.mysql.AbstractMysqlEventParser.setConnectionCharset(java.lang.String)]</span><br><span class="line">2018-06-27 10:41:38.856 [main] ERROR com.alibaba.druid.pool.DruidDataSource - testWhileIdle is true, validationQuery not set</span><br><span class="line">2018-06-27 10:41:39.109 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## the canal server is running now ......</span><br><span class="line">2018-06-27 10:41:39.125 [destination = example , address = /10.200.6.33:3306 , EventParser] WARN  c.a.otter.canal.parse.inbound.mysql.MysqlEventParser - prepare to find start position just show master status</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装otter-node</span></span><br><span class="line">[root@am_02 ~]# wget https://github.com/alibaba/otter/releases/download/otter-4.2.16-preview-1/node.deployer-4.2.16-SNAPSHOT.tar.gz</span><br><span class="line">[root@am_02 ~]# mkdir /alidata/node</span><br><span class="line">[root@am_02 ~]# tar -xf node.deployer-4.2.16-SNAPSHOT.tar.gz -C /alidata/node/</span><br><span class="line">[root@am_02 ~]# cd /alidata/node/</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">非常重要，nid与将来在图形化界面控制台添加的node节点编号有关</span></span><br><span class="line">[root@am_02 node]# echo 2 &gt; conf/nid</span><br><span class="line">[root@am_02 node]# vim conf/otter.properties</span><br><span class="line">[root@am_02 node]# cat conf/otter.properties</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">otter node root <span class="built_in">dir</span></span></span><br><span class="line">otter.nodeHome = ${user.dir}/../</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter node dir</span></span></span><br><span class="line">otter.htdocs.dir = ${otter.nodeHome}/htdocs</span><br><span class="line">otter.download.dir = ${otter.nodeHome}/download</span><br><span class="line">otter.extend.dir= ${otter.nodeHome}/extend</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># default zookeeper sesstion timeout = 60s</span></span></span><br><span class="line">otter.zookeeper.sessionTimeout = 60000</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter communication payload size (default = 8388608)</span></span></span><br><span class="line">otter.communication.payload = 8388608</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter communication pool size</span></span></span><br><span class="line">otter.communication.pool.size = 10</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># otter arbitrate &amp; node connect manager config</span></span></span><br><span class="line">otter.manager.address = 10.200.6.31:1099</span><br><span class="line"></span><br><span class="line">[root@am_02 node]# bash bin/startup.sh</span><br><span class="line">LOG CONFIGURATION : /alidata/node/bin/../conf/logback.xml</span><br><span class="line">Otter nodeId file : /alidata/node/bin/../conf/nid</span><br><span class="line">CLASSPATH :/alidata/node/bin/../conf:/alidata/node/bin/../lib/zookeeper-3.4.5.jar:/alidata/node/bin/../lib/zkclient-0.10.jar:/alidata/node/bin/../lib/xz-1.0.jar:/alidata/node/bin/../lib/truezip-6.8.4.jar:/alidata/node/bin/../lib/spring-tx-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-test-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-orm-3.2.9.RELEASE.jar:/alidata/node/bin/../lib/spring-jdbc-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-expression-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-core-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-context-support-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-context-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-beans-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-asm-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/spring-aop-3.1.2.RELEASE.jar:/alidata/node/bin/../lib/slf4j-api-1.7.12.jar:/alidata/node/bin/../lib/shared.push-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/shared.etl-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/shared.communication-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/shared.common-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/shared.arbitrate-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/protobuf-java-2.6.1.jar:/alidata/node/bin/../lib/oro-2.0.8.jar:/alidata/node/bin/../lib/ojdbc6.jar:/alidata/node/bin/../lib/ojdbc6-11.1.0.7.0.jar:/alidata/node/bin/../lib/node.extend-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/node.etl-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/node.deployer-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/node.common-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/node.canal-4.2.16-SNAPSHOT.jar:/alidata/node/bin/../lib/netty-all-4.1.6.Final.jar:/alidata/node/bin/../lib/netty-3.2.2.Final.jar:/alidata/node/bin/../lib/mysql-connector-java-5.1.40.jar:/alidata/node/bin/../lib/logback-core-1.1.3.jar:/alidata/node/bin/../lib/logback-classic-1.1.3.jar:/alidata/node/bin/../lib/jopt-simple-4.6.jar:/alidata/node/bin/../lib/jmh-core-1.21.jar:/alidata/node/bin/../lib/jetty-xml-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-util-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-servlet-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-server-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-security-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-io-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-http-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jetty-continuation-8.1.7.v20120910.jar:/alidata/node/bin/../lib/jcl-over-slf4j-1.7.12.jar:/alidata/node/bin/../lib/javax.servlet-3.0.0.v201112011016.jar:/alidata/node/bin/../lib/javassist-3.15.0-GA.jar:/alidata/node/bin/../lib/ibatis-sqlmap-2.3.4.726.jar:/alidata/node/bin/../lib/httpcore-4.4.3.jar:/alidata/node/bin/../lib/httpclient-4.5.1.jar:/alidata/node/bin/../lib/h2-1.4.196.jar:/alidata/node/bin/../lib/guava-18.0.jar:/alidata/node/bin/../lib/fastsql-2.0.0_preview_366.jar:/alidata/node/bin/../lib/fastjson-1.2.28.jar:/alidata/node/bin/../lib/dubbo-2.5.3.jar:/alidata/node/bin/../lib/druid-1.1.9.jar:/alidata/node/bin/../lib/ddlutils-1.0.jar:/alidata/node/bin/../lib/commons-pool-1.5.4.jar:/alidata/node/bin/../lib/commons-math3-3.2.jar:/alidata/node/bin/../lib/commons-logging-1.1.1.jar:/alidata/node/bin/../lib/commons-lang-2.6.jar:/alidata/node/bin/../lib/commons-io-2.4.jar:/alidata/node/bin/../lib/commons-dbcp-1.4.jar:/alidata/node/bin/../lib/commons-compress-1.4.1.jar:/alidata/node/bin/../lib/commons-collections-3.2.2.jar:/alidata/node/bin/../lib/commons-codec-1.9.jar:/alidata/node/bin/../lib/commons-beanutils-1.8.3.jar:/alidata/node/bin/../lib/cglib-nodep-2.2.jar:/alidata/node/bin/../lib/canal.store-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.sink-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.server-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.protocol-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.parse.driver-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.parse.dbsync-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.parse-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.meta-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.instance.spring-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.instance.manager-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.instance.core-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.filter-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/canal.common-1.0.26-SNAPSHOT.jar:/alidata/node/bin/../lib/aviator-2.2.1.jar:/alidata/node/bin/../lib/aopalliance-1.0.jar:.:/alidata/java/lib/dt.jar:/alidata/java/lib/tools.jar:/alidata/java/lib:/alidata/java/jre/lib:</span><br><span class="line">cd to /alidata/node/bin for workaround relative path</span><br><span class="line">cd to /alidata/node for continue</span><br><span class="line">[root@am_02 node]# cat logs/node/node.log</span><br><span class="line">2018-06-14 15:55:25.164 [main] INFO  com.alibaba.otter.node.deployer.OtterLauncher - INFO ## the otter server is running now ......</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@am_02 alidata]# cd node</span><br><span class="line">[root@am_02 node]# ll</span><br><span class="line">total 8</span><br><span class="line">drwxr-xr-x. 2 root root   75 Jun 14 15:55 bin</span><br><span class="line">drwxr-xr-x. 2 root root   60 Jun 14 15:55 conf</span><br><span class="line">drwxr-xr-x. 2 root root    6 Jun 14 15:55 download</span><br><span class="line">drwxr-xr-x. 2 root root    6 Jun 14 15:55 extend</span><br><span class="line">drwxr-xr-x. 2 root root    6 Jun 14 15:55 htdocs</span><br><span class="line">drwxr-xr-x. 2 root root 4096 Jun 14 15:54 lib</span><br><span class="line">drwxrwxrwx. 3 root root   18 Jun 14 15:55 logs</span><br><span class="line">[root@am_02 node]# cd conf</span><br><span class="line">[root@am_02 conf]# ll</span><br><span class="line">total 16</span><br><span class="line">-rwsrwsrwt. 1 root root 8091 Sep 23  2014 logback.xml</span><br><span class="line">-rw-r--r--. 1 root root    2 Jun 14 15:54 nid</span><br><span class="line">-rwsrwsrwt. 1 root root  548 Jun 14 15:55 otter.properties</span><br><span class="line">[root@am_02 conf]# cat nid</span><br><span class="line">2</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="配置双向同步任务" class="article-heading"><a href="#配置双向同步任务" class="headerlink" title="配置双向同步任务"></a>配置双向同步任务<a class="article-anchor" href="#配置双向同步任务" aria-hidden="true"></a></h2><h3 id="机器管理" class="article-heading"><a href="#机器管理" class="headerlink" title="机器管理"></a>机器管理<a class="article-anchor" href="#机器管理" aria-hidden="true"></a></h3><h4 id="zookeeper管理" class="article-heading"><a href="#zookeeper管理" class="headerlink" title="zookeeper管理"></a>zookeeper管理<a class="article-anchor" href="#zookeeper管理" aria-hidden="true"></a></h4><p>分别添加上海机房和美国机房的zookeeper实例</p>
+<p><img src="pic/20.png"></p>
+<h4 id="机器管理-1" class="article-heading"><a href="#机器管理-1" class="headerlink" title="机器管理"></a>机器管理<a class="article-anchor" href="#机器管理-1" aria-hidden="true"></a></h4><p>分别添加上海机房和美国机房的otter 的 node节点</p>
+<p><img src="pic/21.png"></p>
+<h3 id="配置管理" class="article-heading"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理<a class="article-anchor" href="#配置管理" aria-hidden="true"></a></h3><h4 id="数据源管理" class="article-heading"><a href="#数据源管理" class="headerlink" title="数据源管理"></a>数据源管理<a class="article-anchor" href="#数据源管理" aria-hidden="true"></a></h4><blockquote>
+<p>数据源就是将来要进行数据同步的源端和目标端数据库实例</p>
+</blockquote>
+<p>添加上海机房的数据库</p>
+<p><img src="pic/22.png"></p>
+<p>添加美国机房的数据库</p>
+<p><img src="pic/23.png"></p>
+<p>保存后可以看到刚刚添加的两个数据源</p>
+<p><img src="pic/24.png"></p>
+<h4 id="数据表管理" class="article-heading"><a href="#数据表管理" class="headerlink" title="数据表管理"></a>数据表管理<a class="article-anchor" href="#数据表管理" aria-hidden="true"></a></h4><blockquote>
+<p>我们的目标是实现上海美国异地机房双向同步，同步数据库</p>
+<p>初始环境：sh_01 和 am_01 库中都已经建立好了数据库vingoo_mc;以及6张表，表中无数据。</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@SH_MySQL-01 11:17:  [(none)]&gt; use vingoo_mc;</span><br><span class="line">Database changed</span><br><span class="line">root@SH_MySQL-01 11:17:  [vingoo_mc]&gt; show tables;</span><br><span class="line">+---------------------+</span><br><span class="line">| Tables_in_vingoo_mc |</span><br><span class="line">+---------------------+</span><br><span class="line">| vgp_monitor         |</span><br><span class="line">| vgp_order           |</span><br><span class="line">| vgp_order_bom       |</span><br><span class="line">| vgp_order_info      |</span><br><span class="line">| vgp_payment         |</span><br><span class="line">| vgp_payment_info    |</span><br><span class="line">+---------------------+</span><br><span class="line">6 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">[root@am_01 ~]# mysql -uroot -p'(Uploo00king)' -e "use vingoo_mc;show tables;"</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">+---------------------+</span><br><span class="line">| Tables_in_vingoo_mc |</span><br><span class="line">+---------------------+</span><br><span class="line">| vgp_monitor         |</span><br><span class="line">| vgp_order           |</span><br><span class="line">| vgp_order_bom       |</span><br><span class="line">| vgp_order_info      |</span><br><span class="line">| vgp_payment         |</span><br><span class="line">| vgp_payment_info    |</span><br><span class="line">+---------------------+</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/25.png"></p>
+<p><img src="pic/26.png"></p>
+<p><img src="pic/27.png"></p>
+<h4 id="canal管理" class="article-heading"><a href="#canal管理" class="headerlink" title="canal管理"></a>canal管理<a class="article-anchor" href="#canal管理" aria-hidden="true"></a></h4><p><img src="pic/28.png"></p>
+<h3 id="同步管理" class="article-heading"><a href="#同步管理" class="headerlink" title="同步管理"></a>同步管理<a class="article-anchor" href="#同步管理" aria-hidden="true"></a></h3><h4 id="添加上海至美国的数据同步任务" class="article-heading"><a href="#添加上海至美国的数据同步任务" class="headerlink" title="添加上海至美国的数据同步任务"></a>添加上海至美国的数据同步任务<a class="article-anchor" href="#添加上海至美国的数据同步任务" aria-hidden="true"></a></h4><h5 id="添加channel" class="article-heading"><a href="#添加channel" class="headerlink" title="添加channel"></a>添加channel<a class="article-anchor" href="#添加channel" aria-hidden="true"></a></h5><p><img src="pic/29.png"></p>
+<h5 id="添加pipeline" class="article-heading"><a href="#添加pipeline" class="headerlink" title="添加pipeline"></a>添加pipeline<a class="article-anchor" href="#添加pipeline" aria-hidden="true"></a></h5><p><img src="pic/30.png"></p>
+<p><img src="pic/31.png"></p>
+<p><img src="pic/32.png"></p>
+<h5 id="添加映射关系列表" class="article-heading"><a href="#添加映射关系列表" class="headerlink" title="添加映射关系列表"></a>添加映射关系列表<a class="article-anchor" href="#添加映射关系列表" aria-hidden="true"></a></h5><p><img src="pic/33.png"></p>
+<p><img src="pic/34.png"></p>
+<h5 id="开启同步任务" class="article-heading"><a href="#开启同步任务" class="headerlink" title="开启同步任务"></a>开启同步任务<a class="article-anchor" href="#开启同步任务" aria-hidden="true"></a></h5><p><img src="pic/37.png"></p>
+<h5 id="测试DML操作" class="article-heading"><a href="#测试DML操作" class="headerlink" title="测试DML操作"></a>测试DML操作<a class="article-anchor" href="#测试DML操作" aria-hidden="true"></a></h5><p>执行insert操作</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将之前备份的数据进行导入，即insert操作在上海机房执行</span></span><br><span class="line">[root@sh_01 ~]# mysql -uroot -puplooking vingoo_mc &lt; vingoo_mc.sql</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">[root@sh_01 ~]# mysql -uroot -puplooking vingoo_mc</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection id is 87</span><br><span class="line">Server version: 5.7.17-log MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.</span><br><span class="line"></span><br><span class="line">root@SH_MySQL-01 14:37:  [vingoo_mc]&gt; select * from vgp_order limit 1;</span><br><span class="line">+------------+----------+------------------+--------------------+------------+-------------+---------+-------------+------------------------------------+--------------+---------+</span><br><span class="line">| id         | brand_id | terminal_num     | order_address      | order_date | upload_date | vip_num | total_price | order_num                          | order_status | pre_qty |</span><br><span class="line">+------------+----------+------------------+--------------------+------------+-------------+---------+-------------+------------------------------------+--------------+---------+</span><br><span class="line">| 1000000002 |      394 | TS0755_0008_0001 | 观澜湖新城-B1      | 1529597873 |  1529597874 | NULL    |       15.00 | noinfo_1529597873_TS0755_0008_0001 |            2 |       1 |</span><br><span class="line">+------------+----------+------------------+--------------------+------------+-------------+---------+-------------+------------------------------------+--------------+---------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>观察insert同步任务情况</p>
+<p><img src="pic/36.png"><img src="pic/38.png"></p>
+<p>可以看到同步了1654条insert操作，点击<code>行为曲线</code>可以看到以上图表信息。</p>
+<p>查看美国的数据库同步情况，可以看到数据同步正确。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@AM_MySQL-01 14:36:  [vingoo_mc]&gt; select * from vgp_order limit 1;</span><br><span class="line">+------------+----------+------------------+--------------------+------------+-------------+---------+-------------+------------------------------------+--------------+---------+</span><br><span class="line">| id         | brand_id | terminal_num     | order_address      | order_date | upload_date | vip_num | total_price | order_num                          | order_status | pre_qty |</span><br><span class="line">+------------+----------+------------------+--------------------+------------+-------------+---------+-------------+------------------------------------+--------------+---------+</span><br><span class="line">| 1000000002 |      394 | TS0755_0008_0001 | 观澜湖新城-B1      | 1529597873 |  1529597874 | NULL    |       15.00 | noinfo_1529597873_TS0755_0008_0001 |            2 |       1 |</span><br><span class="line">+------------+----------+------------------+--------------------+------------+-------------+---------+-------------+------------------------------------+--------------+---------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h5 id="测试DDL操作" class="article-heading"><a href="#测试DDL操作" class="headerlink" title="测试DDL操作"></a>测试DDL操作<a class="article-anchor" href="#测试DDL操作" aria-hidden="true"></a></h5><blockquote>
+<ol>
+<li>修改表结构测试</li>
+<li>新建表测试</li>
+</ol>
+</blockquote>
+<p><strong>修改表结构测试</strong></p>
+<p>执行修改表结构操作</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">alter table vgp_order add booboo varchar(255) default 'superman';</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在上海机房执行修改表结构的sql</p>
+<p><img src="pic/39.png"></p>
+<p>检查美国机房表结构情况，已经成功同步</p>
+<p><img src="pic/40.png"></p>
+<hr>
+<p><strong>新建表测试</strong></p>
+<p>上海机房新建表</p>
+<p><img src="pic/41.png"></p>
+<p>美国机房检查新表情况</p>
+<p><img src="pic/42.png"></p>
+<p>测试通过</p>
+<h4 id="添加美国到上海的数据同步任务" class="article-heading"><a href="#添加美国到上海的数据同步任务" class="headerlink" title="添加美国到上海的数据同步任务"></a>添加美国到上海的数据同步任务<a class="article-anchor" href="#添加美国到上海的数据同步任务" aria-hidden="true"></a></h4><h5 id="添加channel-1" class="article-heading"><a href="#添加channel-1" class="headerlink" title="添加channel"></a>添加channel<a class="article-anchor" href="#添加channel-1" aria-hidden="true"></a></h5><p><img src="pic/43.png"></p>
+<p><img src="pic/44.png"></p>
+<h5 id="添加pipeline-1" class="article-heading"><a href="#添加pipeline-1" class="headerlink" title="添加pipeline"></a>添加pipeline<a class="article-anchor" href="#添加pipeline-1" aria-hidden="true"></a></h5><p><img src="pic/45.png"></p>
+<p><img src="pic/46.png"></p>
+<h5 id="添加映射关系列表-1" class="article-heading"><a href="#添加映射关系列表-1" class="headerlink" title="添加映射关系列表"></a>添加映射关系列表<a class="article-anchor" href="#添加映射关系列表-1" aria-hidden="true"></a></h5><p><img src="pic/47.png"></p>
+<p><img src="pic/48.png"></p>
+<h5 id="开启同步任务-1" class="article-heading"><a href="#开启同步任务-1" class="headerlink" title="开启同步任务"></a>开启同步任务<a class="article-anchor" href="#开启同步任务-1" aria-hidden="true"></a></h5><p><img src="pic/49.png"></p>
+<h5 id="测试DML操作-1" class="article-heading"><a href="#测试DML操作-1" class="headerlink" title="测试DML操作"></a>测试DML操作<a class="article-anchor" href="#测试DML操作-1" aria-hidden="true"></a></h5><p>美国机房的数据库插入一条记录</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">insert into booboo_test set num=2;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/50.png"></p>
+<p>上海机房查看数据</p>
+<p><img src="pic/51.png"></p>
+<h5 id="测试DDL操作-1" class="article-heading"><a href="#测试DDL操作-1" class="headerlink" title="测试DDL操作"></a>测试DDL操作<a class="article-anchor" href="#测试DDL操作-1" aria-hidden="true"></a></h5><p>美国机房执行删库操作</p>
+<p><img src="pic/52.png"></p>
+<p>上海机房检查数据同步情况</p>
+<p><img src="pic/53.png"></p>
+<p>同步成功，booboo_test表已成功删除。</p>
+<h5 id="测试DCL操作" class="article-heading"><a href="#测试DCL操作" class="headerlink" title="测试DCL操作"></a>测试DCL操作<a class="article-anchor" href="#测试DCL操作" aria-hidden="true"></a></h5><p>美国机房新建用户test，并授予权限</p>
+<p><img src="pic/54.png"></p>
+<p>上海机房进行验证</p>
+<p><img src="pic/55.png"></p>
+<p>没有同步，起始也很好理解，因为认证权限信息是保存在mysql库中，而同步并没有配置mysql库的数据同步。</p>
+<h2 id="测试双写冲突解决情况" class="article-heading"><a href="#测试双写冲突解决情况" class="headerlink" title="测试双写冲突解决情况"></a>测试双写冲突解决情况<a class="article-anchor" href="#测试双写冲突解决情况" aria-hidden="true"></a></h2><p>双写测试后，两个任务都进入挂起状态，两边变更都没有执行。</p>
+<h2 id="测试MySQL同步至Oracle" class="article-heading"><a href="#测试MySQL同步至Oracle" class="headerlink" title="测试MySQL同步至Oracle"></a>测试MySQL同步至Oracle<a class="article-anchor" href="#测试MySQL同步至Oracle" aria-hidden="true"></a></h2><p><img src="pic/56.png"></p>
+<p><img src="pic/56.png"></p>
+<p><img src="pic/59.png"></p>
+<p><img src="pic/60.png"></p>
+<p><img src="pic/57.png"></p>
+<p>MySQL写入数据</p>
+<p><img src="pic/61.png"></p>
+<p>Oracle成功同步数据</p>
+<p><img src="pic/62.png"></p>
+<p>测试了一下修改表结构，失败了</p>
+<p><img src="pic/63.png"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">pid:5 nid:2 exception:setl:com.alibaba.otter.node.etl.load.exception.LoadException: java.util.concurrent.ExecutionException: com.alibaba.otter.node.etl.load.exception.LoadException: com.alibaba.otter.node.etl.load.exception.LoadException: org.springframework.jdbc.BadSqlGrammarException: StatementCallback; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: ORA-00911: invalid character</span><br><span class="line"></span><br><span class="line">Caused by: java.util.concurrent.ExecutionException: com.alibaba.otter.node.etl.load.exception.LoadException: com.alibaba.otter.node.etl.load.exception.LoadException: org.springframework.jdbc.BadSqlGrammarException: StatementCallback; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: ORA-00911: invalid character</span><br><span class="line"></span><br><span class="line">at java.util.concurrent.FutureTask.report(FutureTask.java:122)</span><br><span class="line">at java.util.concurrent.FutureTask.get(FutureTask.java:188)</span><br><span class="line">at com.alibaba.otter.node.etl.load.loader.db.DataBatchLoader.load(DataBatchLoader.java:107)</span><br><span class="line">at com.alibaba.otter.node.etl.load.loader.OtterLoaderFactory.load(OtterLoaderFactory.java:50)</span><br><span class="line">at com.alibaba.otter.node.etl.load.LoadTask$1.run(LoadTask.java:85)</span><br><span class="line">at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)</span><br><span class="line">at java.util.concurrent.FutureTask.run(FutureTask.java:262)</span><br><span class="line">at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)</span><br><span class="line">at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)</span><br><span class="line">at java.lang.Thread.run(Thread.java:745)</span><br><span class="line">Caused by: com.alibaba.otter.node.etl.load.exception.LoadException: com.alibaba.otter.node.etl.load.exception.LoadException: org.springframework.jdbc.BadSqlGrammarException: StatementCallback; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: ORA-00911: invalid character</span><br><span class="line"></span><br><span class="line">Caused by: com.alibaba.otter.node.etl.load.exception.LoadException: org.springframework.jdbc.BadSqlGrammarException: StatementCallback; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: ORA-00911: invalid character</span><br><span class="line"></span><br><span class="line">Caused by: org.springframework.jdbc.BadSqlGrammarException: StatementCallback; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: ORA-00911: invalid character</span><br><span class="line"></span><br><span class="line">at org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:94)</span><br><span class="line">at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:72)</span><br><span class="line">at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:80)</span><br><span class="line">at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:407)</span><br><span class="line">at com.alibaba.otter.node.etl.load.loader.db.DbLoadAction.doDdl(DbLoadAction.java:357)</span><br><span class="line">at com.alibaba.otter.node.etl.load.loader.db.DbLoadAction.load(DbLoadAction.java:135)</span><br><span class="line">at com.alibaba.otter.node.etl.load.loader.db.DbLoadAction$$FastClassByCGLIB$$d932a4cb.invoke()</span><br><span class="line">at net.sf.cglib.proxy.MethodProxy.invoke(MethodProxy.java:191)</span><br><span class="line">at org.springframework.aop.framework.Cglib2AopProxy$DynamicAdvisedInterceptor.intercept(Cglib2AopProxy.java:618)</span><br><span class="line">at com.alibaba.otter.node.etl.load.loader.db.DbLoadAction$$EnhancerByCGLIB$$80fd23c2.load()</span><br><span class="line">at com.alibaba.otter.node.etl.load.loader.db.DataBatchLoader$2.call(DataBatchLoader.java:198)</span><br><span class="line">at com.alibaba.otter.node.etl.load.loader.db.DataBatchLoader$2.call(DataBatchLoader.java:189)</span><br><span class="line">at java.util.concurrent.FutureTask.run(FutureTask.java:262)</span><br><span class="line">at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)</span><br><span class="line">at java.util.concurrent.FutureTask.run(FutureTask.java:262)</span><br><span class="line">at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)</span><br><span class="line">at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)</span><br><span class="line">at java.lang.Thread.run(Thread.java:745)</span><br><span class="line">Caused by: java.sql.SQLSyntaxErrorException: ORA-00911: invalid character</span><br><span class="line"></span><br><span class="line">at oracle.jdbc.driver.SQLStateMapping.newSQLException(SQLStateMapping.java:91)</span><br><span class="line">at oracle.jdbc.driver.DatabaseError.newSQLException(DatabaseError.java:133)</span><br><span class="line">at oracle.jdbc.driver.DatabaseError.throwSqlException(DatabaseError.java:206)</span><br><span class="line">at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:455)</span><br><span class="line">at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:413)</span><br><span class="line">at oracle.jdbc.driver.T4C8Oall.receive(T4C8Oall.java:1034)</span><br><span class="line">at oracle.jdbc.driver.T4CStatement.doOall8(T4CStatement.java:183)</span><br><span class="line">at oracle.jdbc.driver.T4CStatement.executeForRows(T4CStatement.java:942)</span><br><span class="line">at oracle.jdbc.driver.OracleStatement.doExecuteWithTimeout(OracleStatement.java:1222)</span><br><span class="line">at oracle.jdbc.driver.OracleStatement.executeInternal(OracleStatement.java:1770)</span><br><span class="line">at oracle.jdbc.driver.OracleStatement.execute(OracleStatement.java:1739)</span><br><span class="line">at oracle.jdbc.driver.OracleStatementWrapper.execute(OracleStatementWrapper.java:299)</span><br><span class="line">at org.apache.commons.dbcp.DelegatingStatement.execute(DelegatingStatement.java:264)</span><br><span class="line">at org.apache.commons.dbcp.DelegatingStatement.execute(DelegatingStatement.java:264)</span><br><span class="line">at com.alibaba.otter.node.etl.load.loader.db.DbLoadAction$1.doInStatement(DbLoadAction.java:369)</span><br><span class="line">at com.alibaba.otter.node.etl.load.loader.db.DbLoadAction$1.doInStatement(DbLoadAction.java:357)</span><br><span class="line">at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:396)</span><br><span class="line">... 14 more</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><p>otter的优势在于“网络环境差”的情况下；另外支持mysql到oracle的同步</p>
+<p>otter的数据源支持mysql（源和目标）、oracle（目标）</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:53.922Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E5%90%91%E5%90%8C%E6%AD%A5%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF"><span class="toc-text">双向同步业务场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E5%90%91%E5%90%8C%E6%AD%A5%E4%B8%9A%E5%8A%A1%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">双向同步业务架构图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Otter%E5%BC%82%E5%9C%B0%E6%9C%BA%E6%88%BF%E5%A4%8D%E5%88%B6%E7%A4%BA%E6%84%8F%E5%9B%BE"><span class="toc-text">Otter异地机房复制示意图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E6%98%8E%E7%BB%86"><span class="toc-text">搭建明细</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="toc-text">新建虚拟机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="toc-text">软件安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85MySQL"><span class="toc-text">安装MySQL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85zookeeper"><span class="toc-text">安装zookeeper</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85otter-manager"><span class="toc-text">安装otter_manager</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85otter-node"><span class="toc-text">安装otter_node</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E6%98%8E%E7%BB%86"><span class="toc-text">部署明细</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SH-01"><span class="toc-text">SH_01</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SH-02"><span class="toc-text">SH_02</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AM-01"><span class="toc-text">AM _01</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AM-02"><span class="toc-text">AM_02</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%8F%8C%E5%90%91%E5%90%8C%E6%AD%A5%E4%BB%BB%E5%8A%A1"><span class="toc-text">配置双向同步任务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%BA%E5%99%A8%E7%AE%A1%E7%90%86"><span class="toc-text">机器管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#zookeeper%E7%AE%A1%E7%90%86"><span class="toc-text">zookeeper管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%BA%E5%99%A8%E7%AE%A1%E7%90%86-1"><span class="toc-text">机器管理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86"><span class="toc-text">配置管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%BA%90%E7%AE%A1%E7%90%86"><span class="toc-text">数据源管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%AE%A1%E7%90%86"><span class="toc-text">数据表管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#canal%E7%AE%A1%E7%90%86"><span class="toc-text">canal管理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E7%AE%A1%E7%90%86"><span class="toc-text">同步管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E4%B8%8A%E6%B5%B7%E8%87%B3%E7%BE%8E%E5%9B%BD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E4%BB%BB%E5%8A%A1"><span class="toc-text">添加上海至美国的数据同步任务</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0channel"><span class="toc-text">添加channel</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0pipeline"><span class="toc-text">添加pipeline</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB%E5%88%97%E8%A1%A8"><span class="toc-text">添加映射关系列表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%BC%80%E5%90%AF%E5%90%8C%E6%AD%A5%E4%BB%BB%E5%8A%A1"><span class="toc-text">开启同步任务</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95DML%E6%93%8D%E4%BD%9C"><span class="toc-text">测试DML操作</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95DDL%E6%93%8D%E4%BD%9C"><span class="toc-text">测试DDL操作</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E7%BE%8E%E5%9B%BD%E5%88%B0%E4%B8%8A%E6%B5%B7%E7%9A%84%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E4%BB%BB%E5%8A%A1"><span class="toc-text">添加美国到上海的数据同步任务</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0channel-1"><span class="toc-text">添加channel</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0pipeline-1"><span class="toc-text">添加pipeline</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB%E5%88%97%E8%A1%A8-1"><span class="toc-text">添加映射关系列表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%BC%80%E5%90%AF%E5%90%8C%E6%AD%A5%E4%BB%BB%E5%8A%A1-1"><span class="toc-text">开启同步任务</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95DML%E6%93%8D%E4%BD%9C-1"><span class="toc-text">测试DML操作</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95DDL%E6%93%8D%E4%BD%9C-1"><span class="toc-text">测试DDL操作</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95DCL%E6%93%8D%E4%BD%9C"><span class="toc-text">测试DCL操作</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E5%8F%8C%E5%86%99%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%83%85%E5%86%B5"><span class="toc-text">测试双写冲突解决情况</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95MySQL%E5%90%8C%E6%AD%A5%E8%87%B3Oracle"><span class="toc-text">测试MySQL同步至Oracle</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

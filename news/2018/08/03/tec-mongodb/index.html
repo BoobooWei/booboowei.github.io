@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>利用split工具解决一次MongoDB日志异常问题 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/news/2018/08/03/tec-mongodb/">
+  <!-- Alternate links -->
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="摘要：  某天晚上刚到家不久，就接到杭州同事的电话，客户MongoDB集群中的某个分片节点CPU飙高，初步判断是慢查询，现在需要拉取CPU飙高时间段的慢查询。心想拉取慢查询应该很快，不就是个系统日志吗？而且还做了日志切割一天一个，按道理很快搞定的，谁知当天晚上搞了接近三个小时也没搞定。究竟发生了什么？ 进入到日志目录一看，目前保留近7天的日志，每天的日志量在23G~24G，我当时就想这个客户数据量">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用split工具解决一次MongoDB日志异常问题">
+<meta property="og:url" content="http://www.toberoot.com/news/2018/08/03/tec-mongodb/">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="摘要：  某天晚上刚到家不久，就接到杭州同事的电话，客户MongoDB集群中的某个分片节点CPU飙高，初步判断是慢查询，现在需要拉取CPU飙高时间段的慢查询。心想拉取慢查询应该很快，不就是个系统日志吗？而且还做了日志切割一天一个，按道理很快搞定的，谁知当天晚上搞了接近三个小时也没搞定。究竟发生了什么？ 进入到日志目录一看，目前保留近7天的日志，每天的日志量在23G~24G，我当时就想这个客户数据量">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2018-08-03T12:25:24.000Z">
+<meta property="article:modified_time" content="2025-10-20T17:00:01.469Z">
+<meta property="article:author" content="魏亚萍">
+<meta property="article:tag" content="数据救援">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <div class="article-content" itemprop="articleBody">
+                <article class="article post" itemscope itemtype="http://schema.org/Article">
+  <header class="article-header">
+    
+      <h1 class="article-title" itemprop="name">利用split工具解决一次MongoDB日志异常问题</h1>
+    
+    <a href="" class="article-date"><time datetime="2018-08-03T12:25:24.000Z">2018-08-03</time></a>
+  </header>
+  <div class="article-content" itemprop="articleBody">
+    <html><head></head><body><p>摘要：</p>
+<ul>
+<li>某天晚上刚到家不久，就接到杭州同事的电话，客户MongoDB集群中的某个分片节点CPU飙高，初步判断是慢查询，现在需要拉取CPU飙高时间段的慢查询。心想拉取慢查询应该很快，不就是个系统日志吗？而且还做了日志切割一天一个，按道理很快搞定的，谁知当天晚上搞了接近三个小时也没搞定。究竟发生了什么？</li>
+<li>进入到日志目录一看，目前保留近7天的日志，每天的日志量在23G~24G，我当时就想这个客户数据量这么大！后续发现日志格式本该为普通文本文件确变成了图片格式，究竟为何会文件格式会转变？能否从图片格式中拉取指定时间段的日志呢？</li>
+<li>第二天到公司，由于客户环境我们也是第一次接手，因此咱们技术专家团队搞了一个3人的”专家会诊”，经过了一番折腾总算把原因找到了，具体过程请看下文！</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="故事背景" class="article-heading"><a href="#故事背景" class="headerlink" title="故事背景"></a>故事背景<a class="article-anchor" href="#故事背景" aria-hidden="true"></a></h2><h3 id="数据库明细" class="article-heading"><a href="#数据库明细" class="headerlink" title="数据库明细"></a>数据库明细<a class="article-anchor" href="#数据库明细" aria-hidden="true"></a></h3><p>说在前面：</p>
+<ul>
+<li>数据库：MongoDB集群 4个分片节点</li>
+<li>分片节点规格：16核 / 32G CentOS 7.4 64位</li>
+<li>数据目录所在磁盘: 300G 49G 252G 17% /data</li>
+</ul>
+<h3 id="故事情节" class="article-heading"><a href="#故事情节" class="headerlink" title="故事情节"></a>故事情节<a class="article-anchor" href="#故事情节" aria-hidden="true"></a></h3><ul>
+<li>某天晚上刚到家不久，就接到杭州同事的电话，客户MongoDB集群中的某个分片节点CPU飙高，初步判断是慢查询，现在需要拉取CPU飙高时间段的慢查询。心想拉取慢查询应该很快，不就是个系统日志吗？而且还做了日志切割一天一个，按道理很快搞定的，谁知当天晚上搞了接近三个小时也没搞定。究竟发生了什么？</li>
+<li>进入到日志目录一看，目前保留近7天的日志，每天的日志量在23G~24G，我当时就想这个客户数据量这么大！后续发现日志格式本该为普通文本文件确变成了图片格式，究竟为何会文件格式会转变？能否从图片格式中拉取指定时间段的日志呢？</li>
+<li>第二天到公司，由于客户环境我们也是第一次接受，因此咱们技术专家团队搞了一个3人的”专家会诊”，经过了一番折腾总算把原因找到了，具体过程请看下文！</li>
+</ul>
+<h2 id="复现与剖析" class="article-heading"><a href="#复现与剖析" class="headerlink" title="复现与剖析"></a>复现与剖析<a class="article-anchor" href="#复现与剖析" aria-hidden="true"></a></h2><h3 id="拉取日志异常" class="article-heading"><a href="#拉取日志异常" class="headerlink" title="拉取日志异常"></a>拉取日志异常<a class="article-anchor" href="#拉取日志异常" aria-hidden="true"></a></h3><p><strong>使用mlogfilter过滤文件时报错说文件非mongodb的日志文件</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@sh_01 booboo]# mlogfilter shard.log.2018-08-01 --from 2018-08-01T15:00:00.000+0800 --to "+1h" --slow 1000 &gt; /alidata/booboo/tf.1</span><br><span class="line">报错:非mongodb日志格式</span><br></pre></td></tr></tbody></table></figure>
+
+<p>回到客户服务器检查日志文件格式，明细如下：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@MONGO-SHARD-18 logs]# file *</span><br><span class="line">shard.log:            PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-25: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-26: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-27: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-28: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-29: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-30: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-31: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-08-01: PCX ver. 2.5 image data</span><br></pre></td></tr></tbody></table></figure>
+
+<p>mongodb的日志正常应该为：<code>ASCII text, with very long lines</code>，但是现在却变成了<code>PCX ver. 2.5 image data</code>。需要弄清楚原因。</p>
+<h3 id="日志异常分析" class="article-heading"><a href="#日志异常分析" class="headerlink" title="日志异常分析"></a>日志异常分析<a class="article-anchor" href="#日志异常分析" aria-hidden="true"></a></h3><ul>
+<li>为什么客户每天的日志量达到22个G，并且每天的日志量都是大于等于前一天？很显然，日志截断有问题。</li>
+<li>这个是近7天的日志，而日志格式变成了PCX图片格式是为何？</li>
+<li>怀疑每次日志轮询时都没有真正截断日志！</li>
+</ul>
+<p><img src="01.png"></p>
+<h3 id="分析原日志切割明细" class="article-heading"><a href="#分析原日志切割明细" class="headerlink" title="分析原日志切割明细"></a>分析原日志切割明细<a class="article-anchor" href="#分析原日志切割明细" aria-hidden="true"></a></h3><p><img src="03.png"></p>
+<p>怀疑与<code>echo &gt; </code>有关，进行验证。</p>
+<h3 id="验证echo-与PCX图片头部0a一致" class="article-heading"><a href="#验证echo-与PCX图片头部0a一致" class="headerlink" title="验证echo >与PCX图片头部0a一致"></a>验证<code>echo &gt;</code>与<code>PCX图片头部0a一致</code><a class="article-anchor" href="#验证echo-与PCX图片头部0a一致" aria-hidden="true"></a></h3><ol>
+<li>建一个空文档<code>log</code>；执行<code>echo &gt; log</code>；通过<code>cat -A log </code>查看文件中插入了一个符号即换行符<code>\n</code></li>
+<li>通过<code>hexdump -c log</code> 查看测试文件头部显示为ASCII字符 <code>\n</code></li>
+<li>通过<code>hexdump -d log</code> 查看测试文件头部显示为16进制<code> 00010</code> 即<code> 0a</code></li>
+<li>通过<code>vim</code> 用16进制查看文档<code>log</code>可以看到log的文件头部为<code>0a</code>，正是PCX图片的头部</li>
+<li>生产环境查看客户有问题的mongodb系统日志文件格式为<code>PCX</code>图片格式</li>
+<li>通过<code>hexdump -c log</code> 显示为ASCII字符，生产日志文件头部与测试的log一致，都是<code>\n</code></li>
+<li>通过<code>hexdump -d log</code>显示为16进制，生产日志文件头部与测试的log一致<code>00010 </code> 即 <code>0a</code></li>
+</ol>
+<p><img src="02.png"></p>
+<p><strong>到此验证成功:通过<code>echo &gt; log</code>的方式会往文件头部新增’0a’</strong></p>
+<hr>
+<h3 id="复现MongoDB日志从ASCII-text转变为PCX-格式" class="article-heading"><a href="#复现MongoDB日志从ASCII-text转变为PCX-格式" class="headerlink" title="复现MongoDB日志从ASCII text转变为PCX 格式"></a>复现MongoDB日志从ASCII text转变为PCX 格式<a class="article-anchor" href="#复现MongoDB日志从ASCII-text转变为PCX-格式" aria-hidden="true"></a></h3><p>在测试环境中复现日志从<code>ASCII text</code>变成<code>PCX ver. 2.5 image data</code></p>
+<ol>
+<li>通过mongo登陆数据库执行大量的插入操作</li>
+<li>通过echo &gt; mongod27017.log 命令尝试清空mongod27017.log</li>
+<li>查看截断后的日志文件格式，变成了very short file (no magic)</li>
+<li>等文档插入完毕</li>
+<li>通过<code>tail -f</code> 查看日志明细，看到确实有日志写入</li>
+<li>查看日志格式，发现变成了<code>PCX ver. 2.5 image data</code></li>
+</ol>
+<p><img src="05.png"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@sh_01 ~]# mongo</span><br><span class="line">MongoDB shell version: 3.2.16</span><br><span class="line">connecting to: test</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.auth(<span class="string">'test_dev'</span>,<span class="string">'uplooking'</span>)</span></span><br><span class="line">1</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">db.t1.find()</span></span><br><span class="line">{ "_id" : ObjectId("5b5ebb6796b8b74a73ee30f6"), "a" : 1, "b" : 2 }</span><br><span class="line">{ "_id" : ObjectId("5b5ebb6996b8b74a73ee30f7"), "a" : 1, "b" : 1 }</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash"><span class="keyword">for</span> (i=1;i&lt;200000;i++){</span></span><br><span class="line">... db.t1.insert({id:i})}</span><br><span class="line">WriteResult({ "nInserted" : 1 })</span><br><span class="line"></span><br><span class="line">[root@sh_01 ~]# cd /alidata/mongodb/logs</span><br><span class="line">[root@sh_01 log]# ll</span><br><span class="line">-rw-r--r-- 1 root root 2182 Aug  3 10:28 mongod27017.log</span><br><span class="line">-rw-r--r-- 1 root root 3100 Aug  2 14:19 mongod27017.log.2018-08-02T07-18-27</span><br><span class="line">-rw-r--r-- 1 root root 1526 Aug  2 15:18 mongod27017.log.2018-08-02T07-18-54</span><br><span class="line">[root@sh_01 log]# file *</span><br><span class="line">mongod27017.log:                     ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-02T07-18-27: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-02T07-18-54: ASCII text, with very long lines</span><br><span class="line"></span><br><span class="line">[root@sh_01 log]# echo &gt; mongod27017.log</span><br><span class="line">[root@sh_01 log]# echo &gt; mongod27017.log</span><br><span class="line">[root@sh_01 log]# ll</span><br><span class="line">total 12</span><br><span class="line">-rw-r--r-- 1 root root    1 Aug  3 10:29 mongod27017.log</span><br><span class="line">-rw-r--r-- 1 root root 3100 Aug  2 14:19 mongod27017.log.2018-08-02T07-18-27</span><br><span class="line">-rw-r--r-- 1 root root 1526 Aug  2 15:18 mongod27017.log.2018-08-02T07-18-54</span><br><span class="line">[root@sh_01 log]# file *</span><br><span class="line">mongod27017.log:                     very short file (no magic)</span><br><span class="line">mongod27017.log.2018-08-02T07-18-27: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-02T07-18-54: ASCII text, with very long lines</span><br><span class="line"></span><br><span class="line">[root@sh_01 log]# tail -f mongod27017.log</span><br><span class="line"></span><br><span class="line">2018-08-03T10:30:21.936+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:43720 #2 (2 connections now open)</span><br><span class="line"></span><br><span class="line">[root@sh_01 log]# ll -h</span><br><span class="line">total 12K</span><br><span class="line">-rw-r--r-- 1 root root 2.8K Aug  3 10:30 mongod27017.log</span><br><span class="line">-rw-r--r-- 1 root root 3.1K Aug  2 14:19 mongod27017.log.2018-08-02T07-18-27</span><br><span class="line">-rw-r--r-- 1 root root 1.5K Aug  2 15:18 mongod27017.log.2018-08-02T07-18-54</span><br><span class="line">[root@sh_01 log]# file *</span><br><span class="line">mongod27017.log:                     PCX ver. 2.5 image data</span><br><span class="line">mongod27017.log.2018-08-02T07-18-27: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-02T07-18-54: ASCII text, with very long lines</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">一边不断产生日志，一边多次执行<span class="built_in">echo</span>&gt;</span></span><br><span class="line">[root@sh_01 log]# echo &gt; mongod27017.log</span><br><span class="line">[root@sh_01 log]# echo &gt; mongod27017.log</span><br><span class="line">[root@sh_01 log]# file *</span><br><span class="line">mongod27017.log:                     PCX ver. 2.5 image data</span><br><span class="line">mongod27017.log.2018-08-02T07-18-27: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-02T07-18-54: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-03T03-09-08: PCX ver. 2.5 image data</span><br><span class="line">[root@sh_01 log]# echo &gt; mongod27017.log</span><br><span class="line">[root@sh_01 log]# file *</span><br><span class="line">mongod27017.log:                     very short file (no magic)</span><br><span class="line">mongod27017.log.2018-08-02T07-18-27: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-02T07-18-54: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-03T03-09-08: PCX ver. 2.5 image data</span><br><span class="line">[root@sh_01 log]# ll -h</span><br><span class="line">total 16K</span><br><span class="line">-rw-r--r-- 1 root root    1 Aug  3 11:28 mongod27017.log</span><br><span class="line">-rw-r--r-- 1 root root 3.1K Aug  2 14:19 mongod27017.log.2018-08-02T07-18-27</span><br><span class="line">-rw-r--r-- 1 root root 1.5K Aug  2 15:18 mongod27017.log.2018-08-02T07-18-54</span><br><span class="line">-rw-r--r-- 1 root root 2.9K Aug  3 11:05 mongod27017.log.2018-08-03T03-09-08</span><br><span class="line">[root@sh_01 log]# file *</span><br><span class="line">mongod27017.log:                     very short file (no magic)</span><br><span class="line">mongod27017.log.2018-08-02T07-18-27: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-02T07-18-54: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-03T03-09-08: PCX ver. 2.5 image data</span><br><span class="line">[root@sh_01 log]# file *</span><br><span class="line">mongod27017.log:                     PCX ver. 2.5 image data</span><br><span class="line">mongod27017.log.2018-08-02T07-18-27: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-02T07-18-54: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-03T03-09-08: PCX ver. 2.5 image data</span><br><span class="line">[root@sh_01 log]# hexdump -c mongod27017.log</span><br><span class="line">0000000  \n  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0</span><br><span class="line">0000010  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0</span><br><span class="line">*</span><br><span class="line">0000850  \0  \0  \0  \0  \0  \0  \0   2   0   1   8   -   0   8   -   0</span><br><span class="line">0000860   3   T   1   1   :   2   9   :   0   6   .   7   2   9   +   0</span><br><span class="line">0000870   8   0   0       I       A   C   C   E   S   S               [</span><br><span class="line">0000880   c   o   n   n   3   ]       U   n   a   u   t   h   o   r   i</span><br><span class="line">0000890   z   e   d   :       n   o   t       a   u   t   h   o   r   i</span><br><span class="line">00008a0   z   e   d       o   n       t   e   s   t       t   o       e</span><br><span class="line">00008b0   x   e   c   u   t   e       c   o   m   m   a   n   d       {</span><br><span class="line">00008c0       f   i   n   d   :       "   t   1   "   ,       f   i   l</span><br><span class="line">00008d0   t   e   r   :       {   }       }  \n</span><br></pre></td></tr></tbody></table></figure>
+
+<p>成功复现了客户的情况：</p>
+<ol>
+<li><p>第一次<code>echo &gt; log</code>，文件头部新增<code>\n</code></p>
+</li>
+<li><p>多次<code>echo &gt; log</code>,文件头部如下：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">0000000  \n  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0</span><br><span class="line">0000010  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0</span><br><span class="line">*</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<p>确实是mongodb日志轮询出了问题：</p>
+<ol>
+<li><code>echo &gt; log</code>会往文件头部插入<code>\n</code>即16进制的<code>0a</code></li>
+<li>在数据库正常运行中，对log文件是加了锁的，强制执行<code>echo &gt; log</code>是无法进行覆盖的，会将所有的数据全部置为<code>0</code></li>
+<li>强制覆盖后，文件头部变成了无数的空白</li>
+</ol>
+<h3 id="待解决问题" class="article-heading"><a href="#待解决问题" class="headerlink" title="待解决问题"></a>待解决问题<a class="article-anchor" href="#待解决问题" aria-hidden="true"></a></h3><ul>
+<li>MongoDB日志轮询方法调整为<strong>kill -SIGUSER1 [mongodpid]</strong></li>
+<li>修复目前已经变为图片格式的日志，并拉取15点到16点的日志</li>
+</ul>
+<h2 id="解决方法" class="article-heading"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法<a class="article-anchor" href="#解决方法" aria-hidden="true"></a></h2><h3 id="MongoDB日志轮询" class="article-heading"><a href="#MongoDB日志轮询" class="headerlink" title="MongoDB日志轮询"></a>MongoDB日志轮询<a class="article-anchor" href="#MongoDB日志轮询" aria-hidden="true"></a></h3><h4 id="测试环境" class="article-heading"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境<a class="article-anchor" href="#测试环境" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@sh_01 log]# pidof mongod</span><br><span class="line">1828</span><br><span class="line">[root@sh_01 log]# kill -SIGUSER1 1828</span><br><span class="line">-bash: kill: SIGUSER1: invalid signal specification</span><br><span class="line">[root@sh_01 log]# kill -SIGUSR1 1828</span><br><span class="line">[root@sh_01 log]# ll</span><br><span class="line">total 16</span><br><span class="line">-rw-r--r-- 1 root root 1526 Aug  3 11:09 mongod27017.log</span><br><span class="line">-rw-r--r-- 1 root root 3100 Aug  2 14:19 mongod27017.log.2018-08-02T07-18-27</span><br><span class="line">-rw-r--r-- 1 root root 1526 Aug  2 15:18 mongod27017.log.2018-08-02T07-18-54</span><br><span class="line">-rw-r--r-- 1 root root 2942 Aug  3 11:05 mongod27017.log.2018-08-03T03-09-08</span><br><span class="line">[root@sh_01 log]# file *</span><br><span class="line">mongod27017.log:                     ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-02T07-18-27: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-02T07-18-54: ASCII text, with very long lines</span><br><span class="line">mongod27017.log.2018-08-03T03-09-08: PCX ver. 2.5 image data</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="生产环境" class="article-heading"><a href="#生产环境" class="headerlink" title="生产环境"></a>生产环境<a class="article-anchor" href="#生产环境" aria-hidden="true"></a></h4><p><img src="04.png"></p>
+<p>修改日志轮询脚本：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@MONGO-SHARD-18 logs]# cat /etc/init.d/mongo_logspit.sh</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">2018/08/02 Apple</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Rotate the MongoDB logs to prevent a single logfile from consuming too much disk space.</span></span><br><span class="line"></span><br><span class="line">cmd=mongod</span><br><span class="line">mongodpath=/opt/mongodb/bin</span><br><span class="line">pidarray=`pidof ${mongodpath}/$cmd`</span><br><span class="line">LOGPATH_SHARD=/data/mongodb/shard1/logs</span><br><span class="line"></span><br><span class="line">for pid in $pidarray;do</span><br><span class="line">if [ $pid ]</span><br><span class="line">then</span><br><span class="line">    kill -SIGUSR1 $pid</span><br><span class="line">fi</span><br><span class="line">done</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">clear logfile more than 7 days</span></span><br><span class="line">cd $LOGPATH_SHARD</span><br><span class="line">find ./ -xdev -mtime +7 -name "shard.log.*" -exec rm -f {}  \;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>所有的分片都去执行：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">kill -SIGUSR1 pidof mongod</span><br></pre></td></tr></tbody></table></figure>
+
+<p>分片15操作如下：其他分片同样</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[zyadmin@MONGO-SHARD-15 ~]$ sudo -i</span><br><span class="line">[root@MONGO-SHARD-15 ~]# cd /data/mongodb/shard1/logs/</span><br><span class="line">[root@MONGO-SHARD-15 logs]# ll -h</span><br><span class="line">total 1.7G</span><br><span class="line">-rw-r--r-- 1 root root 20G Aug  2 15:27 shard.log</span><br><span class="line">-rw-r--r-- 1 root root 19G Jul 25 23:50 shard.log.2018-07-25</span><br><span class="line">-rw-r--r-- 1 root root 19G Jul 26 23:50 shard.log.2018-07-26</span><br><span class="line">-rw-r--r-- 1 root root 19G Jul 27 23:50 shard.log.2018-07-27</span><br><span class="line">-rw-r--r-- 1 root root 20G Jul 28 23:50 shard.log.2018-07-28</span><br><span class="line">-rw-r--r-- 1 root root 20G Jul 29 23:50 shard.log.2018-07-29</span><br><span class="line">-rw-r--r-- 1 root root 20G Jul 30 23:50 shard.log.2018-07-30</span><br><span class="line">-rw-r--r-- 1 root root 20G Jul 31 23:50 shard.log.2018-07-31</span><br><span class="line">-rw-r--r-- 1 root root 20G Aug  1 23:50 shard.log.2018-08-01</span><br><span class="line">[root@MONGO-SHARD-15 logs]# file *</span><br><span class="line">shard.log:            PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-25: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-26: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-27: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-28: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-29: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-30: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-31: PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-08-01: PCX ver. 2.5 image data</span><br><span class="line">[root@MONGO-SHARD-15 logs]# kill -SIGUSR1 `pidof mongod`</span><br><span class="line">[root@MONGO-SHARD-15 logs]# file *</span><br><span class="line">shard.log:                     ASCII text, with very long lines</span><br><span class="line">shard.log.2018-07-25:          PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-26:          PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-27:          PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-28:          PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-29:          PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-30:          PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-07-31:          PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-08-01:          PCX ver. 2.5 image data</span><br><span class="line">shard.log.2018-08-02T07-27-29: PCX ver. 2.5 image data</span><br><span class="line">[root@MONGO-SHARD-15 logs]# ll -h</span><br><span class="line">total 1.7G</span><br><span class="line">-rw-r--r-- 1 root root 2.0K Aug  2 15:27 shard.log</span><br><span class="line">-rw-r--r-- 1 root root  19G Jul 25 23:50 shard.log.2018-07-25</span><br><span class="line">-rw-r--r-- 1 root root  19G Jul 26 23:50 shard.log.2018-07-26</span><br><span class="line">-rw-r--r-- 1 root root  19G Jul 27 23:50 shard.log.2018-07-27</span><br><span class="line">-rw-r--r-- 1 root root  20G Jul 28 23:50 shard.log.2018-07-28</span><br><span class="line">-rw-r--r-- 1 root root  20G Jul 29 23:50 shard.log.2018-07-29</span><br><span class="line">-rw-r--r-- 1 root root  20G Jul 30 23:50 shard.log.2018-07-30</span><br><span class="line">-rw-r--r-- 1 root root  20G Jul 31 23:50 shard.log.2018-07-31</span><br><span class="line">-rw-r--r-- 1 root root  20G Aug  1 23:50 shard.log.2018-08-01</span><br><span class="line">-rw-r--r-- 1 root root  20G Aug  2 15:27 shard.log.2018-08-02T07-27-29</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="修复异常日志" class="article-heading"><a href="#修复异常日志" class="headerlink" title="修复异常日志"></a>修复异常日志<a class="article-anchor" href="#修复异常日志" aria-hidden="true"></a></h3><h4 id="修复思路" class="article-heading"><a href="#修复思路" class="headerlink" title="修复思路"></a>修复思路<a class="article-anchor" href="#修复思路" aria-hidden="true"></a></h4><p>弄清楚日志变更的原因以及复现过程后，不难发现，日志因为头部变化从而导致文件格式变更。因此推测异常日志的组成如下：</p>
+<ol>
+<li>头部为<code>0a</code></li>
+<li>中间全部都是<code>0</code></li>
+<li>最后是正常的字符串记录着mongodb的日志信息，类似于<code>2018-08-03T10:30:21.936+0800 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:43720 #2 (2 connections now open)</code>由日志和日志明细组成</li>
+</ol>
+<p>因此修复的思路如下：</p>
+<ul>
+<li>23G的日志，首先按照大小6G做切分<code>split -b 6G log</code>，切分成4个文件</li>
+<li>查看切分后的日志格式，如果最后一个日志为<code>ASCII text</code>则不再切分否则，将最后一个日志继续切分</li>
+<li>循环上一步，直到最后一个文件切分出来没有<code>ASCII text</code>为止</li>
+</ul>
+<h4 id="操作明细" class="article-heading"><a href="#操作明细" class="headerlink" title="操作明细"></a>操作明细<a class="article-anchor" href="#操作明细" aria-hidden="true"></a></h4><blockquote>
+<p>日志轮询的部署距离现在大概4个月</p>
+</blockquote>
+<ol>
+<li>第一次将23G的文件以6G切分成4个文件：xaa\xab\xac\xad，查看4个文件的属性为</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">xaa:               PCX ver. 2.5 image data</span><br><span class="line">xab:               PCX ver. 2.5 image data</span><br><span class="line">xac:               PCX ver. 2.5 image data</span><br><span class="line">xad:                PCX ver. 2.5 image data</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li>重命名xad为x1第二次切分x1 5G，按照1G切分成5份，查看文件属性</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">xaa:               PCX ver. 2.5 image data</span><br><span class="line">xab:               PCX ver. 2.5 image data</span><br><span class="line">xac:               PCX ver. 2.5 image data</span><br><span class="line">xad:                PCX ver. 2.5 image data</span><br><span class="line">xae:                ASCII text, with very long lines</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li>重名xad 为 x2 按照15M的大小切分，查看文件的属性如下</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">xaa:	      PCX ver. 2.5 image data</span><br><span class="line">此处省略。。。</span><br><span class="line">xdo:               PCX ver. 2.5 image data</span><br><span class="line">xdp:               ASCII text, with very long lines</span><br><span class="line">xdq:               ASCII text, with very long lines</span><br><span class="line">xdr:               ASCII text, with very long lines</span><br><span class="line">xds:               ASCII text, with very long lines</span><br><span class="line">xdt:               ASCII text, with very long lines</span><br><span class="line">xdu:               ASCII text, with very long lines</span><br><span class="line">xdv:               UTF-8 Unicode text, with very long lines</span><br><span class="line">xdw:               ASCII text, with very long lines</span><br><span class="line">xdx:               ASCII text, with very long lines</span><br><span class="line">xdy:               ASCII text, with very long lines</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>切分后文件类型为<code>ASCII text</code>的文件中找到15点~16点的文档</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@sh_01 mongolog_20180801]# head -n 2 xdv</span><br><span class="line">re: "x86_64", version: "Kernel 3.10.0-693.2.2.el7.x86_64" } }</span><br><span class="line">2018-08-01T16:13:44.958+0800 I ACCESS   [conn4972925] Successfully authenticated as principal __system on local</span><br><span class="line">[root@sh_01 mongolog_20180801]# head -n 2 xdu</span><br><span class="line">38422 #4967772 (445 connections now open)</span><br><span class="line">2018-08-01T14:00:10.575+0800 I NETWORK  [thread1] connection accepted from 172.16.0.44:38430 #4967773 (446 connections now open)</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><code>xdv</code> 的头部是<code>2018-08-01T16:13:44.958+0800</code>,因此可以确定15~16的日志在xdu中</li>
+<li><code>xdu</code>记录的日志时间段为<code>2018-08-01T14:00:10.575+0800</code>~`2018-08-01T16:13:44.958+0800`</li>
+<li>重命名<code>xdu</code>为<code>mongolog.18.14_16</code></li>
+</ul>
+<h3 id="分析日志" class="article-heading"><a href="#分析日志" class="headerlink" title="分析日志"></a>分析日志<a class="article-anchor" href="#分析日志" aria-hidden="true"></a></h3><h4 id="分析命令" class="article-heading"><a href="#分析命令" class="headerlink" title="分析命令"></a>分析命令<a class="article-anchor" href="#分析命令" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取08月01号下午3点开始到4点执行时间超过5秒的查询</span></span><br><span class="line">mlogfilter mongolog.18.14_16 --from 2018-08-01T15 --to "+1h" --slow 5000 &gt; slowlog.txt</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取08月01号下午3点开始到4点语句的执行次数、用时等统计信息</span></span><br><span class="line">mloginfo slowlog.txt  --queries &gt; an_slowlog.txt</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">通过mplotqueries进行慢查询散点分布图绘制，且只返回前10个</span></span><br><span class="line">mplotqueries slowlog.txt --output-file 01.png --logscale --group-limit 10</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="慢查询散点分布图" class="article-heading"><a href="#慢查询散点分布图" class="headerlink" title="慢查询散点分布图"></a>慢查询散点分布图<a class="article-anchor" href="#慢查询散点分布图" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@sh_01 booboo]# mplotqueries slowlog.txt --output-file 01.png --logscale --group-limit 10</span><br><span class="line"></span><br><span class="line">SCATTER plot</span><br><span class="line">   id   #points  group</span><br><span class="line">    1       692  order.order</span><br><span class="line">    2       615  omdmain.item_region_erp</span><br><span class="line">    3         1  omdmain.customer</span><br><span class="line">()</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="10.png"></p>
+<h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><h3 id="mongodb日志轮询的问题" class="article-heading"><a href="#mongodb日志轮询的问题" class="headerlink" title="mongodb日志轮询的问题"></a>mongodb日志轮询的问题<a class="article-anchor" href="#mongodb日志轮询的问题" aria-hidden="true"></a></h3><ol>
+<li><code>echo &gt; log</code>会往文件头部插入<code>\n</code>即16进制的<code>0a</code></li>
+<li>在数据库正常运行中，对log文件是加了锁的，强制执行<code>echo &gt; log</code>是无法进行覆盖的，会将所有的数据全部置为<code>0</code></li>
+<li>强制覆盖后，文件头部变成了无数的空白</li>
+</ol>
+<h3 id="问题解决" class="article-heading"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决<a class="article-anchor" href="#问题解决" aria-hidden="true"></a></h3><ul>
+<li>MongoDB日志轮询方法调整为<strong>kill -SIGUSER1 [mongodpid]</strong></li>
+<li>修复目前已经变为图片格式的日志，并拉取15点到16点的日志</li>
+</ul>
+<p>该case花了一整天，从怀疑被攻击到确认是日志轮询引起文件格式变更是一个关键转折点；</p>
+<p>另外PCX格式是第一次碰到，疑惑了半天~最后是@培尧发现了<code>echo</code>的端倪，@衾袭@大宝去验证最终确认了问题的根源。</p>
+</body></html>
+  </div>
+  
+</article>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-20T17:00:01.469Z" itemprop="dateModified">Last updated: 2025-10-20</time>
+                
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+             <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%85%E4%BA%8B%E8%83%8C%E6%99%AF"><span class="toc-text">故事背景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%98%8E%E7%BB%86"><span class="toc-text">数据库明细</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%85%E4%BA%8B%E6%83%85%E8%8A%82"><span class="toc-text">故事情节</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%89%96%E6%9E%90"><span class="toc-text">复现与剖析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%89%E5%8F%96%E6%97%A5%E5%BF%97%E5%BC%82%E5%B8%B8"><span class="toc-text">拉取日志异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E5%BC%82%E5%B8%B8%E5%88%86%E6%9E%90"><span class="toc-text">日志异常分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E5%8E%9F%E6%97%A5%E5%BF%97%E5%88%87%E5%89%B2%E6%98%8E%E7%BB%86"><span class="toc-text">分析原日志切割明细</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81echo-%E4%B8%8EPCX%E5%9B%BE%E7%89%87%E5%A4%B4%E9%83%A80a%E4%B8%80%E8%87%B4"><span class="toc-text">验证echo &gt;与PCX图片头部0a一致</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E7%8E%B0MongoDB%E6%97%A5%E5%BF%97%E4%BB%8EASCII-text%E8%BD%AC%E5%8F%98%E4%B8%BAPCX-%E6%A0%BC%E5%BC%8F"><span class="toc-text">复现MongoDB日志从ASCII text转变为PCX 格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%85%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98"><span class="toc-text">待解决问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MongoDB%E6%97%A5%E5%BF%97%E8%BD%AE%E8%AF%A2"><span class="toc-text">MongoDB日志轮询</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83"><span class="toc-text">测试环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83"><span class="toc-text">生产环境</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D%E5%BC%82%E5%B8%B8%E6%97%A5%E5%BF%97"><span class="toc-text">修复异常日志</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D%E6%80%9D%E8%B7%AF"><span class="toc-text">修复思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%98%8E%E7%BB%86"><span class="toc-text">操作明细</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E6%97%A5%E5%BF%97"><span class="toc-text">分析日志</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E5%91%BD%E4%BB%A4"><span class="toc-text">分析命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%95%A3%E7%82%B9%E5%88%86%E5%B8%83%E5%9B%BE"><span class="toc-text">慢查询散点分布图</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#mongodb%E6%97%A5%E5%BF%97%E8%BD%AE%E8%AF%A2%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">mongodb日志轮询的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"><span class="toc-text">问题解决</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

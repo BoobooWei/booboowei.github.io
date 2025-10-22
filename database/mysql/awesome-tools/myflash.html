@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>开源工具-MyFlash工具 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/awesome-tools/myflash">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/awesome-tools/myflash" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="生产中使用binlog2sql较多，但也有缺点例如速度不够快；不支持blob的列，因此使用美团开源的myflash试试。     开源工具-MyFlash工具 详细说明 限制 FAQ   使用实践 安装MyFlash 查看帮助 测试使用 检查mysql日志参数 创建测试表   插入测试数据 回滚   如何对阿里云RDS进行闪回 阿里云的binlog获取方法 处理binlog日志的备注信息 其他方">
+<meta property="og:type" content="website">
+<meta property="og:title" content="开源工具-MyFlash工具">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/awesome-tools/myflash">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="生产中使用binlog2sql较多，但也有缺点例如速度不够快；不支持blob的列，因此使用美团开源的myflash试试。     开源工具-MyFlash工具 详细说明 限制 FAQ   使用实践 安装MyFlash 查看帮助 测试使用 检查mysql日志参数 创建测试表   插入测试数据 回滚   如何对阿里云RDS进行闪回 阿里云的binlog获取方法 处理binlog日志的备注信息 其他方">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2020-04-24T10:44:33.000Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:53.833Z">
+<meta property="article:author" content="魏亚萍">
+<meta property="article:tag" content="MyFlash">
+<meta property="article:tag" content="紧急救援">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">开源工具-MyFlash工具</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/awesome-tools/myflash.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>生产中使用binlog2sql较多，但也有缺点例如速度不够快；不支持blob的列，因此使用美团开源的myflash试试。</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#%E5%BC%80%E6%BA%90%E5%B7%A5%E5%85%B7-myflash%E5%B7%A5%E5%85%B7">开源工具-MyFlash工具</a><ul>
+<li><a href="#%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E">详细说明</a></li>
+<li><a href="#%E9%99%90%E5%88%B6">限制</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E5%AE%9E%E8%B7%B5">使用实践</a><ul>
+<li><a href="#%E5%AE%89%E8%A3%85myflash">安装MyFlash</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%B8%AE%E5%8A%A9">查看帮助</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95%E4%BD%BF%E7%94%A8">测试使用</a><ul>
+<li><a href="#%E6%A3%80%E6%9F%A5mysql%E6%97%A5%E5%BF%97%E5%8F%82%E6%95%B0">检查mysql日志参数</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E6%B5%8B%E8%AF%95%E8%A1%A8">创建测试表</a></li>
+</ul>
+</li>
+<li><a href="#%E6%8F%92%E5%85%A5%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE">插入测试数据</a></li>
+<li><a href="#%E5%9B%9E%E6%BB%9A">回滚</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A6%82%E4%BD%95%E5%AF%B9%E9%98%BF%E9%87%8C%E4%BA%91rds%E8%BF%9B%E8%A1%8C%E9%97%AA%E5%9B%9E">如何对阿里云RDS进行闪回</a><ul>
+<li><a href="#%E9%98%BF%E9%87%8C%E4%BA%91%E7%9A%84binlog%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95">阿里云的binlog获取方法</a></li>
+<li><a href="#%E5%A4%84%E7%90%86binlog%E6%97%A5%E5%BF%97%E7%9A%84%E5%A4%87%E6%B3%A8%E4%BF%A1%E6%81%AF">处理binlog日志的备注信息</a></li>
+<li><a href="#%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95">其他方法</a></li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="开源工具-MyFlash工具" class="article-heading"><a href="#开源工具-MyFlash工具" class="headerlink" title="开源工具-MyFlash工具"></a>开源工具-MyFlash工具<a class="article-anchor" href="#开源工具-MyFlash工具" aria-hidden="true"></a></h2><p>MyFlash是由美团点评公司技术工程部开发维护的一个回滚DML操作的工具。该工具通过解析v4版本的binlog，完成回滚操作。相对已有的回滚工具，其增加了更多的过滤选项，让回滚更加容易。 该工具已经在美团点评内部使用</p>
+<h3 id="详细说明" class="article-heading"><a href="#详细说明" class="headerlink" title="详细说明"></a>详细说明<a class="article-anchor" href="#详细说明" aria-hidden="true"></a></h3><ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/Meituan-Dianping/MyFlash/blob/master/doc/INSTALL.md">安装</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Meituan-Dianping/MyFlash/blob/master/doc/how_to_use.md">使用</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Meituan-Dianping/MyFlash/blob/master/doc/TestCase.md">测试用例</a></li>
+</ol>
+<h3 id="限制" class="article-heading"><a href="#限制" class="headerlink" title="限制"></a>限制<a class="article-anchor" href="#限制" aria-hidden="true"></a></h3><ol>
+<li>binlog格式必须为row,且binlog_row_image=full</li>
+<li>仅支持5.6与5.7</li>
+<li>只能回滚DML（增、删、改）</li>
+</ol>
+<h3 id="FAQ" class="article-heading"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ<a class="article-anchor" href="#FAQ" aria-hidden="true"></a></h3><ol>
+<li>实现的原理是什么？</li>
+</ol>
+<ul>
+<li>答：参考文章<a target="_blank" rel="noopener" href="http://url.cn/5yVTfLY">http://url.cn/5yVTfLY</a></li>
+</ul>
+<ol start="2">
+<li>支持gtid吗？</li>
+</ol>
+<ul>
+<li>答：支持。请参考 <a href="./doc/how_to_use.md">使用</a></li>
+</ul>
+<ol start="3">
+<li>在开启gtid的MySQL server上，应用flashback报错，错误为：ERROR 1782 (HY000) at line 16: @@SESSION.GTID_NEXT cannot be set to ANONYMOUS when @@GLOBAL.GTID_MODE = ON. ?</li>
+</ol>
+<ul>
+<li>答：在导入时加入–skip-gtids<br>mysqlbinlog –skip-gtids <flashbacklog> | mysql -uxxx -pxxx</flashbacklog></li>
+</ul>
+<ol start="4">
+<li>如果回滚后的binlog日志尺寸超过20M，在导入时，很耗时。如何处理?</li>
+</ol>
+<ul>
+<li>答：参考 <a href="./doc/how_to_use.md">使用</a> ,搜索maxSplitSize。使用该参数可以对文件进行切片</li>
+</ul>
+<h2 id="使用实践" class="article-heading"><a href="#使用实践" class="headerlink" title="使用实践"></a>使用实践<a class="article-anchor" href="#使用实践" aria-hidden="true"></a></h2><h3 id="安装MyFlash" class="article-heading"><a href="#安装MyFlash" class="headerlink" title="安装MyFlash"></a>安装MyFlash<a class="article-anchor" href="#安装MyFlash" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/Meituan-Dianping/MyFlash.git</span><br><span class="line"><span class="built_in">cd</span> MyFlash</span><br><span class="line">yum install glib2* -y</span><br><span class="line">gcc -w  `pkg-config --cflags --libs glib-2.0` <span class="built_in">source</span>/binlogParseGlib.c  -o binary/flashback</span><br><span class="line"><span class="built_in">cp</span> binary/flashback /usr/local/bin/</span><br><span class="line"><span class="built_in">which</span> flashback</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="查看帮助" class="article-heading"><a href="#查看帮助" class="headerlink" title="查看帮助"></a>查看帮助<a class="article-anchor" href="#查看帮助" aria-hidden="true"></a></h3><p>执行<code>flashback --help</code>查看帮助</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@node1 MyFlash]# flashback --<span class="built_in">help</span></span><br><span class="line">Usage:</span><br><span class="line">  flashback [OPTION?]</span><br><span class="line"></span><br><span class="line">Help Options:</span><br><span class="line">  -h, --<span class="built_in">help</span>                  Show <span class="built_in">help</span> options</span><br><span class="line"></span><br><span class="line">Application Options:</span><br><span class="line">  --databaseNames             databaseName to apply. <span class="keyword">if</span> multiple, seperate by comma(,)</span><br><span class="line">  --tableNames                tableName to apply. <span class="keyword">if</span> multiple, seperate by comma(,)</span><br><span class="line">  --start-position            start position</span><br><span class="line">  --stop-position             stop position</span><br><span class="line">  --start-datetime            start <span class="keyword">time</span> (format %Y-%m-%d %H:%M:%S)</span><br><span class="line">  --stop-datetime             stop <span class="keyword">time</span> (format %Y-%m-%d %H:%M:%S)</span><br><span class="line">  --sqlTypes                  sql <span class="built_in">type</span> to filter . support INSERT, UPDATE ,DELETE. <span class="keyword">if</span> multiple, seperate by comma(,)</span><br><span class="line">  --maxSplitSize              max file size after <span class="built_in">split</span>, the uint is M</span><br><span class="line">  --binlogFileNames           binlog files to process. <span class="keyword">if</span> multiple, seperate by comma(,)</span><br><span class="line">  --outBinlogFileNameBase     output binlog file name base</span><br><span class="line">  --logLevel                  <span class="built_in">log</span> level, available option is debug,warning,error</span><br><span class="line">  --include-gtids             gtids to process</span><br><span class="line">  --exclude-gtids             gtids to skip</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="2020-05-08-tec-mysql/20200508165409.jpg"></p>
+<p>下面的这些参数是可以任意组合的。</p>
+<figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="number">1.</span><span class="string">databaseNames</span></span><br><span class="line"></span><br><span class="line"><span class="string">指定需要回滚的数据库名。多个数据库可以用“,”隔开。如果不指定该参数，相当于指定了所有数据库。</span></span><br><span class="line"></span><br><span class="line"><span class="number">2.</span><span class="string">tableNames</span></span><br><span class="line"></span><br><span class="line"><span class="string">指定需要回滚的表名。多个表可以用“,”隔开。如果不指定该参数，相当于指定了所有表。</span></span><br><span class="line"></span><br><span class="line"><span class="number">3.</span><span class="string">start-position</span></span><br><span class="line"></span><br><span class="line"><span class="string">指定回滚开始的位置。如不指定，从文件的开始处回滚。请指定正确的有效的位置，否则无法回滚</span></span><br><span class="line"></span><br><span class="line"><span class="number">4.</span><span class="string">stop-position</span></span><br><span class="line"></span><br><span class="line"><span class="string">指定回滚结束的位置。如不指定，回滚到文件结尾。请指定正确的有效的位置，否则无法回滚</span></span><br><span class="line"></span><br><span class="line"><span class="number">5.</span><span class="string">start-datetime</span></span><br><span class="line"></span><br><span class="line"><span class="string">指定回滚的开始时间。注意格式必须是</span> <span class="string">%Y-%m-%d</span> <span class="string">%H:%M:%S。</span> <span class="string">如不指定，则不限定时间</span></span><br><span class="line"></span><br><span class="line"><span class="number">6.</span><span class="string">stop-datetime</span></span><br><span class="line"></span><br><span class="line"><span class="string">指定回滚的结束时间。注意格式必须是</span> <span class="string">%Y-%m-%d</span> <span class="string">%H:%M:%S。</span> <span class="string">如不指定，则不限定时间</span></span><br><span class="line"></span><br><span class="line"><span class="number">7.</span><span class="string">sqlTypes</span></span><br><span class="line"></span><br><span class="line"><span class="string">指定需要回滚的sql类型。目前支持的过滤类型是INSERT,</span> <span class="string">UPDATE</span> <span class="string">,DELETE。多个类型可以用“,”隔开。</span></span><br><span class="line"></span><br><span class="line"><span class="number">8.</span><span class="string">maxSplitSize</span></span><br><span class="line"></span><br><span class="line"><span class="string">一旦指定该参数，对文件进行固定尺寸的分割（单位为M），过滤条件有效，但不进行回滚操作。该参数主要用来将大的binlog文件切割，防止单次应用的binlog尺寸过大，对线上造成压力</span></span><br><span class="line"></span><br><span class="line"><span class="number">9.</span><span class="string">binlogFileNames</span></span><br><span class="line"></span><br><span class="line"><span class="string">指定需要回滚的binlog文件，目前只支持单个文件，后续会增加多个文件支持</span></span><br><span class="line"></span><br><span class="line"><span class="number">10.</span><span class="string">outBinlogFileNameBase</span></span><br><span class="line"></span><br><span class="line"><span class="string">指定输出的binlog文件前缀，如不指定，则默认为binlog_output_base.flashback</span></span><br><span class="line"></span><br><span class="line"><span class="number">11.</span><span class="string">logLevel</span></span><br><span class="line"></span><br><span class="line"><span class="string">仅供开发者使用，默认级别为error级别。在生产环境中不要修改这个级别，否则输出过多</span></span><br><span class="line"></span><br><span class="line"><span class="number">12.</span><span class="string">include-gtids</span></span><br><span class="line"></span><br><span class="line"><span class="string">指定需要回滚的gtid,支持gtid的单个和范围两种形式。</span></span><br><span class="line"></span><br><span class="line"><span class="number">13.</span><span class="string">exclude-gtids</span></span><br><span class="line"></span><br><span class="line"><span class="string">指定不需要回滚的gtid，用法同include-gtids</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="测试使用" class="article-heading"><a href="#测试使用" class="headerlink" title="测试使用"></a>测试使用<a class="article-anchor" href="#测试使用" aria-hidden="true"></a></h3><h4 id="检查mysql日志参数" class="article-heading"><a href="#检查mysql日志参数" class="headerlink" title="检查mysql日志参数"></a>检查mysql日志参数<a class="article-anchor" href="#检查mysql日志参数" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">show variables like <span class="string">'binlog_format'</span>;</span><br><span class="line">show variables like <span class="string">'binlog_row_image'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="创建测试表" class="article-heading"><a href="#创建测试表" class="headerlink" title="创建测试表"></a>创建测试表<a class="article-anchor" href="#创建测试表" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> database booboo;</span><br><span class="line"><span class="keyword">CREATE TABLE</span> `booboo`.`testFlashback2` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `nameShort` <span class="type">varchar</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `nameLong` <span class="type">varchar</span>(<span class="number">260</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `amount` <span class="type">decimal</span>(<span class="number">19</span>,<span class="number">9</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `amountFloat` <span class="type">float</span> <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `amountDouble` <span class="keyword">double</span> <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `createDatetime6` datetime(<span class="number">6</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `createDatetime` datetime <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `createTimestamp` <span class="type">timestamp</span> <span class="keyword">NOT NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="built_in">CURRENT_TIMESTAMP</span>,</span><br><span class="line">  `nameText` text,</span><br><span class="line">  `nameBlob` <span class="type">blob</span>,</span><br><span class="line">  `nameMedium` mediumtext,</span><br><span class="line">  <span class="keyword">PRIMARY KEY</span> (`id`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="插入测试数据" class="article-heading"><a href="#插入测试数据" class="headerlink" title="插入测试数据"></a>插入测试数据<a class="article-anchor" href="#插入测试数据" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">flush logs</span><br><span class="line"><span class="keyword">insert into</span> testFlashback2(nameShort,nameLong,amount,amountFloat,amountDouble,createDatetime6,createDatetime,createTimestamp,nameText,nameBlob,nameMedium) <span class="keyword">values</span>(<span class="string">'aaa'</span>,<span class="string">'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'</span>,<span class="number">10.5</span>,<span class="number">10.6</span>,<span class="number">10.7</span>,<span class="string">'2017-10-26 10:00:00'</span>,<span class="string">'2017-10-26 10:00:00'</span>,<span class="string">'2017-10-26 10:00:00'</span>,<span class="string">'cccc'</span>,<span class="string">'dddd'</span>,<span class="string">'eee'</span>);</span><br><span class="line"><span class="keyword">insert into</span> testFlashback2(nameShort,nameLong,amount,amountFloat,amountDouble,createDatetime6,createDatetime,createTimestamp,nameText,nameBlob,nameMedium) <span class="keyword">values</span>(<span class="string">'aaa'</span>,<span class="string">'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'</span>,<span class="number">10.5</span>,<span class="number">10.6</span>,<span class="number">10.7</span>,<span class="string">'2017-10-26 10:00:00'</span>,<span class="string">'2017-10-26 10:00:00'</span>,<span class="string">'2017-10-26 10:00:00'</span>,<span class="string">'cccc'</span>,<span class="string">'dddd'</span>,<span class="string">'eee'</span>);</span><br><span class="line">flush logs;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看插入的数据</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">root<span class="variable">@localhost</span> [booboo]<span class="operator">&gt;</span><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> testFlashback2\G;</span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">             id: <span class="number">1</span></span><br><span class="line">      nameShort: aaa</span><br><span class="line">       nameLong: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</span><br><span class="line">         amount: <span class="number">10.500000000</span></span><br><span class="line">    amountFloat: <span class="number">10.6</span></span><br><span class="line">   amountDouble: <span class="number">10.7</span></span><br><span class="line">createDatetime6: <span class="number">2017</span><span class="number">-10</span><span class="number">-26</span> <span class="number">10</span>:<span class="number">00</span>:<span class="number">00.000000</span></span><br><span class="line"> createDatetime: <span class="number">2017</span><span class="number">-10</span><span class="number">-26</span> <span class="number">10</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">createTimestamp: <span class="number">2017</span><span class="number">-10</span><span class="number">-26</span> <span class="number">10</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">       nameText: cccc</span><br><span class="line">       nameBlob: dddd</span><br><span class="line">     nameMedium: eee</span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">2.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">             id: <span class="number">2</span></span><br><span class="line">      nameShort: aaa</span><br><span class="line">       nameLong: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</span><br><span class="line">         amount: <span class="number">10.500000000</span></span><br><span class="line">    amountFloat: <span class="number">10.6</span></span><br><span class="line">   amountDouble: <span class="number">10.7</span></span><br><span class="line">createDatetime6: <span class="number">2017</span><span class="number">-10</span><span class="number">-26</span> <span class="number">10</span>:<span class="number">00</span>:<span class="number">00.000000</span></span><br><span class="line"> createDatetime: <span class="number">2017</span><span class="number">-10</span><span class="number">-26</span> <span class="number">10</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">createTimestamp: <span class="number">2017</span><span class="number">-10</span><span class="number">-26</span> <span class="number">10</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">       nameText: cccc</span><br><span class="line">       nameBlob: dddd</span><br><span class="line">     nameMedium: eee</span><br><span class="line"><span class="number">2</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">ERROR:</span><br><span class="line"><span class="keyword">No</span> query specified</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="回滚" class="article-heading"><a href="#回滚" class="headerlink" title="回滚"></a>回滚<a class="article-anchor" href="#回滚" aria-hidden="true"></a></h3><ol>
+<li>找到对应的binlog日志 <code>/alidata/mysql/log/mysql-bin.000078</code></li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">root@localhost [booboo]&gt;show binary logs;</span><br><span class="line">+------------------+-----------+</span><br><span class="line">| Log_name         | File_size |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">| mysql-bin.000077 |      5991 |</span><br><span class="line">| mysql-bin.000078 |      1348 |</span><br><span class="line">| mysql-bin.000079 |       191 |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">3 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@localhost [booboo]&gt;<span class="built_in">exit</span>;</span><br><span class="line">Bye</span><br><span class="line">[root@node1 MyFlash]# <span class="built_in">cd</span> /alidata/mysql/</span><br><span class="line">bin/           data/          include/       <span class="built_in">log</span>/           my.cnf         README         share/         support-files/</span><br><span class="line">COPYING        docs/          lib/           man/           mysql-test/    scripts/       sql-bench/     tmp/</span><br><span class="line">[root@node1 MyFlash]# <span class="built_in">cd</span> /alidata/mysql/log/</span><br><span class="line">mysql-bin.000077  mysql-bin.000078  mysql-bin.000079  mysql-bin.index   test.sql</span><br><span class="line">[root@node1 MyFlash]# <span class="built_in">cd</span> /alidata/mysql/log/</span><br><span class="line">[root@node1 <span class="built_in">log</span>]# ll</span><br><span class="line">总用量 24</span><br><span class="line">-rw-rw----. 1 mysql mysql 5991 5月   8 17:08 mysql-bin.000077</span><br><span class="line">-rw-rw----. 1 mysql mysql 1348 5月   8 17:09 mysql-bin.000078</span><br><span class="line">-rw-rw----. 1 mysql mysql  191 5月   8 17:09 mysql-bin.000079</span><br><span class="line">-rw-rw----. 1 mysql mysql  108 5月   8 17:09 mysql-bin.index</span><br><span class="line">[root@node1 <span class="built_in">log</span>]# mysqlbinlog -v -v  mysql-bin.000078</span><br><span class="line">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=1*/;</span><br><span class="line">/*!40019 SET @@session.max_insert_delayed_threads=0*/;</span><br><span class="line">/*!50003 SET @OLD_COMPLETION_TYPE=@@COMPLETION_TYPE,COMPLETION_TYPE=0*/;</span><br><span class="line">DELIMITER /*!*/;</span><br><span class="line"><span class="comment"># at 4</span></span><br><span class="line"><span class="comment">#200508 17:08:40 server id 1003306  end_log_pos 120 CRC32 0x2b689980 	Start: binlog v 4, server v 5.6.45-log created 200508 17:08:40</span></span><br><span class="line">BINLOG <span class="string">'</span></span><br><span class="line"><span class="string">mCG1Xg8qTw8AdAAAAHgAAAAAAAQANS42LjQ1LWxvZwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span></span><br><span class="line"><span class="string">AAAAAAAAAAAAAAAAAAAAAAAAEzgNAAgAEgAEBAQEEgAAXAAEGggAAAAICAgCAAAACgoKGRkAAYCZ</span></span><br><span class="line"><span class="string">aCs=</span></span><br><span class="line"><span class="string">'</span>/*!*/;</span><br><span class="line"><span class="comment"># at 120</span></span><br><span class="line"><span class="comment">#200508 17:08:40 server id 1003306  end_log_pos 191 CRC32 0x51646940 	Previous-GTIDs</span></span><br><span class="line"><span class="comment"># 8ae1b527-bd2c-11e9-b46d-000c296330ff:1-9</span></span><br><span class="line"><span class="comment"># at 191</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 239 CRC32 0x285c9356 	GTID [commit=yes]</span></span><br><span class="line">SET @@SESSION.GTID_NEXT= <span class="string">'8ae1b527-bd2c-11e9-b46d-000c296330ff:10'</span>/*!*/;</span><br><span class="line"><span class="comment"># at 239</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 321 CRC32 0x59cb1159 	Query	thread_id=31	exec_time=0	error_code=0</span></span><br><span class="line">SET TIMESTAMP=1588928952/*!*/;</span><br><span class="line">SET @@session.pseudo_thread_id=31/*!*/;</span><br><span class="line">SET @@session.foreign_key_checks=1, @@session.sql_auto_is_null=0, @@session.unique_checks=1, @@session.autocommit=1/*!*/;</span><br><span class="line">SET @@session.sql_mode=1075838976/*!*/;</span><br><span class="line">SET @@session.auto_increment_increment=1, @@session.auto_increment_offset=1/*!*/;</span><br><span class="line">/*!\C utf8 *//*!*/;</span><br><span class="line">SET @@session.character_set_client=33,@@session.collation_connection=33,@@session.collation_server=45/*!*/;</span><br><span class="line">SET @@session.time_zone=<span class="string">'SYSTEM'</span>/*!*/;</span><br><span class="line">SET @@session.lc_time_names=0/*!*/;</span><br><span class="line">SET @@session.collation_database=DEFAULT/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 321</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 406 CRC32 0x541898f4 	Table_map: `booboo`.`testflashback2` mapped to number 74</span></span><br><span class="line"><span class="comment"># at 406</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 715 CRC32 0x9df50e18 	Write_rows: table id 74 flags: STMT_END_F</span></span><br><span class="line"></span><br><span class="line">BINLOG <span class="string">'</span></span><br><span class="line"><span class="string">uCG1XhMqTw8AVQAAAJYBAAAAAEoAAAAAAAEABmJvb2JvbwAOdGVzdGZsYXNoYmFjazIADAMPD/YE</span></span><br><span class="line"><span class="string">BRISEfz8/A5QABAEEwkECAYAAAICA/4O9JgYVA==</span></span><br><span class="line"><span class="string">uCG1Xh4qTw8ANQEAAMsCAAAAAEoAAAAAAAEAAgAM//8A8AEAAAADYWFhzQBiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJigAAAAAodzWUAmpkpQWZmZmZmZiVAmZ30oAAAAACZnfSgAFnx</span></span><br><span class="line"><span class="string">QaAEAGNjY2MEAGRkZGQDAABlZWUYDvWd</span></span><br><span class="line"><span class="string">'</span>/*!*/;</span><br><span class="line"><span class="comment">### INSERT INTO `booboo`.`testflashback2`</span></span><br><span class="line"><span class="comment">### SET</span></span><br><span class="line"><span class="comment">###   @1=1 /* INT meta=0 nullable=0 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @2='aaa' /* VARSTRING(80) meta=80 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @3='bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' /* VARSTRING(1040) meta=1040 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @4=10.500000000 /* DECIMAL(19,9) meta=4873 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @5=10.6                 /* FLOAT meta=4 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @6=10.699999999999999289 /* DOUBLE meta=8 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @7='2017-10-26 10:00:00.000000' /* DATETIME(6) meta=6 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @8='2017-10-26 10:00:00' /* DATETIME(0) meta=0 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @9=1508983200 /* TIMESTAMP(0) meta=0 nullable=0 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @10='cccc' /* BLOB/TEXT meta=2 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @11='dddd' /* BLOB/TEXT meta=2 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @12='eee' /* MEDIUMBLOB/MEDIUMTEXT meta=3 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment"># at 715</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 746 CRC32 0x637a4759 	Xid = 153</span></span><br><span class="line">COMMIT/*!*/;</span><br><span class="line"><span class="comment"># at 746</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 794 CRC32 0x6df52572 	GTID [commit=yes]</span></span><br><span class="line">SET @@SESSION.GTID_NEXT= <span class="string">'8ae1b527-bd2c-11e9-b46d-000c296330ff:11'</span>/*!*/;</span><br><span class="line"><span class="comment"># at 794</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 876 CRC32 0x6944db63 	Query	thread_id=31	exec_time=0	error_code=0</span></span><br><span class="line">SET TIMESTAMP=1588928952/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 876</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 961 CRC32 0xb3177cd9 	Table_map: `booboo`.`testflashback2` mapped to number 74</span></span><br><span class="line"><span class="comment"># at 961</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 1270 CRC32 0x47f9804d 	Write_rows: table id 74 flags: STMT_END_F</span></span><br><span class="line"></span><br><span class="line">BINLOG <span class="string">'</span></span><br><span class="line"><span class="string">uCG1XhMqTw8AVQAAAMEDAAAAAEoAAAAAAAEABmJvb2JvbwAOdGVzdGZsYXNoYmFjazIADAMPD/YE</span></span><br><span class="line"><span class="string">BRISEfz8/A5QABAEEwkECAYAAAICA/4O2XwXsw==</span></span><br><span class="line"><span class="string">uCG1Xh4qTw8ANQEAAPYEAAAAAEoAAAAAAAEAAgAM//8A8AIAAAADYWFhzQBiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJigAAAAAodzWUAmpkpQWZmZmZmZiVAmZ30oAAAAACZnfSgAFnx</span></span><br><span class="line"><span class="string">QaAEAGNjY2MEAGRkZGQDAABlZWVNgPlH</span></span><br><span class="line"><span class="string">'</span>/*!*/;</span><br><span class="line"><span class="comment">### INSERT INTO `booboo`.`testflashback2`</span></span><br><span class="line"><span class="comment">### SET</span></span><br><span class="line"><span class="comment">###   @1=2 /* INT meta=0 nullable=0 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @2='aaa' /* VARSTRING(80) meta=80 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @3='bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' /* VARSTRING(1040) meta=1040 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @4=10.500000000 /* DECIMAL(19,9) meta=4873 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @5=10.6                 /* FLOAT meta=4 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @6=10.699999999999999289 /* DOUBLE meta=8 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @7='2017-10-26 10:00:00.000000' /* DATETIME(6) meta=6 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @8='2017-10-26 10:00:00' /* DATETIME(0) meta=0 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @9=1508983200 /* TIMESTAMP(0) meta=0 nullable=0 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @10='cccc' /* BLOB/TEXT meta=2 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @11='dddd' /* BLOB/TEXT meta=2 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @12='eee' /* MEDIUMBLOB/MEDIUMTEXT meta=3 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment"># at 1270</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 1301 CRC32 0xaf0eaeb3 	Xid = 154</span></span><br><span class="line">COMMIT/*!*/;</span><br><span class="line">SET @@SESSION.GTID_NEXT= <span class="string">'AUTOMATIC'</span> /* added by mysqlbinlog */ /*!*/;</span><br><span class="line"><span class="comment"># at 1301</span></span><br><span class="line"><span class="comment">#200508 17:09:13 server id 1003306  end_log_pos 1348 CRC32 0x53ecb2a7 	Rotate to mysql-bin.000079  pos: 4</span></span><br><span class="line">DELIMITER ;</span><br><span class="line"><span class="comment"># End of log file</span></span><br><span class="line">ROLLBACK /* added by mysqlbinlog */;</span><br><span class="line">/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/;</span><br><span class="line">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/;</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li>执行生产flashback文件 <code>flashback --binlogFileNames=/alidata/mysql/log/mysql-bin.000078</code></li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@node1 <span class="built_in">log</span>]# flashback --binlogFileNames=/alidata/mysql/log/mysql-bin.000078</span><br><span class="line">[root@node1 <span class="built_in">log</span>]# ll</span><br><span class="line">总用量 28</span><br><span class="line">-rw-r--r--. 1 root  root   970 5月   8 17:19 binlog_output_base.flashback</span><br><span class="line">-rw-rw----. 1 mysql mysql 5991 5月   8 17:08 mysql-bin.000077</span><br><span class="line">-rw-rw----. 1 mysql mysql 1348 5月   8 17:09 mysql-bin.000078</span><br><span class="line">-rw-rw----. 1 mysql mysql  191 5月   8 17:09 mysql-bin.000079</span><br><span class="line">-rw-rw----. 1 mysql mysql  108 5月   8 17:09 mysql-bin.index</span><br><span class="line">-rw-r--r--. 1 root  root   795 4月  14 16:23 test.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li></li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@node1 <span class="built_in">log</span>]# mysqlbinlog binlog_output_base.flashback</span><br><span class="line">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=1*/;</span><br><span class="line">/*!40019 SET @@session.max_insert_delayed_threads=0*/;</span><br><span class="line">/*!50003 SET @OLD_COMPLETION_TYPE=@@COMPLETION_TYPE,COMPLETION_TYPE=0*/;</span><br><span class="line">DELIMITER /*!*/;</span><br><span class="line"><span class="comment"># at 4</span></span><br><span class="line"><span class="comment">#200508 17:08:40 server id 1003306  end_log_pos 120 CRC32 0x2b689980 	Start: binlog v 4, server v 5.6.45-log created 200508 17:08:40</span></span><br><span class="line">BINLOG <span class="string">'</span></span><br><span class="line"><span class="string">mCG1Xg8qTw8AdAAAAHgAAAAAAAQANS42LjQ1LWxvZwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span></span><br><span class="line"><span class="string">AAAAAAAAAAAAAAAAAAAAAAAAEzgNAAgAEgAEBAQEEgAAXAAEGggAAAAICAgCAAAACgoKGRkAAYCZ</span></span><br><span class="line"><span class="string">aCs=</span></span><br><span class="line"><span class="string">'</span>/*!*/;</span><br><span class="line"><span class="comment"># at 120</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 205 CRC32 0xb3177cd9 	Table_map: `booboo`.`testflashback2` mapped to number 74</span></span><br><span class="line"><span class="comment"># at 205</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 514 CRC32 0x47f9804d 	Delete_rows: table id 74 flags: STMT_END_F</span></span><br><span class="line"></span><br><span class="line">BINLOG <span class="string">'</span></span><br><span class="line"><span class="string">uCG1XhMqTw8AVQAAAM0AAAAAAEoAAAAAAAEABmJvb2JvbwAOdGVzdGZsYXNoYmFjazIADAMPD/YE</span></span><br><span class="line"><span class="string">BRISEfz8/A5QABAEEwkECAYAAAICA/4O2XwXsw==</span></span><br><span class="line"><span class="string">uCG1XiAqTw8ANQEAAAICAAAAAEoAAAAAAAEAAgAM//8A8AIAAAADYWFhzQBiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJigAAAAAodzWUAmpkpQWZmZmZmZiVAmZ30oAAAAACZnfSgAFnx</span></span><br><span class="line"><span class="string">QaAEAGNjY2MEAGRkZGQDAABlZWVNgPlH</span></span><br><span class="line"><span class="string">'</span>/*!*/;</span><br><span class="line"><span class="comment"># at 514</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 545 CRC32 0x637a4759 	Xid = 153</span></span><br><span class="line">COMMIT/*!*/;</span><br><span class="line"><span class="comment"># at 545</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 630 CRC32 0x541898f4 	Table_map: `booboo`.`testflashback2` mapped to number 74</span></span><br><span class="line"><span class="comment"># at 630</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 939 CRC32 0x9df50e18 	Delete_rows: table id 74 flags: STMT_END_F</span></span><br><span class="line"></span><br><span class="line">BINLOG <span class="string">'</span></span><br><span class="line"><span class="string">uCG1XhMqTw8AVQAAAHYCAAAAAEoAAAAAAAEABmJvb2JvbwAOdGVzdGZsYXNoYmFjazIADAMPD/YE</span></span><br><span class="line"><span class="string">BRISEfz8/A5QABAEEwkECAYAAAICA/4O9JgYVA==</span></span><br><span class="line"><span class="string">uCG1XiAqTw8ANQEAAKsDAAAAAEoAAAAAAAEAAgAM//8A8AEAAAADYWFhzQBiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJigAAAAAodzWUAmpkpQWZmZmZmZiVAmZ30oAAAAACZnfSgAFnx</span></span><br><span class="line"><span class="string">QaAEAGNjY2MEAGRkZGQDAABlZWUYDvWd</span></span><br><span class="line"><span class="string">'</span>/*!*/;</span><br><span class="line"><span class="comment"># at 939</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 970 CRC32 0x637a4759 	Xid = 153</span></span><br><span class="line">COMMIT/*!*/;</span><br><span class="line">DELIMITER ;</span><br><span class="line"><span class="comment"># End of log file</span></span><br><span class="line">ROLLBACK /* added by mysqlbinlog */;</span><br><span class="line">/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/;</span><br><span class="line">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/;</span><br><span class="line">[root@node1 <span class="built_in">log</span>]# mysqlbinlog -v -v binlog_output_base.flashback</span><br><span class="line">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=1*/;</span><br><span class="line">/*!40019 SET @@session.max_insert_delayed_threads=0*/;</span><br><span class="line">/*!50003 SET @OLD_COMPLETION_TYPE=@@COMPLETION_TYPE,COMPLETION_TYPE=0*/;</span><br><span class="line">DELIMITER /*!*/;</span><br><span class="line"><span class="comment"># at 4</span></span><br><span class="line"><span class="comment">#200508 17:08:40 server id 1003306  end_log_pos 120 CRC32 0x2b689980 	Start: binlog v 4, server v 5.6.45-log created 200508 17:08:40</span></span><br><span class="line">BINLOG <span class="string">'</span></span><br><span class="line"><span class="string">mCG1Xg8qTw8AdAAAAHgAAAAAAAQANS42LjQ1LWxvZwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span></span><br><span class="line"><span class="string">AAAAAAAAAAAAAAAAAAAAAAAAEzgNAAgAEgAEBAQEEgAAXAAEGggAAAAICAgCAAAACgoKGRkAAYCZ</span></span><br><span class="line"><span class="string">aCs=</span></span><br><span class="line"><span class="string">'</span>/*!*/;</span><br><span class="line"><span class="comment"># at 120</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 205 CRC32 0xb3177cd9 	Table_map: `booboo`.`testflashback2` mapped to number 74</span></span><br><span class="line"><span class="comment"># at 205</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 514 CRC32 0x47f9804d 	Delete_rows: table id 74 flags: STMT_END_F</span></span><br><span class="line"></span><br><span class="line">BINLOG <span class="string">'</span></span><br><span class="line"><span class="string">uCG1XhMqTw8AVQAAAM0AAAAAAEoAAAAAAAEABmJvb2JvbwAOdGVzdGZsYXNoYmFjazIADAMPD/YE</span></span><br><span class="line"><span class="string">BRISEfz8/A5QABAEEwkECAYAAAICA/4O2XwXsw==</span></span><br><span class="line"><span class="string">uCG1XiAqTw8ANQEAAAICAAAAAEoAAAAAAAEAAgAM//8A8AIAAAADYWFhzQBiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJigAAAAAodzWUAmpkpQWZmZmZmZiVAmZ30oAAAAACZnfSgAFnx</span></span><br><span class="line"><span class="string">QaAEAGNjY2MEAGRkZGQDAABlZWVNgPlH</span></span><br><span class="line"><span class="string">'</span>/*!*/;</span><br><span class="line"><span class="comment">### DELETE FROM `booboo`.`testflashback2`</span></span><br><span class="line"><span class="comment">### WHERE</span></span><br><span class="line"><span class="comment">###   @1=2 /* INT meta=0 nullable=0 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @2='aaa' /* VARSTRING(80) meta=80 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @3='bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' /* VARSTRING(1040) meta=1040 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @4=10.500000000 /* DECIMAL(19,9) meta=4873 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @5=10.6                 /* FLOAT meta=4 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @6=10.699999999999999289 /* DOUBLE meta=8 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @7='2017-10-26 10:00:00.000000' /* DATETIME(6) meta=6 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @8='2017-10-26 10:00:00' /* DATETIME(0) meta=0 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @9=1508983200 /* TIMESTAMP(0) meta=0 nullable=0 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @10='cccc' /* BLOB/TEXT meta=2 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @11='dddd' /* BLOB/TEXT meta=2 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @12='eee' /* MEDIUMBLOB/MEDIUMTEXT meta=3 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment"># at 514</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 545 CRC32 0x637a4759 	Xid = 153</span></span><br><span class="line">COMMIT/*!*/;</span><br><span class="line"><span class="comment"># at 545</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 630 CRC32 0x541898f4 	Table_map: `booboo`.`testflashback2` mapped to number 74</span></span><br><span class="line"><span class="comment"># at 630</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 939 CRC32 0x9df50e18 	Delete_rows: table id 74 flags: STMT_END_F</span></span><br><span class="line"></span><br><span class="line">BINLOG <span class="string">'</span></span><br><span class="line"><span class="string">uCG1XhMqTw8AVQAAAHYCAAAAAEoAAAAAAAEABmJvb2JvbwAOdGVzdGZsYXNoYmFjazIADAMPD/YE</span></span><br><span class="line"><span class="string">BRISEfz8/A5QABAEEwkECAYAAAICA/4O9JgYVA==</span></span><br><span class="line"><span class="string">uCG1XiAqTw8ANQEAAKsDAAAAAEoAAAAAAAEAAgAM//8A8AEAAAADYWFhzQBiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJi</span></span><br><span class="line"><span class="string">YmJiYmJiYmJiYmJiYmJiYmJiYmJigAAAAAodzWUAmpkpQWZmZmZmZiVAmZ30oAAAAACZnfSgAFnx</span></span><br><span class="line"><span class="string">QaAEAGNjY2MEAGRkZGQDAABlZWUYDvWd</span></span><br><span class="line"><span class="string">'</span>/*!*/;</span><br><span class="line"><span class="comment">### DELETE FROM `booboo`.`testflashback2`</span></span><br><span class="line"><span class="comment">### WHERE</span></span><br><span class="line"><span class="comment">###   @1=1 /* INT meta=0 nullable=0 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @2='aaa' /* VARSTRING(80) meta=80 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @3='bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' /* VARSTRING(1040) meta=1040 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @4=10.500000000 /* DECIMAL(19,9) meta=4873 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @5=10.6                 /* FLOAT meta=4 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @6=10.699999999999999289 /* DOUBLE meta=8 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @7='2017-10-26 10:00:00.000000' /* DATETIME(6) meta=6 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @8='2017-10-26 10:00:00' /* DATETIME(0) meta=0 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @9=1508983200 /* TIMESTAMP(0) meta=0 nullable=0 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @10='cccc' /* BLOB/TEXT meta=2 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @11='dddd' /* BLOB/TEXT meta=2 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @12='eee' /* MEDIUMBLOB/MEDIUMTEXT meta=3 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment"># at 939</span></span><br><span class="line"><span class="comment">#200508 17:09:12 server id 1003306  end_log_pos 970 CRC32 0x637a4759 	Xid = 153</span></span><br><span class="line">COMMIT/*!*/;</span><br><span class="line">DELIMITER ;</span><br><span class="line"><span class="comment"># End of log file</span></span><br><span class="line">ROLLBACK /* added by mysqlbinlog */;</span><br><span class="line">/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/;</span><br><span class="line">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/;</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>导入数据库<code>mysqlbinlog -v -v binlog_output_base.flashback | mysql -uroot -proot</code></li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@node1 <span class="built_in">log</span>]# mysqlbinlog -v -v binlog_output_base.flashback | mysql -uroot -proot</span><br><span class="line">Warning: Using a password on the <span class="built_in">command</span> line interface can be insecure.</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="5">
+<li>检查执行结果</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[root<span class="variable">@node1</span> log]# mysql <span class="operator">-</span>uroot <span class="operator">-</span>proot <span class="operator">-</span>e "select count(*) from booboo.testflashback2"</span><br><span class="line">Warning: <span class="keyword">Using</span> a password <span class="keyword">on</span> the command line interface can be insecure.</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+</span></span><br><span class="line"><span class="operator">|</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+</span></span><br><span class="line"><span class="operator">|</span>        <span class="number">0</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="如何对阿里云RDS进行闪回" class="article-heading"><a href="#如何对阿里云RDS进行闪回" class="headerlink" title="如何对阿里云RDS进行闪回"></a>如何对阿里云RDS进行闪回<a class="article-anchor" href="#如何对阿里云RDS进行闪回" aria-hidden="true"></a></h2><p>难点：</p>
+<ol>
+<li>阿里云的binlog获取方法</li>
+<li>阿里云账号没有Super权限因此需要处理binlog日志删除备注信息。</li>
+</ol>
+<h3 id="阿里云的binlog获取方法" class="article-heading"><a href="#阿里云的binlog获取方法" class="headerlink" title="阿里云的binlog获取方法"></a>阿里云的binlog获取方法<a class="article-anchor" href="#阿里云的binlog获取方法" aria-hidden="true"></a></h3><ol>
+<li>若binlog日志已上传至oss，则需要在控制台进行下载，下载时需要注意找到主的日志（阿里云RDS日志包含主和被的日志）</li>
+<li>若binlog日志还在实例本地，则需要在控制台先点击一键上传，待日志上传到oss后，从控制台下载</li>
+</ol>
+<h3 id="处理binlog日志的备注信息" class="article-heading"><a href="#处理binlog日志的备注信息" class="headerlink" title="处理binlog日志的备注信息"></a>处理binlog日志的备注信息<a class="article-anchor" href="#处理binlog日志的备注信息" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 5.6版本</span></span><br><span class="line">mysqlbinlog -v -v --skip-gtids binlog_output_base.flashback | sed  <span class="string">'s@\/\*.*\*\/@@'</span> |mysql -uroot -proot</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="其他方法" class="article-heading"><a href="#其他方法" class="headerlink" title="其他方法"></a>其他方法<a class="article-anchor" href="#其他方法" aria-hidden="true"></a></h3><p>对于阿里云RDS实例，若待回滚的表中，没有blob字段建议使用binlog2sql。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 远程在线获取binlog日志</span></span><br><span class="line">mysqlbinlog -vv -P 3306 -uxxx -pxxxx -hxxxxx.mysql.rds.aliyuncs.com --read-from-remote-server --start-datetime=<span class="string">'2017-09-12 06:29:00'</span> --stop-datetime=<span class="string">'2017-09-12 06:30:01'</span> --base64-output=DECODE-ROWS mysql-bin.000634 &gt; taiping0912.binlog</span><br><span class="line"><span class="comment"># binlog2sql远程连接数据库直接生成回滚sql</span></span><br><span class="line">python binlog2sql.py -P 3306 -uxxx -pxxxx -hxxxxx.mysql.rds.aliyuncs.com -t tablenamexxx --start-file=<span class="string">'mysql-bin.000001'</span> --start-position=4946 --stop-position=5921 -B</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:53.833Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E6%BA%90%E5%B7%A5%E5%85%B7-MyFlash%E5%B7%A5%E5%85%B7"><span class="toc-text">开源工具-MyFlash工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E"><span class="toc-text">详细说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%90%E5%88%B6"><span class="toc-text">限制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FAQ"><span class="toc-text">FAQ</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%AE%9E%E8%B7%B5"><span class="toc-text">使用实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85MyFlash"><span class="toc-text">安装MyFlash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%B8%AE%E5%8A%A9"><span class="toc-text">查看帮助</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E4%BD%BF%E7%94%A8"><span class="toc-text">测试使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5mysql%E6%97%A5%E5%BF%97%E5%8F%82%E6%95%B0"><span class="toc-text">检查mysql日志参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%B5%8B%E8%AF%95%E8%A1%A8"><span class="toc-text">创建测试表</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE"><span class="toc-text">插入测试数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9E%E6%BB%9A"><span class="toc-text">回滚</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%AF%B9%E9%98%BF%E9%87%8C%E4%BA%91RDS%E8%BF%9B%E8%A1%8C%E9%97%AA%E5%9B%9E"><span class="toc-text">如何对阿里云RDS进行闪回</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%BF%E9%87%8C%E4%BA%91%E7%9A%84binlog%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95"><span class="toc-text">阿里云的binlog获取方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86binlog%E6%97%A5%E5%BF%97%E7%9A%84%E5%A4%87%E6%B3%A8%E4%BF%A1%E6%81%AF"><span class="toc-text">处理binlog日志的备注信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95"><span class="toc-text">其他方法</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

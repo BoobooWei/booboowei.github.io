@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>恢复管理器Recover Manager 03 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-09-%E5%86%B7%E5%A4%87_%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E6%81%A2%E5%A4%8D%E7%AE%A1%E7%90%86%E5%99%A8RMAN03">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-09-%E5%86%B7%E5%A4%87_%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E6%81%A2%E5%A4%8D%E7%AE%A1%E7%90%86%E5%99%A8RMAN03" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2019.12.15 - BoobooWei     恢复管理器Recover Manager 03 数据库备份（冷备）与RMAN备份的概念 数据库完全备份 RMAN备份 RMAN备份的类型 完整备份 增量备份 一致性备份 非一致性备份   备份集与镜像副本 备份集backup 镜像副本copy   备份路径 备份限制   使用RMAN进行备份 备份数据库 备份数据文件 备份表空间 备份控制文件">
+<meta property="og:type" content="website">
+<meta property="og:title" content="恢复管理器Recover Manager 03">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-09-%E5%86%B7%E5%A4%87_%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E6%81%A2%E5%A4%8D%E7%AE%A1%E7%90%86%E5%99%A8RMAN03">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2019.12.15 - BoobooWei     恢复管理器Recover Manager 03 数据库备份（冷备）与RMAN备份的概念 数据库完全备份 RMAN备份 RMAN备份的类型 完整备份 增量备份 一致性备份 非一致性备份   备份集与镜像副本 备份集backup 镜像副本copy   备份路径 备份限制   使用RMAN进行备份 备份数据库 备份数据文件 备份表空间 备份控制文件">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.777Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:49.809Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">恢复管理器Recover Manager 03</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/E-数据库备份与恢复-09-冷备_物理备份恢复-恢复管理器RMAN03.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2019.12.15 - BoobooWei</p>
+</blockquote>
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#%E6%81%A2%E5%A4%8D%E7%AE%A1%E7%90%86%E5%99%A8recover-manager-03">恢复管理器Recover Manager 03</a><ul>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E5%86%B7%E5%A4%87%E4%B8%8Erman%E5%A4%87%E4%BB%BD%E7%9A%84%E6%A6%82%E5%BF%B5">数据库备份（冷备）与RMAN备份的概念</a><ul>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%8C%E5%85%A8%E5%A4%87%E4%BB%BD">数据库完全备份</a></li>
+<li><a href="#rman%E5%A4%87%E4%BB%BD">RMAN备份</a></li>
+<li><a href="#rman%E5%A4%87%E4%BB%BD%E7%9A%84%E7%B1%BB%E5%9E%8B">RMAN备份的类型</a><ul>
+<li><a href="#%E5%AE%8C%E6%95%B4%E5%A4%87%E4%BB%BD">完整备份</a></li>
+<li><a href="#%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD">增量备份</a></li>
+<li><a href="#%E4%B8%80%E8%87%B4%E6%80%A7%E5%A4%87%E4%BB%BD">一致性备份</a></li>
+<li><a href="#%E9%9D%9E%E4%B8%80%E8%87%B4%E6%80%A7%E5%A4%87%E4%BB%BD">非一致性备份</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E9%9B%86%E4%B8%8E%E9%95%9C%E5%83%8F%E5%89%AF%E6%9C%AC">备份集与镜像副本</a><ul>
+<li><a href="#%E5%A4%87%E4%BB%BD%E9%9B%86backup">备份集<code>backup</code></a></li>
+<li><a href="#%E9%95%9C%E5%83%8F%E5%89%AF%E6%9C%ACcopy">镜像副本<code>copy</code></a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E8%B7%AF%E5%BE%84">备份路径</a></li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E9%99%90%E5%88%B6">备份限制</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BD%BF%E7%94%A8rman%E8%BF%9B%E8%A1%8C%E5%A4%87%E4%BB%BD">使用RMAN进行备份</a><ul>
+<li><a href="#%E5%A4%87%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%BA%93">备份数据库</a></li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6">备份数据文件</a></li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E8%A1%A8%E7%A9%BA%E9%97%B4">备份表空间</a></li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6">备份控制文件</a></li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E5%8F%82%E6%95%B0%E6%96%87%E4%BB%B6">备份参数文件</a></li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E5%BD%92%E6%A1%A3%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6">备份归档日志文件</a></li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E9%97%AA%E5%9B%9E%E5%8C%BA">备份闪回区</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结：</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E7%9A%84%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7">备份的其它特性</a><ul>
+<li><a href="#%E5%A4%87%E4%BB%BD%E7%89%87%E5%A4%A7%E5%B0%8F%E7%9A%84%E9%99%90%E5%88%B6">备份片大小的限制</a></li>
+<li><a href="#%E5%B9%B6%E5%8F%91">并发</a></li>
+<li><a href="#%E5%A4%8D%E7%94%A8%E5%A4%87%E4%BB%BD">复用备份</a></li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E5%A4%87%E4%BB%BD%E9%9B%86">备份备份集</a></li>
+<li><a href="#%E9%95%9C%E5%83%8F%E5%A4%87%E4%BB%BD">镜像备份</a></li>
+<li><a href="#%E5%8E%8B%E7%BC%A9%E5%A4%87%E4%BB%BD%E9%9B%86">压缩备份集</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8tag%E6%A0%87%E8%AE%B0">使用tag标记</a></li>
+<li><a href="#%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD">增量备份</a><ul>
+<li><a href="#%E6%A1%88%E4%BE%8B1">案例1</a></li>
+<li><a href="#%E6%A1%88%E4%BE%8B2">案例2</a></li>
+</ul>
+</li>
+<li><a href="#%E5%90%AF%E7%94%A8%E5%9D%97%E5%8F%98%E5%8C%96%E8%B7%9F%E8%B8%AA">启用块变化跟踪</a></li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E4%BF%9D%E7%95%99%E7%AD%96%E7%95%A5">备份保留策略</a><ul>
+<li><a href="#%E5%A4%87%E4%BB%BD%E5%86%97%E4%BD%99">备份冗余</a></li>
+<li><a href="#%E6%81%A2%E5%A4%8D%E7%AA%97%E5%8F%A3">恢复窗口</a></li>
+<li><a href="#%E6%B8%85%E9%99%A4%E5%A4%87%E4%BB%BD%E4%BF%9D%E7%95%99%E7%AD%96%E7%95%A5">清除备份保留策略</a></li>
+<li><a href="#%E6%B0%B8%E4%B8%8D%E5%B0%86%E5%A4%87%E4%BB%BD%E7%BD%AE%E4%B8%BAobsolete">永不将备份置为obsolete</a></li>
+<li><a href="#%E6%B3%A8%E6%84%8Fobsolete-%E4%B8%8E-expired">注意<code>obsolete</code> 与 <code>expired</code></a></li>
+</ul>
+</li>
+<li><a href="#%E9%AA%8C%E8%AF%81%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E9%80%BB%E8%BE%91%E5%9D%8F%E5%9D%97">验证数据文件逻辑坏块</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%87%E4%BB%BD%E7%9B%B8%E5%85%B3%E7%9A%84%E5%8A%A8%E6%80%81%E6%80%A7%E8%83%BD%E8%A7%86%E5%9B%BE%E5%8F%8A%E7%9B%91%E6%8E%A7">备份相关的动态性能视图及监控</a><ul>
+<li><a href="#%E7%9B%B8%E5%85%B3%E8%A7%86%E5%9B%BE">相关视图</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8Bchannel%E5%AF%B9%E5%BA%94%E7%9A%84server-sessions">查看channel对应的server sessions</a></li>
+<li><a href="#linux%E4%B8%8B%E7%9A%84rman%E8%87%AA%E5%8A%A8%E5%A4%87%E4%BB%BD">Linux下的rman自动备份</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h2 id="数据库备份（冷备）与RMAN备份的概念" class="article-heading"><a href="#数据库备份（冷备）与RMAN备份的概念" class="headerlink" title="数据库备份（冷备）与RMAN备份的概念"></a>数据库备份（冷备）与RMAN备份的概念<a class="article-anchor" href="#数据库备份（冷备）与RMAN备份的概念" aria-hidden="true"></a></h2><h3 id="数据库完全备份" class="article-heading"><a href="#数据库完全备份" class="headerlink" title="数据库完全备份"></a>数据库完全备份<a class="article-anchor" href="#数据库完全备份" aria-hidden="true"></a></h3><blockquote>
+<p>此处只讨论冷备之物理备份-全备</p>
+</blockquote>
+<p>按归档模式分为归档和非归档</p>
+<table>
+<thead>
+<tr>
+<th align="left">归档模式</th>
+<th align="left">冷备分类</th>
+<th align="left">恢复状态</th>
+<th align="left">服务可用性</th>
+<th align="left">数据一致性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">非归档</td>
+<td align="left">离线冷备-copy</td>
+<td align="left">完全恢复</td>
+<td align="left"><code>shutdown</code>不能读写</td>
+<td align="left">一致</td>
+</tr>
+<tr>
+<td align="left">归档</td>
+<td align="left">在线热备-SQL</td>
+<td align="left">不完全恢复</td>
+<td align="left"><code>open</code> 可读写</td>
+<td align="left">不一致</td>
+</tr>
+<tr>
+<td align="left">归档</td>
+<td align="left">在线热备-RMAN</td>
+<td align="left">不完全恢复</td>
+<td align="left"><code>open</code> 可读写</td>
+<td align="left">不一致</td>
+</tr>
+<tr>
+<td align="left">归档</td>
+<td align="left">离线冷备-RMAN</td>
+<td align="left">完全恢复</td>
+<td align="left"><code>mount</code> 不能读写</td>
+<td align="left">一致</td>
+</tr>
+</tbody></table>
+<h3 id="RMAN备份" class="article-heading"><a href="#RMAN备份" class="headerlink" title="RMAN备份"></a>RMAN备份<a class="article-anchor" href="#RMAN备份" aria-hidden="true"></a></h3><ul>
+<li><p>RMAN使用服务器会话来完成备份操作，从RMAN客户端连接到服务器将产生一个服务器会话</p>
+</li>
+<li><p>RMAN备份内容包括：整个数据库,表空间,数据文件,指定的数据文件,控制文件,归档日志文件,参数文件等</p>
+<p>​</p>
+</li>
+</ul>
+<h3 id="RMAN备份的类型" class="article-heading"><a href="#RMAN备份的类型" class="headerlink" title="RMAN备份的类型"></a>RMAN备份的类型<a class="article-anchor" href="#RMAN备份的类型" aria-hidden="true"></a></h3><p>完整备份(full) 或增量备份(incremental)</p>
+<p>一致性备份(consistent)或不一致性备份(inconsistent)</p>
+<p>热备(open)或冷备(closed)，冷备时数据库必须处于mount状态</p>
+<p>​</p>
+<h4 id="完整备份" class="article-heading"><a href="#完整备份" class="headerlink" title="完整备份"></a>完整备份<a class="article-anchor" href="#完整备份" aria-hidden="true"></a></h4><p>一个或多个数据文件的一个完整副本,包含从备份开始处所有的数据块.完整备份不能作为增量的基础</p>
+<h4 id="增量备份" class="article-heading"><a href="#增量备份" class="headerlink" title="增量备份"></a>增量备份<a class="article-anchor" href="#增量备份" aria-hidden="true"></a></h4><blockquote>
+<p>注意：增量备份（通用）=差异增量（Oracle） 差异备份（通用）=累计增量（Oracle）<br>增量备份（通用）:相对于上一次的备份<br>差异备份（通用）:相对于上一次的全备</p>
+</blockquote>
+<ul>
+<li><p>包含从最近一次备份以来被修改或添加的数据块.可以分为差异增量备份和累计增量备份</p>
+</li>
+<li><p>差异增量备份仅仅包含n级或n级以下被修改过的数据块。备份数据量小，恢复时间长。</p>
+</li>
+<li><p>累计增量备份仅仅包含n-1级或n-1级以下被修改过的数据块。备份数据量大，恢复时间短。</p>
+</li>
+<li><p>0级增量备份相当于一个完整备份,该备份包含所有已用的数据块文件,与完整备份的差异是完整备份不能用作级增量备份的基础</p>
+<p>​</p>
+</li>
+</ul>
+<h4 id="一致性备份" class="article-heading"><a href="#一致性备份" class="headerlink" title="一致性备份"></a>一致性备份<a class="article-anchor" href="#一致性备份" aria-hidden="true"></a></h4><ul>
+<li><p>备份所包含的各个文件中的所有修改都具备相同的系统变化编号(system change number，SCN)。</p>
+</li>
+<li><p>也就是说，备份所包含的各个文件中的所有数据均来自同一时间点。</p>
+</li>
+<li><p>一致性数据库完全备份(consis-tent whole database backup)进行还原(restore)后，不需要执行恢复操作(recovery)</p>
+</li>
+</ul>
+<h4 id="非一致性备份" class="article-heading"><a href="#非一致性备份" class="headerlink" title="非一致性备份"></a>非一致性备份<a class="article-anchor" href="#非一致性备份" aria-hidden="true"></a></h4><ul>
+<li>在数据库处于打开(open)状态时，或数据库异常关闭(shut down abnormally)后，对一个或多个数据库文件进行的备份。非一致性备份需要在还原之后进行恢复操作</li>
+</ul>
+<h3 id="备份集与镜像副本" class="article-heading"><a href="#备份集与镜像副本" class="headerlink" title="备份集与镜像副本"></a>备份集与镜像副本<a class="article-anchor" href="#备份集与镜像副本" aria-hidden="true"></a></h3><h4 id="备份集backup" class="article-heading"><a href="#备份集backup" class="headerlink" title="备份集backup"></a>备份集<code>backup</code><a class="article-anchor" href="#备份集backup" aria-hidden="true"></a></h4><p>是包含一个或多个数据文件,归档日志文件的二进制文件的集合.备份集由备份片组成,一个备份集中可以包含一个或多个备份片</p>
+<p>可以通过filesperset参数来设置备份集中可包含的备份片数，</p>
+<p>也可以设定参数maxpiecesize来制定每个备份片的大小。</p>
+<p>备份集中空闲的数据块将不会被备份，因此备份集可以支持压缩。备份集支持增量备份，可以备份到磁盘或磁带。</p>
+<h4 id="镜像副本copy" class="article-heading"><a href="#镜像副本copy" class="headerlink" title="镜像副本copy"></a>镜像副本<code>copy</code><a class="article-anchor" href="#镜像副本copy" aria-hidden="true"></a></h4><p>是数据文件或归档日志文件等的完整拷贝,未经过任何压缩等处理,不能备份到磁带,也不支持增量备份</p>
+<p>恢复时可以立即使用实现快速恢复</p>
+<p>等同于操作系统的复制命令</p>
+<p>可以作为级增量备份</p>
+<h3 id="备份路径" class="article-heading"><a href="#备份路径" class="headerlink" title="备份路径"></a>备份路径<a class="article-anchor" href="#备份路径" aria-hidden="true"></a></h3><p>可以备份到磁盘目录</p>
+<p>可以备份到磁带</p>
+<p>闪回区</p>
+<h3 id="备份限制" class="article-heading"><a href="#备份限制" class="headerlink" title="备份限制"></a>备份限制<a class="article-anchor" href="#备份限制" aria-hidden="true"></a></h3><p>数据库必须处于mount或open状态</p>
+<p>不能备份联机日志</p>
+<p>在非归档模式下仅仅能作干净备份，即在干净关闭且启动到mount状态下备份</p>
+<p>在归档模式下，current状态下数据文件可以备份</p>
+<p>​</p>
+<h2 id="使用RMAN进行备份" class="article-heading"><a href="#使用RMAN进行备份" class="headerlink" title="使用RMAN进行备份"></a>使用RMAN进行备份<a class="article-anchor" href="#使用RMAN进行备份" aria-hidden="true"></a></h2><h3 id="备份数据库" class="article-heading"><a href="#备份数据库" class="headerlink" title="备份数据库"></a>备份数据库<a class="article-anchor" href="#备份数据库" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">backup database;</span><br><span class="line">backup database plus archivelog;</span><br><span class="line">backup <span class="keyword">as</span> compressed backupset database plus archivelog;</span><br><span class="line">backup <span class="keyword">as</span> compressed backupset database plus archivelog <span class="keyword">delete</span> <span class="keyword">all</span> input;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="备份数据文件" class="article-heading"><a href="#备份数据文件" class="headerlink" title="备份数据文件"></a>备份数据文件<a class="article-anchor" href="#备份数据文件" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">backup datafile <span class="number">5</span>;</span><br><span class="line">backup <span class="keyword">as</span> compressed backupset datafile <span class="number">5</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="备份表空间" class="article-heading"><a href="#备份表空间" class="headerlink" title="备份表空间"></a>备份表空间<a class="article-anchor" href="#备份表空间" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">backup tablespace users;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="备份控制文件" class="article-heading"><a href="#备份控制文件" class="headerlink" title="备份控制文件"></a>备份控制文件<a class="article-anchor" href="#备份控制文件" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">backup <span class="keyword">current</span> controlfile;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="备份参数文件" class="article-heading"><a href="#备份参数文件" class="headerlink" title="备份参数文件"></a>备份参数文件<a class="article-anchor" href="#备份参数文件" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">backup spfile format <span class="string">'/home/oracle/rmanbk/spfile.bkp'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="备份归档日志文件" class="article-heading"><a href="#备份归档日志文件" class="headerlink" title="备份归档日志文件"></a>备份归档日志文件<a class="article-anchor" href="#备份归档日志文件" aria-hidden="true"></a></h3><ul>
+<li>备份归档日志时仅仅备份归档过的数据文件(不备份联机重做日志文件)</li>
+<li>备份归档日志时总是对归档日志做完整备份</li>
+<li>RMAN对归档日志备份前会自动做一次日志切换，且从一组归档日志中备份未损坏的归档日志</li>
+<li>RMAN会自动判断哪些归档日志需要进行备份</li>
+<li>归档日志的备份集不能包含其它类型的文件</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">list archivelog <span class="keyword">all</span>; list <span class="keyword">copy</span> <span class="keyword">of</span> archivelog <span class="keyword">all</span>;</span><br><span class="line">list backup <span class="keyword">of</span> archivelog <span class="keyword">all</span>;</span><br><span class="line">list <span class="keyword">copy</span> <span class="keyword">of</span> archivelog sequence <span class="keyword">between</span> <span class="number">264</span> <span class="keyword">and</span> <span class="number">265</span> thread<span class="operator">=</span><span class="number">1</span> ;</span><br><span class="line"></span><br><span class="line">backup archivelog <span class="keyword">all</span>;</span><br><span class="line">BACKUP ARCHIVELOG <span class="keyword">ALL</span> <span class="keyword">DELETE</span> INPUT  format <span class="string">'d:\bk\arc%s.bk'</span>;</span><br><span class="line">backup archivelog sequence <span class="keyword">between</span> <span class="number">264</span> <span class="keyword">and</span> <span class="number">265</span> thread<span class="operator">=</span><span class="number">1</span> format <span class="string">'d:\bk\arc%s.bk'</span>; backup archivelog sequence <span class="keyword">between</span> <span class="number">50</span> <span class="keyword">and</span> <span class="number">52</span> thread<span class="operator">=</span><span class="number">1</span> <span class="keyword">like</span> <span class="string">'%0586360856%'</span> format <span class="string">'c:\bk\arc%s.bk'</span>;</span><br><span class="line">backup database plus archivelog;</span><br><span class="line">backup database plus archivelog <span class="keyword">delete</span> <span class="keyword">all</span> input;</span><br><span class="line"></span><br><span class="line">BACKUP ARCHIVELOG <span class="keyword">ALL</span> <span class="keyword">DELETE</span> INPUT  format <span class="string">'d:\bk\arc%s.bk'</span>;</span><br><span class="line"><span class="comment">--如果上面的语句有问题，请运行下面语句来标定控制文件中归档日志的状态。</span></span><br><span class="line">change archivelog <span class="keyword">all</span> crosscheck;</span><br><span class="line"><span class="keyword">delete</span> archivelog <span class="keyword">all</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> SEQUENCE#,APPLIED,DELETED,STATUS,BACKUP_COUNT <span class="keyword">from</span> v$archived_log</span><br></pre></td></tr></tbody></table></figure>
+
+<p>备份归档日志方式有两种：</p>
+<ol>
+<li>单独备份归档日志</li>
+<li>在执行备库时一起备份归档日志</li>
+</ol>
+<blockquote>
+<p>这两种方式有什么区别呢？</p>
+</blockquote>
+<p>运行<code>backup archivelog all</code> 命令时执行的步骤：</p>
+<ol>
+<li><code>alter system archive log current;</code> 归档当前日志</li>
+<li><code>backup  archivelog all ; </code>备份所有归档日志</li>
+</ol>
+<p>而运行<code>backup database plus archivelog</code>，的运行步骤是；</p>
+<ol>
+<li><code>alter system archive log current; </code> 归档当前日志文件</li>
+<li><code>backup archivelog all；</code> 备份所有已归档日志文件</li>
+<li><code>backup database; </code> 备份数据库</li>
+<li><code>alter system archive log current; </code> 归档当前日志文件</li>
+<li><code>backup archivelog recently generated ; </code> 备份刚生成的归档日志文件</li>
+</ol>
+<p>由于归档日志会占用较多的空间，所以应对定期删除掉没用的归档日志。</p>
+<p>比如，在备份数据库及归档日志文件后，删除掉已经备份的归档日志文件。</p>
+<p>命令：<code>backup database plus archivelog delete all input; </code></p>
+<p>其中，<code>delete all input</code>即为删除归档日志文件参数。</p>
+<h3 id="备份闪回区" class="article-heading"><a href="#备份闪回区" class="headerlink" title="备份闪回区"></a>备份闪回区<a class="article-anchor" href="#备份闪回区" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">backup recovery area;</span><br><span class="line">backup recovery files;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>使用<code>backup recovery area</code>时，将备份位于闪回区且未进行过备份的所有文件，这些文件包括完整、增量备份集、自动备份的 控制文件(假定使用闪回区作为备份路径时)、归档日志、数据文件的镜像副本等。闪回日志，当前的控制文件。 联机重做日志不会被备份 。</p>
+<p>使用<code>backup recovery files</code>时，将备份磁盘上未进行过备份的所有恢复文件，而不论是否位于闪回区</p>
+<blockquote>
+<p>注：使用上述两条命令时，备份目的地必须是磁带</p>
+</blockquote>
+<h3 id="总结：" class="article-heading"><a href="#总结：" class="headerlink" title="总结："></a>总结：<a class="article-anchor" href="#总结：" aria-hidden="true"></a></h3><p>数据文件的备份集对于未使用的块可以执行增量备份，可以跳过未使用过的数据块来进行压缩备份<br>对于控制文件、归档日志文件、spfile文件则是简单的拷贝，并对其进行打包压缩而已</p>
+<h2 id="备份的其它特性" class="article-heading"><a href="#备份的其它特性" class="headerlink" title="备份的其它特性"></a>备份的其它特性<a class="article-anchor" href="#备份的其它特性" aria-hidden="true"></a></h2><h3 id="备份片大小的限制" class="article-heading"><a href="#备份片大小的限制" class="headerlink" title="备份片大小的限制"></a>备份片大小的限制<a class="article-anchor" href="#备份片大小的限制" aria-hidden="true"></a></h3><p>使用 rman 进行 backup 的操作.限制每个备份片的大小.</p>
+<p>限制通道的大小,什么是通道呢?</p>
+<p>进程!告诉数据库使用一个进程 d1 做备份,我们通过限制进程的写信息来 限制每个备份片的大小.备份集是逻辑的,有多个备份片组成.备份片是物理的.没有明确说明默认情况下为 一个备份集对应一个物理的备份片,一个备份集中可以包含多个备份的数据文件.</p>
+<p>你可以理解为备份集是压 缩包的名称,一个压缩包里含有多个被压缩的文件,我们又将压缩包分解为多个小压缩文件,当我们解压缩 的时候需要所有的小压缩包才能解压缩文件.我们一般限制备份片大小的目的是使得备份片可以存放在一 个磁带上.</p>
+<p>下面的命令是限制每个备份片大小为 10m,我们上面的实验看到正常备份有 25 m,所以会被切割为 三个备份片,前两个每个为 10m,最后一个为 5m.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">RUN {</span><br><span class="line"><span class="keyword">ALLOCATE</span> CHANNEL d1 TYPE disk;</span><br><span class="line"><span class="keyword">set</span> limit channel d1 kbytes<span class="operator">=</span><span class="number">10000</span>;</span><br><span class="line">backup datafile <span class="number">4</span> FORMAT <span class="string">'c:\bk\%s_%p'</span> ;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="并发" class="article-heading"><a href="#并发" class="headerlink" title="并发"></a>并发<a class="article-anchor" href="#并发" aria-hidden="true"></a></h3><blockquote>
+<p>并发：主要用于提高备份的速度，可以分为手动并发或自动并发</p>
+</blockquote>
+<p>手动并发：通过分配多个通道并将文件指定到特定的通道</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">RMAN<span class="operator">&gt;</span> run {</span><br><span class="line"><span class="keyword">allocate</span> channel ch1 device type disk;</span><br><span class="line"><span class="keyword">allocate</span> channel ch2 device type disk;</span><br><span class="line"><span class="keyword">allocate</span> channel ch3 device type disk;</span><br><span class="line">backup incremental level<span class="operator">=</span><span class="number">0</span></span><br><span class="line">format <span class="string">'/u01/app/oracle/rmanbak/df_%d_%U'</span></span><br><span class="line">(datafile <span class="number">1</span> channel ch1 tag<span class="operator">=</span><span class="string">'sys'</span>)</span><br><span class="line">(datafile <span class="number">3</span> channel ch2 tag<span class="operator">=</span><span class="string">'aux'</span>)</span><br><span class="line">(datafile <span class="number">2</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span> channel ch3 tag<span class="operator">=</span><span class="string">'other'</span>);</span><br><span class="line"><span class="keyword">sql</span> <span class="string">'alter system archive log current'</span>;</span><br><span class="line"><span class="keyword">release</span> channel ch1;</span><br><span class="line"><span class="keyword">release</span> channel ch2;</span><br><span class="line"><span class="keyword">release</span> channel ch3;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>自动并发：使用configure配置并发度即可</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">RMAN<span class="operator">&gt;</span> configure device type disk parallelism <span class="number">3</span> backup type <span class="keyword">to</span> backupset;</span><br><span class="line"><span class="comment">--下面的备份将自动启用个通道执行并发</span></span><br><span class="line">RMAN<span class="operator">&gt;</span>  backup database format <span class="string">'/u01/app/oralce/rmanbak/p3_%U'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="复用备份" class="article-heading"><a href="#复用备份" class="headerlink" title="复用备份"></a>复用备份<a class="article-anchor" href="#复用备份" aria-hidden="true"></a></h3><p>即将一个备份集复制多份，同一备份集，Oracle最多可复用个</p>
+<p>手工指定：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">RMAN<span class="operator">&gt;</span> backup copies <span class="number">2</span> datafile <span class="number">4</span></span><br><span class="line"><span class="number">2</span><span class="operator">&gt;</span> format <span class="string">'/u01/app/oracle/rmanbak/d1/df_%U'</span>,</span><br><span class="line"><span class="number">3</span><span class="operator">&gt;</span> <span class="string">'/u01/app/oracle/rmanbak/d2/df_%U'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>自动指定：配置下列参数</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">RMAN<span class="operator">&gt;</span> configure datafile backup copies <span class="keyword">for</span> device type disk <span class="keyword">to</span> <span class="number">2</span>;  <span class="comment">--指定备份数据文件副本数</span></span><br><span class="line">RMAN<span class="operator">&gt;</span> configure archivelog backup copies <span class="keyword">for</span> device type disk <span class="keyword">to</span> <span class="number">2</span>;<span class="comment">--指定备份日志文件副本数</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="备份备份集" class="article-heading"><a href="#备份备份集" class="headerlink" title="备份备份集"></a>备份备份集<a class="article-anchor" href="#备份备份集" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">bacup backupset</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="镜像备份" class="article-heading"><a href="#镜像备份" class="headerlink" title="镜像备份"></a>镜像备份<a class="article-anchor" href="#镜像备份" aria-hidden="true"></a></h3><p>镜像备份时会检查数据文件中是否存在坏块，可以使用nochecksum来跳过坏块的检测</p>
+<p>也可以指定maxcorrupt判断有多少个坏块时，Oracle将停止该镜像备份</p>
+<table>
+<thead>
+<tr>
+<th>镜像备份</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>控制文件</td>
+<td><code>copy current controlfile to '/home/oracle/rmanbk/control01.ctl';</code></td>
+</tr>
+<tr>
+<td>数据文件</td>
+<td><code>copy datafile 5 to '/home/oracle/rmanbk/tbs01.dbf';</code></td>
+</tr>
+<tr>
+<td>日志文件</td>
+<td><code>copy archivelog</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">RMAN<span class="operator">&gt;</span> backup <span class="keyword">as</span> <span class="keyword">copy</span></span><br><span class="line"><span class="number">2</span><span class="operator">&gt;</span> datafile <span class="number">4</span> format <span class="string">'/u01/app/oracle/rmanbak/users.dbf'</span> tag<span class="operator">=</span><span class="string">'users'</span></span><br><span class="line"><span class="comment">--以下命令等同于上一条</span></span><br><span class="line">RMAN<span class="operator">&gt;</span> <span class="keyword">copy</span> datafile <span class="number">4</span> <span class="keyword">to</span> <span class="string">'/u01/app/oracle/rmanbak/user01.dbf'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup <span class="keyword">as</span> <span class="keyword">copy</span></span><br><span class="line"><span class="number">2</span><span class="operator">&gt;</span> archivelog <span class="keyword">like</span> <span class="string">'o1_mf_1_118_6chl1byd_.arc'</span></span><br><span class="line"><span class="number">3</span><span class="operator">&gt;</span> format <span class="string">'/u01/app/oracle/rmanbak/arch_1015.bak'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--使用下面的configure命令将backup type设置为copy之后，则缺省的备份为镜像副本</span></span><br><span class="line">RMAN<span class="operator">&gt;</span> configure device type disk parallelism <span class="number">1</span> backup type <span class="keyword">to</span> <span class="keyword">copy</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup datafile <span class="number">4</span>  <span class="comment">--由于上面的设置，则此命令备份的将是镜像副本</span></span><br><span class="line"><span class="number">2</span><span class="operator">&gt;</span> format <span class="string">'/u01/app/oracle/rmanbak/users.dbf.bak'</span> tag<span class="operator">=</span>users;</span><br><span class="line"><span class="comment">--使用并行度来执行镜像拷贝</span></span><br><span class="line">RMAN<span class="operator">&gt;</span> configure device type disk parallelism <span class="number">4</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup <span class="keyword">as</span> <span class="keyword">copy</span> #<span class="number">3</span> files copied <span class="keyword">in</span> parallel</span><br><span class="line"><span class="number">2</span><span class="operator">&gt;</span> (datafile <span class="number">1</span> format <span class="string">'/u01/app/oracle/rmanbak/df1.bak'</span>)</span><br><span class="line"><span class="number">3</span><span class="operator">&gt;</span> (datafile <span class="number">2</span> format <span class="string">'/u01/app/oracle/rmanbak/df2.bak'</span>)</span><br><span class="line"><span class="number">4</span><span class="operator">&gt;</span> (datafile <span class="number">3</span>  format <span class="string">'/u01/app/oracle/rmanbak/df3.bak'</span>);</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>镜像备份时指定子句DB_FILE_NAME_CONVERT来实现镜像路径转移，该子句也是一个初始化参数，用于primary db 到standby db<br>的数据文件的转换</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">DB_FILE_NAME_CONVERT <span class="operator">=</span> (<span class="string">'string1'</span> , <span class="string">'string2'</span> , <span class="string">'string3'</span> , <span class="string">'string4'</span> ...)</span><br><span class="line">用string2替换string1,string4替换string3</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup <span class="keyword">as</span> <span class="keyword">copy</span> device type disk</span><br><span class="line"><span class="number">2</span><span class="operator">&gt;</span> db_file_name_convert(<span class="string">'oradata/orcl'</span>,<span class="string">'bk/rmbk'</span>)</span><br><span class="line"><span class="number">3</span><span class="operator">&gt;</span> tablespace users;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="压缩备份集" class="article-heading"><a href="#压缩备份集" class="headerlink" title="压缩备份集"></a>压缩备份集<a class="article-anchor" href="#压缩备份集" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">RMAN<span class="operator">&gt;</span> configure channel device type disk format <span class="string">'/u01/app/oracle/rmanbak/%d_%U.bak'</span>;</span><br><span class="line"><span class="comment">--下面的命令使用了参数as compressed来实现手动压缩</span></span><br><span class="line">RMAN<span class="operator">&gt;</span> backup <span class="keyword">as</span> compressed backupset database;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup <span class="keyword">as</span> compressed backupset datafile <span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>;</span><br><span class="line"><span class="comment">--下面使用configure命令配置自动压缩备份集功能，则后续的备份会自动使用压缩功能</span></span><br><span class="line">RMAN<span class="operator">&gt;</span> configure device type disk parallelism <span class="number">4</span> backup type <span class="keyword">to</span> compressed backupset;</span><br><span class="line"><span class="comment">--由于设置了自动压缩，则下面的命令将压缩备份的system表空间及控制文件、参数文件</span></span><br><span class="line">RMAN<span class="operator">&gt;</span> backup tablespace <span class="keyword">system</span> tag<span class="operator">=</span><span class="keyword">system</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="使用tag标记" class="article-heading"><a href="#使用tag标记" class="headerlink" title="使用tag标记"></a>使用tag标记<a class="article-anchor" href="#使用tag标记" aria-hidden="true"></a></h3><p>tag标记可以为备份集或映像副本指定一个有意义的名字，以备后续使用，其优点如下</p>
+<ul>
+<li>为备份集或映像副本提供描述信息</li>
+<li>能够在list 命令中使用更好的定位备份文件</li>
+<li>能够在restore和switch命令中使用</li>
+<li>同一个tag在多个备份集或多个映像副本中使用</li>
+<li>当未指定tag标记时，则系统产生缺省的tag标记，其格式为：<code>TAGYYYYMMDDTHHMMSS</code></li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">RMAN<span class="operator">&gt;</span> backup <span class="keyword">as</span> compressed backupset datafile <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span> tag<span class="operator">=</span><span class="string">'Monthly_full_bak'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup <span class="keyword">as</span> compressed backupset tablespace users tag<span class="operator">=</span><span class="string">'Weekly_full_bak'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> list backupset tag<span class="operator">=</span>monthly_full_bak;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="增量备份-1" class="article-heading"><a href="#增量备份-1" class="headerlink" title="增量备份"></a>增量备份<a class="article-anchor" href="#增量备份-1" aria-hidden="true"></a></h3><p>Backup 有增量,copy 没有增量。</p>
+<ul>
+<li><code>0</code>所有的使用的数据块，是基石</li>
+<li><code>1-4</code> 增量级别,备份<code>&lt;=n</code> 以来的变化</li>
+<li><code>1c-4c</code> 累积增量,备份<code>&lt;=n-1</code> 以来的变化</li>
+</ul>
+<p>通过增量的级别来指定完备的备份策略。</p>
+<h4 id="案例1" class="article-heading"><a href="#案例1" class="headerlink" title="案例1"></a>案例1<a class="article-anchor" href="#案例1" aria-hidden="true"></a></h4><p><img src="pic/e-03.png"></p>
+<p>请看这个案例,每周日晚做 0 级备份,就是备份所有使用过的数据块.</p>
+<ul>
+<li>周一做 2 级增量,备份小于等于 2 以来备份后发生变化的块,前面有个 0 级备份.所以备份当天的变化.</li>
+<li>周二做 2 级增量,备份小于等于 2 以来备份后发生变化的块,前面有个 2 级备份.所以备份当天的变化.</li>
+<li>周三做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 0 级备份.所以备份三天的变化.</li>
+<li>周四做 2 级增量,备份小于等于 2 以来备份后发生变化的块,前面有个 1 级备份.所以备份当天的变化.</li>
+<li>周五做 2 级增量,备份小于等于 2 以来备份后发生变化的块,前面有个 2 级备份.所以备份当天的变化.</li>
+<li>周六做1c级增量,备份小于等于1-1=0以来备份后发生变化的块,前面有个零级备份.所以备份六天的变化.</li>
+<li>周日做 0 级增量, 备份所有使用过的数据块.</li>
+</ul>
+<h4 id="案例2" class="article-heading"><a href="#案例2" class="headerlink" title="案例2"></a>案例2<a class="article-anchor" href="#案例2" aria-hidden="true"></a></h4><p><img src="pic/e-04.png"></p>
+<p>请看这个案例,</p>
+<ul>
+<li>每年元旦做 0 级备份,就是备份所有使用过的数据块.</li>
+<li>每天做 4 级增量,备份小于等于 4 以来备份后发生变化的块,任何级都小于等于 4.所以备份当天的变化.</li>
+<li>每周做 3 级增量,备份小于等于 3 以来备份后发生变化的块,前面有个 3 级备份.所以备份一周的变化.</li>
+<li>每月做 2 级增量,备份小于等于 2 以来备份后发生变化的块,前面有个 2 级备份.所以备份当月的变化.</li>
+<li>每季度做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 1 级备份.所以备份三个月的变化.</li>
+<li>每年元旦做 0 级备份,就是备份所有使用过的数据块.</li>
+</ul>
+<p>语法</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">RMAN<span class="operator">&gt;</span> backup incremental level <span class="number">0</span> datafile <span class="number">4</span> format <span class="string">'c:\bk\%d_%s_%p'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup incremental level <span class="number">1</span> datafile <span class="number">4</span> format <span class="string">'c:\bk\%d_%s_%p'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup incremental level <span class="number">2</span> datafile <span class="number">4</span> format <span class="string">'c:\bk\%d_%s_%p'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup incremental level <span class="number">3</span> datafile <span class="number">4</span> format <span class="string">'c:\bk\%d_%s_%p'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup incremental level <span class="number">4</span> datafile <span class="number">4</span> format <span class="string">'c:\bk\%d_%s_%p'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup incremental level <span class="number">1</span> cumulative datafile  <span class="number">4</span> format <span class="string">'c:\bk\%d_%s_%p'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup incremental level <span class="number">2</span> cumulative datafile  <span class="number">4</span> format <span class="string">'c:\bk\%d_%s_%p'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup incremental level <span class="number">3</span> cumulative datafile  <span class="number">4</span> format <span class="string">'c:\bk\%d_%s_%p'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> backup incremental level <span class="number">4</span> cumulative datafile  <span class="number">4</span> format <span class="string">'c:\bk\%d_%s_%p'</span>;</span><br><span class="line">RMAN<span class="operator">&gt;</span> list backup <span class="keyword">of</span> datafile <span class="number">4</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><code>1 </code>和<code>1c</code>在列表中没有区分,实际数据库也不区分,在备份时的语法不同.备份集不区分累积增量和普通增量</li>
+<li>但从大小可以看到区别</li>
+</ul>
+<h3 id="启用块变化跟踪" class="article-heading"><a href="#启用块变化跟踪" class="headerlink" title="启用块变化跟踪"></a>启用块变化跟踪<a class="article-anchor" href="#启用块变化跟踪" aria-hidden="true"></a></h3><p>启用块变化跟踪即是指定一个文件用于记录数据文件中哪些块发生了变化，在RAMN进行增量备份时，仅仅需读取该文件来备份这些</p>
+<p>发生变化的块，从而减少了备份时间和I/O资源。</p>
+<p>使用下面的命令来启用块变化跟踪<code>ALTER DATABASE ENABLE BLOCK CHANGE TRACKING USING FILE '&lt;dir&gt;'</code></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">alter</span> database enable block change tracking</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">using</span> file <span class="string">'/u01/app/oracle/oradata/orcl/blk_ch_trc.trc'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> ho ls <span class="operator">-</span>lht <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>oradata<span class="operator">/</span>orcl<span class="operator">/</span>blk_ch_trc.trc</span><br><span class="line"><span class="operator">-</span>rw<span class="operator">-</span>r<span class="comment">----- 1 oracle oinstall 12M Oct 15 19:41 /u01/app/oracle/oradata/orcl/blk_ch_trc.trc</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> v$block_change_tracking;</span><br><span class="line">STATUS     FILENAME                                           BYTES</span><br><span class="line"><span class="comment">---------- --------------------------------------------- ----------</span></span><br><span class="line">ENABLED    <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>oradata<span class="operator">/</span>orcl<span class="operator">/</span>blk_ch_trc.trc     <span class="number">11599872</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">alter</span> database disable block change tracking; <span class="comment">--disable后块变化跟踪文件被自动删除</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span>  <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> v$block_change_tracking;</span><br><span class="line">STATUS     FILENAME                                           BYTES</span><br><span class="line"><span class="comment">---------- --------------------------------------------- ----------</span></span><br><span class="line">DISABLED</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="备份保留策略" class="article-heading"><a href="#备份保留策略" class="headerlink" title="备份保留策略"></a>备份保留策略<a class="article-anchor" href="#备份保留策略" aria-hidden="true"></a></h3><p>保留策略主要是保留备份副本的一些规则,通常用于满足恢复或其他的需要(比如磁盘空间或磁带空间大小限制)</p>
+<p>备份保留策略分为冗余和恢复窗口，这两种保留策略互不兼容，要么使用前者，要么使用后者</p>
+<h4 id="备份冗余" class="article-heading"><a href="#备份冗余" class="headerlink" title="备份冗余"></a>备份冗余<a class="article-anchor" href="#备份冗余" aria-hidden="true"></a></h4><ul>
+<li>可以通过<code>RMAN&gt; configure retention policy to redundancy 2;</code>来修改</li>
+<li>RMAN会为每个数据文件、归档日志、控制文件生成一个备份。可以使用<code>report obsolete;</code>命令查看冗余的备份</li>
+<li>并使用<code>delete obsolete;</code>来删除冗余备份</li>
+</ul>
+<h4 id="恢复窗口" class="article-heading"><a href="#恢复窗口" class="headerlink" title="恢复窗口"></a>恢复窗口<a class="article-anchor" href="#恢复窗口" aria-hidden="true"></a></h4><ul>
+<li>恢复窗口允许完成恢复到过去某个时间点的时点恢复，通常设定为多少天</li>
+<li>使用命令<code>RMAN&gt; configure retention policy to recovery window of 7 days;</code></li>
+<li>该命令将确保具有足够的数据文件和归档日志来执行能够返回一个星期中任意时间点的不完全恢复，且允许删除随着时间推移而变为废弃的备份，即应当满足该条件：<code>SYSDATE - BACKUP CHECKPOINT TIME &gt;= 7</code></li>
+<li>对于大于天但是是恢复所需要的备份依然会被保留</li>
+</ul>
+<h4 id="清除备份保留策略" class="article-heading"><a href="#清除备份保留策略" class="headerlink" title="清除备份保留策略"></a>清除备份保留策略<a class="article-anchor" href="#清除备份保留策略" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">RMAN<span class="operator">&gt;</span> configure retention policy clear;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="永不将备份置为obsolete" class="article-heading"><a href="#永不将备份置为obsolete" class="headerlink" title="永不将备份置为obsolete"></a>永不将备份置为obsolete<a class="article-anchor" href="#永不将备份置为obsolete" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">RMAN<span class="operator">&gt;</span> configure retention policy <span class="keyword">to</span> <span class="keyword">none</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="注意obsolete-与-expired" class="article-heading"><a href="#注意obsolete-与-expired" class="headerlink" title="注意obsolete 与 expired"></a>注意<code>obsolete</code> 与 <code>expired</code><a class="article-anchor" href="#注意obsolete-与-expired" aria-hidden="true"></a></h4><ul>
+<li><p><code>obsolete</code>：是指根据保留策略来确定该备份是否在恢复的时候需要，如不在需要或有更新的备份来替代，则该备份集被置为<code>obsolete</code>，即废弃的备份集或镜像副本。</p>
+</li>
+<li><p><code>expired</code>: 是指执行<code>crosscheck</code>时，根据存储仓库中记录的备份信息来定位备份集或镜像副本，而找不到对应的备份集或镜像副本，则这些备份集或镜像副本被置为expired。</p>
+</li>
+</ul>
+<h3 id="验证数据文件逻辑坏块" class="article-heading"><a href="#验证数据文件逻辑坏块" class="headerlink" title="验证数据文件逻辑坏块"></a>验证数据文件逻辑坏块<a class="article-anchor" href="#验证数据文件逻辑坏块" aria-hidden="true"></a></h3><p>使用<code>BACKUP ... VALIDATE</code>验证数据文件逻辑坏块，损坏的坏块将被记录到<code>v$database_block_corruption</code>视图</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">BACKUP VALIDATE <span class="keyword">CHECK</span> LOGICAL DATABASE ARCHIVELOG <span class="keyword">ALL</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="备份相关的动态性能视图及监控" class="article-heading"><a href="#备份相关的动态性能视图及监控" class="headerlink" title="备份相关的动态性能视图及监控"></a>备份相关的动态性能视图及监控<a class="article-anchor" href="#备份相关的动态性能视图及监控" aria-hidden="true"></a></h2><h3 id="相关视图" class="article-heading"><a href="#相关视图" class="headerlink" title="相关视图"></a>相关视图<a class="article-anchor" href="#相关视图" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">v$backup_files</span><br><span class="line">v$backup_set</span><br><span class="line">v$backup_piece</span><br><span class="line">v$backup_redolog</span><br><span class="line">v$backup_spfile</span><br><span class="line">v$backup_device</span><br><span class="line">v$rman_configuration</span><br><span class="line">v$archived_log</span><br><span class="line">v$backup_corruption</span><br><span class="line">v$copy_corruption</span><br><span class="line">v$database_block_corruption</span><br><span class="line">v$backup_datafile</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="查看channel对应的server-sessions" class="article-heading"><a href="#查看channel对应的server-sessions" class="headerlink" title="查看channel对应的server sessions"></a>查看channel对应的server sessions<a class="article-anchor" href="#查看channel对应的server-sessions" aria-hidden="true"></a></h3><p>使用<code>set command id</code>命令</p>
+<p>查询<code>v$process</code>和<code>v$session</code>判断哪一个会话与之对应的RMAN通道</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> sid,username,client_info <span class="keyword">from</span> v$session <span class="keyword">where</span> client_info <span class="keyword">is</span> <span class="keyword">not null</span>;</span><br><span class="line">	   SID USERNAME                       CLIENT_INFO</span><br><span class="line"><span class="comment">---------- ------------------------------ ------------------------------</span></span><br><span class="line">	   <span class="number">146</span> SYS                            rman channel<span class="operator">=</span>ORA_DISK_1</span><br><span class="line">	   <span class="number">148</span> SYS                            rman channel<span class="operator">=</span>ORA_DISK_2</span><br><span class="line">	   <span class="number">150</span> SYS                            rman channel<span class="operator">=</span>ORA_DISK_3</span><br><span class="line"><span class="comment">--下面使用了set command id命令</span></span><br><span class="line">RMAN<span class="operator">&gt;</span> run{</span><br><span class="line"><span class="number">2</span><span class="operator">&gt;</span> <span class="keyword">allocate</span> channel ch1 type disk;</span><br><span class="line"><span class="number">3</span><span class="operator">&gt;</span> <span class="keyword">set</span> command id <span class="keyword">to</span> <span class="string">'rman'</span>;</span><br><span class="line"><span class="number">4</span><span class="operator">&gt;</span> backup <span class="keyword">as</span> <span class="keyword">copy</span> datafile <span class="number">4</span></span><br><span class="line"><span class="number">5</span><span class="operator">&gt;</span> format <span class="string">'/u01/app/oracle/rmanbak/dd_%U'</span>;</span><br><span class="line"><span class="number">6</span><span class="operator">&gt;</span> }</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> sid,username,client_info <span class="keyword">from</span> v$session</span><br><span class="line">  <span class="number">2</span>   <span class="keyword">where</span> client_info <span class="keyword">is</span> <span class="keyword">not null</span>;</span><br><span class="line">	   SID USERNAME                       CLIENT_INFO</span><br><span class="line"><span class="comment">---------- ------------------------------ ------------------------------</span></span><br><span class="line">	   <span class="number">140</span> SYS                            id<span class="operator">=</span>rman</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> sid,spid,client_info</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">from</span> v$process p ,v$session s</span><br><span class="line">  <span class="number">3</span>  <span class="keyword">where</span> p.addr <span class="operator">=</span> s.paddr</span><br><span class="line">  <span class="number">4</span>  <span class="keyword">and</span> client_info <span class="keyword">like</span> <span class="string">'%id=%'</span>;</span><br><span class="line">	   SID SPID         CLIENT_INFO</span><br><span class="line"><span class="comment">---------- ------------ ------------------------------</span></span><br><span class="line">	   <span class="number">140</span> <span class="number">5002</span>         id<span class="operator">=</span>rman</span><br><span class="line"></span><br><span class="line"><span class="comment">--查看rman完整的进度</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> sid,serial#,context,sofar,totalwork,</span><br><span class="line">  <span class="number">2</span>  round(sofar<span class="operator">/</span>totalwork<span class="operator">*</span><span class="number">100</span>,<span class="number">2</span>) "% Complete"</span><br><span class="line">  <span class="number">3</span>  <span class="keyword">from</span> v$session_longops</span><br><span class="line">  <span class="number">4</span>   <span class="keyword">where</span> opname <span class="keyword">like</span> <span class="string">'RMAN:%'</span></span><br><span class="line">  <span class="number">5</span>  <span class="keyword">and</span> opname <span class="keyword">not</span> <span class="keyword">like</span> <span class="string">'RMAN:aggregate%'</span></span><br><span class="line">  <span class="number">6</span>  <span class="keyword">and</span> totalwork<span class="operator">!=</span><span class="number">0</span>;</span><br><span class="line"><span class="comment">--通过如下SQL获得rman用来完成备份操作的服务进程的SID与SPID信息：</span></span><br><span class="line"><span class="keyword">select</span> sid, spid, client_info</span><br><span class="line">  <span class="keyword">from</span> v$process p, v$session s</span><br><span class="line"> <span class="keyword">where</span> p.addr <span class="operator">=</span> s.paddr</span><br><span class="line">   <span class="keyword">and</span> client_info <span class="keyword">like</span> <span class="string">'%id=rman%'</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="Linux下的rman自动备份" class="article-heading"><a href="#Linux下的rman自动备份" class="headerlink" title="Linux下的rman自动备份"></a>Linux下的rman自动备份<a class="article-anchor" href="#Linux下的rman自动备份" aria-hidden="true"></a></h3><p>备份脚本+crontab</p>
+<p>bak_inc0 ：0级增量备份，每周日使用级增量进行备份</p>
+<p>bak_inc1 ：1级增量备份，每周三使用级增量备份，备份从周日以来到周三所发生的数据变化</p>
+<p>bak_inc2 ：2级增量备份，备份每天发生的差异增量。如从周日到周一的差异，从周一到周二的差异</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">--下面是级增量的脚本，其余级与级依法炮制，所不同的是备份级别以及tag标记</span><br><span class="line"></span><br><span class="line">[oracle@oradb scripts]$ <span class="built_in">cat</span> bak_inc0</span><br><span class="line">run {</span><br><span class="line">allocate channel ch1 <span class="built_in">type</span> disk;</span><br><span class="line">backup as compressed backupset  incremental level 0</span><br><span class="line">format <span class="string">'/u01/oracle/bk/rmbk/incr0_%d_%U'</span></span><br><span class="line">tag <span class="string">'day_incr0'</span></span><br><span class="line">database plus archivelog delete input;</span><br><span class="line">release channel ch1;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>逐个测试脚本</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oradb bk]$ rman target / <span class="built_in">log</span>=/u01/oracle/bk/log/bak_inc0.<span class="built_in">log</span> /</span><br><span class="line">&gt; cmdfile=/u01/oracle/bk/scripts/bak_inc0.rcv</span><br><span class="line">RMAN&gt; 2&gt; 3&gt; 4&gt; 5&gt; 6&gt; 7&gt; 8&gt; 9&gt;</span><br><span class="line">[oracle@oradb bk]$</span><br></pre></td></tr></tbody></table></figure>
+
+<p>编辑crontab</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@oradb ~]# <span class="built_in">whoami</span></span><br><span class="line">root</span><br><span class="line">[root@oradb ~]# crontab -e -u oracle</span><br><span class="line">45 23 * * 0 rman target / <span class="built_in">log</span>=/u01/oracle/bk/log/bak_inc0.<span class="built_in">log</span> append cmdfile = /u01/oracle/bk/scripts/bak_inc0.rcv</span><br><span class="line"></span><br><span class="line">45 23 * * 1 rman target / <span class="built_in">log</span>=/u01/oracle/bk/log/bak_inc2.<span class="built_in">log</span> append cmdfile = /u01/oracle/bk/scripts/bak_inc2.rcv</span><br><span class="line"></span><br><span class="line">45 23 * * 2 rman target / <span class="built_in">log</span>=/u01/oracle/bk/log/bak_inc2.<span class="built_in">log</span> append cmdfile = /u01/oracle/bk/scripts/bak_inc2.rcv</span><br><span class="line"></span><br><span class="line">45 23 * * 3 rman target / <span class="built_in">log</span>=/u01/oracle/bk/log/bak_inc1.<span class="built_in">log</span> append cmdfile = /u01/oracle/bk/scripts/bak_inc1.rcv</span><br><span class="line"></span><br><span class="line">45 23 * * 4 rman target / <span class="built_in">log</span>=/u01/oracle/bk/log/bak_inc2.<span class="built_in">log</span> append cmdfile = /u01/oracle/bk/scripts/bak_inc2.rcv</span><br><span class="line"></span><br><span class="line">45 23 * * 5 rman target / <span class="built_in">log</span>=/u01/oracle/bk/log/bak_inc2.<span class="built_in">log</span> append cmdfile = /u01/oracle/bk/scripts/bak_inc2.rcv</span><br><span class="line"></span><br><span class="line">45 23 * * 6 rman target / <span class="built_in">log</span>=/u01/oracle/bk/log/bak_inc2.<span class="built_in">log</span> append cmdfile = /u01/oracle/bk/scripts/bak_inc2.rcv</span><br><span class="line"></span><br><span class="line"><span class="string">"/tmp/crontab.XXXXInBzgR"</span> 7L, 791C written</span><br><span class="line">crontab: installing new crontab</span><br></pre></td></tr></tbody></table></figure>
+
+<p>保存之后重启crontab</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@oradb ~]# service crond restart</span><br><span class="line">Stopping crond: [  OK  ]</span><br><span class="line">Starting crond: [  OK  ]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>检查自动备份是否成功执行</p>
+<p>​</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:49.809Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%EF%BC%88%E5%86%B7%E5%A4%87%EF%BC%89%E4%B8%8ERMAN%E5%A4%87%E4%BB%BD%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-text">数据库备份（冷备）与RMAN备份的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%8C%E5%85%A8%E5%A4%87%E4%BB%BD"><span class="toc-text">数据库完全备份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RMAN%E5%A4%87%E4%BB%BD"><span class="toc-text">RMAN备份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RMAN%E5%A4%87%E4%BB%BD%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="toc-text">RMAN备份的类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E5%A4%87%E4%BB%BD"><span class="toc-text">完整备份</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD"><span class="toc-text">增量备份</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E5%A4%87%E4%BB%BD"><span class="toc-text">一致性备份</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%9E%E4%B8%80%E8%87%B4%E6%80%A7%E5%A4%87%E4%BB%BD"><span class="toc-text">非一致性备份</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E9%9B%86%E4%B8%8E%E9%95%9C%E5%83%8F%E5%89%AF%E6%9C%AC"><span class="toc-text">备份集与镜像副本</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E9%9B%86backup"><span class="toc-text">备份集backup</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%95%9C%E5%83%8F%E5%89%AF%E6%9C%ACcopy"><span class="toc-text">镜像副本copy</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E8%B7%AF%E5%BE%84"><span class="toc-text">备份路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E9%99%90%E5%88%B6"><span class="toc-text">备份限制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8RMAN%E8%BF%9B%E8%A1%8C%E5%A4%87%E4%BB%BD"><span class="toc-text">使用RMAN进行备份</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">备份数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6"><span class="toc-text">备份数据文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E8%A1%A8%E7%A9%BA%E9%97%B4"><span class="toc-text">备份表空间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6"><span class="toc-text">备份控制文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E5%8F%82%E6%95%B0%E6%96%87%E4%BB%B6"><span class="toc-text">备份参数文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E5%BD%92%E6%A1%A3%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6"><span class="toc-text">备份归档日志文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E9%97%AA%E5%9B%9E%E5%8C%BA"><span class="toc-text">备份闪回区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-text">总结：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E7%9A%84%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7"><span class="toc-text">备份的其它特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E7%89%87%E5%A4%A7%E5%B0%8F%E7%9A%84%E9%99%90%E5%88%B6"><span class="toc-text">备份片大小的限制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B6%E5%8F%91"><span class="toc-text">并发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E7%94%A8%E5%A4%87%E4%BB%BD"><span class="toc-text">复用备份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E5%A4%87%E4%BB%BD%E9%9B%86"><span class="toc-text">备份备份集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%95%9C%E5%83%8F%E5%A4%87%E4%BB%BD"><span class="toc-text">镜像备份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%A4%87%E4%BB%BD%E9%9B%86"><span class="toc-text">压缩备份集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8tag%E6%A0%87%E8%AE%B0"><span class="toc-text">使用tag标记</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD-1"><span class="toc-text">增量备份</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B1"><span class="toc-text">案例1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B2"><span class="toc-text">案例2</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E7%94%A8%E5%9D%97%E5%8F%98%E5%8C%96%E8%B7%9F%E8%B8%AA"><span class="toc-text">启用块变化跟踪</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E4%BF%9D%E7%95%99%E7%AD%96%E7%95%A5"><span class="toc-text">备份保留策略</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E5%86%97%E4%BD%99"><span class="toc-text">备份冗余</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%81%A2%E5%A4%8D%E7%AA%97%E5%8F%A3"><span class="toc-text">恢复窗口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%85%E9%99%A4%E5%A4%87%E4%BB%BD%E4%BF%9D%E7%95%99%E7%AD%96%E7%95%A5"><span class="toc-text">清除备份保留策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B0%B8%E4%B8%8D%E5%B0%86%E5%A4%87%E4%BB%BD%E7%BD%AE%E4%B8%BAobsolete"><span class="toc-text">永不将备份置为obsolete</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E6%84%8Fobsolete-%E4%B8%8E-expired"><span class="toc-text">注意obsolete 与 expired</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E9%80%BB%E8%BE%91%E5%9D%8F%E5%9D%97"><span class="toc-text">验证数据文件逻辑坏块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E7%9B%B8%E5%85%B3%E7%9A%84%E5%8A%A8%E6%80%81%E6%80%A7%E8%83%BD%E8%A7%86%E5%9B%BE%E5%8F%8A%E7%9B%91%E6%8E%A7"><span class="toc-text">备份相关的动态性能视图及监控</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E8%A7%86%E5%9B%BE"><span class="toc-text">相关视图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8Bchannel%E5%AF%B9%E5%BA%94%E7%9A%84server-sessions"><span class="toc-text">查看channel对应的server sessions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux%E4%B8%8B%E7%9A%84rman%E8%87%AA%E5%8A%A8%E5%A4%87%E4%BB%BD"><span class="toc-text">Linux下的rman自动备份</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

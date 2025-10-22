@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践2:体系结构 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/02-ExploringOracleDatabaseArchitecture-%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/02-ExploringOracleDatabaseArchitecture-%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 2: Exploring Oracle Database Architecture 2020.01.29 BoobooWei     实践2:体系结构 实践2:概览 实践2-1:探索Oracle数据库体系结构 实践2-2:关闭数据库实例transactional 实践2-3:关闭数据库实例abort 实践2-4:隐藏列 invisible 实践2-5:存">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践2:体系结构">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/02-ExploringOracleDatabaseArchitecture-%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 2: Exploring Oracle Database Architecture 2020.01.29 BoobooWei     实践2:体系结构 实践2:概览 实践2-1:探索Oracle数据库体系结构 实践2-2:关闭数据库实例transactional 实践2-3:关闭数据库实例abort 实践2-4:隐藏列 invisible 实践2-5:存">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.730Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:53.771Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践2:体系结构</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/02-ExploringOracleDatabaseArchitecture-体系架构.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p><strong>Practices for Lesson 2: Exploring Oracle Database Architecture</strong></p>
+<p>2020.01.29 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:2 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#%E5%AE%9E%E8%B7%B52%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84">实践2:体系结构</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B52%E6%A6%82%E8%A7%88">实践2:概览</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-1%E6%8E%A2%E7%B4%A2oracle%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84">实践2-1:探索Oracle数据库体系结构</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-2%E5%85%B3%E9%97%AD%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8Btransactional">实践2-2:关闭数据库实例transactional</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-3%E5%85%B3%E9%97%AD%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8Babort">实践2-3:关闭数据库实例abort</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-4%E9%9A%90%E8%97%8F%E5%88%97-invisible">实践2-4:隐藏列 invisible</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-5%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8Bdr%E5%92%8Cir">实践2-5:存储过程DR和IR</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-6%E5%8F%82%E6%95%B0db_8k_cache_size">实践2-6:参数DB_8K_CACHE_SIZE</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-7%E5%8F%82%E6%95%B0enable_ddl_logging">实践2-7:参数ENABLE_DDL_LOGGING</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-8oracle-data-redaction">实践2-8:Oracle Data Redaction</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-9redaction_values_for_type_full">实践2-9:REDACTION_VALUES_FOR_TYPE_FULL</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-10rman-validate">实践2-10:RMAN VALIDATE</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-11vrsrc_consumer_group">实践2-11:V$RSRC_CONSUMER_GROUP</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-12%E4%BD%BF%E7%94%A8%E5%8D%87%E7%BA%A7%E5%89%8D%E4%BF%A1%E6%81%AF%E5%B7%A5%E5%85%B7">实践2-12:使用升级前信息工具</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-13statistics_level%E6%8C%87%E5%AE%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%BB%9F%E8%AE%A1%E4%BF%A1%E6%81%AF%E7%9A%84%E6%94%B6%E9%9B%86%E7%BA%A7%E5%88%AB">实践2-13:<code>STATISTICS_LEVEL</code>指定数据库和操作系统统计信息的收集级别</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-14automatic-memory-management">实践2-14:Automatic Memory Management</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-15automatic-shared-memory-management">实践2-15:Automatic Shared Memory Management</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-16%E5%85%B3%E4%BA%8E%E5%8A%A8%E6%80%81%E7%BB%9F%E8%AE%A1%E7%BA%A7%E5%88%ABoptimizer_dynamic_sampling">实践2-16:关于动态统计级别OPTIMIZER_DYNAMIC_SAMPLING</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-17%E5%9C%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B%E9%97%B4%E4%BC%A0%E8%BE%93%E8%A1%A8%E7%A9%BA%E9%97%B4management">实践2-17:在数据库之间传输表空间Management</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-18db_flash_cache_file">实践2-18:DB_FLASH_CACHE_FILE</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-19%E5%9C%A8%E7%BA%BF%E7%BC%A9%E5%B0%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E6%AE%B5">实践2-19:在线缩小数据库段</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-20%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%85%E5%BD%92%E6%A1%A3in-database-archiving">实践2-20:数据库内归档In-Database Archiving</a></li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="实践2-概览" class="article-heading"><a href="#实践2-概览" class="headerlink" title="实践2:概览"></a>实践2:概览<a class="article-anchor" href="#实践2-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 2: Overview</p>
+<h2 id="实践2-1-探索Oracle数据库体系结构" class="article-heading"><a href="#实践2-1-探索Oracle数据库体系结构" class="headerlink" title="实践2-1:探索Oracle数据库体系结构"></a>实践2-1:探索Oracle数据库体系结构<a class="article-anchor" href="#实践2-1-探索Oracle数据库体系结构" aria-hidden="true"></a></h2><p>Practice 2-1: Exploring the Oracle Database Architecture</p>
+<h2 id="实践2-2-关闭数据库实例transactional" class="article-heading"><a href="#实践2-2-关闭数据库实例transactional" class="headerlink" title="实践2-2:关闭数据库实例transactional"></a>实践2-2:关闭数据库实例transactional<a class="article-anchor" href="#实践2-2-关闭数据库实例transactional" aria-hidden="true"></a></h2><h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><p>本实验的目的，了解关闭数据库实例的过程，实验中将使用<code>shutdown transactional</code>来关闭数据库。</p>
+<h3 id="Task" class="article-heading"><a href="#Task" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task" aria-hidden="true"></a></h3><h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><ol>
+<li>会话1：登陆pdb，执行insert 不提交事务</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@oracle01</span> <span class="operator">~</span>]$ sqlplus <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span>conn scott<span class="operator">/</span>tiger<span class="variable">@booboopdb1</span></span><br><span class="line">Connected.</span><br><span class="line">SCOTT<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">desc</span> t02;</span><br><span class="line"> Name						       <span class="keyword">Null</span>?	Type</span><br><span class="line"> <span class="comment">----------------------------------------------------- -------- ------------------------------------</span></span><br><span class="line"> X						       <span class="keyword">NOT NULL</span> NUMBER(<span class="number">38</span>)</span><br><span class="line"> Y								VARCHAR2(<span class="number">20</span>)</span><br><span class="line"></span><br><span class="line">SCOTT<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">insert into</span> t02 <span class="keyword">values</span> (<span class="number">1</span>,<span class="string">'superman'</span>);</span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> created.</span><br><span class="line"></span><br><span class="line">SCOTT<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">insert into</span> t02 <span class="keyword">values</span> (<span class="number">2</span>,<span class="string">'batman'</span>);</span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> created.</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li>会话2：登陆cdb，执行create user c##test identified by oracle;</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@oracle01</span> <span class="operator">~</span>]$ sqlplus <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Thu Feb <span class="number">6</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">20</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span>:</span><br><span class="line">Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">show</span> pdbs;</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  <span class="keyword">OPEN</span> MODE  RESTRICTED</span><br><span class="line"><span class="comment">---------- ------------------------------ ---------- ----------</span></span><br><span class="line">	 <span class="number">2</span> PDB$SEED			  READ <span class="keyword">ONLY</span>  <span class="keyword">NO</span></span><br><span class="line">	 <span class="number">3</span> BOOBOOPDB1			  READ WRITE <span class="keyword">NO</span></span><br><span class="line">	 <span class="number">4</span> BOOBOOPDB2			  MOUNTED</span><br><span class="line">	 <span class="number">5</span> BOOBOOPDB3			  MOUNTED</span><br><span class="line">	 <span class="number">6</span> BOOBOOPDB4			  MOUNTED</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">create</span> <span class="keyword">user</span> c##test identified <span class="keyword">by</span> oracle;</span><br><span class="line"></span><br><span class="line"><span class="keyword">User</span> created.</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li>会话3：登陆cdb，执行 shutdown transactional 观察日志</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@oracle01</span> <span class="operator">~</span>]$ sqlplus <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Thu Feb <span class="number">6</span> <span class="number">16</span>:<span class="number">17</span>:<span class="number">12</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span>:</span><br><span class="line">Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span>shutdown transactional</span><br><span class="line">Database closed.</span><br><span class="line">Database dismounted.</span><br><span class="line">ORACLE instance shut down.</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="operator">!</span><span class="type">date</span></span><br><span class="line">Thu Feb  <span class="number">6</span> <span class="number">16</span>:<span class="number">19</span>:<span class="number">20</span> CST <span class="number">2020</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>观察日志</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oracle01 ~]$ adrci</span><br><span class="line"></span><br><span class="line">ADRCI: Release 12.2.0.1.0 - Production on Thu Feb 6 16:18:05 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2017, Oracle and/or its affiliates.  All rights reserved.</span><br><span class="line"></span><br><span class="line">ADR base = <span class="string">"/u01/app/oracle"</span></span><br><span class="line">adrci&gt; <span class="built_in">help</span></span><br><span class="line"></span><br><span class="line"> HELP [topic]</span><br><span class="line">   Available Topics:</span><br><span class="line">        CREATE REPORT</span><br><span class="line">        ECHO</span><br><span class="line">        ESTIMATE</span><br><span class="line">        EXIT</span><br><span class="line">        HELP</span><br><span class="line">        HOST</span><br><span class="line">        IPS</span><br><span class="line">        PURGE</span><br><span class="line">        RUN</span><br><span class="line">        SELECT</span><br><span class="line">        SET BASE</span><br><span class="line">        SET BROWSER</span><br><span class="line">        SET CONTROL</span><br><span class="line">        SET ECHO</span><br><span class="line">        SET EDITOR</span><br><span class="line">        SET HOMES | HOME | HOMEPATH</span><br><span class="line">        SET TERMOUT</span><br><span class="line">        SHOW ALERT</span><br><span class="line">        SHOW BASE</span><br><span class="line">        SHOW CONTROL</span><br><span class="line">        SHOW HM_RUN</span><br><span class="line">        SHOW HOMES | HOME | HOMEPATH</span><br><span class="line">        SHOW INCDIR</span><br><span class="line">        SHOW INCIDENT</span><br><span class="line">        SHOW LOG</span><br><span class="line">        SHOW PROBLEM</span><br><span class="line">        SHOW REPORT</span><br><span class="line">        SHOW TRACEFILE</span><br><span class="line">        SPOOL</span><br><span class="line"></span><br><span class="line"> There are other commands intended to be used directly by Oracle, <span class="built_in">type</span></span><br><span class="line"> <span class="string">"HELP EXTENDED"</span> to see the list</span><br><span class="line"></span><br><span class="line">adrci&gt; show alert</span><br><span class="line"></span><br><span class="line">Choose the home from <span class="built_in">which</span> to view the alert <span class="built_in">log</span>:</span><br><span class="line"></span><br><span class="line">1: diag/rdbms/booboo/booboo</span><br><span class="line">2: diag/clients/user_oracle/host_2874269298_107</span><br><span class="line">3: diag/tnslsnr/oracle01/listener</span><br><span class="line">4: diag/tnslsnr/oracle01/listener2</span><br><span class="line">Q: to quit</span><br><span class="line"></span><br><span class="line">Please <span class="keyword">select</span> option: 1</span><br><span class="line">Output the results to file: /tmp/alert_43088_1406_booboo_1.ado</span><br><span class="line"></span><br><span class="line">Please <span class="keyword">select</span> option: q</span><br><span class="line">adrci&gt; <span class="built_in">exit</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>日志分析</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">2020-02-06 16:17:14.624000 +08:00</span><br><span class="line">Shutting down instance (transactional) (OS <span class="built_in">id</span>: 42991)</span><br><span class="line"><span class="comment">## 开始：down instance (transactional)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2020-02-06 16:17:15.816000 +08:00</span><br><span class="line">Stopping background process SMCO <span class="comment"># 停止后台进程 SMCO</span></span><br><span class="line">2020-02-06 16:17:17.028000 +08:00</span><br><span class="line">Shutting down instance: further logons disabled <span class="comment">#禁用进一步的登录</span></span><br><span class="line">2020-02-06 16:17:18.147000 +08:00</span><br><span class="line">Stopping background process CJQ0  <span class="comment"># 停止后台进程 CJQ0</span></span><br><span class="line">Stopping background process MMNL  <span class="comment"># 停止后台进程 MMNL</span></span><br><span class="line">2020-02-06 16:17:19.219000 +08:00</span><br><span class="line">Stopping background process MMON  <span class="comment"># 停止后台进程 MMON</span></span><br><span class="line">2020-02-06 16:17:20.900000 +08:00</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">alter pluggable database all close immediate <span class="comment"># 开始关闭pdb【immediate】：只产生检查点，不等待事务结果</span></span><br><span class="line">JIT: pid 42991 requesting stop</span><br><span class="line">KILL SESSION <span class="keyword">for</span> sid=(67, 40381):</span><br><span class="line">  Reason = PDB close immediate</span><br><span class="line">  Mode = KILL HARD FORCE -/-/-</span><br><span class="line">  Requestor = USER (orapid = 33, ospid = 42991, inst = 1)</span><br><span class="line">  Owner = Process: USER (orapid = 43, ospid = 41840)</span><br><span class="line">  Result = ORA-0</span><br><span class="line">2020-02-06 16:17:22.565000 +08:00</span><br><span class="line">Pluggable database BOOBOOPDB1 closed <span class="comment"># booboopdb1 该PDB已成功关闭。</span></span><br><span class="line">Completed: alter pluggable database all close immediate <span class="comment"># 完成关闭pdb【immediate】</span></span><br><span class="line"><span class="comment">## 完成：关闭pdb all close immediate</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">JIT: pid 42991 requesting stop</span><br><span class="line">All transactions complete. Performing immediate shutdown <span class="comment"># 所有事务完成，开始执行【immediate】 shutdown</span></span><br><span class="line">License high water mark = 17</span><br><span class="line">Dispatchers and shared servers shutdown <span class="comment"># 调度程序和共享服务器关闭</span></span><br><span class="line">2020-02-06 16:17:24.676000 +08:00</span><br><span class="line">ALTER DATABASE CLOSE NORMAL</span><br><span class="line">Stopping Emon pool <span class="comment"># 停止Emon池</span></span><br><span class="line">alter pluggable database all close immediate <span class="comment"># ALL PDB已成功关闭。</span></span><br><span class="line">Completed: alter pluggable database all close immediate <span class="comment"># 完成关闭pdb【immediate】</span></span><br><span class="line"><span class="comment">## 完成：关闭pdb all close immediate</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Stopping Emon pool <span class="comment"># 停止Emon池</span></span><br><span class="line">Shutting down archive processes <span class="comment"># 【开始】关闭归档过程</span></span><br><span class="line">TT00: Gap Manager exiting (PID:100073)</span><br><span class="line">OS process OFSD (ospid 100019) idle <span class="keyword">for</span> 30 seconds, exiting</span><br><span class="line">2020-02-06 16:17:25.809000 +08:00</span><br><span class="line">Archiving is disabled <span class="comment"># 【完成】关闭归档过程</span></span><br><span class="line">Thread 1 closed at <span class="built_in">log</span> sequence 14</span><br><span class="line">Successful close of redo thread 1</span><br><span class="line">Completed: ALTER DATABASE CLOSE NORMAL</span><br><span class="line"><span class="comment">## 完成：关闭 DATABASE NORMAL</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ALTER DATABASE DISMOUNT <span class="comment"># dismount 数据库</span></span><br><span class="line">Shutting down archive processes <span class="comment"># 关闭归档进程</span></span><br><span class="line">Archiving is disabled</span><br><span class="line">Completed: ALTER DATABASE DISMOUNT</span><br><span class="line"></span><br><span class="line"><span class="comment">## 完成：关闭 DATABASE DISMOUNT</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2020-02-06 16:17:27.001000 +08:00</span><br><span class="line">ARCH: Archival disabled due to shutdown: 1089</span><br><span class="line">Shutting down archive processes</span><br><span class="line">Archiving is disabled</span><br><span class="line">JIT: pid 42991 requesting stop</span><br><span class="line">2020-02-06 16:17:28.008000 +08:00</span><br><span class="line">ARCH: Archival disabled due to shutdown: 1089</span><br><span class="line">Shutting down archive processes</span><br><span class="line">Archiving is disabled</span><br><span class="line">Stopping background process VKTM</span><br><span class="line">JIT: pid 42991 requesting stop</span><br><span class="line">2020-02-06 16:17:37.473000 +08:00</span><br><span class="line">Instance shutdown complete (OS <span class="built_in">id</span>: 42991)</span><br><span class="line"><span class="comment">## 完成：Instance shutdown</span></span><br></pre></td></tr></tbody></table></figure>
+
+<ol>
+<li>开始：down instance (transactional)</li>
+<li>完成：关闭pdb all close immediate(booboopdb1)</li>
+<li>完成：关闭pdb all close immediate(all)</li>
+<li>完成：关闭 DATABASE NORMAL</li>
+<li>完成：关闭 DATABASE DISMOUNT</li>
+<li>完成：Instance shutdown</li>
+</ol>
+<p>重新启动数据库后，发现事务并没有提交</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span>conn scott<span class="operator">/</span>tiger<span class="variable">@booboopdb1</span></span><br><span class="line">Connected.</span><br><span class="line">SCOTT<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t02;</span><br><span class="line"></span><br><span class="line"><span class="keyword">no</span> <span class="keyword">rows</span> selected</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3><p><img src="pic/0201.png"></p>
+<p>注意：虽然发起的关闭是 transactional ，但是在Oracle12c中，关闭PDB时使用的却是<code>alter pluggable database all close immediate</code>。因此不会等待PDB的事务提交即立刻关闭数据库。</p>
+<h2 id="实践2-3-关闭数据库实例abort" class="article-heading"><a href="#实践2-3-关闭数据库实例abort" class="headerlink" title="实践2-3:关闭数据库实例abort"></a>实践2-3:关闭数据库实例abort<a class="article-anchor" href="#实践2-3-关闭数据库实例abort" aria-hidden="true"></a></h2><h3 id="Overview-1" class="article-heading"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-1" aria-hidden="true"></a></h3><p>本实验的目的，了解关闭数据库实例的过程，实验中将使用<code>shutdown abort</code>来关闭数据库。</p>
+<h3 id="Task-1" class="article-heading"><a href="#Task-1" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-1" aria-hidden="true"></a></h3><h3 id="Practice-1" class="article-heading"><a href="#Practice-1" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-1" aria-hidden="true"></a></h3><ol>
+<li><p>关闭实例</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span>shutdown abort</span><br><span class="line">ORACLE instance shut down.</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="operator">!</span><span class="type">date</span></span><br><span class="line">Thu Feb  <span class="number">6</span> <span class="number">18</span>:<span class="number">13</span>:<span class="number">24</span> CST <span class="number">2020</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>查看日志</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">Shutting down instance (abort) (OS <span class="built_in">id</span>: 44076)</span><br><span class="line">License high water mark = 6</span><br><span class="line">USER (ospid: 44076): terminating the instance</span><br><span class="line">Instance terminated by USER, pid = 44076</span><br><span class="line">2020-02-06 18:13:18.716000 +08:00</span><br><span class="line">Instance shutdown complete (OS <span class="built_in">id</span>: 44076)</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h3 id="KnowledgePoint-1" class="article-heading"><a href="#KnowledgePoint-1" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-1" aria-hidden="true"></a></h3><p>关闭速度非常快。</p>
+<h2 id="实践2-4-隐藏列-invisible" class="article-heading"><a href="#实践2-4-隐藏列-invisible" class="headerlink" title="实践2-4:隐藏列 invisible"></a>实践2-4:隐藏列 invisible<a class="article-anchor" href="#实践2-4-隐藏列-invisible" aria-hidden="true"></a></h2><p>oracle 12c 新特性之不可见字段</p>
+<p>在Oracle 11g R1中，Oracle以不可见索引和虚拟字段的形式引入了一些不错的增强特性。继承前者并发扬光大，Oracle 12c 中引入了不可见字段思想。在之前的版本中，为了隐藏重要的数据字段以避免在通用查询中显示，我们往往会创建一个视图来隐藏所需信息或应用某些安全条件。<br>在12c中，你可以在表中创建不可见字段。当一个字段定义为不可见时，这一字段就默认不会出现在通用查询中，除非在SQL语句或条件中有显式的提及这一字段，或是在表定义中有DESCRIBED。要添加或是修改一个不可见字段是非常容易的，反之亦然。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> test_p (prod_id number(<span class="number">4</span>),</span><br><span class="line">Prod_name varchar2 (<span class="number">20</span>),</span><br><span class="line">Category_id number(<span class="number">30</span>),</span><br><span class="line">Quantity_on_hand number (<span class="number">3</span>) INVISIBLE);</span><br><span class="line"></span><br><span class="line"><span class="keyword">desc</span> test_p</span><br><span class="line"><span class="keyword">alter table</span> test_p <span class="keyword">add constraint</span> test_01  <span class="keyword">unique</span> (Quantity_on_hand);</span><br><span class="line"><span class="keyword">alter table</span> test_p modify(Quantity_on_hand visible);</span><br><span class="line"><span class="keyword">alter table</span> test_p modify(Quantity_on_hand sible);</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="实践2-5-存储过程DR和IR" class="article-heading"><a href="#实践2-5-存储过程DR和IR" class="headerlink" title="实践2-5:存储过程DR和IR"></a>实践2-5:存储过程DR和IR<a class="article-anchor" href="#实践2-5-存储过程DR和IR" aria-hidden="true"></a></h2><p>如何防止对CREATE_TEST存储过程具有EXECUTE特权的用户将值插入他们没有任何特权的表中？</p>
+<p>Create the CREATE_TEST procedure with invoker rights.</p>
+<p>oracle存储过程分两种，DR(Definer’s Rights ) Procedure和IR(Invoker’s Rights ) Procedure。<br>定义存储过程时，通过指定AUTHID 属性，定义DR Procedure 和IR Procedure</p>
+<ol>
+<li><p>定义者权限：定义者权限PL/SQL程序单元是以这个程序单元拥有者的特权来执行它的，也就是说，任何具有这个PL/SQL程序单元执行权的用户都可以访问程序中的对象。所有具有执行权的用户都有相同的访问权限，在定义者权限下，执行的用户操作的schema为定义者，所操作的对象是定义者在编译时指定的对象。在定义者(definer)权限下，当前用户的权限为角色无效情况下所拥有的权限。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">procedure</span> DEMO(ID <span class="keyword">in</span> NUMBER)</span><br><span class="line">AUTHID DEFINER <span class="keyword">as</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">...</span><br><span class="line">ND DEMO</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>调用者权限：调用者权限是指当前用户（而不是程序的创建者）执行PL/SQL程序体的权限。这意味着不同的用户对于某个对象具有的权限很可能是不同的，这个思想的提出，解决了不同用户更新不同表的方法。在调用者权限下，执行的用户操作的schema为当前用户，所操作的对象是当前模式下的对象。在调用者(invoker)权限下，当前用户的权限为当前所拥有的权限(含角色)。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">procedure</span> DEMO(ID <span class="keyword">in</span> NUMBER)</span><br><span class="line">AUTHID <span class="built_in">CURRENT_USER</span>  <span class="keyword">as</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">...</span><br><span class="line">ND DEMO</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<p>ORACLE默认为定义者权限，定义者权限在存储过程中ROLE无效，需要显示授权，例如在存储过程中调用其他用户的表，但是定义存储过程的当前用户没有显示访问该表的权限，即使当前用户具有dba角色，编译过程中也会出现权限不足的问题，因为role无效。</p>
+<h2 id="实践2-6-参数DB-8K-CACHE-SIZE" class="article-heading"><a href="#实践2-6-参数DB-8K-CACHE-SIZE" class="headerlink" title="实践2-6:参数DB_8K_CACHE_SIZE"></a>实践2-6:参数DB_8K_CACHE_SIZE<a class="article-anchor" href="#实践2-6-参数DB-8K-CACHE-SIZE" aria-hidden="true"></a></h2><p>查看参数</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> V$SYSTEM_PARAMETER <span class="keyword">where</span> name<span class="operator">=</span><span class="string">'db_8k_cache_size'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">exec</span> print_table(q<span class="string">'[select * from V$SYSTEM_PARAMETER WHERE name='</span>db_8k_cache_size<span class="string">']'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">NUM			      : <span class="number">1447</span></span><br><span class="line">NAME			      : db_8k_cache_size</span><br><span class="line">TYPE			      : <span class="number">6</span></span><br><span class="line"><span class="keyword">VALUE</span>			      : <span class="number">0</span></span><br><span class="line">DISPLAY_VALUE		      : <span class="number">0</span></span><br><span class="line">DEFAULT_VALUE		      : <span class="number">0</span></span><br><span class="line">ISDEFAULT		      : <span class="literal">TRUE</span></span><br><span class="line">ISSES_MODIFIABLE	      : <span class="literal">FALSE</span></span><br><span class="line">ISSYS_MODIFIABLE	      : IMMEDIATE</span><br><span class="line">ISPDB_MODIFIABLE	      : <span class="literal">FALSE</span></span><br><span class="line">ISINSTANCE_MODIFIABLE	      : <span class="literal">TRUE</span></span><br><span class="line">ISMODIFIED		      : <span class="literal">FALSE</span></span><br><span class="line">ISADJUSTED		      : <span class="literal">FALSE</span></span><br><span class="line">ISDEPRECATED		      : <span class="literal">FALSE</span></span><br><span class="line">ISBASIC 		      : <span class="literal">FALSE</span></span><br><span class="line">DESCRIPTION		      : Size <span class="keyword">of</span> cache <span class="keyword">for</span> <span class="number">8</span>K buffers</span><br><span class="line">UPDATE_COMMENT		      :</span><br><span class="line">HASH			      : <span class="number">1564706367</span></span><br><span class="line">CON_ID			      : <span class="number">0</span></span><br><span class="line"><span class="comment">-----------------</span></span><br><span class="line"></span><br><span class="line">PL<span class="operator">/</span><span class="keyword">SQL</span> <span class="keyword">procedure</span> successfully completed.</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>ISSYS_MODIFIABLE : IMMEDIATE</li>
+<li>指示参数是否可以更改<code>ALTER SYSTEM</code>以及更改何时生效：<code>IMMEDIATE</code>- <code>ALTER SYSTEM</code>无论用于启动实例的参数文件的类型如何，都可以更改参数。更改将立即生效。<br>DESCRIPTION : Size of cache for 8K buffers 8K缓冲区的缓存大小</li>
+</ul>
+<h2 id="实践2-7-参数ENABLE-DDL-LOGGING" class="article-heading"><a href="#实践2-7-参数ENABLE-DDL-LOGGING" class="headerlink" title="实践2-7:参数ENABLE_DDL_LOGGING"></a>实践2-7:参数ENABLE_DDL_LOGGING<a class="article-anchor" href="#实践2-7-参数ENABLE-DDL-LOGGING" aria-hidden="true"></a></h2><p>当需要确定某些ddl操作什么时候发生，确定是表啥时间被动了，可以设置此参数。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">--此参数支持动态调整</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">system</span> <span class="keyword">set</span> enable_ddl_logging<span class="operator">=</span><span class="literal">true</span> <span class="keyword">scope</span><span class="operator">=</span><span class="keyword">both</span>;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">parameter</span> enable_ddl_logging;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">procedure</span> print_table;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">PROCEDURE</span> print_table(p_query <span class="keyword">IN</span> VARCHAR2)</span><br><span class="line">AUTHID <span class="built_in">CURRENT_USER</span></span><br><span class="line"><span class="keyword">IS</span></span><br><span class="line"> l_thecursor <span class="type">INTEGER</span> <span class="keyword">DEFAULT</span> dbms_sql.open_cursor;</span><br><span class="line"> l_columnvalue VARCHAR2(<span class="number">4000</span>);</span><br><span class="line"> l_status  <span class="type">INTEGER</span>;</span><br><span class="line"> l_desctbl  dbms_sql.desc_tab;</span><br><span class="line"> l_colcnt  NUMBER;</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line"> <span class="keyword">EXECUTE</span> IMMEDIATE <span class="string">'alter session set nls_date_format=''dd-mon-yyyy hh24:mi:ss'' '</span>;</span><br><span class="line"></span><br><span class="line"> dbms_sql.parse(l_thecursor, p_query, dbms_sql.native);</span><br><span class="line"></span><br><span class="line"> dbms_sql.describe_columns (l_thecursor, l_colcnt, l_desctbl);</span><br><span class="line"></span><br><span class="line"> <span class="keyword">FOR</span> i <span class="keyword">IN</span> <span class="number">1</span> .. l_colcnt LOOP</span><br><span class="line">  dbms_sql.define_column (l_thecursor, i, l_columnvalue, <span class="number">4000</span>);</span><br><span class="line"> <span class="keyword">END</span> LOOP;</span><br><span class="line"></span><br><span class="line"> l_status :<span class="operator">=</span> dbms_sql.EXECUTE(l_thecursor);</span><br><span class="line"></span><br><span class="line"> WHILE ( dbms_sql.Fetch_rows(l_thecursor) <span class="operator">&gt;</span> <span class="number">0</span> ) LOOP</span><br><span class="line">  <span class="keyword">FOR</span> i <span class="keyword">IN</span> <span class="number">1</span> .. l_colcnt LOOP</span><br><span class="line">   dbms_sql.column_value (l_thecursor, i, l_columnvalue);</span><br><span class="line"></span><br><span class="line">   dbms_output.Put_line (RPAD(L_desctbl(i).col_name, <span class="number">30</span>)</span><br><span class="line">         <span class="operator">||</span> <span class="string">': '</span></span><br><span class="line">         <span class="operator">||</span> l_columnvalue);</span><br><span class="line">  <span class="keyword">END</span> LOOP;</span><br><span class="line"></span><br><span class="line">  dbms_output.put_line(<span class="string">'-----------------'</span>);</span><br><span class="line"> <span class="keyword">END</span> LOOP;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">EXECUTE</span> IMMEDIATE <span class="string">'alter session set nls_date_format=''dd-MON-rr'' '</span>;</span><br><span class="line">EXCEPTION</span><br><span class="line"> <span class="keyword">WHEN</span> OTHERS <span class="keyword">THEN</span></span><br><span class="line">    <span class="keyword">EXECUTE</span> IMMEDIATE</span><br><span class="line">    <span class="string">'alter session set nls_date_format=''dd-MON-rr'' '</span>;</span><br><span class="line"></span><br><span class="line">    RAISE;</span><br><span class="line"><span class="keyword">END</span>;</span><br><span class="line"><span class="operator">/</span></span><br><span class="line"><span class="keyword">exec</span> print_table(<span class="string">'select 1 from dual'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>运行结果</p>
+<ul>
+<li>DDL日志明细xml格式文件：<code>less /u01/app/oracle/diag/rdbms/emcdb/emcdb/log/ddl/log.xml</code></li>
+<li>DDL日志明细TXT格式文件：<code>less /u01/app/oracle/diag/rdbms/emcdb/emcdb/log/ddl_emcdb.log</code></li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@ocm</span> log]$ pwd</span><br><span class="line"><span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>diag<span class="operator">/</span>rdbms<span class="operator">/</span>emcdb<span class="operator">/</span>emcdb<span class="operator">/</span>log</span><br><span class="line">[oracle<span class="variable">@ocm</span> log]$ ll</span><br><span class="line">total <span class="number">8</span></span><br><span class="line">drwxr<span class="operator">-</span>x<span class="comment">--- 2 oracle oinstall   21 Feb  7 19:31 ddl</span></span><br><span class="line"><span class="operator">-</span>rw<span class="operator">-</span>r<span class="comment">----- 1 oracle oinstall 1217 Feb  7 19:32 ddl_emcdb.log</span></span><br><span class="line">drwxr<span class="operator">-</span>x<span class="comment">--- 2 oracle oinstall   21 Feb  2 19:57 debug</span></span><br><span class="line"><span class="operator">-</span>rw<span class="operator">-</span>r<span class="comment">----- 1 oracle oinstall  888 Feb  5 02:57 debug.log</span></span><br><span class="line">drwxr<span class="operator">-</span>x<span class="comment">--- 2 oracle oinstall    6 Dec  8 16:30 hcs</span></span><br><span class="line">drwxr<span class="operator">-</span>x<span class="comment">--- 2 oracle oinstall    6 Dec  8 16:30 imdb</span></span><br><span class="line">drwxr<span class="operator">-</span>x<span class="comment">--- 2 oracle oinstall    6 Dec  8 16:30 test</span></span><br><span class="line">[oracle<span class="variable">@ocm</span> log]$ head ddl_emcdb.log</span><br><span class="line"><span class="number">2020</span><span class="number">-02</span><span class="number">-07</span>T19:<span class="number">31</span>:<span class="number">14.248644</span><span class="operator">+</span><span class="number">08</span>:<span class="number">00</span></span><br><span class="line">diag_adl:<span class="keyword">drop</span> <span class="keyword">procedure</span> print_table</span><br><span class="line"><span class="number">2020</span><span class="number">-02</span><span class="number">-07</span>T19:<span class="number">32</span>:<span class="number">01.698631</span><span class="operator">+</span><span class="number">08</span>:<span class="number">00</span></span><br><span class="line">diag_adl:<span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">PROCEDURE</span> print_table(p_query <span class="keyword">IN</span> VARCHAR2)</span><br><span class="line">AUTHID <span class="built_in">CURRENT_USER</span></span><br><span class="line"><span class="keyword">IS</span></span><br><span class="line"> l_thecursor <span class="type">INTEGER</span> <span class="keyword">DEFAULT</span> dbms_sql.open_cursor;</span><br><span class="line"> l_columnvalue VARCHAR2(<span class="number">4000</span>);</span><br><span class="line"> l_status  <span class="type">INTEGER</span>;</span><br><span class="line"> l_desctbl  dbms_sql.desc_tab;</span><br><span class="line">[oracle<span class="variable">@ocm</span> log]$ head ddl<span class="operator">/</span>log.xml</span><br><span class="line"><span class="operator">&lt;</span>msg <span class="type">time</span><span class="operator">=</span><span class="string">'2020-02-07T19:31:14.248+08:00'</span> org_id<span class="operator">=</span><span class="string">'oracle'</span> comp_id<span class="operator">=</span><span class="string">'rdbms'</span></span><br><span class="line"> msg_id<span class="operator">=</span><span class="string">'opiexe:4695:2946163730'</span> type<span class="operator">=</span><span class="string">'UNKNOWN'</span> <span class="keyword">group</span><span class="operator">=</span><span class="string">'diag_adl'</span></span><br><span class="line"> level<span class="operator">=</span><span class="string">'16'</span> host_id<span class="operator">=</span><span class="string">'ocm'</span> host_addr<span class="operator">=</span><span class="string">'192.168.14.154'</span></span><br><span class="line"> pid<span class="operator">=</span><span class="string">'20083'</span> version<span class="operator">=</span><span class="string">'1'</span> con_uid<span class="operator">=</span><span class="string">'1'</span></span><br><span class="line"> con_id<span class="operator">=</span><span class="string">'1'</span> con_name<span class="operator">=</span><span class="string">'CDB$ROOT'</span><span class="operator">&gt;</span></span><br><span class="line"> <span class="operator">&lt;</span>txt<span class="operator">&gt;</span><span class="keyword">drop</span> <span class="keyword">procedure</span> print_table</span><br><span class="line"> <span class="operator">&lt;</span><span class="operator">/</span>txt<span class="operator">&gt;</span></span><br><span class="line"><span class="operator">&lt;</span><span class="operator">/</span>msg<span class="operator">&gt;</span></span><br><span class="line"><span class="operator">&lt;</span>msg <span class="type">time</span><span class="operator">=</span><span class="string">'2020-02-07T19:32:01.698+08:00'</span> org_id<span class="operator">=</span><span class="string">'oracle'</span> comp_id<span class="operator">=</span><span class="string">'rdbms'</span></span><br><span class="line"> msg_id<span class="operator">=</span><span class="string">'opiexe:4695:2946163730'</span> type<span class="operator">=</span><span class="string">'UNKNOWN'</span> <span class="keyword">group</span><span class="operator">=</span><span class="string">'diag_adl'</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="KnowledgePoint-2" class="article-heading"><a href="#KnowledgePoint-2" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-2" aria-hidden="true"></a></h3><blockquote>
+<p>ENABLE_DDL_LOGGING</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/ENABLE_DDL_LOGGING.html">https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/ENABLE_DDL_LOGGING.html</a></p>
+<p>| Property            | Description                     |<br>| ——————- | ——————————- | —— |<br>| Parameter type      | Boolean                         |<br>| Default value       | <code>false</code>                         |<br>| Modifiable          | <code>ALTER SESSION</code>, <code>ALTER SYSTEM</code> |<br>| Modifiable in a PDB | Yes                             |<br>| Range of values     | <code>true                           | false</code> |<br>| Basic               | No                              |</p>
+<ul>
+<li><code>ENABLE_DDL_LOGGING</code>&nbsp;enables or disables the writing of a subset of data definition language (DDL) statements to a DDL log.</li>
+<li>DDL日志是与警报日志具有相同格式和基本行为的文件，但它仅包含数据库发出的DDL语句。仅当RDBMS组件创建DDL日志，并且<code>ENABLE_DDL_LOGGING</code>初始化参数设置为<code>true</code>。当此参数设置<code>false</code>为时，DDL语句不包含在任何日志中。</li>
+<li>对于数据库发出的每个DDL语句，DDL日志均包含一个日志记录。DDL日志包含在IPS事件包中。</li>
+<li>有两个DDL日志包含相同的信息。一个是XML文件，另一个是文本文件。DDL日志存储在<code>log/ddl</code>ADR主目录的子目录中。</li>
+</ul>
+<p>当<code>ENABLE_DDL_LOGGING</code>设置<code>true</code>为时，将以下DDL语句写入日志：</p>
+<ul>
+<li><code>ALTER/CREATE/DROP/TRUNCATE CLUSTER</code></li>
+<li><code>ALTER/CREATE/DROP FUNCTION</code></li>
+<li><code>ALTER/CREATE/DROP INDEX</code></li>
+<li><code>ALTER/CREATE/DROP OUTLINE</code></li>
+<li><code>ALTER/CREATE/DROP PACKAGE</code></li>
+<li><code>ALTER/CREATE/DROP PACKAGE BODY</code></li>
+<li><code>ALTER/CREATE/DROP PROCEDURE</code></li>
+<li><code>ALTER/CREATE/DROP PROFILE</code></li>
+<li><code>ALTER/CREATE/DROP SEQUENCE</code></li>
+<li><code>CREATE/DROP SYNONYM</code></li>
+<li><code>ALTER/CREATE/DROP/RENAME/TRUNCATE TABLE</code></li>
+<li><code>ALTER/CREATE/DROP TRIGGER</code></li>
+<li><code>ALTER/CREATE/DROP TYPE</code></li>
+<li><code>ALTER/CREATE/DROP TYPE BODY</code></li>
+<li><code>DROP USER</code></li>
+<li><code>ALTER/CREATE/DROP VIEW</code></li>
+</ul>
+<h2 id="实践2-8-Oracle-Data-Redaction" class="article-heading"><a href="#实践2-8-Oracle-Data-Redaction" class="headerlink" title="实践2-8:Oracle Data Redaction"></a>实践2-8:Oracle Data Redaction<a class="article-anchor" href="#实践2-8-Oracle-Data-Redaction" aria-hidden="true"></a></h2><h3 id="Overview-2" class="article-heading"><a href="#Overview-2" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-2" aria-hidden="true"></a></h3><p>Oracle Data Redaction 提供了一种简单方法来快速编写应用程序中显示的敏感信息, 而无需变更磁盘或高速缓存中的基础数据库块。数据根据灵活的多因素策略实时编写。作为 Oracle Advanced Security 的一部分授权数据编写。</p>
+<p>本实验将学习如何配置一个数据编写策略并验证。</p>
+<h3 id="Task-2" class="article-heading"><a href="#Task-2" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-2" aria-hidden="true"></a></h3><ol>
+<li>使用DBA1用户，创建一个表regions</li>
+<li>登陆到企业云管理平台，点击 <strong>安全 &gt; 数据编辑</strong>，新建一个数据编辑策略。</li>
+<li>使用scott用户访问dba1的regions表，查看是否生效</li>
+<li>使用hr用户访问dba1的regions表，查看是否生效</li>
+</ol>
+<h3 id="Practice-2" class="article-heading"><a href="#Practice-2" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-2" aria-hidden="true"></a></h3><ol>
+<li><p>使用DBA1用户，创建一个表regions</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span></span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">desc</span> regions;</span><br><span class="line"> Name					   <span class="keyword">Null</span>?    Type</span><br><span class="line"> <span class="comment">----------------------------------------- -------- ----------------------------</span></span><br><span class="line"> REGION_ID				   <span class="keyword">NOT NULL</span> NUMBER</span><br><span class="line"> REGION_NAME				   <span class="keyword">NOT NULL</span> VARCHAR2(<span class="number">25</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> regions;</span><br><span class="line"></span><br><span class="line"> REGION_ID REGION_NAME</span><br><span class="line"><span class="comment">---------- -------------------------</span></span><br><span class="line">	 <span class="number">1</span> Europe</span><br><span class="line">	 <span class="number">2</span> Americas</span><br><span class="line">	 <span class="number">3</span> Asia</span><br><span class="line">	 <span class="number">4</span> Middle East <span class="keyword">and</span> Africa</span><br><span class="line">	 <span class="number">5</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> regions <span class="keyword">to</span> hr;</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> regions <span class="keyword">to</span> scott;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>登陆到企业云管理平台，点击 <strong>安全 &gt; 数据编辑 &gt; 创建策略</strong></p>
+<p>要求，当scott用户访问<code>dba1.regions</code>表时策略才会生效，具体策略如下表，含义为：如果region_name列匹配到ip地址，则变更更最后一位为999；否则不显示。</p>
+<table>
+<thead>
+<tr>
+<th>col</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>schema</td>
+<td>DBA1</td>
+</tr>
+<tr>
+<td>表/视图</td>
+<td>REGIONS</td>
+</tr>
+<tr>
+<td>策略名</td>
+<td>dba1_regions_exp</td>
+</tr>
+<tr>
+<td>策略表达式</td>
+<td>SYS_CONTEXT(‘USERENV’, ‘SESSION_USER’) = ‘SCOTT’</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>对象列</th>
+<th>列数据类型</th>
+<th>编写函数</th>
+<th>函数属性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>REGION_NAME</td>
+<td>VARCHAR2</td>
+<td>REGEX</td>
+<td><code>(\d{1,3}\.\d{1,3}\.\d{1,3})\.\d{1,3},\1.999,1,1,i</code></td>
+</tr>
+</tbody></table>
+<p><img src="pic/0202.png"></p>
+<p><img src="pic/0203.png"></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line"></span><br><span class="line">	 <span class="keyword">BEGIN</span>  DBMS_REDACT.ADD_POLICY  (OBJECT_SCHEMA <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'DBA1'</span>,  object_name <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'REGIONS'</span>,  policy_name <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'dba1_regions_exp'</span>,  expression <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'SYS_CONTEXT(''USERENV'', ''SESSION_USER'') = ''SCOTT'''</span>); <span class="keyword">END</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">BEGIN</span>  DBMS_REDACT.ALTER_POLICY  (OBJECT_SCHEMA <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'DBA1'</span>,  object_name <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'REGIONS'</span>,  policy_name <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'dba1_regions_exp'</span>,  action <span class="operator">=</span><span class="operator">&gt;</span> DBMS_REDACT.ADD_COLUMN,  column_name <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'"REGION_NAME"'</span>,  function_type <span class="operator">=</span><span class="operator">&gt;</span> DBMS_REDACT.REGEXP , regexp_pattern         <span class="operator">=</span><span class="operator">&gt;</span> (\d{<span class="number">1</span>,<span class="number">3</span>}\.\d{<span class="number">1</span>,<span class="number">3</span>}\.\d{<span class="number">1</span>,<span class="number">3</span>})\.\d{<span class="number">1</span>,<span class="number">3</span>},regexp_replace_string  <span class="operator">=</span><span class="operator">&gt;</span> \<span class="number">1.999</span>,regexp_position        <span class="operator">=</span><span class="operator">&gt;</span> <span class="number">1</span>,regexp_occurrence      <span class="operator">=</span><span class="operator">&gt;</span> <span class="number">1</span>,regexp_match_parameter <span class="operator">=</span><span class="operator">&gt;</span> i);  <span class="keyword">END</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">END</span>;</span><br><span class="line"><span class="operator">/</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用scott用户访问dba1的regions表，查看是否生效</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn scott<span class="operator">/</span>tiger<span class="variable">@emrep</span></span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">column</span> region_name format a25</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> dba1.regions;</span><br><span class="line"></span><br><span class="line"> REGION_ID REGION_NAME</span><br><span class="line"><span class="comment">---------- -------------------------</span></span><br><span class="line">	 <span class="number">1</span></span><br><span class="line">	 <span class="number">2</span></span><br><span class="line">	 <span class="number">3</span></span><br><span class="line">	 <span class="number">4</span></span><br><span class="line">	 <span class="number">5</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.999</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>id为5的行 region_name只显示了为ip的行，且对最后一个地址做了替换。说明成功了。</p>
+</li>
+<li><p>使用hr用户访问dba1的regions表，查看是否生效</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">   <span class="keyword">SQL</span><span class="operator">&gt;</span> conn hr<span class="operator">/</span>hr<span class="variable">@emrep</span>;</span><br><span class="line">   Connected.</span><br><span class="line">   <span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">column</span> region_name format a25</span><br><span class="line">   <span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> dba1.regions;</span><br><span class="line"></span><br><span class="line">REGION_ID REGION_NAME</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<hr>
+<p>1 Europe<br>2 Americas<br>3 Asia<br>4 Middle East and Africa<br>5 192.168.1.1</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"></span><br><span class="line">可以看到规则对hr用户没有生效。</span><br><span class="line"></span><br><span class="line">### KnowledgePoint</span><br><span class="line"></span><br><span class="line">- [Oracle Data Redaction简介](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/asoag/introduction-to-oracle-data-redaction.html#GUID-82EA9712-387C-4D3A-BB72-F64A707C67CA)</span><br><span class="line">  Oracle Data Redaction是实时编辑敏感数据的功能。</span><br><span class="line">- [Oracle Data Redaction特性和功能](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/asoag/oracle-data-redaction-features-and-capabilities.html#GUID-98B40084-EA10-4265-A6E5-D2EAC934E005)</span><br><span class="line">  Oracle Data Redaction提供了多种编辑不同类型数据的方法。</span><br><span class="line">- [配置Oracle数据修订策略](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/asoag/configuring-oracle-data-redaction-policies.html#GUID-78C0ECD1-388C-4E12-87C3-32FBC05F294D)</span><br><span class="line">  Oracle数据修订策略根据表列类型和要使用的修订类型定义如何对列中的数据进行修订。</span><br><span class="line">- [在Oracle Enterprise Manager中管理Oracle Data Redaction策略](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/asoag/using-oracle-data-redaction-in-oracle-enterprise-manager.html#GUID-8267183A-1778-428E-9B6E-AB06D8CC7EAB)</span><br><span class="line">  Oracle Enterprise Manager Cloud Control（云控制）可以管理Oracle Data Redaction策略和格式。</span><br><span class="line">- [将Oracle Data Redaction与Oracle数据库功能](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/asoag/oracle-data-redaction-use-with-oracle-database-features.html#GUID-D0C97997-0F35-42B7-98B1-1DA4197001F0)</span><br><span class="line">  一起使用Oracle Data Redaction可以与其他Oracle功能一起使用，但是某些Oracle功能可能对Oracle Data Redaction有限制。</span><br><span class="line">- [Oracle Data Redaction的安全注意事项](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/asoag/security-considerations-for-using-oracle-data-redaction.html#GUID-1D2850E8-2485-4C3D-BBF2-75E2CFAC3F37)</span><br><span class="line">  Oracle提供了使用Oracle Data Redaction的准则。</span><br><span class="line"></span><br><span class="line">## 实践2-9:REDACTION_VALUES_FOR_TYPE_FULL</span><br><span class="line"></span><br><span class="line">### Overview</span><br><span class="line"></span><br><span class="line">通过DBMS_REDACT.REDACTION_VALUES_FOR_TYPE_FULL 此过程修改“数据修订”策略的数值默认显示值以进行完整修订。</span><br><span class="line"></span><br><span class="line">### Task</span><br><span class="line"></span><br><span class="line">1. 修改redaction_values_for_type_full的NUMBER_VALUE为-1（pdb中操作）</span><br><span class="line">2. 登陆云管理控制台添加策略，scott用户访问dba1.employees表时，看不到真实的salary。看到的都是-1。</span><br><span class="line">3. 使用scott用户测试是否策略生效。</span><br><span class="line">4. 重启服务</span><br><span class="line">5. 使用scott用户测试是否策略生效。</span><br><span class="line"></span><br><span class="line">### Practice</span><br><span class="line"></span><br><span class="line">1. 修改redaction_values_for_type_full的NUMBER_VALUE为-1</span><br><span class="line"></span><br><span class="line">   ```sql</span><br><span class="line">   SQL&gt; conn / as sysdba</span><br><span class="line">   Connected.</span><br><span class="line">   SQL&gt;SQL&gt; conn / as sysdba</span><br><span class="line">   Connected.</span><br><span class="line">   SQL&gt; alter session set container=emrep;</span><br><span class="line"></span><br><span class="line">   Session altered.</span><br><span class="line"></span><br><span class="line">   SQL&gt; select number_value from redaction_values_for_type_full;</span><br><span class="line"></span><br><span class="line">   NUMBER_VALUE</span><br><span class="line">   ------------</span><br><span class="line">   	   0</span><br><span class="line"></span><br><span class="line">   SQL&gt; exec dbms_redact.update_full_redaction_values(-1)</span><br><span class="line"></span><br><span class="line">   PL/SQL procedure successfully completed.</span><br><span class="line"></span><br><span class="line">   SQL&gt; select number_value from redaction_values_for_type_full;</span><br><span class="line"></span><br><span class="line">   NUMBER_VALUE</span><br><span class="line">   ------------</span><br><span class="line">   	  -1</span><br><span class="line"></span><br><span class="line">    select number_value from redaction_values_for_type_full;</span><br><span class="line"></span><br><span class="line">   NUMBER_VALUE</span><br><span class="line">   ------------</span><br><span class="line">   	   0</span><br><span class="line"></span><br><span class="line">   SQL&gt; exec dbms_redact.update_full_redaction_values(-1)</span><br><span class="line"></span><br><span class="line">   PL/SQL procedure successfully completed.</span><br><span class="line"></span><br><span class="line">   SQL&gt; select number_value from redaction_values_for_type_full;</span><br><span class="line"></span><br><span class="line">   NUMBER_VALUE</span><br><span class="line">   ------------</span><br><span class="line">   	  -1</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li><p>登陆云管理控制台添加策略</p>
+<p><img src="pic/0204.png"></p>
+<p><img src="pic/0205.png"></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line"></span><br><span class="line">	 <span class="keyword">BEGIN</span>  DBMS_REDACT.ADD_POLICY  (OBJECT_SCHEMA <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'DBA1'</span>,  object_name <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'EMPLOYEES'</span>,  policy_name <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'dba1_employees_exp'</span>,  expression <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'SYS_CONTEXT(''USERENV'', ''SESSION_USER'') = ''SCOTT'''</span>); <span class="keyword">END</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">BEGIN</span>  DBMS_REDACT.ALTER_POLICY  (OBJECT_SCHEMA <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'DBA1'</span>,  object_name <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'EMPLOYEES'</span>,  policy_name <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'dba1_employees_exp'</span>,  action <span class="operator">=</span><span class="operator">&gt;</span> DBMS_REDACT.ADD_COLUMN,  column_name <span class="operator">=</span><span class="operator">&gt;</span> <span class="string">'"SALARY"'</span>,  function_type <span class="operator">=</span><span class="operator">&gt;</span> DBMS_REDACT.FULL );  <span class="keyword">END</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用scott用户测试是否策略生效。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn scott<span class="operator">/</span>tiger<span class="variable">@emrep</span>;</span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">desc</span> dba1.employees;</span><br><span class="line"> Name					   <span class="keyword">Null</span>?    Type</span><br><span class="line"> <span class="comment">----------------------------------------- -------- ----------------------------</span></span><br><span class="line"> EMPLOYEE_ID				   <span class="keyword">NOT NULL</span> NUMBER(<span class="number">6</span>)</span><br><span class="line"> FIRST_NAME					    VARCHAR2(<span class="number">20</span>)</span><br><span class="line"> LAST_NAME				   <span class="keyword">NOT NULL</span> VARCHAR2(<span class="number">25</span>)</span><br><span class="line"> EMAIL					   <span class="keyword">NOT NULL</span> VARCHAR2(<span class="number">25</span>)</span><br><span class="line"> PHONE_NUMBER					    VARCHAR2(<span class="number">20</span>)</span><br><span class="line"> HIRE_DATE				   <span class="keyword">NOT NULL</span> <span class="type">DATE</span></span><br><span class="line"> JOB_ID 				   <span class="keyword">NOT NULL</span> VARCHAR2(<span class="number">10</span>)</span><br><span class="line"> SALARY 					    NUMBER(<span class="number">8</span>,<span class="number">2</span>)</span><br><span class="line"> COMMISSION_PCT 				    NUMBER(<span class="number">2</span>,<span class="number">2</span>)</span><br><span class="line"> MANAGER_ID					    NUMBER(<span class="number">6</span>)</span><br><span class="line"> DEPARTMENT_ID					    NUMBER(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> employee_id,first_name,salary <span class="keyword">from</span> dba1.employees <span class="keyword">where</span> rownum <span class="operator">&lt;</span> <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">EMPLOYEE_ID FIRST_NAME		     SALARY</span><br><span class="line"><span class="comment">----------- -------------------- ----------</span></span><br><span class="line">	<span class="number">198</span> Donald			  <span class="number">0</span></span><br><span class="line">	<span class="number">199</span> Douglas			  <span class="number">0</span></span><br><span class="line">	<span class="number">200</span> Jennifer			  <span class="number">0</span></span><br><span class="line">	<span class="number">201</span> Michael			  <span class="number">0</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>发现salary显示的时0而不是-1。</p>
+</li>
+<li><p>重启服务</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> shutdown immediate</span><br><span class="line">Database closed.</span><br><span class="line">Database dismounted.</span><br><span class="line">ORACLE instance shut down.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> startup</span><br><span class="line">ORACLE instance started.</span><br><span class="line"></span><br><span class="line">Total <span class="keyword">System</span> <span class="keyword">Global</span> Area  <span class="number">838860800</span> bytes</span><br><span class="line">Fixed Size		    <span class="number">8798312</span> bytes</span><br><span class="line">Variable Size		  <span class="number">490737560</span> bytes</span><br><span class="line">Database Buffers	  <span class="number">331350016</span> bytes</span><br><span class="line">Redo Buffers		    <span class="number">7974912</span> bytes</span><br><span class="line">Database mounted.</span><br><span class="line">Database opened.</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用scott用户测试是否策略生效。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn scott<span class="operator">/</span>tiger<span class="variable">@emrep</span>;</span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> employee_id,first_name,salary <span class="keyword">from</span> dba1.employees <span class="keyword">where</span> rownum <span class="operator">&lt;</span> <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">EMPLOYEE_ID FIRST_NAME		     SALARY</span><br><span class="line"><span class="comment">----------- -------------------- ----------</span></span><br><span class="line">	<span class="number">198</span> Donald			 <span class="number">-1</span></span><br><span class="line">	<span class="number">199</span> Douglas			 <span class="number">-1</span></span><br><span class="line">	<span class="number">200</span> Jennifer			 <span class="number">-1</span></span><br><span class="line">	<span class="number">201</span> Michael			 <span class="number">-1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn hr<span class="operator">/</span>hr<span class="variable">@emrep</span>;</span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> employee_id,first_name,salary <span class="keyword">from</span> dba1.employees <span class="keyword">where</span> rownum <span class="operator">&lt;</span> <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">EMPLOYEE_ID FIRST_NAME		     SALARY</span><br><span class="line"><span class="comment">----------- -------------------- ----------</span></span><br><span class="line">	<span class="number">198</span> Donald		       <span class="number">2600</span></span><br><span class="line">	<span class="number">199</span> Douglas		       <span class="number">2600</span></span><br><span class="line">	<span class="number">200</span> Jennifer		       <span class="number">4400</span></span><br><span class="line">	<span class="number">201</span> Michael		      <span class="number">13000</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>重启后已生效，数字类型的salary列全部显示为 -1。</p>
+</li>
+</ol>
+<h3 id="KnowledgePoint-3" class="article-heading"><a href="#KnowledgePoint-3" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-3" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://www.oracle.com/technetwork/cn/articles/database/data-redaction-odb12c-2331480-zhs.html">提示与技巧：Oracle Database 12<em>c</em> 中的数据编辑</a></p>
+<h4 id="简介" class="article-heading"><a href="#简介" class="headerlink" title="简介"></a>简介<a class="article-anchor" href="#简介" aria-hidden="true"></a></h4><p>Oracle Data Redaction 是 Oracle Database 12c 引入的一个新特性。这个新特性是 Advanced Security 选件的一部分，可以实时保护显示给用户的数据，无需更改应用。</p>
+<p>Oracle Database 12c 在执行查询时应用保护。存储的数据保持不变，要显示的数据则在离开数据库前动态转换。</p>
+<p>不要将此特性与自版本 11g 起提供的 Oracle Data Masking 混淆。采用 Oracle Data Masking 时，将以屏蔽形式处理数据，更新后的数据存储在新数据块中。因此，Data Masking 更适合非生产环境。</p>
+<p>下面是已有的其他一些有助于提高数据安全性的特性：</p>
+<ul>
+<li>虚拟专用数据库 (VPD) — 通过向针对数据库执行的 SQL 语句动态添加谓词，控制行级和列级访问。</li>
+<li>Oracle Label Security — 允许向表记录添加用户定义的值。与 VPD 相结合，可以更精细地控制访问用户和访问内容。</li>
+<li>Database Vault — 数据编辑不能防止特权用户（如 DBA）访问受保护的数据。为解决此问题，您可以利用 Database Vault。</li>
+</ul>
+<p>从许可角度来说，Oracle Data Masking 仅适用于企业版数据库，且需要 Advanced Security 许可。</p>
+<h4 id="工作原理" class="article-heading"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理<a class="article-anchor" href="#工作原理" aria-hidden="true"></a></h4><p>我们可以创建编辑策略，指定必须满足哪些条件后才能对数据进行编辑并将其返回给用户。定义此类策略期间，DBA 可以指定必须对哪些列应用何种类型的保护。</p>
+<p>用于创建保护规则的软件包名为 <strong>DBMS_REDACT</strong>。它包括五个用于管理规则的过程，以及一个用于更改完全编辑策略默认值的过程。</p>
+<ul>
+<li><strong>DBMS_REDACT.ALTER_POLICY</strong> — 允许更改现有策略。</li>
+<li><strong>DBMS_REDACT.DISABLE_POLICY</strong> — 禁用现有策略。</li>
+<li><strong>DBMS_REDACT.DROP_POLICY</strong> — 删除现有策略。</li>
+<li><strong>DBMS_REDACT.ENABLE_POLICY</strong> — 启用现有策略。</li>
+<li><strong>DBMS_REDACT.UPDATE_FULL_REDACTION_VALUES</strong> — 更改完全编辑的默认返回值。必须重启数据库才能生效。</li>
+</ul>
+<h4 id="DBMS-REDACT-REDACTION-VALUES-FOR-TYPE-FULL" class="article-heading"><a href="#DBMS-REDACT-REDACTION-VALUES-FOR-TYPE-FULL" class="headerlink" title="DBMS_REDACT.REDACTION_VALUES_FOR_TYPE_FULL"></a>DBMS_REDACT.REDACTION_VALUES_FOR_TYPE_FULL<a class="article-anchor" href="#DBMS-REDACT-REDACTION-VALUES-FOR-TYPE-FULL" aria-hidden="true"></a></h4><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/database/121/ARPLS/d_redact.htm#ARPLS73800">DBMS_REDACT</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/REDACTION_VALUES_FOR_TYPE_FULL.html#GUID-7C9711A8-C3FA-413E-90A4-5E875FFAB870">REDACTION_VALUES_FOR_TYPE_FULL</a></li>
+</ul>
+<p>DBMS_REDACT.REDACTION_VALUES_FOR_TYPE_FULL 此过程将修改“数据修订”策略的默认显示值以进行完整修订。</p>
+<p>句法</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">DBMS_REDACT.UPDATE_FULL_REDACTION_VALUES（</span><br><span class="line">   number_val IN NUMBER：= NULL，</span><br><span class="line">   binfloat_val IN BINARY_FLOAT：= NULL，</span><br><span class="line">   bindouble_val IN BINARY_DOUBLE：= NULL，</span><br><span class="line">   char_val IN CHAR：= NULL，</span><br><span class="line">   varchar_val IN VARCHAR2：= NULL，</span><br><span class="line">   nchar_val IN NCHAR：= NULL，</span><br><span class="line">   nvarchar_val IN NVARCHAR2：= NULL，</span><br><span class="line">   date_val IN DATE：= NULL，</span><br><span class="line">   ts_val IN TIMESTAMP：= NULL，</span><br><span class="line">   tswtz_val在带有时区的TIMESTAMP中：= NULL，</span><br><span class="line">   blob_val IN BLOB：= NULL，</span><br><span class="line">   clob_val IN CLOB：= NULL，</span><br><span class="line">   nclob_val IN NCLOB NULL）;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>参量</p>
+<p>表121-11 UPDATE_FULL_REDACTION_VALUES过程参数</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>number_val</code></td>
+<td>修改<code>NUMBER</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>binfloat_val</code></td>
+<td>修改<code>BINARY_FLOAT</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>bindouble_val</code></td>
+<td>修改<code>BINARY_DOUBLE</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>char_val</code></td>
+<td>修改<code>CHAR</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>varchar_val</code></td>
+<td>修改<code>VARCHAR2</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>nchar_val</code></td>
+<td>修改<code>NCHAR</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>nvarchar_val</code></td>
+<td>修改<code>NVARCHAR2</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>修改<code>DATE</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>ts_val</code></td>
+<td>修改<code>TIMESTAMP</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>tswtz_val</code></td>
+<td>修改<code>TIMESTAMP WITH TIME ZONE</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>blob_val</code></td>
+<td>修改<code>BLOB</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>clob_val</code></td>
+<td>修改<code>CLOB</code>数据类型列的默认值</td>
+</tr>
+<tr>
+<td><code>nclob_val</code></td>
+<td>修改<code>NCLOB</code>数据类型列的默认值</td>
+</tr>
+</tbody></table>
+<p>例外情况</p>
+<p><code>ORA-28082</code>-参数参数是无效的（其中，可能的值是<code>char_val</code>，<code>nchar_val</code>，<code>varchar_val</code>和<code>nvarchar_val</code>）</p>
+<h4 id="BINARY-DOUBLE-VALUE" class="article-heading"><a href="#BINARY-DOUBLE-VALUE" class="headerlink" title="BINARY_DOUBLE_VALUE"></a>BINARY_DOUBLE_VALUE<a class="article-anchor" href="#BINARY-DOUBLE-VALUE" aria-hidden="true"></a></h4><p>例如，如果将修订策略应用于类型为的列，<code>BINARY_DOUBLE</code>并且修订类型为完全修订，则该列将使用<code>BINARY_DOUBLE_VALUE</code>此视图的列中显示的值进行编辑。</p>
+<table>
+<thead>
+<tr>
+<th>列</th>
+<th>数据类型</th>
+<th>空值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>NUMBER_VALUE</code></td>
+<td><code>NUMBER</code></td>
+<td><code>NOT NULL</code></td>
+<td>对NUMBER列进行完全修订的修订结果</td>
+</tr>
+<tr>
+<td><code>BINARY_FLOAT_VALUE</code></td>
+<td><code>BINARY_FLOAT</code></td>
+<td><code>NOT NULL</code></td>
+<td>对BINARY_FLOAT列进行完全修订的修订结果</td>
+</tr>
+<tr>
+<td><code>BINARY_DOUBLE_VALUE</code></td>
+<td><code>BINARY_DOUBLE</code></td>
+<td><code>NOT NULL</code></td>
+<td>对BINARY_DOUBLE列进行完全修订的修订结果</td>
+</tr>
+<tr>
+<td><code>CHAR_VALUE</code></td>
+<td><code>VARCHAR2(1)</code></td>
+<td></td>
+<td>对CHAR列进行完全修订的修订结果</td>
+</tr>
+<tr>
+<td><code>VARCHAR_VALUE</code></td>
+<td><code>VARCHAR2(1)</code></td>
+<td></td>
+<td>对VARCHAR2列进行完全修订的修订结果</td>
+</tr>
+<tr>
+<td><code>NCHAR_VALUE</code></td>
+<td><code>NCHAR(1)</code></td>
+<td></td>
+<td>对NCHAR列进行完全修订的修订结果</td>
+</tr>
+<tr>
+<td><code>NVARCHAR_VALUE</code></td>
+<td><code>NVARCHAR2(1)</code></td>
+<td></td>
+<td>用于NVARCHAR2列的完整修订的修订结果</td>
+</tr>
+<tr>
+<td><code>DATE_VALUE</code></td>
+<td><code>DATE</code></td>
+<td><code>NOT NULL</code></td>
+<td>用于DATE列的完整修订的修订结果</td>
+</tr>
+<tr>
+<td><code>TIMESTAMP_VALUE</code></td>
+<td><code>TIMESTAMP(6)</code></td>
+<td><code>NOT NULL</code></td>
+<td>对TIMESTAMP列进行完全修订的修订结果</td>
+</tr>
+<tr>
+<td><code>TIMESTAMP_WITH_TIME_ZONE_VALUE</code></td>
+<td><code>TIMESTAMP(6) WITH TIME ZONE</code></td>
+<td><code>NOT NULL</code></td>
+<td>对TIMESTAMP WITH TIME ZONE列进行完全修订的修订结果</td>
+</tr>
+<tr>
+<td><code>BLOB_VALUE</code></td>
+<td><code>BLOB</code></td>
+<td></td>
+<td>对BLOB列进行完全修订的修订结果</td>
+</tr>
+<tr>
+<td><code>CLOB_VALUE</code></td>
+<td><code>CLOB</code></td>
+<td></td>
+<td>对CLOB列进行完全修订的修订结果</td>
+</tr>
+<tr>
+<td><code>NCLOB_VALUE</code></td>
+<td><code>NCLOB</code></td>
+<td></td>
+<td>对NCLOB列进行完全修订的修订结果</td>
+</tr>
+</tbody></table>
+<h2 id="实践2-10-RMAN-VALIDATE" class="article-heading"><a href="#实践2-10-RMAN-VALIDATE" class="headerlink" title="实践2-10:RMAN VALIDATE"></a>实践2-10:RMAN VALIDATE<a class="article-anchor" href="#实践2-10-RMAN-VALIDATE" aria-hidden="true"></a></h2><h3 id="Overview-3" class="article-heading"><a href="#Overview-3" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-3" aria-hidden="true"></a></h3><h3 id="Task-3" class="article-heading"><a href="#Task-3" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-3" aria-hidden="true"></a></h3><h3 id="Practice-3" class="article-heading"><a href="#Practice-3" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-3" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-4" class="article-heading"><a href="#KnowledgePoint-4" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-4" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/rcmrf/VALIDATE.html#GUID-ECE57997-40CE-4029-A434-320441D2AD1E">VALIDATE</a></p>
+<h4 id="目的" class="article-heading"><a href="#目的" class="headerlink" title="目的"></a>目的<a class="article-anchor" href="#目的" aria-hidden="true"></a></h4><p>使用该<code>VALIDATE</code>命令检查损坏的块和丢失的文件，或确定是否可以还原备份集。</p>
+<p>如果<code>VALIDATE</code>在验证期间检测到问题，则RMAN会显示该问题并触发执行故障评估。如果检测到故障，则RMAN将其记录到自动化诊断系统信息库。您可以<code>LIST</code> <code>FAILURE</code>用来查看失败。</p>
+<h4 id="先决条件" class="article-heading"><a href="#先决条件" class="headerlink" title="先决条件"></a>先决条件<a class="article-anchor" href="#先决条件" aria-hidden="true"></a></h4><p>目标数据库必须已安装或打开。</p>
+<h4 id="使用说明" class="article-heading"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明<a class="article-anchor" href="#使用说明" aria-hidden="true"></a></h4><p><code>VALIDATE</code>命令中的选项在语义上等效于命令中的选项<code>BACKUP</code> <code>VALIDATE</code>。<code>BACKUP VALIDATE</code>但是，与<code>VALIDATE</code>可以不同的是，它可以检查单个备份集和数据块。</p>
+<p>该<code>VALIDATE</code>命令在验证期间不会跳过任何块。如果RMAN由于未使用的块压缩而未读取块，并且如果该块已损坏，则RMAN不会检测到损坏。损坏的未使用块无害。</p>
+<p>在物理损坏中，数据库根本无法识别该块。在逻辑损坏中，块的内容在逻辑上不一致。默认情况下，该<code>VALIDATE</code>命令仅检查物理损坏。您也可以指定<code>CHECK LOGICAL</code>检查逻辑损坏。RMAN填充<code>V$DATABASE_BLOCK_CORRUPTION</code> 查看其发现。</p>
+<p>块损坏可分为块间损坏和块内损坏。在块内损坏中，损坏发生在块本身内，并且可以是物理或逻辑损坏。在块间损坏中，损坏发生在块之间，并且只能是逻辑损坏。该<code>VALIDATE</code>命令仅检查块内损坏。</p>
+<h2 id="实践2-11-V-RSRC-CONSUMER-GROUP" class="article-heading"><a href="#实践2-11-V-RSRC-CONSUMER-GROUP" class="headerlink" title="实践2-11:V$RSRC_CONSUMER_GROUP"></a>实践2-11:V$RSRC_CONSUMER_GROUP<a class="article-anchor" href="#实践2-11-V-RSRC-CONSUMER-GROUP" aria-hidden="true"></a></h2><h3 id="Overview-4" class="article-heading"><a href="#Overview-4" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-4" aria-hidden="true"></a></h3><h3 id="Task-4" class="article-heading"><a href="#Task-4" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-4" aria-hidden="true"></a></h3><h3 id="Practice-4" class="article-heading"><a href="#Practice-4" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-4" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> name,active_sessions,queue_length,consumed_cpu_time,cpu_waits,cpu_wait_time <span class="keyword">from</span> v$rsrc_consumer_group;</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>name：消费群体名称</li>
+<li>active_sessions：消费者组中当前活动的会话数</li>
+<li>queue_length：队列中等待的会话数</li>
+<li>consumed_cpu_time：使用者组中所有会话消耗的CPU时间累积量（以毫秒为单位）</li>
+<li>cpu_waits：由于资源管理，使用者组中所有会话必须等待CPU的累积次数。这不包括由于闩锁或排队争用而引起的等待，I / O等待等。当不主动管理CPU资源时，此值设置为零。</li>
+<li>cpu_wait_time：由于资源管理，会话等待CPU的累计时间。这不包括由于闩锁或排队争用而引起的等待，I / O等待等。当不主动管理CPU资源时，此值设置为零。</li>
+</ul>
+<h3 id="KnowledgePoint-5" class="article-heading"><a href="#KnowledgePoint-5" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-5" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/V-RSRC_CONSUMER_GROUP.html#GUID-78EEDB39-2F56-4D6B-8878-5840E95EAFB5">V$RSRC_CONSUMER_GROUP</a></p>
+<p><code>V$RSRC_CONSUMER_GROUP</code> 显示与当前活动的资源使用者组有关的数据。</p>
+<p>将<code>STATISTICS_LEVEL</code>设置为<code>TYPICAL</code>或时<code>ALL</code>，即使未设置Resource Manager计划或Resource Manager计划不监视CPU或会话资源，此视图也包含有关CPU利用率和等待时间的信息。</p>
+<p><code>V$RSRC_CONSUMER_GROUP</code>当可插拔数据库（PDB）更改其资源计划时，将重置统计信息。它们不受多租户容器数据库（CDB）资源计划更改的影响。</p>
+<p>由于可以在不同的PDB之间独立设置PDB计划，<code>V$RSRC_CONSUMER_GROUP</code>因此不会在不同的PDB中覆盖相同的时间段。因此，此视图对于比较不同PDB之间的统计信息没有用。</p>
+<table>
+<thead>
+<tr>
+<th>柱</th>
+<th>数据类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ID</code></td>
+<td><code>NUMBER</code></td>
+<td>使用者组对象ID（唯一的数字，在数据库关闭和启动期间保持一致）</td>
+</tr>
+<tr>
+<td><code>NAME</code></td>
+<td><code>VARCHAR2(32)</code></td>
+<td>消费群体名称</td>
+</tr>
+<tr>
+<td><code>ACTIVE_SESSIONS</code></td>
+<td><code>NUMBER</code></td>
+<td>消费者组中当前活动的会话数</td>
+</tr>
+<tr>
+<td><code>EXECUTION_WAITERS</code></td>
+<td><code>NUMBER</code></td>
+<td>等待执行时间片的当前活动会话数，在这些时间段中将可以使用CPU</td>
+</tr>
+<tr>
+<td><code>REQUESTS</code></td>
+<td><code>NUMBER</code></td>
+<td>在使用者组中执行的累计请求数</td>
+</tr>
+<tr>
+<td><code>CPU_WAIT_TIME</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理，会话等待CPU的累计时间。这不包括由于闩锁或排队争用而引起的等待，I / O等待等。当不主动管理CPU资源时，此值设置为零。</td>
+</tr>
+<tr>
+<td><code>CPU_WAITS</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理，使用者组中所有会话必须等待CPU的累积次数。这不包括由于闩锁或排队争用而引起的等待，I / O等待等。当不主动管理CPU资源时，此值设置为零。</td>
+</tr>
+<tr>
+<td><code>CONSUMED_CPU_TIME</code></td>
+<td><code>NUMBER</code></td>
+<td>使用者组中所有会话消耗的CPU时间累积量（以毫秒为单位）</td>
+</tr>
+<tr>
+<td><code>YIELDS</code></td>
+<td><code>NUMBER</code></td>
+<td>由于数量到期，使用者组中的会话必须让CPU放弃其他会话的累积次数。当不主动管理CPU资源时，此值设置为零。</td>
+</tr>
+<tr>
+<td><code>CPU_DECISIONS</code></td>
+<td><code>NUMBER</code></td>
+<td>使用者组所在的CPU决策百分比。当不主动管理CPU资源时，此值设置为零。</td>
+</tr>
+<tr>
+<td><code>CPU_DECISIONS_EXCLUSIVE</code></td>
+<td><code>NUMBER</code></td>
+<td>存在使用者组并且是唯一的使用者组的CPU决策百分比。当不主动管理CPU资源时，此值设置为零。</td>
+</tr>
+<tr>
+<td><code>CPU_DECISIONS_WON</code></td>
+<td><code>NUMBER</code></td>
+<td>消费者组赢得的CPU决策百分比。当不主动管理CPU资源时，此值设置为零。</td>
+</tr>
+<tr>
+<td><code>QUEUE_LENGTH</code></td>
+<td><code>NUMBER</code></td>
+<td>队列中等待的会话数</td>
+</tr>
+<tr>
+<td><code>CURRENT_UNDO_CONSUMPTION</code></td>
+<td><code>NUMBER</code></td>
+<td>消费者组当前消耗的撤消量（以KB为单位）</td>
+</tr>
+<tr>
+<td><code>ACTIVE_SESSION_LIMIT_HIT</code></td>
+<td><code>NUMBER</code></td>
+<td>由于使用者组达到其活动会话限制，使用者组中的会话排队的次数</td>
+</tr>
+<tr>
+<td><code>UNDO_LIMIT_HIT</code></td>
+<td><code>NUMBER</code></td>
+<td>由于使用者组达到其<code>UNDO_POOL</code>限制 而取消了使用者组中的查询的次数</td>
+</tr>
+<tr>
+<td><code>SWITCHES_IN_CPU_TIME</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理器计划的<code>SWITCH_TIME</code>限制， 进入使用者组的切换数</td>
+</tr>
+<tr>
+<td><code>SWITCHES_OUT_CPU_TIME</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理器计划的<code>SWITCH_TIME</code>限制 ，不在使用者组中的交换机数量</td>
+</tr>
+<tr>
+<td><code>SWITCHES_IN_IO_MEGABYTES</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理器计划的<code>SWITCH_IO_MEGABYTES</code>限制， 进入使用者组的切换数</td>
+</tr>
+<tr>
+<td><code>SWITCHES_OUT_IO_MEGABYTES</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理器计划的<code>SWITCH_IO_MEGABYTES</code>限制 ，不在使用者组中的交换机数量</td>
+</tr>
+<tr>
+<td><code>SWITCHES_IN_IO_REQUESTS</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理器计划的<code>SWITCH_IO_REQS</code>限制， 进入使用者组的切换数</td>
+</tr>
+<tr>
+<td><code>SWITCHES_OUT_IO_REQUESTS</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理器计划的<code>SWITCH_IO_REQS</code>限制 ，不在使用者组中的交换机数量</td>
+</tr>
+<tr>
+<td><code>SWITCHES_IN_IO_LOGICAL</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理器计划的<code>SWITCH_IO_LOGICAL</code>限制， 进入使用者组的切换数</td>
+</tr>
+<tr>
+<td><code>SWITCHES_OUT_IO_LOGICAL</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理器计划的<code>SWITCH_IO_LOGICAL</code>限制 ，不在使用者组中的交换机数量</td>
+</tr>
+<tr>
+<td><code>SWITCHES_IN_ELAPSED_TIME</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理器计划的<code>SWITCH_ELAPSED_TIME</code>限制， 进入使用者组的切换数</td>
+</tr>
+<tr>
+<td><code>SWITCHES_OUT_ELAPSED_TIME</code></td>
+<td><code>NUMBER</code></td>
+<td>由于资源管理器计划的<code>SWITCH_ELAPSED_TIME</code>限制 ，不在使用者组中的交换机数量</td>
+</tr>
+<tr>
+<td><code>SQL_CANCELED</code></td>
+<td><code>NUMBER</code></td>
+<td>在使用者组中运行的SQL查询由于超出资源管理器计划的<code>SWITCH_TIME</code>限制<code>CANCEL_SQL</code>并被指定为资源管理器计划的中止而被中止的次数<code>SWITCH_GROUP</code></td>
+</tr>
+<tr>
+<td><code>ACTIVE_SESSIONS_KILLED</code></td>
+<td><code>NUMBER</code></td>
+<td>在使用者组中运行的会话由于超出资源管理器计划的<code>SWITCH_TIME</code>限制<code>KILL_SESSION</code>并被指定为资源管理器计划的会话而被终止的次数<code>SWITCH_GROUP</code></td>
+</tr>
+<tr>
+<td><code>IDLE_SESSIONS_KILLED</code></td>
+<td><code>NUMBER</code></td>
+<td>消费者组中的会话由于空闲时间太长（达到<code>MAX_IDLE_TIME</code>）而 被杀死的次数</td>
+</tr>
+<tr>
+<td><code>IDLE_BLKR_SESSIONS_KILLED</code></td>
+<td><code>NUMBER</code></td>
+<td>消费者组中的会话因空闲时间太长（达到<code>MAX_IDLE_BLOCKER_TIME</code>）并阻止其他会话而被杀死的次数</td>
+</tr>
+<tr>
+<td><code>QUEUED_TIME</code></td>
+<td><code>NUMBER</code></td>
+<td>由于活动会话限制，使用者组中的会话在“排队”状态下所花费的总时间（以毫秒为单位）</td>
+</tr>
+<tr>
+<td><code>QUEUE_TIME_OUTS</code></td>
+<td><code>NUMBER</code></td>
+<td>消费者组中的会话请求排队时间过长（达到<code>QUEUEING_P1</code>）而 超时的次数</td>
+</tr>
+<tr>
+<td><code>IO_SERVICE_TIME</code></td>
+<td><code>NUMBER</code></td>
+<td>累积I / O等待时间（以毫秒为单位）</td>
+</tr>
+<tr>
+<td><code>IO_SERVICE_WAITS</code></td>
+<td><code>NUMBER</code></td>
+<td>等待请求总数</td>
+</tr>
+<tr>
+<td><code>SMALL_READ_MEGABYTES</code></td>
+<td><code>NUMBER</code></td>
+<td>读取的单块兆字节数</td>
+</tr>
+<tr>
+<td><code>SMALL_WRITE_MEGABYTES</code></td>
+<td><code>NUMBER</code></td>
+<td>写入的单块兆字节数</td>
+</tr>
+<tr>
+<td><code>LARGE_READ_MEGABYTES</code></td>
+<td><code>NUMBER</code></td>
+<td>读取的多块兆字节数</td>
+</tr>
+<tr>
+<td><code>LARGE_WRITE_MEGABYTES</code></td>
+<td><code>NUMBER</code></td>
+<td>写入的多块兆字节数</td>
+</tr>
+<tr>
+<td><code>SMALL_READ_REQUESTS</code></td>
+<td><code>NUMBER</code></td>
+<td>单块读取请求数</td>
+</tr>
+<tr>
+<td><code>SMALL_WRITE_REQUESTS</code></td>
+<td><code>NUMBER</code></td>
+<td>单块写入请求数</td>
+</tr>
+<tr>
+<td><code>LARGE_READ_REQUESTS</code></td>
+<td><code>NUMBER</code></td>
+<td>多块读取请求数</td>
+</tr>
+<tr>
+<td><code>LARGE_WRITE_REQUESTS</code></td>
+<td><code>NUMBER</code></td>
+<td>多块写入请求数</td>
+</tr>
+<tr>
+<td><code>CURRENT_PQS_ACTIVE</code></td>
+<td><code>NUMBER</code></td>
+<td>使用者组中活动并行语句的数量。此值不包括永不排队的并行语句，例如GV $查询。</td>
+</tr>
+<tr>
+<td><code>CURRENT_PQ_SERVERS_ACTIVE</code></td>
+<td><code>NUMBER</code></td>
+<td>使用者组中活动并行服务器的数量。此值不包括运行从未排队的并行语句的服务器，例如GV $查询。</td>
+</tr>
+<tr>
+<td><code>PQS_QUEUED</code></td>
+<td><code>NUMBER</code></td>
+<td>尝试运行并行语句时，使用者组中的会话排队的次数</td>
+</tr>
+<tr>
+<td><code>PQS_COMPLETED</code></td>
+<td><code>NUMBER</code></td>
+<td>使用者组中已完成的并行语句总数</td>
+</tr>
+<tr>
+<td><code>PQ_SERVERS_USED</code></td>
+<td><code>NUMBER</code></td>
+<td>使用者组中已完成的并行语句使用的并行服务器总数</td>
+</tr>
+<tr>
+<td><code>PQ_ACTIVE_TIME</code></td>
+<td><code>NUMBER</code></td>
+<td>使用者组中所有已完成的并行语句的并行活动时间的累积总和（以毫秒为单位）</td>
+</tr>
+<tr>
+<td><code>CURRENT_PQS_QUEUED</code></td>
+<td><code>NUMBER</code></td>
+<td>使用者组中正在尝试运行并行语句的并行语句队列中正在等待的会话数</td>
+</tr>
+<tr>
+<td><code>PQ_QUEUED_TIME</code></td>
+<td><code>NUMBER</code></td>
+<td>尝试运行并行语句时，使用者组中的会话排队的总时间（以毫秒为单位）</td>
+</tr>
+<tr>
+<td><code>PQ_QUEUE_TIME_OUTS</code></td>
+<td><code>NUMBER</code></td>
+<td>消费方组中的会话的并行语句由于队列时间超出资源管理器计划的<code>PARALLEL_QUEUE_TIMEOUT</code>限制而 超时的次数</td>
+</tr>
+<tr>
+<td><code>CON_ID</code></td>
+<td><code>NUMBER</code></td>
+<td>数据所属的容器的ID。可能的值包括：<code>0</code>：此值用于包含与整个CDB有关的数据的行。此值也用于非CDB中的行。<code>1</code>：此值用于包含仅与根相关的数据的行n：其中n是包含数据的行的适用容器ID</td>
+</tr>
+</tbody></table>
+<p>也可以看看：</p>
+<ul>
+<li>“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/STATISTICS_LEVEL.html#GUID-16B23F95-8644-407A-A6C8-E85CADFA61FF">STATISTICS_LEVEL</a> ”</li>
+<li>“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/V-RSRC_PDB.html#GUID-8658D0A2-3822-429B-BB3B-79ABEAC70A3D">V $ RSRC_PDB</a> ”</li>
+<li><a target="_blank" rel="noopener" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/refrn&amp;id=ADMIN11881">《 Oracle数据库管理员指南》</a>中有关资源组的信息</li>
+<li><a target="_blank" rel="noopener" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/refrn&amp;id=ARPLS050">《 Oracle数据库PL / SQL软件包和类型参考》，</a>以获取有关使用<code>DBMS_RESOURCE_MANAGER</code>软件包 创建资源组的信息</li>
+</ul>
+<h2 id="实践2-12-使用升级前信息工具" class="article-heading"><a href="#实践2-12-使用升级前信息工具" class="headerlink" title="实践2-12:使用升级前信息工具"></a>实践2-12:使用升级前信息工具<a class="article-anchor" href="#实践2-12-使用升级前信息工具" aria-hidden="true"></a></h2><h3 id="Overview-5" class="article-heading"><a href="#Overview-5" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-5" aria-hidden="true"></a></h3><h3 id="Task-5" class="article-heading"><a href="#Task-5" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-5" aria-hidden="true"></a></h3><h3 id="Practice-5" class="article-heading"><a href="#Practice-5" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-5" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-6" class="article-heading"><a href="#KnowledgePoint-6" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-6" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/server.112/e23633/upgrade.htm#UPGRD12395">使用升级前信息工具</a></p>
+<p>在安装了适用于Oracle Database 11 g第2版（11.2）的软件和所有必需的修补程序之后，Oracle建议您分析数据库，然后再将其升级到新版本。这是通过在要升级的数据库环境中运行“升级前信息工具”来完成的。升级前信息工具是Oracle数据库11 g第2版（11.2）软件随附的SQL脚本。如果您要手动升级，则这是必需的步骤。否则，<code>catupgrd.sql</code>脚本将以错误终止。如果要使用DBUA进行升级，还建议运行“升级前信息工具”，以便可以预览DBUA检查的项目。</p>
+<p>这些主题包含有关升级前信息工具的其他信息：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/server.112/e23633/upgrade.htm#CHDJGEDB">关于升级前信息工具的输出</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/server.112/e23633/upgrade.htm#BABDBDCD">升级前信息工具的其他警告</a></li>
+</ul>
+<h2 id="实践2-13-STATISTICS-LEVEL指定数据库和操作系统统计信息的收集级别" class="article-heading"><a href="#实践2-13-STATISTICS-LEVEL指定数据库和操作系统统计信息的收集级别" class="headerlink" title="实践2-13:STATISTICS_LEVEL指定数据库和操作系统统计信息的收集级别"></a>实践2-13:<code>STATISTICS_LEVEL</code>指定数据库和操作系统统计信息的收集级别<a class="article-anchor" href="#实践2-13-STATISTICS-LEVEL指定数据库和操作系统统计信息的收集级别" aria-hidden="true"></a></h2><h3 id="Overview-6" class="article-heading"><a href="#Overview-6" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-6" aria-hidden="true"></a></h3><h3 id="Task-6" class="article-heading"><a href="#Task-6" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-6" aria-hidden="true"></a></h3><ol>
+<li><p>查看你环境中该参数的值</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">parameter</span> STATISTICS_LEVEL</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">statistics_level		     string	 TYPICAL</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>说出参数的含义</p>
+</li>
+</ol>
+<h3 id="Practice-6" class="article-heading"><a href="#Practice-6" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-6" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-7" class="article-heading"><a href="#KnowledgePoint-7" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-7" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/STATISTICS_LEVEL.html#GUID-16B23F95-8644-407A-A6C8-E85CADFA61FF">STATISTICS_LEVEL</a></p>
+<p><code>STATISTICS_LEVEL</code>指定数据库和操作系统统计信息的收集级别。Oracle数据库出于各种目的收集这些统计信息，包括制定自我管理决策。</p>
+<p>| 属性          | 描述                             |<br>| ————- | ——————————– | ——- | ——– |<br>| 参数类型      | 串                               |<br>| 句法          | <code>STATISTICS_LEVEL = { ALL        | TYPICAL | BASIC }</code> |<br>| 默认值        | <code>TYPICAL</code>                        |<br>| 可修改的      | <code>ALTER SESSION</code>， <code>ALTER SYSTEM</code> |<br>| 可在PDB中修改 | 是                               |<br>| 基本的        | 没有                             |</p>
+<p>默认设置<code>TYPICAL</code>确保确保收集数据库自我管理功能所需的所有主要统计信息，并提供最佳的整体性能。对于大多数环境，默认值应该足够。</p>
+<p>当<code>STATISTICS_LEVEL</code>参数设置为时<code>ALL</code>，其他统计信息将添加到使用该设置收集的统计信息集中<code>TYPICAL</code>。其他统计信息是定时操作系统统计信息和计划执行统计信息。</p>
+<p>将<code>STATISTICS_LEVEL</code>参数设置为<code>BASIC</code>禁用会禁用Oracle数据库功能所需的许多重要统计信息的收集，包括：</p>
+<ul>
+<li>自动工作量存储库（AWR）快照</li>
+<li>自动数据库诊断监视器（ADDM）</li>
+<li>所有服务器生成的警报</li>
+<li>自动SGA内存管理</li>
+<li>自动优化器统计信息收集</li>
+<li>对象级统计</li>
+<li>端到端应用程序跟踪（<code>V$CLIENT_STATS</code>）</li>
+<li>数据库时间分布统计（<code>V$SESS_TIME_MODEL</code>和<code>V$SYS_TIME_MODEL</code>）</li>
+<li>服务水平统计</li>
+<li>缓冲区高速缓存咨询</li>
+<li>MTTR咨询</li>
+<li>共享池大小调整咨询</li>
+<li>段级别统计</li>
+<li>PGA目标咨询</li>
+<li>定时统计</li>
+<li>监测统计</li>
+</ul>
+<p>注意：</p>
+<p>Oracle强烈建议您不要禁用这些重要的功能。</p>
+<p>通过<code>STATISTICS_LEVEL</code>修改参数后<code>ALTER SYSTEM</code>，根据的新值，所有建议或统计信息都会动态打开或关闭<code>STATISTICS_LEVEL</code>。当被修改时<code>ALTER SESSION</code>，以下咨询或统计信息仅在本地会话中打开或关闭。它们在系统范围内的状态不变：</p>
+<ul>
+<li>定时统计</li>
+<li>定时操作系统统计信息</li>
+<li>计划执行统计</li>
+</ul>
+<p>该<code>V$STATISTICS_LEVEL</code>视图显示有关由<code>STATISTICS_LEVEL</code>参数控制的统计信息或咨询状态的信息。请参见“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/V-STATISTICS_LEVEL.html#GUID-8A215D2B-4A6A-455F-81A9-66D6350A867A">V $ STATISTICS_LEVEL</a> ”。</p>
+<p>也可以看看：</p>
+<p><a target="_blank" rel="noopener" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/refrn&amp;id=TGDBA153">Oracle Database Performance Tuning Guide</a>有关此参数的更多信息</p>
+<h2 id="实践2-14-Automatic-Memory-Management" class="article-heading"><a href="#实践2-14-Automatic-Memory-Management" class="headerlink" title="实践2-14:Automatic Memory Management"></a>实践2-14:Automatic Memory Management<a class="article-anchor" href="#实践2-14-Automatic-Memory-Management" aria-hidden="true"></a></h2><h3 id="Overview-7" class="article-heading"><a href="#Overview-7" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-7" aria-hidden="true"></a></h3><h3 id="Task-7" class="article-heading"><a href="#Task-7" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-7" aria-hidden="true"></a></h3><h3 id="Practice-7" class="article-heading"><a href="#Practice-7" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-7" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> COMPONENT <span class="keyword">from</span> V$MEMORY_DYNAMIC_COMPONENTS;</span><br><span class="line"></span><br><span class="line">COMPONENT</span><br><span class="line"><span class="comment">----------------------------------------------------------------</span></span><br><span class="line">shared pool</span><br><span class="line"><span class="keyword">large</span> pool</span><br><span class="line">java pool</span><br><span class="line">streams pool</span><br><span class="line">SGA Target</span><br><span class="line"><span class="keyword">DEFAULT</span> buffer cache</span><br><span class="line">KEEP buffer cache</span><br><span class="line">RECYCLE buffer cache</span><br><span class="line"><span class="keyword">DEFAULT</span> <span class="number">2</span>K buffer cache</span><br><span class="line"><span class="keyword">DEFAULT</span> <span class="number">4</span>K buffer cache</span><br><span class="line"><span class="keyword">DEFAULT</span> <span class="number">8</span>K buffer cache</span><br><span class="line"><span class="keyword">DEFAULT</span> <span class="number">16</span>K buffer cache</span><br><span class="line"><span class="keyword">DEFAULT</span> <span class="number">32</span>K buffer cache</span><br><span class="line">Shared IO Pool</span><br><span class="line">Data Transfer Cache</span><br><span class="line"><span class="keyword">In</span><span class="operator">-</span>Memory Area</span><br><span class="line"><span class="keyword">In</span> Memory RW Extension Area</span><br><span class="line"><span class="keyword">In</span> Memory RO Extension Area</span><br><span class="line">PGA Target</span><br><span class="line">ASM Buffer Cache</span><br><span class="line"></span><br><span class="line"><span class="number">20</span> <span class="keyword">rows</span> selected.</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="KnowledgePoint-8" class="article-heading"><a href="#KnowledgePoint-8" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-8" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html">关于自动内存管理</a><br>管理实例内存的最简单方法是允许Oracle数据库实例为您自动管理和调整它。为此（在大多数平台上），您只需设置目标内存大小初始化参数（MEMORY_TARGET）和可选的最大内存大小初始化参数（MEMORY_MAX_TARGET）。<br>动态性能视图V$MEMORY_DYNAMIC_COMPONENTS显示所有动态调整的内存组件的当前大小，包括SGA和实例PGA的总大小。</p>
+<h2 id="实践2-15-Automatic-Shared-Memory-Management" class="article-heading"><a href="#实践2-15-Automatic-Shared-Memory-Management" class="headerlink" title="实践2-15:Automatic Shared Memory Management"></a>实践2-15:Automatic Shared Memory Management<a class="article-anchor" href="#实践2-15-Automatic-Shared-Memory-Management" aria-hidden="true"></a></h2><h3 id="Overview-8" class="article-heading"><a href="#Overview-8" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-8" aria-hidden="true"></a></h3><h3 id="Task-8" class="article-heading"><a href="#Task-8" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-8" aria-hidden="true"></a></h3><h3 id="Practice-8" class="article-heading"><a href="#Practice-8" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-8" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-9" class="article-heading"><a href="#KnowledgePoint-9" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-9" aria-hidden="true"></a></h3><p>自动共享内存管理简化了SGA内存管理。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-B8B8923C-4213-42A9-8ED3-4ABE48C23914">关于自动共享内存管理</a><br>使用自动共享内存管理，您可以使用<code>SGA_TARGET</code>初始化参数指定实例可用的SGA内存总量，并且Oracle数据库会自动在各种SGA组件之间分配此内存，以确保最有效的内存利用率。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-F07D8DE0-C756-4E3D-ABFC-27A0D3B45F4B">SGA中</a><br>的<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-F07D8DE0-C756-4E3D-ABFC-27A0D3B45F4B">组件和颗粒</a> SGA包含几个内存组件，它们是用于满足特定类别的内存分配请求的内存池。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-DFDA2DAA-B15D-4EC9-B7B1-A32304D7BEF9">设置最大SGA大小</a><br>的<code>SGA_MAX_SIZE</code>初始化参数指定系统全局区的该实例的生命周期的最大尺寸。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-3F0255D6-CE7F-4581-80D1-BE23362A99CF">设置SGA目标大小</a><br>您可以通过将<code>SGA_TARGET</code>初始化参数设置为非零值来启用自动共享内存管理功能。此参数设置SGA的总大小。它替换了控制为一组特定的单个组件分配的内存的参数，这些参数现在可以根据需要自动动态调整大小（调整）。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-0E0EBCD5-6134-492B-9232-3F76D92B1900">启用自动共享内存管理</a><br>启用自动共享内存管理（ASMM）的过程取决于您是从手动共享内存管理还是从自动内存管理更改为ASMM。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-3DB194B9-1F36-4522-91A1-EC8304FF9DA7">设置</a><br>自动调整大小的SGA组件的最小值您可以通过为与这些大小相对应的参数指定最小值来对自动调整大小的SGA组件的大小进行一些控制。如果您知道没有特定组件中的最小内存，应用程序将无法正常运行，则这样做很有用。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-CB7EE1F0-B6A0-4118-A0DD-5A3CC32A8ECA">SGA_TARGET</a><br>的<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-CB7EE1F0-B6A0-4118-A0DD-5A3CC32A8ECA">动态修改</a><code>SGA_TARGET</code>可以将参数动态增加到为该<code>SGA_MAX_SIZE</code>参数指定的值，也可以减少该参数。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-17DE9E10-3066-4908-A295-B27DD94EF2CB">修改自动调整大小的组件的参数</a><br>启用自动共享内存管理后，手动指定的自动调整大小的组件大小将作为组件大小的下限。您可以通过更改相应参数的值来动态修改此限制。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-EBA07C5C-A639-4B6A-A2BF-E3F1176F80D0">修改手动调整大小的零部件的</a><br>参数手动调整大小的<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-memory.html#GUID-EBA07C5C-A639-4B6A-A2BF-E3F1176F80D0">零部件的</a>参数也可以动态更改。但是，该参数的值不是设置最小大小，而是指定相应组件的精确大小。</li>
+</ul>
+<p>也可以看看：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/admin&amp;id=TGDBA291">《 Oracle数据库性能调优指南》</a>中有关调优SGA组件的信息</li>
+</ul>
+<h2 id="实践2-16-关于动态统计级别OPTIMIZER-DYNAMIC-SAMPLING" class="article-heading"><a href="#实践2-16-关于动态统计级别OPTIMIZER-DYNAMIC-SAMPLING" class="headerlink" title="实践2-16:关于动态统计级别OPTIMIZER_DYNAMIC_SAMPLING"></a>实践2-16:关于动态统计级别OPTIMIZER_DYNAMIC_SAMPLING<a class="article-anchor" href="#实践2-16-关于动态统计级别OPTIMIZER-DYNAMIC-SAMPLING" aria-hidden="true"></a></h2><h3 id="Overview-9" class="article-heading"><a href="#Overview-9" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-9" aria-hidden="true"></a></h3><h3 id="Task-9" class="article-heading"><a href="#Task-9" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-9" aria-hidden="true"></a></h3><h3 id="Practice-9" class="article-heading"><a href="#Practice-9" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-9" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-10" class="article-heading"><a href="#KnowledgePoint-10" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-10" aria-hidden="true"></a></h3><p><code>OPTIMIZER_DYNAMIC_SAMPLING</code> 控制数据库何时收集动态统计信息以及优化器用来收集统计信息的样本大小。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>参数类型</td>
+<td>整数</td>
+</tr>
+<tr>
+<td>默认值</td>
+<td>如果<code>OPTIMIZER_FEATURES_ENABLE</code>设置为<code>10.0.0</code>或更高，则<code>2</code>如果<code>OPTIMIZER_FEATURES_ENABLE</code>设置为<code>9.2.0</code>，则<code>1</code>如果<code>OPTIMIZER_FEATURES_ENABLE</code>设置为<code>9.0.1</code>或更低，则<code>0</code></td>
+</tr>
+<tr>
+<td>可修改的</td>
+<td><code>ALTER SESSION</code>， <code>ALTER SYSTEM</code></td>
+</tr>
+<tr>
+<td>可在PDB中修改</td>
+<td>是</td>
+</tr>
+<tr>
+<td>取值范围</td>
+<td><code>0</code> 至 <code>11</code></td>
+</tr>
+<tr>
+<td>基本的</td>
+<td>没有</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<p>在Oracle Database 12c第1版（12.1）之前的版本中，动态统计信息称为动态采样。</p>
+<p>如果将的值<code>OPTIMIZER_DYNAMIC_SAMPLING</code>设置为<code>11</code>，则该<code>OPTIMIZER_FEATURES_ENABLE</code>设置对设置无效<code>OPTIMIZER_DYNAMIC_SAMPLING</code>。</p>
+<p>该动态统计级别控制都在数据库云集动态统计和样本，优化程序使用，收集统计数据的大小。</p>
+<p>使用<code>OPTIMIZER_DYNAMIC_SAMPLING</code>初始化参数或语句提示来设置动态统计信息级别。</p>
+<p>注意：</p>
+<p>在Oracle Database 12c第1版（12.1）之前的版本中，动态统计信息称为动态采样。</p>
+<p>下表描述了动态统计信息的级别。请注意以下几点：</p>
+<ul>
+<li>如果启用了动态统计信息，则当SQL语句使用并行执行时，数据库可以选择使用动态统计信息。</li>
+<li>如果<code>OPTIMIZER_ADAPTIVE_STATISTICS</code>为<code>TRUE</code>，则当存在相关的SQL计划指令时，优化器将使用动态统计信息。数据库将结果统计信息保存在SQL计划指令存储中，以使其可用于其他查询。</li>
+</ul>
+<p>表12-5动态统计级别</p>
+<table>
+<thead>
+<tr>
+<th>水平</th>
+<th>当优化器使用动态统计信息时</th>
+<th>样本量（块）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>不要使用动态统计信息。</td>
+<td>不适用</td>
+</tr>
+<tr>
+<td>1</td>
+<td>对所有没有统计信息的表使用动态统计信息，但前提是必须满足以下条件：查询中至少有一个非分区表没有统计信息。该表没有索引。该表中的块数多于用于此表的动态统计信息的块数。</td>
+<td>32</td>
+</tr>
+<tr>
+<td>2</td>
+<td>如果语句中至少有一个表没有统计信息，请使用动态统计信息。这是默认值。</td>
+<td>64</td>
+</tr>
+<tr>
+<td>3</td>
+<td>如果满足以下任一条件，请使用动态统计信息：该语句中至少有一个表没有统计信息。该语句具有一个或多个<code>WHERE</code>子句谓词中使用的表达式，例如<code>WHERE SUBSTR(CUSTLASTNAME,1,3)</code>。</td>
+<td>64</td>
+</tr>
+<tr>
+<td>4</td>
+<td>如果满足以下任一条件，请使用动态统计信息：该语句中至少有一个表没有统计信息。该语句具有一个或多个<code>WHERE</code>子句谓词中使用的表达式，例如<code>WHERE SUBSTR(CUSTLASTNAME,1,3)</code>。该语句使用复杂谓词（同一表上多个谓词之间的<code>OR</code>或<code>AND</code>运算符）。</td>
+<td>64</td>
+</tr>
+<tr>
+<td>5</td>
+<td>标准与第4级相同，但是数据库使用不同的样本量。</td>
+<td>128</td>
+</tr>
+<tr>
+<td>6</td>
+<td>标准与第4级相同，但是数据库使用不同的样本量。</td>
+<td>256</td>
+</tr>
+<tr>
+<td>7</td>
+<td>标准与第4级相同，但是数据库使用不同的样本量。</td>
+<td>512</td>
+</tr>
+<tr>
+<td>8</td>
+<td>标准与第4级相同，但是数据库使用不同的样本量。</td>
+<td>1024</td>
+</tr>
+<tr>
+<td>9</td>
+<td>标准与第4级相同，但是数据库使用不同的样本量。</td>
+<td>4086</td>
+</tr>
+<tr>
+<td>10</td>
+<td>标准与第4级相同，但是数据库使用不同的样本量。</td>
+<td>所有块</td>
+</tr>
+<tr>
+<td>11</td>
+<td>当优化器认为必要时，数据库会自动使用自适应动态采样。</td>
+<td>自动确定</td>
+</tr>
+</tbody></table>
+<p>也可以看看：</p>
+<ul>
+<li>“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/tgsql/optimizer-statistics-concepts.html#GUID-E932F5B4-9BDB-4EE4-934C-7F1979CC62A9">当数据库采样数据时</a> ”</li>
+<li><a target="_blank" rel="noopener" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/tgsql&amp;id=REFRN10140">Oracle数据库参考</a>，了解<code>OPTIMIZER_DYNAMIC_SAMPLING</code>初始化参数</li>
+<li><a target="_blank" rel="noopener" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/refrn&amp;id=TGSQL-GUID-DEE2AF8B-5F4B-4FE7-9F0E-7D188921EBCC">《 Oracle数据库SQL调优指南》中</a>提供了有关可以为<code>OPTIMIZER_DYNAMIC_SAMPLING</code>参数设置的值（0 – 11）的详细信息。</li>
+</ul>
+<h2 id="实践2-17-在数据库之间传输表空间Management" class="article-heading"><a href="#实践2-17-在数据库之间传输表空间Management" class="headerlink" title="实践2-17:在数据库之间传输表空间Management"></a>实践2-17:在数据库之间传输表空间Management<a class="article-anchor" href="#实践2-17-在数据库之间传输表空间Management" aria-hidden="true"></a></h2><h3 id="Overview-10" class="article-heading"><a href="#Overview-10" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-10" aria-hidden="true"></a></h3><h3 id="Task-10" class="article-heading"><a href="#Task-10" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-10" aria-hidden="true"></a></h3><h3 id="Practice-10" class="article-heading"><a href="#Practice-10" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-10" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-11" class="article-heading"><a href="#KnowledgePoint-11" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-11" aria-hidden="true"></a></h3><p>您可以在数据库之间传输表空间。</p>
+<p>注意：</p>
+<p>要将可传输表空间集导入到不同平台上的Oracle数据库中，两个数据库的兼容性必须至少设置为10.0.0。有关跨发行版传输表空间的数据库兼容性的讨论，请参见“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/transporting-data.html#GUID-AC5C8D9D-796A-4EDE-AC35-AF963ECCFE5C">传输数据的兼容性注意事项</a> ”。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/transporting-data.html#GUID-9304426D-9D40-4F0D-8661-F53B608A652F">可传输表空间简介</a><br>可以使用可传输表空间功能将一组表空间从一个Oracle数据库复制到另一个。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/transporting-data.html#GUID-DAB51E42-9BBC-4001-B5CB-0ECDBE128787">可传输表空间</a><br>的限制可传输表<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/transporting-data.html#GUID-DAB51E42-9BBC-4001-B5CB-0ECDBE128787">空间</a>有限制。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/transporting-data.html#GUID-E4C56852-73A5-44A2-BB10-938831DA6E4C">在数据库之间传输表空间</a><br>您可以在数据库之间传输表空间。</li>
+</ul>
+<p>在数据库之间传输表空间的步骤：</p>
+<p>您可以在数据库之间传输表空间。</p>
+<p>以下任务列表总结了传输表空间的过程。在随后的示例中提供了每个任务的详细信息。</p>
+<ol>
+<li><p>选择一组独立的表空间。</p>
+</li>
+<li><p>在源数据库中，将表空间集设置为只读模式，并生成可传输表空间集。</p>
+<p>可传输表空间集（或可传输集）由要传输的表空间集的数据文件和包含表空间集的结构信息（元数据）的导出转储文件组成。您使用数据泵执行导出。</p>
+</li>
+<li><p>传输导出转储文件。</p>
+<p>将导出转储文件复制到目标数据库可访问的位置。</p>
+</li>
+<li><p>传输表空间集。</p>
+<p>将数据文件复制到目标数据库可访问的位置。</p>
+<p>如果源平台和目标平台不同，则通过运行在所述查询检查每个平台的endian格式<code>V$TRANSPORTABLE_PLATFORM</code>视图在“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/transporting-data.html#GUID-FE3003B9-605A-4269-B167-005AC778C870">传输数据跨平台</a> ”。</p>
+<p>如果源平台的字节序格式与目标平台的字节序格式不同，请使用以下方法之一转换数据文件：</p>
+<ul>
+<li>使用包中的<code>GET_FILE</code>或<code>PUT_FILE</code>过程<code>DBMS_FILE_TRANSFER</code>来传输数据文件。这些过程自动将数据文件转换为目标平台的字节序格式。</li>
+<li>使用RMAN <code>CONVERT</code>命令将数据文件转换为目标平台的字节序格式。</li>
+</ul>
+<p>有关更多信息，请参见“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/transporting-data.html#GUID-E4B0F929-79D0-4DEE-B1DD-378BDBC31A0B">在平台之间转换数据</a> ”。</p>
+</li>
+<li><p>（可选）将表空间还原为源数据库上的读/写模式。</p>
+</li>
+<li><p>在目标数据库上，导入表空间集。</p>
+<p>调用数据泵实用程序以导入表空间集的元数据。</p>
+</li>
+</ol>
+<h2 id="实践2-18-DB-FLASH-CACHE-FILE" class="article-heading"><a href="#实践2-18-DB-FLASH-CACHE-FILE" class="headerlink" title="实践2-18:DB_FLASH_CACHE_FILE"></a>实践2-18:DB_FLASH_CACHE_FILE<a class="article-anchor" href="#实践2-18-DB-FLASH-CACHE-FILE" aria-hidden="true"></a></h2><h3 id="Overview-11" class="article-heading"><a href="#Overview-11" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-11" aria-hidden="true"></a></h3><h3 id="Task-11" class="article-heading"><a href="#Task-11" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-11" aria-hidden="true"></a></h3><h3 id="Practice-11" class="article-heading"><a href="#Practice-11" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-11" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">db_flash_cache_file <span class="operator">=</span> <span class="operator">/</span>dev<span class="operator">/</span>raw<span class="operator">/</span>sda, <span class="operator">/</span>dev<span class="operator">/</span>raw<span class="operator">/</span>sdb, <span class="operator">/</span>dev<span class="operator">/</span>raw<span class="operator">/</span>sdc</span><br><span class="line">db_flash_cache_size <span class="operator">=</span> <span class="number">32</span>G, <span class="number">32</span>G, <span class="number">64</span>G</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="KnowledgePoint-12" class="article-heading"><a href="#KnowledgePoint-12" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-12" aria-hidden="true"></a></h3><p><code>DB_FLASH_CACHE_FILE</code> 指定用于表示闪存集合的闪存或磁盘组的文件名，以与数据库智能闪存缓存一起使用。</p>
+<p>| 属性          | 描述                                             |<br>| ————- | ———————————————— | ————- |<br>| 参数类型      | 串                                               |<br>| 句法          | <code>DB_FLASH_CACHE_FILE = </code>filename [,filename]…<code> | ``disk group</code> |<br>| 默认值        | 没有默认值。                                     |<br>| 可修改的      | <code>ALTER SYSTEM</code>                                   |<br>| 可在PDB中修改 | 没有                                             |<br>| 基本的        | 没有                                             |</p>
+<p>您最多可以为闪存设备指定16个文件名。例如，如果有三个闪存原始设备：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">db_flash_cache_file = /dev/raw/sda, /dev/raw/sdb, /dev/raw/sdc</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>DB_FLASH_CACHE_SIZE</code>不允许在不指定初始化参数的情况下指定此参数。</p>
+<p><code>DB_FLASH_CACHE_SIZE</code>指定数据库智能闪存缓存（闪存缓存）的大小。此参数只能在实例启动时指定。</p>
+<p>| 属性          | 描述                                 |<br>| ————- | ———————————— | — | ————- | — | ——- |<br>| 参数类型      | 大整数                               |<br>| 句法          | <code>DB_FLASH_CACHE_SIZE =</code> 整数 <code>[K     | M   | G] [,</code>整数<code>[K | M   | G]]...</code> |<br>| 默认值        | <code>0</code>                                  |<br>| 可修改的      | <code>ALTER SYSTEM</code>                       |<br>| 可在PDB中修改 | 没有                                 |<br>| 取值范围      | 最低要求： <code>0</code>最大值：取决于操作系统 |<br>| 基本的        | 没有                                 |</p>
+<p>您最多可以为用指定的闪存设备指定16个文件大小<code>DB_FLASH_CACHE_FILE</code>。例如，如果有三个闪存原始设备，则可以如下指定每个设备的大小：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">db_flash_cache_file = /dev/raw/sda, /dev/raw/sdb, /dev/raw/sdc</span><br><span class="line">db_flash_cache_size = 32G, 32G, 64G</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果您的闪存缓存由一个闪存缓存设备组成，则可以<code>0</code>在数据库启动后动态将该参数更改为该闪存缓存设备的参数（禁用闪存缓存）。然后，可以通过在启动数据库时将设备的此参数设置回原始值来重新启用闪存缓存。<code>DB_FLASH_CACHE_SIZE</code>不支持动态调整闪存缓存大小或将其重新启用为其他大小。</p>
+<p>如果您的闪存缓存包含多个闪存缓存设备，则可以<code>0</code>在数据库启动后将参数动态更改为特定的闪存缓存设备（将其关闭）。然后，您可以通过将该设备的此参数设置回启动数据库时具有的原始值（将其重新打开）来重新启用该闪存设备。</p>
+<p>例如，要关闭<code>/dev/raw/sdb</code>闪存设备：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">db_flash_cache_file = /dev/raw/sda, /dev/raw/sdb, /dev/raw/sdc</span><br><span class="line">db_flash_cache_size = 32G, 0, 64G</span><br></pre></td></tr></tbody></table></figure>
+
+<p>并且，要重新打开<code>/dev/raw/sdb</code>闪存设备：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">db_flash_cache_file = /dev/raw/sda, /dev/raw/sdb, /dev/raw/sdc</span><br><span class="line">db_flash_cache_size = 32G, 32G, 64G</span><br></pre></td></tr></tbody></table></figure>
+
+<p>也可以看看：</p>
+<p>“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/DB_FLASH_CACHE_FILE.html#GUID-45C21508-08FD-4535-A5BD-73284588F850">DB_FLASH_CACHE_FILE</a> ”</p>
+<p>“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/DB_FLASH_CACHE_SIZE.html#GUID-9B2E54F0-F2C0-4C3A-88B7-C2F64F32376F">DB_FLASH_CACHE_SIZE</a> ”</p>
+<h2 id="实践2-19-在线缩小数据库段" class="article-heading"><a href="#实践2-19-在线缩小数据库段" class="headerlink" title="实践2-19:在线缩小数据库段"></a>实践2-19:在线缩小数据库段<a class="article-anchor" href="#实践2-19-在线缩小数据库段" aria-hidden="true"></a></h2><h3 id="Overview-12" class="article-heading"><a href="#Overview-12" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-12" aria-hidden="true"></a></h3><h3 id="Task-12" class="article-heading"><a href="#Task-12" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-12" aria-hidden="true"></a></h3><h3 id="Practice-12" class="article-heading"><a href="#Practice-12" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-12" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-13" class="article-heading"><a href="#KnowledgePoint-13" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-13" aria-hidden="true"></a></h3><p>您可以使用在线段收缩来收回Oracle数据库段中高水位以下的零碎可用空间。</p>
+<p>段缩减的好处包括：</p>
+<ul>
+<li>数据压缩可提高缓存利用率，进而提高在线事务处理（OLTP）性能。</li>
+<li>压缩后的数据需要在全表扫描中扫描的块更少，从而可以提高决策支持系统（DSS）的性能。</li>
+</ul>
+<p>段收缩是一种在线的就地操作。可以在段收缩的数据移动阶段发出DML操作和查询。当释放空间时，并发DML操作在收缩操作结束时会短暂阻塞。索引在收缩操作期间保持不变，并在操作完成后仍然可用。段收缩不需要分配额外的磁盘空间。</p>
+<p>段收缩可回收高水位线上方和下方的未使用空间。相反，空间释放仅在高水位线以上回收未使用的空间。在收缩操作中，默认情况下，数据库会压缩段，调整高水位线并释放回收的空间。</p>
+<p>段缩小要求将行移到新位置。因此，必须首先在要缩小的对象中启用行移动，并禁用在该对象上定义的所有基于Rowid的触发器。您可以使用<code>ALTER</code> <code>TABLE</code>… <code>ENABLE</code> <code>ROW</code> <code>MOVEMENT</code>命令在表中启用行移动。</p>
+<p>使用自动段空间管理（ASSM），只能对本地管理的表空间中的段执行收缩操作。在ASSM表空间中，所有分段类型均可进行在线分段收缩，但以下情况除外：</p>
+<ul>
+<li><p>物联网映射表</p>
+</li>
+<li><p>具有基于rowid的物化视图的表</p>
+</li>
+<li><p>具有基于函数的索引的表</p>
+</li>
+<li><p><code>SECUREFILE</code> 吊带</p>
+</li>
+<li><p>使用以下压缩方法压缩的表：</p>
+<ul>
+<li>基本表压缩使用 <code>ROW STORE COMPRESS BASIC</code></li>
+<li>仓库压缩使用 <code>COLUMN STORE COMPRESS FOR QUERY</code></li>
+<li>使用压缩存档 <code>COLUMN STORE COMPRESS FOR ARCHIVE</code></li>
+</ul>
+<p>但是，使用高级行压缩来压缩的表<code>ROW STORE COMPRESS ADVANCED</code>可以进行在线段收缩。有关表压缩方法的信息，请参见“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tables.html#GUID-ED833867-4B7F-442E-A70C-9C19DAA8F445">考虑使用表压缩</a> ”。</p>
+</li>
+</ul>
+<p>注意：</p>
+<p>在线缩小数据库段可能导致从属数据库对象无效。请参阅“ <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-schema-objects.html#GUID-919EF353-E9F4-4767-B6BD-5191BE3E38E5">关于对象依赖性和对象无效</a> ”。</p>
+<p>也可以看看：</p>
+<p>有关该<code>ALTER</code> <code>TABLE</code>命令的更多信息，请<a target="_blank" rel="noopener" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/admin&amp;id=SQLRF01001">参见《 Oracle数据库SQL语言参考</a>》。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-space-for-schema-objects.html#GUID-37DF35E0-116B-4AAB-BFB3-DDBDBAB29BEB">在线缩小数据库段</a></p>
+<h2 id="实践2-20-数据库内归档In-Database-Archiving" class="article-heading"><a href="#实践2-20-数据库内归档In-Database-Archiving" class="headerlink" title="实践2-20:数据库内归档In-Database Archiving"></a>实践2-20:数据库内归档In-Database Archiving<a class="article-anchor" href="#实践2-20-数据库内归档In-Database-Archiving" aria-hidden="true"></a></h2><h3 id="Overview-13" class="article-heading"><a href="#Overview-13" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-13" aria-hidden="true"></a></h3><p>&nbsp;在企业的应用场景中，经常会遇到当我们不需要表中的某些行时，需要把它删除。但是有时候并不是想在物理上真正的删除这些数据，在传统的表设计中，我们一般会采用加一个额外的列来表示逻辑删除。比如is_del，当应用程序在处理时，在where条件中根据is_del的值来判断某些行是否应该被删除了。这种解决方案给维护带来了额外的开销，而且缺少灵活性。 &nbsp;</p>
+<p>Oracle12c版本中增加了一个新特性叫作row archive，可以让数据库自动判断某些行数据是否为删除，这个新功能也叫作In-DatabaseArchiving（数据库内归档），这个解决方案减少了维护上的开销，而且实现起来非常简单灵活。 &nbsp;&nbsp;</p>
+<p>简单的说数据库内归档（即行归档）就是在数据库自动创建的隐藏列上给予赋值，如果是0，说明是活跃的数据，可以被查询到，如果是非0的数据，则表示为归档的数据（即被删除的数据），查询时就不会被查询出来。行归档就像一个开关一样，数据要么是活跃的，要么是归档的，根据用户设置的归档策略数据库自动判断。&nbsp; &nbsp;&nbsp;</p>
+<p>本文通过各种案例诠释Oracle 12c中关于ILM（数据生命周期管理）多个新特性中相对最简单的一个――数据库内归档（In-DatabaseArchiving）。 &nbsp;</p>
+<p>ILM有些特性在12c版本中只有12.2版本才支持，但是行归档功能在12.1版本中就支持，而且支持多租户架构，可以在PDB中使用。</p>
+<h3 id="Task-13" class="article-heading"><a href="#Task-13" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-13" aria-hidden="true"></a></h3><h3 id="Practice-13" class="article-heading"><a href="#Practice-13" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-13" aria-hidden="true"></a></h3><ol>
+<li><p>观察表启用行归档前后的结构变化</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/* 查看启用行归档前表的结构 */</span></span><br><span class="line">conn scott<span class="operator">/</span>tiger<span class="variable">@booboopdb1</span></span><br><span class="line">col COLUMN_NAME <span class="keyword">for</span> a20</span><br><span class="line">col DATA_TYPE <span class="keyword">for</span> a20</span><br><span class="line">col HIDDEN_COLUMN <span class="keyword">for</span> a10</span><br><span class="line"><span class="keyword">select</span> COLUMN_NAME,DATA_TYPE,HIDDEN_COLUMN <span class="keyword">FROM</span> USER_TAB_COLS <span class="keyword">WHERE</span> TABLE_NAME<span class="operator">=</span><span class="string">'EMP'</span>;</span><br><span class="line"><span class="comment">/* 启用行归档 */</span></span><br><span class="line"><span class="keyword">alter table</span> EMP <span class="type">row</span> archival;</span><br><span class="line"><span class="comment">/* 查看启用行归档后表的结构 */</span></span><br><span class="line"><span class="keyword">select</span> COLUMN_NAME,DATA_TYPE,HIDDEN_COLUMN <span class="keyword">FROM</span> USER_TAB_COLS <span class="keyword">WHERE</span> TABLE_NAME<span class="operator">=</span><span class="string">'EMP'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/0206.png"></p>
+<p>可以看出Oracle是使用隐藏列来实现这个功能的，在启用该特性以后，会自动在表上增加<code>SYS_NC00009$</code>和<code>ORA_ARCHIVE_STATE</code>字段，<code>ORA_ARCHIVE_STATE</code>是一个<code>VARCHAR2(4000)</code>的字段。其中S<code>YS_NC00009$</code>是为了以后创建函数索引的时候使用，<code>ORA_ARCHIVE_STATE</code>用来表示行数据的活跃状态。</p>
+</li>
+<li><p>启用行归档后数据查询操作</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/*查看EMP表中的当前的数据分布：*/</span></span><br><span class="line"><span class="keyword">select</span> ename,to_char(hiredate,<span class="string">'yyyy-mm-dd hh24:mi:ss'</span>) <span class="keyword">from</span> emp <span class="keyword">order</span> <span class="keyword">by</span> hiredate;</span><br><span class="line"><span class="comment">/*将雇佣日期在1981-05-01 00:00:00之前的记录设置为归档。可以通过使用UPDATE语句将ORA_ARCHIVE_STATE字段更新为任意非0的字符来实现。*/</span></span><br><span class="line"><span class="keyword">update</span> emp <span class="keyword">set</span> ORA_ARCHIVE_STATE<span class="operator">=</span><span class="number">1</span> <span class="keyword">where</span> hiredate <span class="operator">&lt;</span> to_date(<span class="string">'1981-05-01 00:00:00'</span>,<span class="string">'yyyy-mm-dd hh24:mi:ss'</span>);</span><br><span class="line"><span class="comment">/*查看EMP表中的当前的数据分布：*/</span></span><br><span class="line"><span class="keyword">select</span> ename,to_char(hiredate,<span class="string">'yyyy-mm-dd hh24:mi:ss'</span>) <span class="keyword">from</span> emp <span class="keyword">order</span> <span class="keyword">by</span> hiredate;</span><br><span class="line"><span class="comment">/* 可以查看这些行的数据活跃状态标识 */</span></span><br><span class="line"><span class="keyword">select</span> ename,to_char(hiredate,<span class="string">'yyyy-mm-dd hh24:mi:ss'</span>),ORA_ARCHIVE_STATE <span class="keyword">from</span> emp <span class="keyword">order</span> <span class="keyword">by</span> hiredate;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>通过隐藏的列的值，数据库自动判断哪些数据是活跃的，哪些是归档的，活跃的就显示，归档的就不显示，无需添加条件语句。</p>
+<p>可以在会话级别控制归档数据的显示情况：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/* 记录是归档的，也显示出来，注意归档的状态标识0为活跃的，非0值为归档的 */</span></span><br><span class="line"><span class="keyword">ALTER</span> SESSION <span class="keyword">SET</span> <span class="type">ROW</span> ARCHIVAL VISIBILITY <span class="operator">=</span> <span class="keyword">ALL</span>;</span><br><span class="line"><span class="keyword">select</span> ename,to_char(hiredate,<span class="string">'yyyy-mm-ddhh24:mi:ss'</span>),ORA_ARCHIVE_STATE <span class="keyword">from</span> emp <span class="keyword">order</span> <span class="keyword">by</span> hiredate;</span><br><span class="line"><span class="comment">/* 如果不显示归档的数据，则重新设置为默认值：*/</span></span><br><span class="line"><span class="keyword">ALTER</span> SESSION <span class="keyword">SET</span> <span class="type">ROW</span> ARCHIVAL VISIBILITY <span class="operator">=</span> ACTIVE;</span><br><span class="line"><span class="keyword">select</span> ename,to_char(hiredate,<span class="string">'yyyy-mm-ddhh24:mi:ss'</span>),ORA_ARCHIVE_STATE <span class="keyword">from</span> emp <span class="keyword">order</span> <span class="keyword">by</span> hiredate;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>启用行归档后数据更新操作</p>
+<p>如果会话处于ARCHIVAL VISIBILITY = ACTIVE，如果在UPDATE的时候ORA_ARCHIVE_STATE字段为非0值，则这些行不会被修改；如果需要被修改则要把参数设为ROW ARCHIVAL VISIBILITY = ALL。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">update</span> emp <span class="keyword">set</span> sal<span class="operator">=</span>sal<span class="operator">+</span><span class="number">100</span> <span class="keyword">where</span> hiredate <span class="operator">&lt;</span> to_date(<span class="string">'1981-12-17 00:00:00'</span>,<span class="string">'yyyy-mm-dd hh24:mi:ss'</span>);</span><br><span class="line"><span class="comment">/*如果要能够更新这些行，需要设置如下参数：*/</span></span><br><span class="line"><span class="keyword">ALTER</span> SESSION <span class="keyword">SET</span> <span class="type">ROW</span> ARCHIVALVISIBILITY <span class="operator">=</span> <span class="keyword">ALL</span>;</span><br><span class="line"><span class="keyword">update</span> emp <span class="keyword">set</span> sal<span class="operator">=</span>sal<span class="operator">+</span><span class="number">100</span> <span class="keyword">where</span> hiredate <span class="operator">&lt;</span> to_date(<span class="string">'1981-12-17 00:00:00'</span>,<span class="string">'yyyy-mm-dd hh24:mi:ss'</span>);</span><br></pre></td></tr></tbody></table></figure>
+
+<p>被标识为归档的数据，用select查询不出来，那么在进行update和delete操作的时候也一样无法操作。只有在会话级把ROW ARCHIVAL VISIBILITY 设置成all，才可以修改。</p>
+</li>
+<li><p>那么数据库是如何处理归档的数据呢，虽然我们没有添加条件，但是数据库还是对隐藏字段进行了filter操作。即使是只显示活跃数据，也仍然需要扫描全表。这一点在真实应用中可以通过创建索引来避免全表扫描，也就是<strong>数据库内归档虽然没有显示归档的数据，但是归档的数据数据库还是会扫描的</strong>。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> emp;</span><br><span class="line"><span class="comment">/* 查看执行计划 */</span></span><br><span class="line">EXPLAIN PLAN <span class="keyword">FOR</span> <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> EMP;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> <span class="keyword">TABLE</span>(DBMS_XPLAN.DISPLAY);</span><br></pre></td></tr></tbody></table></figure>
+
+<p>数据库内归档是一个Oracle利用隐藏字段实现的非常简单的功能，但是数据架构人员在规划的时候一定要考虑性能因素，不显示不代表不扫描。</p>
+<p><img src="pic/0207.png"></p>
+</li>
+<li><p>取消行归档</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/* 禁用行归档 */</span></span><br><span class="line"><span class="keyword">alter table</span> EMP <span class="keyword">no</span> <span class="type">row</span> archival;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 查看禁用行归档后表的结构 */</span></span><br><span class="line"><span class="keyword">select</span> COLUMN_NAME,DATA_TYPE,HIDDEN_COLUMN <span class="keyword">FROM</span> USER_TAB_COLS <span class="keyword">WHERE</span> TABLE_NAME<span class="operator">=</span><span class="string">'EMP'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以看出原来在表上增加SYS_NC00009$和ORA_ARCHIVE_STATE字段被自动删除了。</p>
+</li>
+</ol>
+<h3 id="KnowledgePoint-14" class="article-heading"><a href="#KnowledgePoint-14" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-14" aria-hidden="true"></a></h3><p>数据库内归档允许用户和应用程序设置单个行的归档状态。除非启用了会话以查看存档的数据，否则标记为已存档的行是不可见的。</p>
+<p>使用数据库内归档，可以在生产数据库中存储更多数据更长的时间，而不会影响应用程序性能。此外，可以主动压缩归档数据，以帮助提高查询和备份性能。在应用程序升级期间可以推迟对存档数据的更新，从而极大地提高了升级性能。</p>
+<p>也可以看看：</p>
+<p>有关详细信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/database/121/VLDBG/GUID-0193CE0F-4D9A-4D6F-8B19-E471DE94107C.htm#VLDBG007">《 Oracle数据库VLDB和分区指南</a>》</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:53.771Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-%E6%A6%82%E8%A7%88"><span class="toc-text">实践2:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-1-%E6%8E%A2%E7%B4%A2Oracle%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-text">实践2-1:探索Oracle数据库体系结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-2-%E5%85%B3%E9%97%AD%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8Btransactional"><span class="toc-text">实践2-2:关闭数据库实例transactional</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-3-%E5%85%B3%E9%97%AD%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8Babort"><span class="toc-text">实践2-3:关闭数据库实例abort</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-1"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-1"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-1"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-1"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-4-%E9%9A%90%E8%97%8F%E5%88%97-invisible"><span class="toc-text">实践2-4:隐藏列 invisible</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-5-%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8BDR%E5%92%8CIR"><span class="toc-text">实践2-5:存储过程DR和IR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-6-%E5%8F%82%E6%95%B0DB-8K-CACHE-SIZE"><span class="toc-text">实践2-6:参数DB_8K_CACHE_SIZE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-7-%E5%8F%82%E6%95%B0ENABLE-DDL-LOGGING"><span class="toc-text">实践2-7:参数ENABLE_DDL_LOGGING</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-2"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-8-Oracle-Data-Redaction"><span class="toc-text">实践2-8:Oracle Data Redaction</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-2"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-2"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-2"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-3"><span class="toc-text">KnowledgePoint</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-text">工作原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DBMS-REDACT-REDACTION-VALUES-FOR-TYPE-FULL"><span class="toc-text">DBMS_REDACT.REDACTION_VALUES_FOR_TYPE_FULL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BINARY-DOUBLE-VALUE"><span class="toc-text">BINARY_DOUBLE_VALUE</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-10-RMAN-VALIDATE"><span class="toc-text">实践2-10:RMAN VALIDATE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-3"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-3"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-3"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-4"><span class="toc-text">KnowledgePoint</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E7%9A%84"><span class="toc-text">目的</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%88%E5%86%B3%E6%9D%A1%E4%BB%B6"><span class="toc-text">先决条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="toc-text">使用说明</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-11-V-RSRC-CONSUMER-GROUP"><span class="toc-text">实践2-11:V$RSRC_CONSUMER_GROUP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-4"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-4"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-4"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-5"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-12-%E4%BD%BF%E7%94%A8%E5%8D%87%E7%BA%A7%E5%89%8D%E4%BF%A1%E6%81%AF%E5%B7%A5%E5%85%B7"><span class="toc-text">实践2-12:使用升级前信息工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-5"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-5"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-5"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-6"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-13-STATISTICS-LEVEL%E6%8C%87%E5%AE%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%BB%9F%E8%AE%A1%E4%BF%A1%E6%81%AF%E7%9A%84%E6%94%B6%E9%9B%86%E7%BA%A7%E5%88%AB"><span class="toc-text">实践2-13:STATISTICS_LEVEL指定数据库和操作系统统计信息的收集级别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-6"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-6"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-6"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-7"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-14-Automatic-Memory-Management"><span class="toc-text">实践2-14:Automatic Memory Management</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-7"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-7"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-7"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-8"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-15-Automatic-Shared-Memory-Management"><span class="toc-text">实践2-15:Automatic Shared Memory Management</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-8"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-8"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-8"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-9"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-16-%E5%85%B3%E4%BA%8E%E5%8A%A8%E6%80%81%E7%BB%9F%E8%AE%A1%E7%BA%A7%E5%88%ABOPTIMIZER-DYNAMIC-SAMPLING"><span class="toc-text">实践2-16:关于动态统计级别OPTIMIZER_DYNAMIC_SAMPLING</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-9"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-9"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-9"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-10"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-17-%E5%9C%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B%E9%97%B4%E4%BC%A0%E8%BE%93%E8%A1%A8%E7%A9%BA%E9%97%B4Management"><span class="toc-text">实践2-17:在数据库之间传输表空间Management</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-10"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-10"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-10"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-11"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-18-DB-FLASH-CACHE-FILE"><span class="toc-text">实践2-18:DB_FLASH_CACHE_FILE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-11"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-11"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-11"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-12"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-19-%E5%9C%A8%E7%BA%BF%E7%BC%A9%E5%B0%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E6%AE%B5"><span class="toc-text">实践2-19:在线缩小数据库段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-12"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-12"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-12"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-13"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-20-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%85%E5%BD%92%E6%A1%A3In-Database-Archiving"><span class="toc-text">实践2-20:数据库内归档In-Database Archiving</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-13"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-13"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-13"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-14"><span class="toc-text">KnowledgePoint</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

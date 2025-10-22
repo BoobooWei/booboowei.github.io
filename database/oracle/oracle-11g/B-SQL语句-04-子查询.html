@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>SQL语句-查询语句-子查询和SQLPlus | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-04-%E5%AD%90%E6%9F%A5%E8%AF%A2">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-04-%E5%AD%90%E6%9F%A5%E8%AF%A2" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="SQL语句-查询语句-子查询和SQLPlus 子查询类型、语法和准则 子查询练习 1. 工资高于BLAKE的？ 2. 工资最低的人？ 3. 低于10部门最低工资的人？ 4. 高于30部门最高工资的人？ 5. 工资相同的人？ 6. blake的工资是smith的几倍？ 7. 每个部门工资最高的人？ 8. 每个部门工资最高的前2个人？ 9. 工资最高的前5行？ 10. 工资6～10名？ 11.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SQL语句-查询语句-子查询和SQLPlus">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-04-%E5%AD%90%E6%9F%A5%E8%AF%A2">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="SQL语句-查询语句-子查询和SQLPlus 子查询类型、语法和准则 子查询练习 1. 工资高于BLAKE的？ 2. 工资最低的人？ 3. 低于10部门最低工资的人？ 4. 高于30部门最高工资的人？ 5. 工资相同的人？ 6. blake的工资是smith的几倍？ 7. 每个部门工资最高的人？ 8. 每个部门工资最高的前2个人？ 9. 工资最高的前5行？ 10. 工资6～10名？ 11.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.781Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:42.885Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">SQL语句-查询语句-子查询和SQLPlus</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/B-SQL语句-04-子查询.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --><html><head></head><body><ul>
+<li><a href="#sql%E8%AF%AD%E5%8F%A5-%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5-%E5%AD%90%E6%9F%A5%E8%AF%A2%E5%92%8Csqlplus">SQL语句-查询语句-子查询和SQLPlus</a><ul>
+<li><a href="#%E5%AD%90%E6%9F%A5%E8%AF%A2%E7%B1%BB%E5%9E%8B%E8%AF%AD%E6%B3%95%E5%92%8C%E5%87%86%E5%88%99">子查询类型、语法和准则</a><ul>
+<li><a href="#%E5%AD%90%E6%9F%A5%E8%AF%A2%E7%BB%83%E4%B9%A0">子查询练习</a><ul>
+<li><a href="#1-%E5%B7%A5%E8%B5%84%E9%AB%98%E4%BA%8Eblake%E7%9A%84">1. 工资高于BLAKE的？</a></li>
+<li><a href="#2-%E5%B7%A5%E8%B5%84%E6%9C%80%E4%BD%8E%E7%9A%84%E4%BA%BA">2. 工资最低的人？</a></li>
+<li><a href="#3-%E4%BD%8E%E4%BA%8E10%E9%83%A8%E9%97%A8%E6%9C%80%E4%BD%8E%E5%B7%A5%E8%B5%84%E7%9A%84%E4%BA%BA">3. 低于10部门最低工资的人？</a></li>
+<li><a href="#4-%E9%AB%98%E4%BA%8E30%E9%83%A8%E9%97%A8%E6%9C%80%E9%AB%98%E5%B7%A5%E8%B5%84%E7%9A%84%E4%BA%BA">4. 高于30部门最高工资的人？</a></li>
+<li><a href="#5-%E5%B7%A5%E8%B5%84%E7%9B%B8%E5%90%8C%E7%9A%84%E4%BA%BA">5. 工资相同的人？</a></li>
+<li><a href="#6-blake%E7%9A%84%E5%B7%A5%E8%B5%84%E6%98%AFsmith%E7%9A%84%E5%87%A0%E5%80%8D">6. blake的工资是smith的几倍？</a></li>
+<li><a href="#7-%E6%AF%8F%E4%B8%AA%E9%83%A8%E9%97%A8%E5%B7%A5%E8%B5%84%E6%9C%80%E9%AB%98%E7%9A%84%E4%BA%BA">7. 每个部门工资最高的人？</a></li>
+<li><a href="#8-%E6%AF%8F%E4%B8%AA%E9%83%A8%E9%97%A8%E5%B7%A5%E8%B5%84%E6%9C%80%E9%AB%98%E7%9A%84%E5%89%8D2%E4%B8%AA%E4%BA%BA">8. 每个部门工资最高的前2个人？</a></li>
+<li><a href="#9-%E5%B7%A5%E8%B5%84%E6%9C%80%E9%AB%98%E7%9A%84%E5%89%8D5%E8%A1%8C">9. 工资最高的前5行？</a></li>
+<li><a href="#10-%E5%B7%A5%E8%B5%84610%E5%90%8D">10. 工资6～10名？</a></li>
+<li><a href="#11-%E9%9A%8F%E6%9C%BA%E4%BB%8E%E8%A1%A8%E4%B8%AD%E5%8F%96%E5%87%BA3%E8%A1%8C%E6%95%B0%E6%8D%AE">11. 随机从表中取出3行数据？</a></li>
+<li><a href="#12-%E6%9F%A5%E8%AF%A2%E9%9B%87%E5%91%98%E7%9A%84%E5%A7%93%E5%90%8D%E5%B7%A5%E8%B5%84%E7%A8%8E1%E7%BA%A7%E4%B8%8D%E7%BC%B4%E7%A8%8E2-2-3-34-45-5">12. 查询雇员的姓名，工资，税，(1级不缴税，2–&gt;2% ,3–&gt;3%,4–&gt;4%,5–&gt;5%)</a></li>
+<li><a href="#13-%E9%83%A8%E9%97%A8%E6%80%BB%E5%B7%A5%E8%B5%84%E5%92%8C%E9%83%A8%E9%97%A8%E4%B8%8A%E7%BC%B4%E4%B8%AA%E7%A8%8E%E6%80%BB%E5%92%8C">13. 部门总工资和部门上缴个税总和</a></li>
+<li><a href="#14-%E6%AF%94ward%E5%A5%96%E9%87%91%E4%BD%8E%E7%9A%84%E4%BA%BA">14. 比WARD奖金低的人？</a></li>
+<li><a href="#15-%E5%A5%96%E9%87%91%E6%9C%80%E9%AB%98%E7%9A%84%E5%89%8D%E4%B8%A4%E5%90%8D%E9%9B%87%E5%91%98">15. 奖金最高的前两名雇员？</a></li>
+<li><a href="#16-%E5%B7%A5%E8%B5%84%E9%AB%98%E4%BA%8E%E6%9C%AC%E9%83%A8%E9%97%A8%E5%B9%B3%E5%9D%87%E5%B7%A5%E8%B5%84%E7%9A%84%E4%BA%BA">16. 工资高于本部门平均工资的人？</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AF%BE%E5%90%8E%E7%BB%83%E4%B9%A0">课后练习</a></li>
+</ul>
+</li>
+<li><a href="#sqlplus-%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">SQLPlus 的常用命令</a><ul>
+<li><a href="#pause%E5%91%BD%E4%BB%A4%E6%9A%82%E5%81%9C%E5%B1%8F%E5%B9%95%E8%BE%93%E5%87%BA">pause命令暂停屏幕输出</a></li>
+<li><a href="#%E9%80%9A%E8%BF%87sqlplus%E6%89%A7%E8%A1%8Cshell%E5%91%BD%E4%BB%A4">通过sqlplus执行shell命令</a></li>
+<li><a href="#spool%E4%BF%9D%E5%AD%98%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95">spool保存执行记录</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h2 id="子查询类型、语法和准则" class="article-heading"><a href="#子查询类型、语法和准则" class="headerlink" title="子查询类型、语法和准则"></a>子查询类型、语法和准则<a class="article-anchor" href="#子查询类型、语法和准则" aria-hidden="true"></a></h2><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> ename,sal,deptno <span class="keyword">from</span> emp <span class="keyword">order</span> <span class="keyword">by</span> dbms_random.value();</span><br><span class="line"><span class="operator">*</span> <span class="keyword">order</span> <span class="keyword">by</span> 排序</span><br><span class="line"><span class="operator">*</span> dbms_random.value() 随机数</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> (<span class="keyword">select</span> rownum rn,a.<span class="operator">*</span> <span class="keyword">from</span> (<span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">order</span> <span class="keyword">by</span> sal <span class="keyword">desc</span>) a) <span class="keyword">where</span> rn <span class="keyword">between</span> <span class="operator">&amp;</span>p<span class="operator">*</span><span class="number">5</span><span class="number">-4</span> <span class="keyword">and</span> <span class="operator">&amp;</span>p<span class="operator">*</span><span class="number">5</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><p>&amp;p 为自定义变量</p>
+</li>
+<li><p>where 型</p>
+<ul>
+<li>单行 <code>= 、 != 、 &gt; 、 &lt; 、 &lt;= 、 &gt;=</code>等</li>
+<li>多行 <code>in、any、all</code></li>
+</ul>
+</li>
+<li><p>from 型</p>
+</li>
+<li><p>exits 型</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">子查询3种{</span><br><span class="line"></span><br><span class="line">	where 型{</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">		# </span><span class="language-bash">把内层查询的结果作为外层查询的比较条件</span></span><br><span class="line"><span class="meta prompt_">		# </span><span class="language-bash">查询最大、最贵商品</span></span><br><span class="line"></span><br><span class="line">		查询最新的商品（以id最大为最新，不用order by）:{</span><br><span class="line">			select goods_id,goods_name from goods where goods_id = (select max(goods_id) from goods);</span><br><span class="line">		}</span><br><span class="line">		每个栏目下最新的商品：{</span><br><span class="line">			select cat_id,goods_id,goods_name from goods where goods_id in (select max(goods_id) from goods group by cat_id);</span><br><span class="line">		}</span><br><span class="line">		每个栏目下最贵的商品：{</span><br><span class="line">			select cat_id,goods_id,goods_name,shop_price from goods where shop_price in (select max(shop_price) from goods group by cat_id);</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	from 型{</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">		# </span><span class="language-bash">把内层查询的结果作为外层查询的临时表</span></span><br><span class="line"><span class="meta prompt_">		# </span><span class="language-bash">查询每个栏目下最新、最贵商品</span></span><br><span class="line"></span><br><span class="line">		每个栏目下最新的商品：{</span><br><span class="line">			select * from (select cat_id,goods_id,goods_name from goods order by cat_id,goods_id desc) as a group by cat_id;</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	exits 型{</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">		# </span><span class="language-bash">把外层的查询结果，拿到内层，看内存查询是否成立</span></span><br><span class="line"><span class="meta prompt_">		# </span><span class="language-bash">查询有商品的栏目</span></span><br><span class="line"></span><br><span class="line">		查有商品的栏目{</span><br><span class="line">			select cat_id,cat_name from category where cat_id in (select cat_id from goods where cat_id in (select cat_id from category) group by cat_id);</span><br><span class="line">			select cat_id,cat_name from category where exists (select * from goods where goods.cat_id = category.cat_id);</span><br><span class="line">		}</span><br><span class="line">	}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="子查询练习" class="article-heading"><a href="#子查询练习" class="headerlink" title="子查询练习"></a>子查询练习<a class="article-anchor" href="#子查询练习" aria-hidden="true"></a></h3><h4 id="1-工资高于BLAKE的？" class="article-heading"><a href="#1-工资高于BLAKE的？" class="headerlink" title="1. 工资高于BLAKE的？"></a>1. 工资高于BLAKE的？<a class="article-anchor" href="#1-工资高于BLAKE的？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,sal from emp <span class="built_in">where</span> sal &gt; (<span class="keyword">select</span> sal from emp <span class="built_in">where</span> ename=<span class="string">'BLAKE'</span>);</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL</span><br><span class="line">---------- ----------</span><br><span class="line">JONES		 2975</span><br><span class="line">SCOTT		 3000</span><br><span class="line">KING		 5000</span><br><span class="line">FORD		 3000</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="2-工资最低的人？" class="article-heading"><a href="#2-工资最低的人？" class="headerlink" title="2. 工资最低的人？"></a>2. 工资最低的人？<a class="article-anchor" href="#2-工资最低的人？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,sal from emp <span class="built_in">where</span> sal = (<span class="keyword">select</span> min(sal) from emp);</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL</span><br><span class="line">---------- ----------</span><br><span class="line">SMITH		  800</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-低于10部门最低工资的人？" class="article-heading"><a href="#3-低于10部门最低工资的人？" class="headerlink" title="3. 低于10部门最低工资的人？"></a>3. 低于10部门最低工资的人？<a class="article-anchor" href="#3-低于10部门最低工资的人？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,sal from emp <span class="built_in">where</span> sal &lt; all (<span class="keyword">select</span> sal from emp <span class="built_in">where</span> deptno=10);</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL</span><br><span class="line">---------- ----------</span><br><span class="line">WARD		 1250</span><br><span class="line">MARTIN		 1250</span><br><span class="line">ADAMS		 1100</span><br><span class="line">JAMES		  950</span><br><span class="line">SMITH		  800</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,sal from emp <span class="built_in">where</span> sal &lt; (<span class="keyword">select</span> min(sal) from emp <span class="built_in">where</span> deptno=10);</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL</span><br><span class="line">---------- ----------</span><br><span class="line">SMITH		  800</span><br><span class="line">WARD		 1250</span><br><span class="line">MARTIN		 1250</span><br><span class="line">ADAMS		 1100</span><br><span class="line">JAMES		  950</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="4-高于30部门最高工资的人？" class="article-heading"><a href="#4-高于30部门最高工资的人？" class="headerlink" title="4. 高于30部门最高工资的人？"></a>4. 高于30部门最高工资的人？<a class="article-anchor" href="#4-高于30部门最高工资的人？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,sal from emp <span class="built_in">where</span> sal &gt; all (<span class="keyword">select</span> sal from emp <span class="built_in">where</span> deptno=30);</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL</span><br><span class="line">---------- ----------</span><br><span class="line">JONES		 2975</span><br><span class="line">SCOTT		 3000</span><br><span class="line">FORD		 3000</span><br><span class="line">KING		 5000</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,sal from emp <span class="built_in">where</span> sal &gt; (<span class="keyword">select</span> max(sal) from emp <span class="built_in">where</span> deptno=30);</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL</span><br><span class="line">---------- ----------</span><br><span class="line">JONES		 2975</span><br><span class="line">SCOTT		 3000</span><br><span class="line">KING		 5000</span><br><span class="line">FORD		 3000</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="5-工资相同的人？" class="article-heading"><a href="#5-工资相同的人？" class="headerlink" title="5. 工资相同的人？"></a>5. 工资相同的人？<a class="article-anchor" href="#5-工资相同的人？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> a.ename,b.ename,a.sal from emp a ,emp b <span class="built_in">where</span> a.sal=b.sal and a.ename!=b.ename;</span></span><br><span class="line"></span><br><span class="line">ENAME	   ENAME	     SAL</span><br><span class="line">---------- ---------- ----------</span><br><span class="line">MARTIN	   WARD 	    1250</span><br><span class="line">WARD	   MARTIN	    1250</span><br><span class="line">FORD	   SCOTT	    3000</span><br><span class="line">SCOTT	   FORD 	    3000</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="6-blake的工资是smith的几倍？" class="article-heading"><a href="#6-blake的工资是smith的几倍？" class="headerlink" title="6. blake的工资是smith的几倍？"></a>6. blake的工资是smith的几倍？<a class="article-anchor" href="#6-blake的工资是smith的几倍？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> (<span class="keyword">select</span> sal from emp <span class="built_in">where</span> ename=<span class="string">'BLAKE'</span>)/(<span class="keyword">select</span> sal from emp <span class="built_in">where</span> ename=<span class="string">'SMITH'</span>) <span class="string">"B-S"</span> from dual;</span></span><br><span class="line"></span><br><span class="line">       B-S</span><br><span class="line">----------</span><br><span class="line">    3.5625</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="7-每个部门工资最高的人？" class="article-heading"><a href="#7-每个部门工资最高的人？" class="headerlink" title="7. 每个部门工资最高的人？"></a>7. 每个部门工资最高的人？<a class="article-anchor" href="#7-每个部门工资最高的人？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> deptno,ename,sal from emp <span class="built_in">where</span> sal <span class="keyword">in</span> (<span class="keyword">select</span> max(sal) from emp group by deptno) order by deptno ;</span></span><br><span class="line"></span><br><span class="line">    DEPTNO ENAME	     SAL</span><br><span class="line">---------- ---------- ----------</span><br><span class="line">	10 KING 	    5000</span><br><span class="line">	20 FORD 	    3000</span><br><span class="line">	20 SCOTT	    3000</span><br><span class="line">	30 BLAKE	    2850</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,deptno,sal,rank () over (partition by deptno order by sal desc) Ord from emp;</span></span><br><span class="line"></span><br><span class="line">ENAME	       DEPTNO	     SAL	ORD</span><br><span class="line">---------- ---------- ---------- ----------</span><br><span class="line">KING		   10	    5000	  1</span><br><span class="line">CLARK		   10	    2450	  2</span><br><span class="line">MILLER		   10	    1300	  3</span><br><span class="line">SCOTT		   20	    3000	  1</span><br><span class="line">FORD		   20	    3000	  1</span><br><span class="line">JONES		   20	    2975	  3</span><br><span class="line">ADAMS		   20	    1100	  4</span><br><span class="line">SMITH		   20	     800	  5</span><br><span class="line">BLAKE		   30	    2850	  1</span><br><span class="line">ALLEN		   30	    1600	  2</span><br><span class="line">TURNER		   30	    1500	  3</span><br><span class="line"></span><br><span class="line">ENAME	       DEPTNO	     SAL	ORD</span><br><span class="line">---------- ---------- ---------- ----------</span><br><span class="line">MARTIN		   30	    1250	  4</span><br><span class="line">WARD		   30	    1250	  4</span><br><span class="line">JAMES		   30	     950	  6</span><br><span class="line"></span><br><span class="line">14 rows selected.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from (<span class="keyword">select</span> ename,deptno,sal,rank () over (partition by deptno order by sal desc) Ord from emp) <span class="built_in">where</span> ord&lt;=1;</span></span><br><span class="line"></span><br><span class="line">ENAME	       DEPTNO	     SAL	ORD</span><br><span class="line">---------- ---------- ---------- ----------</span><br><span class="line">KING		   10	    5000	  1</span><br><span class="line">SCOTT		   20	    3000	  1</span><br><span class="line">FORD		   20	    3000	  1</span><br><span class="line">BLAKE		   30	    2850	  1</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="8-每个部门工资最高的前2个人？" class="article-heading"><a href="#8-每个部门工资最高的前2个人？" class="headerlink" title="8. 每个部门工资最高的前2个人？"></a>8. 每个部门工资最高的前2个人？<a class="article-anchor" href="#8-每个部门工资最高的前2个人？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from (<span class="keyword">select</span> ename,deptno,sal,rank () over (partition by deptno order by sal desc) Ord from emp) <span class="built_in">where</span> ord&lt;=2;</span></span><br><span class="line"></span><br><span class="line">ENAME	       DEPTNO	     SAL	ORD</span><br><span class="line">---------- ---------- ---------- ----------</span><br><span class="line">KING		   10	    5000	  1</span><br><span class="line">CLARK		   10	    2450	  2</span><br><span class="line">SCOTT		   20	    3000	  1</span><br><span class="line">FORD		   20	    3000	  1</span><br><span class="line">BLAKE		   30	    2850	  1</span><br><span class="line">ALLEN		   30	    1600	  2</span><br><span class="line"></span><br><span class="line">6 rows selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="9-工资最高的前5行？" class="article-heading"><a href="#9-工资最高的前5行？" class="headerlink" title="9. 工资最高的前5行？"></a>9. 工资最高的前5行？<a class="article-anchor" href="#9-工资最高的前5行？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from (<span class="keyword">select</span> ename,deptno,sal,rank () over (order by sal desc) ord from emp) <span class="built_in">where</span> ord &lt;=5 ;</span></span><br><span class="line"></span><br><span class="line">ENAME	       DEPTNO	     SAL	ORD</span><br><span class="line">---------- ---------- ---------- ----------</span><br><span class="line">KING		   10	    5000	  1</span><br><span class="line">SCOTT		   20	    3000	  2</span><br><span class="line">FORD		   20	    3000	  2</span><br><span class="line">JONES		   20	    2975	  4</span><br><span class="line">BLAKE		   30	    2850	  5</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from (<span class="keyword">select</span> ename,deptno,sal from emp order by sal desc) <span class="built_in">where</span> rownum &lt; 6;</span></span><br><span class="line"></span><br><span class="line">ENAME	       DEPTNO	     SAL</span><br><span class="line">---------- ---------- ----------</span><br><span class="line">KING		   10	    5000</span><br><span class="line">SCOTT		   20	    3000</span><br><span class="line">FORD		   20	    3000</span><br><span class="line">JONES		   20	    2975</span><br><span class="line">BLAKE		   30	    2850</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="10-工资6～10名？" class="article-heading"><a href="#10-工资6～10名？" class="headerlink" title="10. 工资6～10名？"></a>10. 工资6～10名？<a class="article-anchor" href="#10-工资6～10名？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from (<span class="keyword">select</span> ename,deptno,sal,rank () over (order by sal desc) ord from emp) <span class="built_in">where</span> ord between 6 and 10 ;</span></span><br><span class="line"></span><br><span class="line">ENAME	       DEPTNO	     SAL	ORD</span><br><span class="line">---------- ---------- ---------- ----------</span><br><span class="line">CLARK		   10	    2450	  6</span><br><span class="line">ALLEN		   30	    1600	  7</span><br><span class="line">TURNER		   30	    1500	  8</span><br><span class="line">MILLER		   10	    1300	  9</span><br><span class="line">WARD		   30	    1250	 10</span><br><span class="line">MARTIN		   30	    1250	 10</span><br><span class="line"></span><br><span class="line">6 rows selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="11-随机从表中取出3行数据？" class="article-heading"><a href="#11-随机从表中取出3行数据？" class="headerlink" title="11. 随机从表中取出3行数据？"></a>11. 随机从表中取出3行数据？<a class="article-anchor" href="#11-随机从表中取出3行数据？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,sal,deptno from emp order by dbms_random.value();</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL	  DEPTNO</span><br><span class="line">---------- ---------- ----------</span><br><span class="line">SMITH		  800	      20</span><br><span class="line">FORD		 3000	      20</span><br><span class="line">BLAKE		 2850	      30</span><br><span class="line">CLARK		 2450	      10</span><br><span class="line">TURNER		 1500	      30</span><br><span class="line">ALLEN		 1600	      30</span><br><span class="line">MILLER		 1300	      10</span><br><span class="line">JONES		 2975	      20</span><br><span class="line">MARTIN		 1250	      30</span><br><span class="line">KING		 5000	      10</span><br><span class="line">SCOTT		 3000	      20</span><br><span class="line"></span><br><span class="line">ENAME		  SAL	  DEPTNO</span><br><span class="line">---------- ---------- ----------</span><br><span class="line">ADAMS		 1100	      20</span><br><span class="line">WARD		 1250	      30</span><br><span class="line">JAMES		  950	      30</span><br><span class="line"></span><br><span class="line">14 rows selected.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from (<span class="keyword">select</span> ename,sal,deptno from emp order by dbms_random.value()) <span class="built_in">where</span> rownum &lt;= 3;</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL	  DEPTNO</span><br><span class="line">---------- ---------- ----------</span><br><span class="line">WARD		 1250	      30</span><br><span class="line">MARTIN		 1250	      30</span><br><span class="line">TURNER		 1500	      30</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from (<span class="keyword">select</span> ename,sal,deptno from emp order by dbms_random.value()) <span class="built_in">where</span> rownum &lt;= 3;</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL	  DEPTNO</span><br><span class="line">---------- ---------- ----------</span><br><span class="line">SCOTT		 3000	      20</span><br><span class="line">MILLER		 1300	      10</span><br><span class="line">WARD		 1250	      30</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="12-查询雇员的姓名，工资，税，-1级不缴税，2–-2-3–-3-4–-4-5–-5" class="article-heading"><a href="#12-查询雇员的姓名，工资，税，-1级不缴税，2–-2-3–-3-4–-4-5–-5" class="headerlink" title="12. 查询雇员的姓名，工资，税，(1级不缴税，2–>2% ,3–>3%,4–>4%,5–>5%)"></a>12. 查询雇员的姓名，工资，税，(1级不缴税，2–&gt;2% ,3–&gt;3%,4–&gt;4%,5–&gt;5%)<a class="article-anchor" href="#12-查询雇员的姓名，工资，税，-1级不缴税，2–-2-3–-3-4–-4-5–-5" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,sal,grade,decode(grade,1,0,2,sal*0.02,3,sal*0.03,4,sal*0.04,5,sal*0.05) T from emp,salgrade <span class="built_in">where</span> emp.sal between salgrade.losal and salgrade.hisal;</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL	   GRADE	  T</span><br><span class="line">---------- ---------- ---------- ----------</span><br><span class="line">SMITH		  800	       1	  0</span><br><span class="line">JAMES		  950	       1	  0</span><br><span class="line">ADAMS		 1100	       1	  0</span><br><span class="line">WARD		 1250	       2	 25</span><br><span class="line">MARTIN		 1250	       2	 25</span><br><span class="line">MILLER		 1300	       2	 26</span><br><span class="line">TURNER		 1500	       3	 45</span><br><span class="line">ALLEN		 1600	       3	 48</span><br><span class="line">CLARK		 2450	       4	 98</span><br><span class="line">BLAKE		 2850	       4	114</span><br><span class="line">JONES		 2975	       4	119</span><br><span class="line"></span><br><span class="line">ENAME		  SAL	   GRADE	  T</span><br><span class="line">---------- ---------- ---------- ----------</span><br><span class="line">SCOTT		 3000	       4	120</span><br><span class="line">FORD		 3000	       4	120</span><br><span class="line">KING		 5000	       5	250</span><br><span class="line"></span><br><span class="line">14 rows selected.</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="13-部门总工资和部门上缴个税总和" class="article-heading"><a href="#13-部门总工资和部门上缴个税总和" class="headerlink" title="13. 部门总工资和部门上缴个税总和"></a>13. 部门总工资和部门上缴个税总和<a class="article-anchor" href="#13-部门总工资和部门上缴个税总和" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> deptno,<span class="built_in">sum</span>(sal),<span class="built_in">sum</span>(T) from (<span class="keyword">select</span> deptno,ename,sal,grade,decode(grade,1,0,2,sal*0.02,3,sal*0.03,4,sal*0.04,5,sal*0.05) T from emp,salgrade <span class="built_in">where</span> emp.sal between salgrade.losal and salgrade.hisal) group by deptno;</span></span><br><span class="line"></span><br><span class="line">    DEPTNO   SUM(SAL)	  SUM(T)</span><br><span class="line">---------- ---------- ----------</span><br><span class="line">	30	 9400	     257</span><br><span class="line">	20	10875	     359</span><br><span class="line">	10	 8750	     374</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="14-比WARD奖金低的人？" class="article-heading"><a href="#14-比WARD奖金低的人？" class="headerlink" title="14. 比WARD奖金低的人？"></a>14. 比WARD奖金低的人？<a class="article-anchor" href="#14-比WARD奖金低的人？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,<span class="built_in">comm</span> from emp <span class="built_in">where</span> nvl(<span class="built_in">comm</span>,0) &lt; (<span class="keyword">select</span> <span class="built_in">comm</span> from emp <span class="built_in">where</span> ename=<span class="string">'WARD'</span>);</span></span><br><span class="line"></span><br><span class="line">ENAME		 COMM</span><br><span class="line">---------- ----------</span><br><span class="line">SMITH</span><br><span class="line">ALLEN		  300</span><br><span class="line">JONES</span><br><span class="line">BLAKE</span><br><span class="line">CLARK</span><br><span class="line">SCOTT</span><br><span class="line">KING</span><br><span class="line">TURNER		    0</span><br><span class="line">ADAMS</span><br><span class="line">JAMES</span><br><span class="line">FORD</span><br><span class="line"></span><br><span class="line">ENAME		 COMM</span><br><span class="line">---------- ----------</span><br><span class="line">MILLER</span><br><span class="line"></span><br><span class="line">12 rows selected.</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="15-奖金最高的前两名雇员？" class="article-heading"><a href="#15-奖金最高的前两名雇员？" class="headerlink" title="15. 奖金最高的前两名雇员？"></a>15. 奖金最高的前两名雇员？<a class="article-anchor" href="#15-奖金最高的前两名雇员？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from (<span class="keyword">select</span> ename,<span class="built_in">comm</span> from emp order by nvl(<span class="built_in">comm</span>,0) desc) <span class="built_in">where</span> rownum &lt;= 2;</span></span><br><span class="line"></span><br><span class="line">ENAME		 COMM</span><br><span class="line">---------- ----------</span><br><span class="line">MARTIN		 1400</span><br><span class="line">WARD		  500</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from (<span class="keyword">select</span> ename,nvl(<span class="built_in">comm</span>,0),rank () over (order by nvl(<span class="built_in">comm</span>,0) desc) ord from emp) <span class="built_in">where</span> ord &lt;= 2;</span></span><br><span class="line"></span><br><span class="line">ENAME	   NVL(COMM,0)	      ORD</span><br><span class="line">---------- ----------- ----------</span><br><span class="line">MARTIN		  1400		1</span><br><span class="line">WARD		   500		2</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="16-工资高于本部门平均工资的人？" class="article-heading"><a href="#16-工资高于本部门平均工资的人？" class="headerlink" title="16. 工资高于本部门平均工资的人？"></a>16. 工资高于本部门平均工资的人？<a class="article-anchor" href="#16-工资高于本部门平均工资的人？" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> e.deptno,e.ename,e.sal from emp e,(<span class="keyword">select</span> deptno,avg(sal) asal from emp group by deptno) b <span class="built_in">where</span> e.deptno=b.deptno and e.sal &gt; b.asal;</span></span><br><span class="line"></span><br><span class="line">    DEPTNO ENAME	     SAL</span><br><span class="line">---------- ---------- ----------</span><br><span class="line">	30 BLAKE	    2850</span><br><span class="line">	30 ALLEN	    1600</span><br><span class="line">	20 FORD 	    3000</span><br><span class="line">	20 SCOTT	    3000</span><br><span class="line">	20 JONES	    2975</span><br><span class="line">	10 KING 	    5000</span><br><span class="line"></span><br><span class="line">6 rows selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="课后练习" class="article-heading"><a href="#课后练习" class="headerlink" title="课后练习"></a>课后练习<a class="article-anchor" href="#课后练习" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"></span><br><span class="line">select deptno,ename, sal</span><br><span class="line">from emp</span><br><span class="line">where sal in (select max(sal) from emp group by deptno) or</span><br><span class="line">sal in (select max(sal)</span><br><span class="line">       from (select sal,deptno</span><br><span class="line">             from emp where sal not in</span><br><span class="line">                      (select max(sal) from emp group by deptno)) group by deptno)</span><br><span class="line">order by 1;</span><br><span class="line"></span><br><span class="line">select ename,deptno,sal from emp e where (select count(*) from emp where sal&gt;e.sal and deptno=e.deptno)&lt;2;</span><br><span class="line"></span><br><span class="line">select count(*) from emp where sal&gt;800 and deptno=20;</span><br><span class="line"></span><br><span class="line">select * from (select ename,deptno,sal,rank () over (partition by deptno order by sal desc) Ord from emp) where ord&lt;=2;</span><br><span class="line"></span><br><span class="line">select ename,deptno,sal,row_number () over (partition by deptno order by sal desc) Ord from emp;</span><br><span class="line"></span><br><span class="line">select * from (select rownum rn,a.* from (select ename,sal from emp order by sal desc) a) where rn between 6 and 10;</span><br><span class="line"></span><br><span class="line">select * from (select * from emp order by dbms_random.value()) where rownum&lt;=3;</span><br><span class="line"></span><br><span class="line">查询雇员的姓名，工资，税，(1级不缴税，2--&gt;2% ,3--&gt;3%,4--&gt;4%,5--&gt;5%)</span><br><span class="line">select</span><br><span class="line">  e.ename,</span><br><span class="line">  e.sal,</span><br><span class="line">  (sal*decode(s.grade,1,0,2,0.02,3,0.03,4,0.04,5,0.05,0)) tax</span><br><span class="line">from emp e,salgrade s</span><br><span class="line">where e.sal between s.losal and s.hisal;</span><br><span class="line"></span><br><span class="line">部门总工资和部门上缴个税总和</span><br><span class="line">select deptno,sum(sal),sum(tax)</span><br><span class="line">from</span><br><span class="line">(select</span><br><span class="line">  e.sal,</span><br><span class="line">  (sal*decode(s.grade,1,0,2,0.02,3,0.03,4,0.04,5,0.05,0)) tax,</span><br><span class="line">  deptno</span><br><span class="line">from emp e,salgrade s</span><br><span class="line">where e.sal between s.losal and s.hisal)</span><br><span class="line">group by deptno;</span><br><span class="line"></span><br><span class="line">比WARD奖金低的人？</span><br><span class="line">select ename,comm from emp where NVL(comm,0)&lt;(select comm from emp where ename='WARD');</span><br><span class="line"></span><br><span class="line">select ename,comm from emp where comm&lt;(select comm from emp where ename='WARD') or comm is null;</span><br><span class="line"></span><br><span class="line">奖金最高的前两名雇员？</span><br><span class="line">select * from (select ename,comm from emp order by comm desc nulls last) where rownum&lt;=2;</span><br><span class="line"></span><br><span class="line">select * from (select ename,comm from emp where comm is not null order by comm desc) where rownum&lt;=2;</span><br><span class="line"></span><br><span class="line">工资高于本部门平均工资的人？</span><br><span class="line"></span><br><span class="line">使用替代变量进行分页查询</span><br><span class="line">select * from (select rownum rn,a.* from (select * from emp order by sal desc) a)</span><br><span class="line">where rn between &amp;p*5-4 and &amp;p*5;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="SQLPlus-的常用命令" class="article-heading"><a href="#SQLPlus-的常用命令" class="headerlink" title="SQLPlus 的常用命令"></a>SQLPlus 的常用命令<a class="article-anchor" href="#SQLPlus-的常用命令" aria-hidden="true"></a></h2><h3 id="pause命令暂停屏幕输出" class="article-heading"><a href="#pause命令暂停屏幕输出" class="headerlink" title="pause命令暂停屏幕输出"></a>pause命令暂停屏幕输出<a class="article-anchor" href="#pause命令暂停屏幕输出" aria-hidden="true"></a></h3><ol>
+<li>查看当前pause的状态为off</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> pause;</span><br><span class="line">PAUSE <span class="keyword">is</span> OFF</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li>将pasue设置为开启状态 on</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">set</span> pause <span class="keyword">on</span>;</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> pause;</span><br><span class="line">PAUSE <span class="keyword">is</span> <span class="keyword">ON</span> <span class="keyword">and</span> <span class="keyword">set</span> <span class="keyword">to</span> ""</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li>查看当前设置的pagesize的大小，即每页显示多少行</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> pagesize;</span><br><span class="line">pagesize <span class="number">14</span></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>修改pagesize为10，每页显示10行</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">set</span> pagesize <span class="number">10</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="5">
+<li>执行查询语句</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> rownum rn,ename,sal <span class="keyword">from</span> emp;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>需要输入enter健</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">	RN ENAME	     SAL</span><br><span class="line"><span class="comment">---------- ---------- ----------</span></span><br><span class="line">	 <span class="number">1</span> SMITH	     <span class="number">800</span></span><br><span class="line">	 <span class="number">2</span> ALLEN	    <span class="number">1600</span></span><br><span class="line">	 <span class="number">3</span> WARD 	    <span class="number">1250</span></span><br><span class="line">	 <span class="number">4</span> JONES	    <span class="number">2975</span></span><br><span class="line">	 <span class="number">5</span> MARTIN	    <span class="number">1250</span></span><br><span class="line">	 <span class="number">6</span> BLAKE	    <span class="number">2850</span></span><br><span class="line">	 <span class="number">7</span> CLARK	    <span class="number">2450</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>需要输入enter健</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">	RN ENAME	     SAL</span><br><span class="line"><span class="comment">---------- ---------- ----------</span></span><br><span class="line">	 <span class="number">8</span> SCOTT	    <span class="number">3000</span></span><br><span class="line">	 <span class="number">9</span> KING 	    <span class="number">5000</span></span><br><span class="line">	<span class="number">10</span> TURNER	    <span class="number">1500</span></span><br><span class="line">	<span class="number">11</span> ADAMS	    <span class="number">1100</span></span><br><span class="line">	<span class="number">12</span> JAMES	     <span class="number">950</span></span><br><span class="line">	<span class="number">13</span> FORD 	    <span class="number">3000</span></span><br><span class="line">	<span class="number">14</span> MILLER	    <span class="number">1300</span></span><br><span class="line"></span><br><span class="line"><span class="number">14</span> <span class="keyword">rows</span> selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="通过sqlplus执行shell命令" class="article-heading"><a href="#通过sqlplus执行shell命令" class="headerlink" title="通过sqlplus执行shell命令"></a>通过sqlplus执行shell命令<a class="article-anchor" href="#通过sqlplus执行shell命令" aria-hidden="true"></a></h3><blockquote>
+<p>host 或者 ！</p>
+</blockquote>
+<p>执行shell命令 pwd 打印当前路径</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> host pwd</span><br><span class="line"><span class="operator">/</span>home<span class="operator">/</span>oracle</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行shell命令 free 查看当前内存使用情况</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> host <span class="keyword">free</span></span><br><span class="line">             total       used       <span class="keyword">free</span>     shared    buffers     cached</span><br><span class="line">Mem:       <span class="number">2058756</span>     <span class="number">937308</span>    <span class="number">1121448</span>          <span class="number">0</span>      <span class="number">49720</span>     <span class="number">683304</span></span><br><span class="line"><span class="operator">-</span><span class="operator">/</span><span class="operator">+</span> buffers<span class="operator">/</span>cache:     <span class="number">204284</span>    <span class="number">1854472</span></span><br><span class="line">Swap:      <span class="number">4095992</span>          <span class="number">0</span>    <span class="number">4095992</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="spool保存执行记录" class="article-heading"><a href="#spool保存执行记录" class="headerlink" title="spool保存执行记录"></a>spool保存执行记录<a class="article-anchor" href="#spool保存执行记录" aria-hidden="true"></a></h3><ol>
+<li>在当前目录下创建booboo.lst文件保存sql</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> spool booboo append</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li>执行sql查询</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> (<span class="keyword">select</span> ename,nvl(comm,<span class="number">0</span>),<span class="built_in">rank</span> () <span class="keyword">over</span> (<span class="keyword">order</span> <span class="keyword">by</span> nvl(comm,<span class="number">0</span>) <span class="keyword">desc</span>) ord <span class="keyword">from</span> emp) <span class="keyword">where</span> ord <span class="operator">&lt;=</span> <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">ENAME      NVL(COMM,<span class="number">0</span>)        ORD</span><br><span class="line"><span class="comment">---------- ----------- ----------</span></span><br><span class="line">MARTIN            <span class="number">1400</span>          <span class="number">1</span></span><br><span class="line">WARD               <span class="number">500</span>          <span class="number">2</span></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li>执行sql查询</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> deptno,<span class="built_in">sum</span>(sal),<span class="built_in">sum</span>(T) <span class="keyword">from</span> (<span class="keyword">select</span> deptno,ename,sal,grade,decode(grade,<span class="number">1</span>,<span class="number">0</span>,<span class="number">2</span>,sal<span class="operator">*</span><span class="number">0.02</span>,<span class="number">3</span>,sal<span class="operator">*</span><span class="number">0.03</span>,<span class="number">4</span>,sal<span class="operator">*</span><span class="number">0.04</span>,<span class="number">5</span>,sal<span class="operator">*</span><span class="number">0.05</span>) T <span class="keyword">from</span> emp,salgrade <span class="keyword">where</span> emp.sal <span class="keyword">between</span> salgrade.losal <span class="keyword">and</span> salgrade.hisal) <span class="keyword">group</span> <span class="keyword">by</span> deptno;</span><br><span class="line"></span><br><span class="line">    DEPTNO   <span class="built_in">SUM</span>(SAL)     <span class="built_in">SUM</span>(T)</span><br><span class="line"><span class="comment">---------- ---------- ----------</span></span><br><span class="line">        <span class="number">30</span>       <span class="number">9400</span>        <span class="number">257</span></span><br><span class="line">        <span class="number">20</span>      <span class="number">10875</span>        <span class="number">359</span></span><br><span class="line">        <span class="number">10</span>       <span class="number">8750</span>        <span class="number">374</span></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>关闭spool</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> spool off</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="5">
+<li>查看保存的执行记录</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@oracle0</span> <span class="operator">~</span>]$ cat booboo.lst</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> (<span class="keyword">select</span> ename,nvl(comm,<span class="number">0</span>),<span class="built_in">rank</span> () <span class="keyword">over</span> (<span class="keyword">order</span> <span class="keyword">by</span> nvl(comm,<span class="number">0</span>) <span class="keyword">desc</span>) ord <span class="keyword">from</span> emp) <span class="keyword">where</span> ord <span class="operator">&lt;=</span> <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">ENAME      NVL(COMM,<span class="number">0</span>)        ORD</span><br><span class="line"><span class="comment">---------- ----------- ----------</span></span><br><span class="line">MARTIN            <span class="number">1400</span>          <span class="number">1</span></span><br><span class="line">WARD               <span class="number">500</span>          <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> deptno,<span class="built_in">sum</span>(sal),<span class="built_in">sum</span>(T) <span class="keyword">from</span> (<span class="keyword">select</span> deptno,ename,sal,grade,decode(grade,<span class="number">1</span>,<span class="number">0</span>,<span class="number">2</span>,sal<span class="operator">*</span><span class="number">0.02</span>,<span class="number">3</span>,sal<span class="operator">*</span><span class="number">0.03</span>,<span class="number">4</span>,sal<span class="operator">*</span><span class="number">0.04</span>,<span class="number">5</span>,sal<span class="operator">*</span><span class="number">0.05</span>) T <span class="keyword">from</span> emp,salgrade <span class="keyword">where</span> emp.sal <span class="keyword">between</span> salgrade.losal <span class="keyword">and</span> salgrade.hisal) <span class="keyword">group</span> <span class="keyword">by</span> deptno;</span><br><span class="line"></span><br><span class="line">    DEPTNO   <span class="built_in">SUM</span>(SAL)     <span class="built_in">SUM</span>(T)</span><br><span class="line"><span class="comment">---------- ---------- ----------</span></span><br><span class="line">        <span class="number">30</span>       <span class="number">9400</span>        <span class="number">257</span></span><br><span class="line">        <span class="number">20</span>      <span class="number">10875</span>        <span class="number">359</span></span><br><span class="line">        <span class="number">10</span>       <span class="number">8750</span>        <span class="number">374</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> spool off</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:42.885Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E6%9F%A5%E8%AF%A2%E7%B1%BB%E5%9E%8B%E3%80%81%E8%AF%AD%E6%B3%95%E5%92%8C%E5%87%86%E5%88%99"><span class="toc-text">子查询类型、语法和准则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E6%9F%A5%E8%AF%A2%E7%BB%83%E4%B9%A0"><span class="toc-text">子查询练习</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%B7%A5%E8%B5%84%E9%AB%98%E4%BA%8EBLAKE%E7%9A%84%EF%BC%9F"><span class="toc-text">1. 工资高于BLAKE的？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%B7%A5%E8%B5%84%E6%9C%80%E4%BD%8E%E7%9A%84%E4%BA%BA%EF%BC%9F"><span class="toc-text">2. 工资最低的人？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%BD%8E%E4%BA%8E10%E9%83%A8%E9%97%A8%E6%9C%80%E4%BD%8E%E5%B7%A5%E8%B5%84%E7%9A%84%E4%BA%BA%EF%BC%9F"><span class="toc-text">3. 低于10部门最低工资的人？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E9%AB%98%E4%BA%8E30%E9%83%A8%E9%97%A8%E6%9C%80%E9%AB%98%E5%B7%A5%E8%B5%84%E7%9A%84%E4%BA%BA%EF%BC%9F"><span class="toc-text">4. 高于30部门最高工资的人？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%B7%A5%E8%B5%84%E7%9B%B8%E5%90%8C%E7%9A%84%E4%BA%BA%EF%BC%9F"><span class="toc-text">5. 工资相同的人？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-blake%E7%9A%84%E5%B7%A5%E8%B5%84%E6%98%AFsmith%E7%9A%84%E5%87%A0%E5%80%8D%EF%BC%9F"><span class="toc-text">6. blake的工资是smith的几倍？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E6%AF%8F%E4%B8%AA%E9%83%A8%E9%97%A8%E5%B7%A5%E8%B5%84%E6%9C%80%E9%AB%98%E7%9A%84%E4%BA%BA%EF%BC%9F"><span class="toc-text">7. 每个部门工资最高的人？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E6%AF%8F%E4%B8%AA%E9%83%A8%E9%97%A8%E5%B7%A5%E8%B5%84%E6%9C%80%E9%AB%98%E7%9A%84%E5%89%8D2%E4%B8%AA%E4%BA%BA%EF%BC%9F"><span class="toc-text">8. 每个部门工资最高的前2个人？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-%E5%B7%A5%E8%B5%84%E6%9C%80%E9%AB%98%E7%9A%84%E5%89%8D5%E8%A1%8C%EF%BC%9F"><span class="toc-text">9. 工资最高的前5行？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#10-%E5%B7%A5%E8%B5%846%EF%BD%9E10%E5%90%8D%EF%BC%9F"><span class="toc-text">10. 工资6～10名？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#11-%E9%9A%8F%E6%9C%BA%E4%BB%8E%E8%A1%A8%E4%B8%AD%E5%8F%96%E5%87%BA3%E8%A1%8C%E6%95%B0%E6%8D%AE%EF%BC%9F"><span class="toc-text">11. 随机从表中取出3行数据？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#12-%E6%9F%A5%E8%AF%A2%E9%9B%87%E5%91%98%E7%9A%84%E5%A7%93%E5%90%8D%EF%BC%8C%E5%B7%A5%E8%B5%84%EF%BC%8C%E7%A8%8E%EF%BC%8C-1%E7%BA%A7%E4%B8%8D%E7%BC%B4%E7%A8%8E%EF%BC%8C2%E2%80%93-2-3%E2%80%93-3-4%E2%80%93-4-5%E2%80%93-5"><span class="toc-text">12. 查询雇员的姓名，工资，税，(1级不缴税，2–&gt;2% ,3–&gt;3%,4–&gt;4%,5–&gt;5%)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#13-%E9%83%A8%E9%97%A8%E6%80%BB%E5%B7%A5%E8%B5%84%E5%92%8C%E9%83%A8%E9%97%A8%E4%B8%8A%E7%BC%B4%E4%B8%AA%E7%A8%8E%E6%80%BB%E5%92%8C"><span class="toc-text">13. 部门总工资和部门上缴个税总和</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14-%E6%AF%94WARD%E5%A5%96%E9%87%91%E4%BD%8E%E7%9A%84%E4%BA%BA%EF%BC%9F"><span class="toc-text">14. 比WARD奖金低的人？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#15-%E5%A5%96%E9%87%91%E6%9C%80%E9%AB%98%E7%9A%84%E5%89%8D%E4%B8%A4%E5%90%8D%E9%9B%87%E5%91%98%EF%BC%9F"><span class="toc-text">15. 奖金最高的前两名雇员？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#16-%E5%B7%A5%E8%B5%84%E9%AB%98%E4%BA%8E%E6%9C%AC%E9%83%A8%E9%97%A8%E5%B9%B3%E5%9D%87%E5%B7%A5%E8%B5%84%E7%9A%84%E4%BA%BA%EF%BC%9F"><span class="toc-text">16. 工资高于本部门平均工资的人？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BE%E5%90%8E%E7%BB%83%E4%B9%A0"><span class="toc-text">课后练习</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQLPlus-%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">SQLPlus 的常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pause%E5%91%BD%E4%BB%A4%E6%9A%82%E5%81%9C%E5%B1%8F%E5%B9%95%E8%BE%93%E5%87%BA"><span class="toc-text">pause命令暂停屏幕输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87sqlplus%E6%89%A7%E8%A1%8Cshell%E5%91%BD%E4%BB%A4"><span class="toc-text">通过sqlplus执行shell命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#spool%E4%BF%9D%E5%AD%98%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95"><span class="toc-text">spool保存执行记录</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

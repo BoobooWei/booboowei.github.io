@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践7:管理存储 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/07-ManagingDatabaseStorageStructures-%E7%AE%A1%E7%90%86%E5%AD%98%E5%82%A8">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/07-ManagingDatabaseStorageStructures-%E7%AE%A1%E7%90%86%E5%AD%98%E5%82%A8" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 7: Managing Database Storage Structures 2020.01.29 BoobooWei    实践7:管理存储&emsp;实践7:概览&emsp;实践7-1:查看数据库存储结构信息&emsp;&emsp;Overview&emsp;&emsp;Task&emsp;&emsp;Practice&emsp;&emsp;&amp;em">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践7:管理存储">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/07-ManagingDatabaseStorageStructures-%E7%AE%A1%E7%90%86%E5%AD%98%E5%82%A8">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 7: Managing Database Storage Structures 2020.01.29 BoobooWei    实践7:管理存储&emsp;实践7:概览&emsp;实践7-1:查看数据库存储结构信息&emsp;&emsp;Overview&emsp;&emsp;Task&emsp;&emsp;Practice&emsp;&emsp;&amp;em">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.732Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:56.110Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践7:管理存储</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/07-ManagingDatabaseStorageStructures-管理存储.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p><strong>Practices for Lesson 7: Managing Database Storage Structures</strong></p>
+<p>2020.01.29 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:0 updateOnSave:1 -->
+
+<p><a href="#%E5%AE%9E%E8%B7%B57%E7%AE%A1%E7%90%86%E5%AD%98%E5%82%A8">实践7:管理存储</a><br> <a href="#%E5%AE%9E%E8%B7%B57%E6%A6%82%E8%A7%88">实践7:概览</a><br> <a href="#%E5%AE%9E%E8%B7%B57-1%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E4%BF%A1%E6%81%AF">实践7-1:查看数据库存储结构信息</a><br>  <a href="#overview">Overview</a><br>  <a href="#task">Task</a><br>  <a href="#practice">Practice</a><br>   <a href="#%E9%97%AE%E9%A2%981example%E8%A1%A8%E7%A9%BA%E9%97%B4%E5%87%A0%E4%B9%8E%E6%BB%A1%E4%BA%86%E3%80%82%E5%9C%A8%E4%B8%8D%E9%87%87%E5%8F%96%E4%BB%BB%E4%BD%95%E6%93%8D%E4%BD%9C%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%EF%BC%8C%E8%A1%A8%E7%A9%BA%E9%97%B4%E7%9A%84%E5%A4%A7%E5%B0%8F%E6%98%AF%E5%90%A6%E5%8F%AF%E4%BB%A5%E5%A2%9E%E5%8A%A0">问题1:<strong>EXAMPLE</strong>表空间几乎满了。在不采取任何操作的情况下，表空间的大小是否可以增加</a><br>   <a href="#%E9%97%AE%E9%A2%982example%E8%A1%A8%E7%A9%BA%E9%97%B4%E4%B8%AD%E6%9C%89%E5%A4%9A%E5%B0%91%E6%AE%B5%EF%BC%9F">问题2:<strong>EXAMPLE</strong>表空间中有多少段？</a><br>   <a href="#%E9%97%AE%E9%A2%983example%E8%A1%A8%E7%A9%BA%E9%97%B4%E4%B8%AD%EF%BC%8C%E5%93%AA%E4%B8%AA%E7%B4%A2%E5%BC%95%E5%8D%A0%E7%94%A8%E4%BA%86%E6%9C%80%E5%A4%9A%E7%9A%84%E7%A9%BA%E9%97%B4">问题3:<strong>EXAMPLE</strong>表空间中，哪个索引占用了最多的空间?</a><br>  <a href="#knowledgepoint">KnowledgePoint</a><br> <a href="#%E5%AE%9E%E8%B7%B57-2%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%A1%A8%E7%A9%BA%E9%97%B4">实践7-2:创建一个表空间</a><br>  <a href="#overview">Overview</a><br>  <a href="#task">Task</a><br>  <a href="#practice">Practice</a><br>  <a href="#knowledgepoint">KnowledgePoint</a></p>
+<!-- /MDTOC -->
+
+<h2 id="实践7-概览" class="article-heading"><a href="#实践7-概览" class="headerlink" title="实践7:概览"></a>实践7:概览<a class="article-anchor" href="#实践7-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 7: Overview</p>
+<p>You need to view existing storage structure information and create a new tablespace for the INVENTORY application. You also need to create a database user to perform all administrative tasks without using the SYS and SYSTEM accounts.</p>
+<p>您需要查看现有的存储结构信息，并为INVENTORY应用程序创建一个新的表空间。您还需要创建一个数据库用户来执行所有管理任务，而不需要使用SYS和SYSTEM帐户。</p>
+<h2 id="实践7-1-查看数据库存储结构信息" class="article-heading"><a href="#实践7-1-查看数据库存储结构信息" class="headerlink" title="实践7-1:查看数据库存储结构信息"></a>实践7-1:查看数据库存储结构信息<a class="article-anchor" href="#实践7-1-查看数据库存储结构信息" aria-hidden="true"></a></h2><p>Practice 7-1: Viewing Database Storage Structure Information</p>
+<h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><p>In this practice, you examine existing storage structure information for your database.</p>
+<p><strong>Assumptions:</strong> The lab_03_03_01.sh script has already been executed to create a user named DBA1 in the database. This user has SYSDBA privileges.</p>
+<p>在这个实践中，您将检查数据库的现有存储结构信息。</p>
+<p>假设:<code>lab_03_03_01.sh</code>脚本已经执行，以便在PDB数据库中创建一个名为<code>DBA1</code>的用户。该用户具有<code>SYSDBA</code>特权。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oracle01 labs]$ <span class="built_in">pwd</span></span><br><span class="line">/home/oracle/labs</span><br><span class="line">[oracle@oracle01 labs]$ ll</span><br><span class="line">总用量 24</span><br><span class="line">-rw-r--r-- 1 oracle oinstall  237 1月  31 22:04 course_env.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall  366 11月  2 2012 lab_headr.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall  959 11月  5 2012 lab.sh</span><br><span class="line">drwxr-xr-x 2 oracle oinstall   54 11月  6 2014 P15</span><br><span class="line">drwxr-xr-x 2 oracle oinstall  129 1月  31 2013 P16</span><br><span class="line">drwxr-xr-x 2 oracle oinstall  191 1月  28 2013 P17</span><br><span class="line">drwxr-xr-x 2 oracle oinstall 4096 2月   1 2013 P18</span><br><span class="line">drwxr-xr-x 2 oracle oinstall  306 1月  22 2013 P19</span><br><span class="line">drwxr-xr-x 2 oracle oinstall   90 2月   1 2013 P20</span><br><span class="line">drwxr-xr-x 2 oracle oinstall   69 1月  22 2013 P21</span><br><span class="line">drwxr-xr-x 2 oracle oinstall   77 1月  18 2013 P3</span><br><span class="line">drwxr-xr-x 2 oracle oinstall   54 1月  18 2013 P7</span><br><span class="line">drwxr-xr-x 2 oracle oinstall   60 1月  14 2013 P8</span><br><span class="line">-rw-r--r-- 1 oracle oinstall   58 1月  31 22:06 set_db.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 2618 11月 20 2012 wkfctrfunc</span><br><span class="line">[oracle@oracle01 labs]$ <span class="built_in">cat</span> course_env.sh</span><br><span class="line"><span class="built_in">export</span> LABS=/home/oracle/labs</span><br><span class="line"><span class="built_in">export</span> DB1=booboo</span><br><span class="line"><span class="built_in">export</span> LOGS=/home/oracle/labs/ALCA/logs</span><br><span class="line"><span class="built_in">export</span> SOLN=/home/oracle/labs/solns</span><br><span class="line"><span class="built_in">export</span> CODE_EX=/home/oracle/labs/code_ex</span><br><span class="line"><span class="built_in">export</span> DEMO=/home/oracle/labs/demo</span><br><span class="line"><span class="built_in">export</span> SETUP=/home/oracle/labssetup</span><br><span class="line"></span><br><span class="line">[oracle@oracle01 labs]$ <span class="built_in">head</span> -n 15 lab.sh</span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="comment"># Oracle Database 12c: Administration Workshop</span></span><br><span class="line"><span class="comment"># Oracle Server Technologies - Curriculum Development</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># ***Training purposes only***</span></span><br><span class="line"><span class="comment">#***Not appropriate for production use***</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># calls a script that</span></span><br><span class="line"><span class="comment"># that runs a sql script</span></span><br><span class="line"><span class="comment"># Usage: $LABS/lab.sh lab_number</span></span><br><span class="line"><span class="comment"># Example: $LABS/lab.sh $LABS/P3/lab_03_01_02</span></span><br><span class="line"></span><br><span class="line">[oracle@oracle01 labs]$ <span class="built_in">mkdir</span> -p /home/oracle/labs/ALCA/logs</span><br><span class="line">[oracle@oracle01 labs]$ <span class="built_in">mkdir</span> -p /home/oracle/labs/solns</span><br><span class="line">[oracle@oracle01 labs]$ <span class="built_in">mkdir</span> -p /home/oracle/labs/code_ex</span><br><span class="line">[oracle@oracle01 labs]$ <span class="built_in">mkdir</span> -p /home/oracle/labs/demo</span><br><span class="line">[oracle@oracle01 labs]$ <span class="built_in">mkdir</span> -p /home/oracle/labssetup</span><br><span class="line"></span><br><span class="line">[oracle@oracle01 labs]$ find ./ -name <span class="string">'*.sh'</span> -<span class="built_in">exec</span> <span class="built_in">chmod</span> a+x {} \;</span><br><span class="line">[oracle@oracle01 labs]$ <span class="built_in">source</span> course_env.sh</span><br><span class="line">[oracle@oracle01 labs]$ <span class="built_in">echo</span> <span class="variable">$LABS</span></span><br><span class="line">/home/oracle/labs</span><br><span class="line">[oracle@oracle01 labs]$ ll P3/</span><br><span class="line">总用量 12</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 832 1月  10 2013 lab_03_03_01.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 852 1月  10 2013 lab_03_03_01.sql</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 300 5月   6 2018 lab_03_03_02.sql</span><br><span class="line"></span><br><span class="line">[oracle@oracle01 labs]$ <span class="variable">$LABS</span>/lab.sh <span class="variable">$LABS</span>/P3/lab_03_03_01</span><br><span class="line">/home/oracle/labs/P3/lab_03_03_01:</span><br><span class="line">	<span class="built_in">dir</span>  = <span class="string">"/home/oracle/labs/P3/"</span></span><br><span class="line">	base = <span class="string">"lab_03_03_01"</span></span><br><span class="line">	ext  = <span class="string">""</span></span><br><span class="line">sqlplus -S /nolog @/home/oracle/labs/P3//lab_03_03_01.sql</span><br><span class="line"></span><br><span class="line">[oracle@oracle01 labs]$ sqlplus -S /nolog @/home/oracle/labs/P3//lab_03_03_01.sql</span><br><span class="line">Enter value <span class="keyword">for</span> 1: dba1</span><br><span class="line">Enter value <span class="keyword">for</span> 1:</span><br><span class="line">completed. You may now login as:</span><br><span class="line">dba1/oracle_4U</span><br><span class="line"></span><br><span class="line">sqlplus dba1/oracle_4U@booboopdb1 as sysdba</span><br><span class="line">Connected.</span><br><span class="line">SYS@booboopdb1&gt;show pdbs</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  OPEN MODE  RESTRICTED</span><br><span class="line">---------- ------------------------------ ---------- ----------</span><br><span class="line">	 3 BOOBOOPDB1			  READ WRITE NO</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里注意，根据自己的实际情况去修改环境变量中的值，以及脚本。</p>
+<h3 id="Task" class="article-heading"><a href="#Task" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task" aria-hidden="true"></a></h3><ol>
+<li><p>Launch Enterprise Manager Cloud Control and log in as ADMIN.</p>
+</li>
+<li><p>Navigate to the orcl Database Home page.</p>
+</li>
+<li><p>The orcl Database Home page appears.</p>
+</li>
+<li><p>Using Cloud Control, view information about the <strong>EXAMPLE</strong> tablespace and answer the given questions.</p>
+</li>
+</ol>
+<p><em>Question 1: The</em> <em>EXAMPLE</em> <em>tablespace is nearly full. Can the tablespace size increase without you having to take any action?</em></p>
+<p><em>Question 2: How many segments are there in the</em> <em>EXAMPLE</em> <em>tablespace?</em></p>
+<p><em>Question 3: Which index in the</em> <em>EXAMPLE</em> <em>tablespace takes up the most space?</em></p>
+<h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><p>任务要求使用云管理器，此处我们修改为使用EM。</p>
+<ol>
+<li><p>登陆到EM中，访问PDB数据库。</p>
+</li>
+<li><p>创建实验用的表空间<code>EXAMLE</code>。</p>
+<p><img src="pic/0701.jpg"></p>
+<p><img src="pic/0702.jpg"></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> SMALLFILE TABLESPACE "EXAMPLE"</span><br><span class="line"> DATAFILE</span><br><span class="line"> <span class="string">'/u01/app/oracle/oradata/booboo/booboopdb1/example.dbf'</span> SIZE <span class="number">100</span>M AUTOEXTEND OFF</span><br><span class="line"> LOGGING</span><br><span class="line"> <span class="keyword">DEFAULT</span> NOCOMPRESS <span class="keyword">NO</span> INMEMORY</span><br><span class="line"> ONLINE</span><br><span class="line"> EXTENT MANAGEMENT <span class="keyword">LOCAL</span> AUTOALLOCATE</span><br><span class="line"> SEGMENT SPACE MANAGEMENT AUTO;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/0703.png"></p>
+</li>
+<li><p>创建使用用的表，将该表空间已使用占比超过95%。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">SCOTT<span class="variable">@booboopdb1</span><span class="operator">&gt;</span>conn dba1<span class="operator">/</span>oracle_4U<span class="variable">@booboopdb1</span> <span class="keyword">as</span> sysdba;</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE TABLE</span> SCOTT.test</span><br><span class="line">   (    EMPNO NUMBER(<span class="number">4</span>,<span class="number">0</span>),</span><br><span class="line">    ENAME VARCHAR2(<span class="number">10</span>),</span><br><span class="line">    JOB VARCHAR2(<span class="number">9</span>),</span><br><span class="line">    MGR NUMBER(<span class="number">4</span>,<span class="number">0</span>),</span><br><span class="line">    HIREDATE <span class="type">DATE</span>,</span><br><span class="line">    SAL NUMBER(<span class="number">7</span>,<span class="number">2</span>),</span><br><span class="line">    COMM NUMBER(<span class="number">7</span>,<span class="number">2</span>),</span><br><span class="line">    DEPTNO NUMBER(<span class="number">2</span>,<span class="number">0</span>)</span><br><span class="line">    )</span><br><span class="line">TABLESPACE example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert into</span> scott.test <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span>  scott.emp;</span><br><span class="line"><span class="keyword">insert into</span> scott.test <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span>  scott.test;</span><br><span class="line"><span class="comment">--重复上一条16次</span></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> scott.test;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">COUNT</span>(<span class="operator">*</span>)</span><br><span class="line"><span class="comment">----------</span></span><br><span class="line">   <span class="number">2228224</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用EM，查看关于<strong>EXAMPLE</strong>表空间的信息，并回答给出的问题。</p>
+<p><img src="pic/0704.png"></p>
+</li>
+</ol>
+<h4 id="问题1-EXAMPLE表空间几乎满了。在不采取任何操作的情况下，表空间的大小是否可以增加" class="article-heading"><a href="#问题1-EXAMPLE表空间几乎满了。在不采取任何操作的情况下，表空间的大小是否可以增加" class="headerlink" title="问题1:EXAMPLE表空间几乎满了。在不采取任何操作的情况下，表空间的大小是否可以增加"></a>问题1:<strong>EXAMPLE</strong>表空间几乎满了。在不采取任何操作的情况下，表空间的大小是否可以增加<a class="article-anchor" href="#问题1-EXAMPLE表空间几乎满了。在不采取任何操作的情况下，表空间的大小是否可以增加" aria-hidden="true"></a></h4><p>不会，因为创建时，我选择了不自动扩展。</p>
+<h4 id="问题2-EXAMPLE表空间中有多少段？" class="article-heading"><a href="#问题2-EXAMPLE表空间中有多少段？" class="headerlink" title="问题2:EXAMPLE表空间中有多少段？"></a>问题2:<strong>EXAMPLE</strong>表空间中有多少段？<a class="article-anchor" href="#问题2-EXAMPLE表空间中有多少段？" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">YS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">select</span> tablespace_name,<span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> dba_segments <span class="keyword">where</span> tablespace_name <span class="keyword">like</span> <span class="string">'%EXAMPLE%'</span> <span class="keyword">group</span> <span class="keyword">by</span> tablespace_name;</span><br><span class="line"></span><br><span class="line">TABLESPACE_NAME 		 <span class="built_in">COUNT</span>(<span class="operator">*</span>)</span><br><span class="line"><span class="comment">------------------------------ ----------</span></span><br><span class="line">EXAMPLE 				<span class="number">1</span></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">exec</span> print_table(q<span class="string">'[select * from dba_segments where tablespace_name like '</span><span class="operator">%</span>EXAMPLE<span class="operator">%</span><span class="string">']'</span>)</span><br><span class="line">OWNER			      : SCOTT</span><br><span class="line">SEGMENT_NAME		      : TEST</span><br><span class="line">PARTITION_NAME		      :</span><br><span class="line">SEGMENT_TYPE		      : <span class="keyword">TABLE</span></span><br><span class="line">SEGMENT_SUBTYPE 	      : ASSM</span><br><span class="line">TABLESPACE_NAME 	      : EXAMPLE</span><br><span class="line">HEADER_FILE		      : <span class="number">25</span></span><br><span class="line">HEADER_BLOCK		      : <span class="number">130</span></span><br><span class="line">BYTES			      : <span class="number">100663296</span></span><br><span class="line">BLOCKS			      : <span class="number">12288</span></span><br><span class="line">EXTENTS 		      : <span class="number">83</span></span><br><span class="line">INITIAL_EXTENT		      : <span class="number">65536</span></span><br><span class="line">NEXT_EXTENT		      : <span class="number">1048576</span></span><br><span class="line">MIN_EXTENTS		      : <span class="number">1</span></span><br><span class="line">MAX_EXTENTS		      : <span class="number">2147483645</span></span><br><span class="line">MAX_SIZE		      : <span class="number">2147483645</span></span><br><span class="line">RETENTION		      :</span><br><span class="line">MINRETENTION		      :</span><br><span class="line">PCT_INCREASE		      :</span><br><span class="line">FREELISTS		      :</span><br><span class="line">FREELIST_GROUPS 	      :</span><br><span class="line">RELATIVE_FNO		      : <span class="number">25</span></span><br><span class="line">BUFFER_POOL		      : <span class="keyword">DEFAULT</span></span><br><span class="line">FLASH_CACHE		      : <span class="keyword">DEFAULT</span></span><br><span class="line">CELL_FLASH_CACHE	      : <span class="keyword">DEFAULT</span></span><br><span class="line">INMEMORY		      : DISABLED</span><br><span class="line">INMEMORY_PRIORITY	      :</span><br><span class="line">INMEMORY_DISTRIBUTE	      :</span><br><span class="line">INMEMORY_DUPLICATE	      :</span><br><span class="line">INMEMORY_COMPRESSION	      :</span><br><span class="line">CELLMEMORY		      :</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="问题3-EXAMPLE表空间中，哪个索引占用了最多的空间" class="article-heading"><a href="#问题3-EXAMPLE表空间中，哪个索引占用了最多的空间" class="headerlink" title="问题3:EXAMPLE表空间中，哪个索引占用了最多的空间?"></a>问题3:<strong>EXAMPLE</strong>表空间中，哪个索引占用了最多的空间?<a class="article-anchor" href="#问题3-EXAMPLE表空间中，哪个索引占用了最多的空间" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">create</span> index idx_empno <span class="keyword">on</span> scott.test (empno) TABLESPACE example;</span><br><span class="line"><span class="keyword">create</span> index idx_empno <span class="keyword">on</span> scott.test (empno) TABLESPACE example</span><br><span class="line">                                <span class="operator">*</span></span><br><span class="line">ERROR <span class="keyword">at</span> line <span class="number">1</span>:</span><br><span class="line">ORA<span class="number">-01652</span>: unable <span class="keyword">to</span> extend temp segment <span class="keyword">by</span> <span class="number">128</span> <span class="keyword">in</span> tablespace EXAMPLE</span><br><span class="line"></span><br><span class="line"><span class="comment">--报错表空间不够了，将表空间设置为自动拓展。</span></span><br><span class="line"><span class="keyword">ALTER</span> DATABASE DATAFILE <span class="string">'/u01/app/oracle/oradata/booboo/booboopdb1/example.dbf'</span> AUTOEXTEND <span class="keyword">ON</span> NEXT <span class="number">100</span>M;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> index idx_empno <span class="keyword">on</span> scott.test (empno) TABLESPACE example;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/0705.png"></p>
+<p>查询结果</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">exec</span> print_table(q<span class="string">'[select tablespace_name,segment_name ,sum(bytes)/1024/1024 from dba_segments where segment_type ='</span>INDEX<span class="string">' and tablespace_name='</span>EXAMPLE<span class="string">' group by tablespace_name,segment_name]'</span>)</span><br><span class="line">TABLESPACE_NAME 	      : EXAMPLE</span><br><span class="line">SEGMENT_NAME		      : IDX_EMPNO</span><br><span class="line"><span class="built_in">SUM</span>(BYTES)<span class="operator">/</span><span class="number">1024</span><span class="operator">/</span><span class="number">1024</span>	      : <span class="number">35</span></span><br><span class="line"><span class="comment">-----------------</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">表占用空间：</span><br><span class="line"><span class="keyword">select</span> segment_name, <span class="built_in">sum</span>(bytes)<span class="operator">/</span><span class="number">1024</span><span class="operator">/</span><span class="number">1024</span> Mbytese <span class="keyword">from</span> dba_segments <span class="keyword">where</span> segment_type<span class="operator">=</span><span class="string">'TABLE'</span> <span class="keyword">group</span> <span class="keyword">by</span> segment_name;</span><br><span class="line"></span><br><span class="line">索引占用空间：</span><br><span class="line"><span class="keyword">select</span> segment_name ,<span class="built_in">sum</span>(bytes)<span class="operator">/</span><span class="number">1024</span><span class="operator">/</span><span class="number">1024</span> <span class="keyword">from</span> dba_segments <span class="keyword">where</span> segment_type <span class="operator">=</span><span class="string">'INDEX'</span> <span class="keyword">group</span> <span class="keyword">by</span> segment_name;</span><br><span class="line">指定表空间的索引占用空间：</span><br><span class="line"><span class="keyword">select</span> tablespace_name,segment_name ,<span class="built_in">sum</span>(bytes)<span class="operator">/</span><span class="number">1024</span><span class="operator">/</span><span class="number">1024</span> <span class="keyword">from</span> dba_segments <span class="keyword">where</span> segment_type <span class="operator">=</span><span class="string">'INDEX'</span> <span class="keyword">and</span> tablespace_name<span class="operator">=</span><span class="string">'EXAMPLE'</span> <span class="keyword">group</span> <span class="keyword">by</span> tablespace_name,segment_name;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">分区表<span class="keyword">TABLE</span> <span class="keyword">PARTITION</span>占用空间：</span><br><span class="line"><span class="keyword">select</span> segment_name,<span class="built_in">sum</span>(bytes)<span class="operator">/</span><span class="number">1024</span><span class="operator">/</span><span class="number">1024</span> Mbytes <span class="keyword">from</span> dba_segments <span class="keyword">where</span> segment_type<span class="operator">=</span><span class="string">'TABLE PARTITION'</span> <span class="keyword">group</span> <span class="keyword">by</span> segment_name;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="实践7-2-创建一个表空间" class="article-heading"><a href="#实践7-2-创建一个表空间" class="headerlink" title="实践7-2:创建一个表空间"></a>实践7-2:创建一个表空间<a class="article-anchor" href="#实践7-2-创建一个表空间" aria-hidden="true"></a></h2><p>Practice 7-2: Creating a Tablespace</p>
+<h3 id="Overview-1" class="article-heading"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-1" aria-hidden="true"></a></h3><p>In this practice, you create a script to create the INVENTORY tablespace that will be used in a later practice.</p>
+<h3 id="Task-1" class="article-heading"><a href="#Task-1" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-1" aria-hidden="true"></a></h3><ol>
+<li>Create a new locally managed tablespace (LMT) called <strong>INVENTORY</strong> of size <strong>5 MB</strong></li>
+<li>Execute the P7script.sql script you just created.</li>
+<li>As the <strong>DBA1</strong> user, run the <strong>lab_07_02_03.sql</strong> script to create and populate a table (called X) in the INVENTORY tablespace. What error do you eventually see?</li>
+<li>In Cloud Control, go to the Tablespaces page for the orcl database and increase the amount of space available for the <strong>INVENTORY</strong> tablespace. For educational purposes, you will accomplish this by using two different methods. First, increase the size of the current data file to <strong>40 MB</strong>. Then, add a second data file by using file system storage. This second data file should be <strong>30 MB</strong> in size. For both techniques, use the show SQL functionality to view the supporting SQL statements.</li>
+<li>Log out of Enterprise Manager Cloud Control.</li>
+<li>Go back to the terminal window and run the <strong>lab_07_02_03.sql</strong> script again. It drops the table and re-executes the original script that previously returned the space error.</li>
+<li>In a terminal window, run the <strong>$LABS/P7/lab_07_02_06.sql</strong> script in SQL*Plus as the <strong>dba1</strong> user to clean up the tablespace for later practice sessions.</li>
+</ol>
+<h3 id="Practice-1" class="article-heading"><a href="#Practice-1" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-1" aria-hidden="true"></a></h3><p>在这个实践中，您将通过创建一个脚本来创建INVENTORY表空间，该脚本将在以后的实践中使用。</p>
+<ol>
+<li><p>创建一个新的本地管理表空间(LMT)，名为<code>INVENTORY</code>大小<code>5MB</code>。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">cat <span class="operator">&gt;</span> <span class="operator">/</span>home<span class="operator">/</span>oracle<span class="operator">/</span>labs<span class="operator">/</span>P7script.sql <span class="operator">&lt;&lt;</span> ENDF</span><br><span class="line"><span class="keyword">CREATE</span> SMALLFILE TABLESPACE "INVENTORY"</span><br><span class="line"> DATAFILE</span><br><span class="line"> <span class="string">'/u01/app/oracle/oradata/booboo/booboopdb1/inventory01.dbf'</span> SIZE <span class="number">5</span>M AUTOEXTEND OFF</span><br><span class="line"> LOGGING</span><br><span class="line"> <span class="keyword">DEFAULT</span> NOCOMPRESS <span class="keyword">NO</span> INMEMORY</span><br><span class="line"> ONLINE</span><br><span class="line"> EXTENT MANAGEMENT <span class="keyword">LOCAL</span> AUTOALLOCATE</span><br><span class="line"> SEGMENT SPACE MANAGEMENT AUTO;</span><br><span class="line">ENDF</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>创建一个名为<code>P7script.sql</code>的脚本文件，并执行。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sqlplus dba1/oracle_4U@booboopdb1 as sysdba @/home/oracle/labs/P7script.sql</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用<code>DBA1</code>用户登陆并运行<code>lab_07_02_03.sql</code>，在<code>INVENTORY</code>表空间中创建和填充表<code>X</code>，你将看到什么报错？</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sqlplus dba1/oracle_4U@booboopdb1 as sysdba @/home/oracle/labs/P7/lab_07_02_03.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@oracle01</span> labs]$ sqlplus dba1<span class="operator">/</span>oracle_4U<span class="variable">@booboopdb1</span> <span class="keyword">as</span> sysdba @<span class="operator">/</span>home<span class="operator">/</span>oracle<span class="operator">/</span>labs<span class="operator">/</span>P7<span class="operator">/</span>lab_07_02_03.sql</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Sat Feb <span class="number">1</span> <span class="number">00</span>:<span class="number">34</span>:<span class="number">47</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line">Connected <span class="keyword">to</span>:</span><br><span class="line">Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line">PL<span class="operator">/</span><span class="keyword">SQL</span> <span class="keyword">procedure</span> successfully completed.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">CREATE TABLE</span> x</span><br><span class="line">  <span class="number">2</span>    (a <span class="type">CHAR</span>(<span class="number">1000</span>)</span><br><span class="line">  <span class="number">3</span>    ) TABLESPACE inventory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Table</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>    <span class="keyword">VALUES</span> (<span class="string">'a'</span>);</span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x;</span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x;</span><br><span class="line"></span><br><span class="line"><span class="number">2</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x;</span><br><span class="line"></span><br><span class="line"><span class="number">4</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">8</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">16</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">32</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">64</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">128</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">256</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">512</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">1024</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"><span class="keyword">INSERT INTO</span> x</span><br><span class="line"><span class="operator">*</span></span><br><span class="line">ERROR <span class="keyword">at</span> line <span class="number">1</span>:</span><br><span class="line">ORA<span class="number">-01653</span>: unable <span class="keyword">to</span> extend <span class="keyword">table</span> SYS.X <span class="keyword">by</span> <span class="number">128</span> <span class="keyword">in</span> tablespace INVENTORY</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">COMMIT</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Commit</span> complete.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span>quit</span><br><span class="line">Disconnected <span class="keyword">from</span> Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>您将使用两种不同的方法来完成此任务。1）将当前数据文件的大小增加到<code>40MB</code> ；2）使用添加第二个大小为<code>30MB</code>的数据文件。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">--将当前数据文件的大小增加到`40MB`</span></span><br><span class="line"><span class="keyword">ALTER</span> DATABASE DATAFILE <span class="string">'/u01/app/oracle/oradata/booboo/booboopdb1/inventory01.dbf'</span> RESIZE <span class="number">40</span>M;</span><br><span class="line"><span class="comment">--使用添加第二个大小为`30MB`的数据文件</span></span><br><span class="line"><span class="keyword">ALTER</span> TABLESPACE "INVENTORY" <span class="keyword">ADD</span> DATAFILE <span class="string">'/u01/app/oracle/oradata/booboo/booboopdb1/inventory02.dbf'</span> SIZE <span class="number">30</span>M AUTOEXTEND <span class="keyword">ON</span> NEXT <span class="number">100</span>M;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/0706.png"></p>
+</li>
+<li><p>继续运行<code>lab_07_02_03.sql</code>，在<code>INVENTORY</code>表空间中创建和填充表<code>X</code>。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[oracle<span class="variable">@oracle01</span> labs]$ sqlplus dba1<span class="operator">/</span>oracle_4U<span class="variable">@booboopdb1</span> <span class="keyword">as</span> sysdba @<span class="operator">/</span>home<span class="operator">/</span>oracle<span class="operator">/</span>labs<span class="operator">/</span>P7<span class="operator">/</span>lab_07_02_03.sql</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Plus: <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> Production <span class="keyword">on</span> Sat Feb <span class="number">1</span> <span class="number">00</span>:<span class="number">37</span>:<span class="number">42</span> <span class="number">2020</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2016</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span>:</span><br><span class="line">Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line">PL<span class="operator">/</span><span class="keyword">SQL</span> <span class="keyword">procedure</span> successfully completed.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">CREATE TABLE</span> x</span><br><span class="line">  <span class="number">2</span>    (a <span class="type">CHAR</span>(<span class="number">1000</span>)</span><br><span class="line">  <span class="number">3</span>    ) TABLESPACE inventory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Table</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>    <span class="keyword">VALUES</span> (<span class="string">'a'</span>);</span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x;</span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x;</span><br><span class="line"></span><br><span class="line"><span class="number">2</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x;</span><br><span class="line"></span><br><span class="line"><span class="number">4</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">8</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">16</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">32</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">64</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">128</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">256</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">512</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">1024</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">INSERT INTO</span> x</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> x ;</span><br><span class="line"></span><br><span class="line"><span class="number">2048</span> <span class="keyword">rows</span> created.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span><span class="keyword">COMMIT</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Commit</span> complete.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboopdb1</span><span class="operator">&gt;</span>quit</span><br><span class="line">Disconnected <span class="keyword">from</span> Oracle Database <span class="number">12</span>c Enterprise Edition <span class="keyword">Release</span> <span class="number">12.2</span><span class="number">.0</span><span class="number">.1</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用<code>DBA1</code>用户登陆并运行<code>$LABS/P7/lab_07_02_06.sql</code>来清理表空间，方便以后的练习。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oracle01 labs]$ sqlplus dba1/oracle_4U@booboopdb1 as sysdba @/home/oracle/labs/P7/lab_07_02_06.sql</span><br><span class="line">SQL*Plus: Release 12.2.0.1.0 Production on Sat Feb 1 00:39:28 2020</span><br><span class="line">Copyright (c) 1982, 2016, Oracle.  All rights reserved.</span><br><span class="line">Connected to:</span><br><span class="line">Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line">Table dropped.</span><br><span class="line">SYS@booboopdb1&gt;<span class="built_in">exit</span></span><br><span class="line">Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h3 id="KnowledgePoint-1" class="article-heading"><a href="#KnowledgePoint-1" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-1" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-1C162C60-6698-44F2-B2A9-F3E2D2958D88">管理表空间</a></p>
+<p>表空间是将相关逻辑结构分组在一起的数据库存储单元。数据库数据文件存储在表空间中。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-5E395CA6-A7AF-4E05-B9C1-E85DE0EA235A">管理表空间的</a><br>准则您可以遵循有关使用表空间的准则。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-9A3CE861-80FE-4813-B496-287B69A79C46">创建表空间</a><br>您可以创建一个表空间来将相关的逻辑结构（例如表和索引）组合在一起。数据库数据文件存储在表空间中。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-6880021F-F8C3-4DE5-AA62-8536186B7016">考虑将表空间存储在内存中列存储中</a><br>您可以在表空间创建过程中或通过更改表空间来为<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-6880021F-F8C3-4DE5-AA62-8536186B7016">内存中列存储</a>启用表空间。当这为内存中列存储启用表空间时，默认情况下为该内存中列存储启用表空间中的所有表。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-A789CECE-226C-4280-8BC4-39F064036965">为表空间指定非标准块大小</a><br>您可以创建表空间，其表块大小不同于由<code>DB_BLOCK_SIZE</code>初始化参数指定的标准数据库块大小。此功能使您可以在数据库之间传输具有不同块大小的表空间。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-A1939693-60AC-4009-B37C-A1D8D1360D49">控制重做记录的写入</a><br>对于某些数据库操作，您可以控制数据库是否生成重做记录。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-B1D83CF4-9404-4689-8716-A0E2918ACE91">更改表空间可用性</a><br>您可以使联机表空间脱机，以使其暂时不可用以供一般使用。数据库的其余部分保持打开状态，可供用户访问数据。相反，您可以使脱机表空间联机，以使表空间中的模式对象可供数据库用户使用。必须打开数据库才能更改表空间的可用性。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-4E714569-F95D-4742-8CEF-3A12769C870F">使用只读表</a><br>空间可以将<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-4E714569-F95D-4742-8CEF-3A12769C870F">表</a>空间置于只读模式。这样可以防止存储在其中的任何数据被更新。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-C207AC96-0F99-4F05-B3DD-E4A4FA17F98C">更改和维护表空间</a><br>您可以通过执行诸如添加数据文件和临时文件之类的任务来更改和维护表空间。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-C0FEF3C9-3877-40F4-97C8-592A3BAEE522">重命名表空间</a><br>使用的<code>RENAME TO</code>子句<code>ALTER TABLESPACE</code>，您可以重命名永久或临时表空间。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-4EB483A2-2E04-4047-8885-F5396876D0EB">删除表空间</a><br>如果不再需要表空间及其内容，则可以从数据库中<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-4EB483A2-2E04-4047-8885-F5396876D0EB">删除表</a>空间及其内容（表空间中包含的段）。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-30942290-88DD-4D62-816F-F7EDCE661710">管理SYSAUX表</a>空间创建数据库时<br>，<code>SYSAUX</code>表空间已作为表空间的辅助表空间安装<code>SYSTEM</code>。以前创建并使用单独的表空间的某些数据库组件现在占用该<code>SYSAUX</code>表空间。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-D6D25640-D278-4379-A502-6BCA3FC7C12D">纠正本地管理的表空间的问题</a><br>Oracle数据库包括用于纠正本地管理的表空间的问题的辅助工具。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-C961302C-E712-48C2-A938-2509DB4404ED">将SYSTEM表空间迁移到本地管理的表空间</a><br>使用此<code>DBMS_SPACE_ADMIN.TABLESPACE_MIGRATE_TO_LOCAL</code>过程将<code>SYSTEM</code>表空间从字典管理的迁移到本地管理的表。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/managing-tablespaces.html#GUID-638D5411-5C88-40C8-A888-3D9B21A551D1">查看有关表空间的信息</a><br>Oracle数据库包含数据字典视图，您可以查询有关表空间的信息。</li>
+</ul>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:56.110Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B57-%E6%A6%82%E8%A7%88"><span class="toc-text">实践7:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B57-1-%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E4%BF%A1%E6%81%AF"><span class="toc-text">实践7-1:查看数据库存储结构信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%981-EXAMPLE%E8%A1%A8%E7%A9%BA%E9%97%B4%E5%87%A0%E4%B9%8E%E6%BB%A1%E4%BA%86%E3%80%82%E5%9C%A8%E4%B8%8D%E9%87%87%E5%8F%96%E4%BB%BB%E4%BD%95%E6%93%8D%E4%BD%9C%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%EF%BC%8C%E8%A1%A8%E7%A9%BA%E9%97%B4%E7%9A%84%E5%A4%A7%E5%B0%8F%E6%98%AF%E5%90%A6%E5%8F%AF%E4%BB%A5%E5%A2%9E%E5%8A%A0"><span class="toc-text">问题1:EXAMPLE表空间几乎满了。在不采取任何操作的情况下，表空间的大小是否可以增加</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%982-EXAMPLE%E8%A1%A8%E7%A9%BA%E9%97%B4%E4%B8%AD%E6%9C%89%E5%A4%9A%E5%B0%91%E6%AE%B5%EF%BC%9F"><span class="toc-text">问题2:EXAMPLE表空间中有多少段？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%983-EXAMPLE%E8%A1%A8%E7%A9%BA%E9%97%B4%E4%B8%AD%EF%BC%8C%E5%93%AA%E4%B8%AA%E7%B4%A2%E5%BC%95%E5%8D%A0%E7%94%A8%E4%BA%86%E6%9C%80%E5%A4%9A%E7%9A%84%E7%A9%BA%E9%97%B4"><span class="toc-text">问题3:EXAMPLE表空间中，哪个索引占用了最多的空间?</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B57-2-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%A1%A8%E7%A9%BA%E9%97%B4"><span class="toc-text">实践7-2:创建一个表空间</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-1"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-1"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-1"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-1"><span class="toc-text">KnowledgePoint</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

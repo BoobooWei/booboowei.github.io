@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理多租户架构 第6课：管理CDB和PDB中的安全性的实践 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86%E5%A4%9A%E7%A7%9F%E6%88%B7%E6%9E%B6%E6%9E%84/06-ManagingSecurityinCDBandPDBs-%E7%AE%A1%E7%90%86CDB%E5%92%8CPDB%E4%B8%AD%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7%E7%9A%84%E5%AE%9E%E8%B7%B5">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86%E5%A4%9A%E7%A7%9F%E6%88%B7%E6%9E%B6%E6%9E%84/06-ManagingSecurityinCDBandPDBs-%E7%AE%A1%E7%90%86CDB%E5%92%8CPDB%E4%B8%AD%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7%E7%9A%84%E5%AE%9E%E8%B7%B5" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2010.05.02 BoobooWei     第6课：管理CDB和PDB中的安全性的实践 第6课：概述的练习 总览 假设条件   练习6-1：管理普通用户和本地用户 总览 任务   练习6-2：管理本地角色和公共角色 总览 假设条件 任务   练习6-3：管理本地和通用特权 总览 假设条件 任务   练习6-4：使普通用户可以查看有关PDB对象的信息 总览 任务        第6课：概述的">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理多租户架构 第6课：管理CDB和PDB中的安全性的实践">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-063-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E9%AB%98%E7%BA%A7%E7%AE%A1%E7%90%86/Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86%E5%A4%9A%E7%A7%9F%E6%88%B7%E6%9E%B6%E6%9E%84/06-ManagingSecurityinCDBandPDBs-%E7%AE%A1%E7%90%86CDB%E5%92%8CPDB%E4%B8%AD%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7%E7%9A%84%E5%AE%9E%E8%B7%B5">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2010.05.02 BoobooWei     第6课：管理CDB和PDB中的安全性的实践 第6课：概述的练习 总览 假设条件   练习6-1：管理普通用户和本地用户 总览 任务   练习6-2：管理本地角色和公共角色 总览 假设条件 任务   练习6-3：管理本地和通用特权 总览 假设条件 任务   练习6-4：使普通用户可以查看有关PDB对象的信息 总览 任务        第6课：概述的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.719Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:09.435Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../../news/" class="main-nav-link">News</a><a href="../../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理多租户架构 第6课：管理CDB和PDB中的安全性的实践</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-063-Oracle数据库12c-高级管理/Oracle数据库12c-管理多租户架构/06-ManagingSecurityinCDBandPDBs-管理CDB和PDB中的安全性的实践.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2010.05.02 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#%E7%AC%AC6%E8%AF%BE%EF%BC%9A%E7%AE%A1%E7%90%86cdb%E5%92%8Cpdb%E4%B8%AD%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7%E7%9A%84%E5%AE%9E%E8%B7%B5">第6课：管理CDB和PDB中的安全性的实践</a><ul>
+<li><a href="#%E7%AC%AC6%E8%AF%BE%EF%BC%9A%E6%A6%82%E8%BF%B0%E7%9A%84%E7%BB%83%E4%B9%A0">第6课：概述的练习</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6">假设条件</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%83%E4%B9%A06-1%EF%BC%9A%E7%AE%A1%E7%90%86%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E5%92%8C%E6%9C%AC%E5%9C%B0%E7%94%A8%E6%88%B7">练习6-1：管理普通用户和本地用户</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1">任务</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%83%E4%B9%A06-2%EF%BC%9A%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E8%A7%92%E8%89%B2%E5%92%8C%E5%85%AC%E5%85%B1%E8%A7%92%E8%89%B2">练习6-2：管理本地角色和公共角色</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6">假设条件</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1">任务</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%83%E4%B9%A06-3%EF%BC%9A%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E5%92%8C%E9%80%9A%E7%94%A8%E7%89%B9%E6%9D%83">练习6-3：管理本地和通用特权</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6">假设条件</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1">任务</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%83%E4%B9%A06-4%EF%BC%9A%E4%BD%BF%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E5%8F%AF%E4%BB%A5%E6%9F%A5%E7%9C%8B%E6%9C%89%E5%85%B3pdb%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%BF%A1%E6%81%AF">练习6-4：使普通用户可以查看有关PDB对象的信息</a><ul>
+<li><a href="#%E6%80%BB%E8%A7%88">总览</a></li>
+<li><a href="#%E4%BB%BB%E5%8A%A1">任务</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="第6课：概述的练习" class="article-heading"><a href="#第6课：概述的练习" class="headerlink" title="第6课：概述的练习"></a>第6课：概述的练习<a class="article-anchor" href="#第6课：概述的练习" aria-hidden="true"></a></h2><h3 id="总览" class="article-heading"><a href="#总览" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览" aria-hidden="true"></a></h3><p>在这种实践中，您将管理用户，特权和角色。</p>
+<h3 id="假设条件" class="article-heading"><a href="#假设条件" class="headerlink" title="假设条件"></a>假设条件<a class="article-anchor" href="#假设条件" aria-hidden="true"></a></h3><ul>
+<li>练习3-1成功创建了cdb2。</li>
+<li>练习3-3成功创建了pdb2_1。</li>
+<li>练习4-4已成功将pdb2_1重命名为pdb2。</li>
+<li>练习3-4成功创建了pdb2_2。</li>
+</ul>
+<p>如果无法成功创建触发器，请执行以下追赶脚本：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">cd <span class="operator">/</span>home<span class="operator">/</span>oracle<span class="operator">/</span>solutions<span class="operator">/</span>catchup_04_03</span><br><span class="line">.<span class="operator">/</span>cr_trig.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果无法成功创建永久和临时表空间，请执行以下追赶脚本：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">cd <span class="operator">/</span>home<span class="operator">/</span>oracle<span class="operator">/</span>solutions<span class="operator">/</span>catchup_05_02</span><br><span class="line">.<span class="operator">/</span>cr_TABLESPACES.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="练习6-1：管理普通用户和本地用户" class="article-heading"><a href="#练习6-1：管理普通用户和本地用户" class="headerlink" title="练习6-1：管理普通用户和本地用户"></a>练习6-1：管理普通用户和本地用户<a class="article-anchor" href="#练习6-1：管理普通用户和本地用户" aria-hidden="true"></a></h2><h3 id="总览-1" class="article-heading"><a href="#总览-1" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览-1" aria-hidden="true"></a></h3><p>在这种实践中，您将管理CDB和PDB中的普通用户和本地用户。</p>
+<h3 id="任务" class="article-heading"><a href="#任务" class="headerlink" title="任务"></a>任务<a class="article-anchor" href="#任务" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># <span class="number">1.</span>查看cdb2中的所有普通用户和本地用户。</span><br><span class="line">ORACLE_SID <span class="operator">=</span> cdb2</span><br><span class="line">sqlplus <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line">col username format a20</span><br><span class="line"><span class="keyword">select</span> USERNAME, COMMON, CON_ID <span class="keyword">from</span> cdb_users;</span><br><span class="line"><span class="keyword">select</span> USERNAME, COMMON,CON_ID <span class="keyword">from</span> cdb_users <span class="keyword">where</span> username <span class="operator">=</span> <span class="string">'SYSTEM'</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> username <span class="keyword">from</span> cdb_users <span class="keyword">where</span> common<span class="operator">=</span><span class="string">'YES'</span>;</span><br><span class="line"><span class="keyword">select</span> username,con_id <span class="keyword">from</span> cdb_users <span class="keyword">where</span> common<span class="operator">=</span><span class="string">'NO'</span>;</span><br><span class="line"># <span class="number">2.</span>创建一个普通用户C##_USER。</span><br><span class="line"> <span class="keyword">create</span> <span class="keyword">user</span> C##_USER identified <span class="keyword">by</span> x CONTAINER<span class="operator">=</span><span class="keyword">ALL</span> ;</span><br><span class="line"># <span class="number">3.</span>查看新用户C##_USER</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> username <span class="keyword">from</span> cdb_users <span class="keyword">where</span> username<span class="operator">=</span><span class="string">'C##_USER'</span>;</span><br><span class="line"># <span class="number">4.</span>将<span class="keyword">CREATE</span> SESSION授予用户C##_USER。</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">CREATE</span> SESSION <span class="keyword">TO</span> c##_user CONTAINER<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line"># <span class="number">5.</span> 连接到root，pdb2和pdb2_2 <span class="keyword">as</span> c##_user <span class="keyword">user</span>;</span><br><span class="line"><span class="keyword">connect</span> c##_user<span class="operator">/</span>x<span class="variable">@pdb2</span></span><br><span class="line"><span class="keyword">connect</span> c##_user<span class="operator">/</span>x<span class="variable">@pdb2_2</span></span><br><span class="line"><span class="keyword">connect</span> c##_user<span class="operator">/</span>x<span class="variable">@cdb2</span></span><br><span class="line"># <span class="number">6.</span> 在根容器中创建本地用户LOCAL_USER。</span><br><span class="line"><span class="keyword">connect</span> <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> local_user identified <span class="keyword">by</span> x CONTAINER<span class="operator">=</span><span class="keyword">CURRENT</span>;</span><br><span class="line"># 报错</span><br><span class="line"># ERROR <span class="keyword">at</span> line <span class="number">1</span>:</span><br><span class="line"># ORA<span class="number">-65049</span>: creation <span class="keyword">of</span> <span class="keyword">local</span> <span class="keyword">user</span> <span class="keyword">or</span> role <span class="keyword">is</span> <span class="keyword">not</span> allowed <span class="keyword">in</span></span><br><span class="line"># CDB$ROOT</span><br><span class="line"># 请注意，根目录中不可以授权任何本地用户！！</span><br><span class="line"># <span class="number">7.</span> 创建一个普通用户并授予<span class="keyword">CREATE</span> SESSION作为本地特权。</span><br><span class="line"># a. 创建用户并授予特权。</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> C##_USER2 identified <span class="keyword">by</span> x CONTAINER<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">CREATE</span> SESSION <span class="keyword">TO</span> c##_user2;</span><br><span class="line"># 尝试通过该用户登陆pdb2，pdb2_2,cdb2</span><br><span class="line"><span class="keyword">CONNECT</span> c##_user2<span class="operator">/</span>x<span class="variable">@pdb2</span></span><br><span class="line"><span class="keyword">CONNECT</span> c##_user2<span class="operator">/</span>x<span class="variable">@pdb2_2</span></span><br><span class="line"><span class="keyword">CONNECT</span> c##_user2<span class="operator">/</span>x<span class="variable">@cdb2</span></span><br><span class="line"># 注意，即使该用户是普通用户，权限也是需要在根路径下进行授予。</span><br><span class="line"># b.删除该用户</span><br><span class="line"><span class="keyword">CONNECT</span> <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">USER</span> c##_user2;</span><br><span class="line"># <span class="number">8.</span> 在pdb2中创建本地用户LOCAL_USER_PDB2</span><br><span class="line"># a.查看pdb2中的所有用户</span><br><span class="line"><span class="keyword">connect</span> sys<span class="operator">/</span>oracle_4U<span class="variable">@PDB2</span> <span class="keyword">as</span> sysdba</span><br><span class="line">col username format a30</span><br><span class="line"><span class="keyword">select</span> USERNAME, COMMON, CON_ID <span class="keyword">from</span> cdb_users <span class="keyword">order</span> <span class="keyword">by</span> <span class="number">1</span>;</span><br><span class="line"># 注意，您查看了当前PDB的所有普通用户和本地用户。</span><br><span class="line"><span class="keyword">select</span> username,common <span class="keyword">from</span> dba_users;</span><br><span class="line"># b.尝试在PDB2中创建一个公共用户C##_USER_PDB2。</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> c##_user_pdb2 identified <span class="keyword">by</span> x CONTAINER<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line"># c.创建本地用户LOCAL_USER_PDB2在PDB2。</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> local_user_pdb2 identified <span class="keyword">by</span> x CONTAINER<span class="operator">=</span><span class="keyword">CURRENT</span>;</span><br><span class="line"><span class="keyword">select</span> USERNAME,COMMON,CON_ID <span class="keyword">from</span> cdb_users <span class="keyword">order</span> <span class="keyword">by</span> <span class="number">1</span>;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">create</span> session <span class="keyword">to</span> local_user_pdb2;</span><br><span class="line"># d.以LOCAL_USER_PDB2的身份连接到PDB2。</span><br><span class="line"><span class="keyword">connect</span> local_user_pdb2<span class="operator">/</span>x<span class="variable">@PDB2</span></span><br><span class="line"># e.以LOCAL_USER_PDB2的身份连接到PDB2_2。</span><br><span class="line"><span class="keyword">connect</span> local_user_pdb2<span class="operator">/</span>x<span class="variable">@PDB2_2</span></span><br><span class="line"># 请注意，它失败是因为LOCAL_USER_PDB2在根目录中不存在</span><br><span class="line"># f.PDB的普通用户和本地用户概述：</span><br><span class="line"><span class="keyword">connect</span> sys<span class="operator">/</span>oracle_4U<span class="variable">@PDB2_2</span> <span class="keyword">as</span> sysdba</span><br><span class="line">col username format a30</span><br><span class="line"><span class="keyword">select</span> USERNAME, COMMON, CON_ID <span class="keyword">from</span> cdb_users <span class="keyword">order</span> <span class="keyword">by</span> <span class="number">1</span>;</span><br><span class="line"><span class="keyword">select</span> USERNAME, COMMON <span class="keyword">from</span> dba_users <span class="keyword">order</span> <span class="keyword">by</span> username;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="练习6-2：管理本地角色和公共角色" class="article-heading"><a href="#练习6-2：管理本地角色和公共角色" class="headerlink" title="练习6-2：管理本地角色和公共角色"></a>练习6-2：管理本地角色和公共角色<a class="article-anchor" href="#练习6-2：管理本地角色和公共角色" aria-hidden="true"></a></h2><h3 id="总览-2" class="article-heading"><a href="#总览-2" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览-2" aria-hidden="true"></a></h3><p>在这种实践中，您将管理在CDB和PDB中创建为公共或本地角色，并被授予公共和/或本地角色。</p>
+<h3 id="假设条件-1" class="article-heading"><a href="#假设条件-1" class="headerlink" title="假设条件"></a>假设条件<a class="article-anchor" href="#假设条件-1" aria-hidden="true"></a></h3><p>从先前的练习6-1 分别在 <code>cdb2</code> 和 <code>PDB2</code> 中成功创建了 <code>C##_USER</code> 和 <code>LOCAL_USER_PDB2</code> 。</p>
+<h3 id="任务-1" class="article-heading"><a href="#任务-1" class="headerlink" title="任务"></a>任务<a class="article-anchor" href="#任务-1" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># <span class="number">1.</span>管理CDB和PDB中角色的创建。</span><br><span class="line"># a.列出CDB中的所有预定义角色。</span><br><span class="line"><span class="keyword">connect</span> <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line">col role format a30</span><br><span class="line"><span class="keyword">select</span> ROLE, COMMON, CON_ID <span class="keyword">from</span> cdb_roles <span class="keyword">order</span> <span class="keyword">by</span> role;</span><br><span class="line"></span><br><span class="line"># b.在根目录中列出所有预定义的角色。</span><br><span class="line"><span class="keyword">select</span> ROLE, COMMON <span class="keyword">from</span> dba_roles <span class="keyword">order</span> <span class="keyword">by</span> role;</span><br><span class="line"></span><br><span class="line"># c.Create a common C##_ROLE <span class="keyword">in</span> root.</span><br><span class="line"><span class="keyword">create</span> role c##_role container<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line"></span><br><span class="line"># d. <span class="keyword">Create</span> a <span class="keyword">local</span> LOCAL_ROLE <span class="keyword">in</span> root.</span><br><span class="line"><span class="keyword">create</span> role local_role container<span class="operator">=</span><span class="keyword">CURRENT</span>;</span><br><span class="line"># CDB$ROOT中不允许创建本地用户或角色</span><br><span class="line"></span><br><span class="line"># e.列出PDB PDB2中的所有预定义角色。</span><br><span class="line"><span class="keyword">connect</span> <span class="keyword">system</span> <span class="operator">/</span> oracle_4U<span class="variable">@PDB2</span></span><br><span class="line">col role format a30</span><br><span class="line"><span class="keyword">select</span> ROLE, COMMON, CON_ID <span class="keyword">from</span> cdb_roles;</span><br><span class="line"># 您只能查看PDB的所有公共角色和本地角色。</span><br><span class="line"><span class="keyword">select</span> ROLE,COMMON <span class="keyword">from</span> dba_roles <span class="keyword">order</span> <span class="keyword">by</span> role;</span><br><span class="line"># f.在PDB2中创建通用角色。</span><br><span class="line"><span class="keyword">create</span> role c##_role_PDB2 container<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line"># 您收到一条错误消息，因为无法从PDB创建通用角色。</span><br><span class="line"># g.在PDB2中创建本地角色。</span><br><span class="line"><span class="keyword">create</span> role local_role_PDB2 container<span class="operator">=</span><span class="keyword">CURRENT</span>;</span><br><span class="line"><span class="keyword">select</span> ROLE, COMMON <span class="keyword">from</span> dba_roles <span class="keyword">order</span> <span class="keyword">by</span> role;</span><br><span class="line"></span><br><span class="line"># <span class="number">2.</span>授予公共或本地角色为公共或本地角色。</span><br><span class="line"># a.从根向普通用户授予普通角色。</span><br><span class="line"><span class="keyword">connect</span> <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">grant</span> c##_role <span class="keyword">to</span> c##_user;</span><br><span class="line">col grantee format A16</span><br><span class="line">col GRANTED_ROLE format A16</span><br><span class="line"><span class="keyword">select</span> GRANTEE, GRANTED_ROLE, COMMON, CON_ID</span><br><span class="line"><span class="keyword">from</span> cdb_role_privs <span class="keyword">where</span> grantee<span class="operator">=</span><span class="string">'C##_USER'</span>;</span><br><span class="line"># 请注意，公共角色是在本地授予公共用户的。授予的角色仅适用于根。</span><br><span class="line"><span class="keyword">connect</span> c##_user<span class="operator">/</span>x</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_roles;</span><br><span class="line"><span class="keyword">connect</span> c##_user<span class="operator">/</span>x<span class="variable">@PDB2</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_roles;</span><br><span class="line"># b.现在，从根目录将通用角色授予通用用户，以适用于所有容器。</span><br><span class="line"><span class="keyword">connect</span> <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">grant</span> c##_role <span class="keyword">to</span> c##_user container<span class="operator">=</span><span class="keyword">all</span>;</span><br><span class="line"><span class="keyword">select</span> GRANTEE, GRANTED_ROLE, COMMON, CON_ID</span><br><span class="line"><span class="keyword">from</span> cdb_role_privs <span class="keyword">where</span> grantee<span class="operator">=</span><span class="string">'C##_USER'</span>;</span><br><span class="line"><span class="keyword">connect</span> c##_user<span class="operator">/</span>x</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_roles;</span><br><span class="line"><span class="keyword">connect</span> c##_user<span class="operator">/</span>x<span class="variable">@PDB2</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_roles;</span><br><span class="line"># c.撤消公共用户的公共角色，以便该角色不能在任何容器中使用。</span><br><span class="line"><span class="keyword">connect</span> <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">revoke</span> c##_role <span class="keyword">from</span> c##_user container<span class="operator">=</span><span class="keyword">all</span>;</span><br><span class="line"><span class="keyword">connect</span> c##_user<span class="operator">/</span>x</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_roles;</span><br><span class="line"><span class="keyword">connect</span> c##_user<span class="operator">/</span>x<span class="variable">@PDB2</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_roles;</span><br><span class="line"></span><br><span class="line"># d.从根目录向本地用户授予通用角色。</span><br><span class="line"><span class="keyword">connect</span> <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">grant</span> c##_role <span class="keyword">to</span> local_user_pdb2;</span><br><span class="line"># 请注意，该用户的根目录未知。它是PDB2中的本地用户。</span><br><span class="line"># e.从PDB2向本地用户授予通用角色。</span><br><span class="line"><span class="keyword">connect</span> <span class="keyword">system</span><span class="operator">/</span>oracle_4U<span class="variable">@PDB2</span></span><br><span class="line"><span class="keyword">grant</span> c##_role <span class="keyword">to</span> local_user_PDB2;</span><br><span class="line"><span class="keyword">select</span> GRANTEE, GRANTED_ROLE, COMMON, CON_ID</span><br><span class="line"><span class="keyword">from</span> cdb_role_privs <span class="keyword">where</span> grantee<span class="operator">=</span><span class="string">'LOCAL_USER_PDB2'</span>;</span><br><span class="line"># 请注意，仅在PDB PDB2中向用户授予本地公共角色（公共列<span class="operator">=</span> <span class="keyword">NO</span>）。</span><br><span class="line"># f.以本地用户身份测试连接。</span><br><span class="line"><span class="keyword">connect</span> local_user_pdb2<span class="operator">/</span>x<span class="variable">@PDB2</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_roles;</span><br><span class="line"># g.从适用于所有容器的PDB2向本地用户授予公共角色。</span><br><span class="line"><span class="keyword">connect</span> <span class="keyword">system</span><span class="operator">/</span>oracle_4U<span class="variable">@PDB2</span></span><br><span class="line"><span class="keyword">grant</span> c##_role <span class="keyword">to</span> local_user_pdb2 container<span class="operator">=</span><span class="keyword">all</span>;</span><br><span class="line"># 注意，不能从PDB全局授予公共角色。</span><br><span class="line"># h.从PDB2向本地用户授予本地角色。</span><br><span class="line"><span class="keyword">grant</span> local_role_pdb2 <span class="keyword">to</span> local_user_pdb2;</span><br><span class="line"><span class="keyword">select</span> GRANTEE, GRANTED_ROLE, COMMON, CON_ID</span><br><span class="line"><span class="keyword">from</span> cdb_role_privs <span class="keyword">where</span> grantee<span class="operator">=</span><span class="string">'LOCAL_USER_PDB2'</span>;</span><br><span class="line"># i.以本地用户身份测试连接。</span><br><span class="line"><span class="keyword">connect</span> local_user_pdb2<span class="operator">/</span>x<span class="variable">@PDB2</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_roles;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="练习6-3：管理本地和通用特权" class="article-heading"><a href="#练习6-3：管理本地和通用特权" class="headerlink" title="练习6-3：管理本地和通用特权"></a>练习6-3：管理本地和通用特权<a class="article-anchor" href="#练习6-3：管理本地和通用特权" aria-hidden="true"></a></h2><h3 id="总览-3" class="article-heading"><a href="#总览-3" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览-3" aria-hidden="true"></a></h3><p>在这种实践中，您将管理在CDB和PDB中授予的普通或本地特权。</p>
+<h3 id="假设条件-2" class="article-heading"><a href="#假设条件-2" class="headerlink" title="假设条件"></a>假设条件<a class="article-anchor" href="#假设条件-2" aria-hidden="true"></a></h3><p><code>C##_USER</code> 和 <code>LOCAL_USER_PDB2</code> 被成功地从以前的做法5-2中创建<br>PDB2 的 cdb2 。</p>
+<h3 id="任务-2" class="article-heading"><a href="#任务-2" class="headerlink" title="任务"></a>任务<a class="article-anchor" href="#任务-2" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># <span class="number">1.</span>检查特权是创建为普通特权还是本地特权。</span><br><span class="line"><span class="keyword">connect</span> <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">desc</span> sys.system_privilege_map</span><br><span class="line"><span class="keyword">desc</span> sys.table_privilege_map</span><br><span class="line"># 请注意，没有COMMON列。特权既不能创建为通用特权，也不能创建为本地特权，但可以授予它们为通用特权或本地特权。</span><br><span class="line"></span><br><span class="line"># <span class="number">2.</span>检查如何将<span class="keyword">CREATE</span> SESSION系统特权授予C##_USER和LOCAL_USER_PDB2</span><br><span class="line"><span class="keyword">connect</span> <span class="keyword">system</span><span class="operator">/</span>oracle_4U</span><br><span class="line">col grantee format a18</span><br><span class="line">col privilege format a14</span><br><span class="line"><span class="keyword">select</span> GRANTEE, PRIVILEGE, COMMON, CON_ID</span><br><span class="line"><span class="keyword">from</span> cdb_sys_privs</span><br><span class="line"><span class="keyword">where</span> grantee <span class="keyword">in</span> (<span class="string">'C##_USER'</span>, <span class="string">'LOCAL_USER_PDB2'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">connect</span> <span class="keyword">system</span><span class="operator">/</span>oracle_4U<span class="variable">@PDB2</span></span><br><span class="line"><span class="keyword">select</span> GRANTEE, PRIVILEGE, COMMON</span><br><span class="line"><span class="keyword">from</span> dba_sys_privs</span><br><span class="line"><span class="keyword">where</span> grantee <span class="keyword">in</span> (<span class="string">'C##_USER'</span>, <span class="string">'LOCAL_USER_PDB2'</span>);</span><br><span class="line"></span><br><span class="line"># <span class="number">3.</span>向普通用户C##_USER授予系统特权<span class="keyword">CREATE TABLE</span>和UNLIMITED TABLESPACE，以适用于任何容器。这将是一项普通特权。</span><br><span class="line"><span class="keyword">connect</span> <span class="keyword">system</span><span class="operator">/</span>oracle_4U</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">CREATE TABLE</span>, UNLIMITED TABLESPACE <span class="keyword">to</span> C##_USER CONTAINER<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line"></span><br><span class="line"># <span class="number">4.</span>向普通用户C##_USER授予系统特权<span class="keyword">CREATE</span> SEQUENCE，使其仅适用于root用户。这将是本地特权。</span><br><span class="line">col grantee format a12</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">CREATE</span> SEQUENCE <span class="keyword">to</span> C##_USER CONTAINER<span class="operator">=</span><span class="keyword">CURRENT</span>; <span class="keyword">Grant</span> succeeded.</span><br><span class="line"><span class="keyword">select</span> GRANTEE, PRIVILEGE, COMMON, CON_ID <span class="number">2</span> <span class="keyword">from</span> cdb_sys_privs</span><br><span class="line"><span class="keyword">where</span> grantee <span class="operator">=</span> <span class="string">'C##_USER'</span>;</span><br><span class="line"></span><br><span class="line"># <span class="number">5.</span>向普通用户C##_USER授予系统特权<span class="keyword">CREATE</span> SYNONYM，使其仅适用于PDB2。这将是本地特权。</span><br><span class="line"><span class="keyword">connect</span> <span class="keyword">system</span><span class="operator">/</span>oracle_4U<span class="variable">@PDB2</span></span><br><span class="line">col grantee format a18</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">CREATE</span> SYNONYM <span class="keyword">to</span> C##_USER CONTAINER<span class="operator">=</span><span class="keyword">CURRENT</span>;</span><br><span class="line"><span class="keyword">select</span> GRANTEE, PRIVILEGE, COMMON, CON_ID <span class="keyword">from</span> cdb_sys_privs <span class="keyword">where</span> grantee <span class="operator">=</span> <span class="string">'C##_USER'</span>;</span><br><span class="line"></span><br><span class="line"># <span class="number">6.</span>向普通用户C##_USER授予系统特权<span class="keyword">CREATE</span> <span class="keyword">VIEW</span>，使其仅适用于root 用户，但已连接到PDB2中。</span><br><span class="line">col grantee format a18</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">CREATE</span> <span class="keyword">VIEW</span> <span class="keyword">to</span> C##_USER CONTAINER<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line"># 请注意，您不能从PDB授予通用特权。</span><br><span class="line"></span><br><span class="line"># <span class="number">7.</span>向本地用户LOCAL_USER_PDB2授予系统特权<span class="keyword">CREATE</span> <span class="keyword">ANY</span> <span class="keyword">TABLE</span>，以适用于任何容器。</span><br><span class="line"><span class="keyword">connect</span> <span class="keyword">system</span><span class="operator">/</span>oracle_4U</span><br><span class="line">col grantee format a18</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">CREATE</span> <span class="keyword">ANY</span> <span class="keyword">TABLE</span> <span class="keyword">to</span> LOCAL_USER_PDB2 CONTAINER<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line"># 请注意，该用户的root用户身份未知。它是PDB2中的本地用户。</span><br><span class="line"></span><br><span class="line"># <span class="number">8.</span>向本地用户LOCAL_USER_PDB2授予系统特权<span class="keyword">CREATE</span> <span class="keyword">ANY</span> SEQUENCE，以仅在root 用户中适用。</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">CREATE</span> <span class="keyword">ANY</span> SEQUENCE <span class="keyword">to</span> LOCAL_USER_PDB2 CONTAINER<span class="operator">=</span><span class="keyword">CURRENT</span>;</span><br><span class="line"></span><br><span class="line"># <span class="number">9.</span>向本地用户LOCAL_USER_PDB2授予系统特权UNLIMITED TABLESPACE，使其仅适用于PDB2。这将是本地特权。</span><br><span class="line"><span class="keyword">connect</span> <span class="keyword">system</span><span class="operator">/</span>oracle_4U<span class="variable">@PDB2</span></span><br><span class="line">col grantee format a18</span><br><span class="line"><span class="keyword">grant</span> UNLIMITED TABLESPACE <span class="keyword">to</span> LOCAL_USER_PDB2;</span><br><span class="line"><span class="keyword">select</span> GRANTEE, PRIVILEGE, COMMON, CON_ID <span class="keyword">from</span> cdb_sys_privs <span class="keyword">where</span> grantee <span class="operator">=</span> <span class="string">'LOCAL_USER_PDB2'</span>;</span><br><span class="line"></span><br><span class="line"># <span class="number">10.</span>向本地用户LOCAL_USER_PDB2授予系统特权<span class="keyword">DROP</span> <span class="keyword">ANY</span> <span class="keyword">VIEW</span>，使其仅适用于root用户，但已连接至PDB2。</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">DROP</span> <span class="keyword">ANY</span> <span class="keyword">VIEW</span> <span class="keyword">to</span> LOCAL_USER_PDB2 CONTAINER<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line">请注意，您不能授予将在另一个容器中应用的本地特权。</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="练习6-4：使普通用户可以查看有关PDB对象的信息" class="article-heading"><a href="#练习6-4：使普通用户可以查看有关PDB对象的信息" class="headerlink" title="练习6-4：使普通用户可以查看有关PDB对象的信息"></a>练习6-4：使普通用户可以查看有关PDB对象的信息<a class="article-anchor" href="#练习6-4：使普通用户可以查看有关PDB对象的信息" aria-hidden="true"></a></h2><h3 id="总览-4" class="article-heading"><a href="#总览-4" class="headerlink" title="总览"></a>总览<a class="article-anchor" href="#总览-4" aria-hidden="true"></a></h3><p>在这种实践中，您将管理普通用户的CONTAINER_DATA属性，以使普通用户可以查看有关特定PDB中PDB对象的信息。</p>
+<h3 id="任务-3" class="article-heading"><a href="#任务-3" class="headerlink" title="任务"></a>任务<a class="article-anchor" href="#任务-3" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># <span class="number">1.</span>查找有关默认（用户级别）和特定于对象的CONTAINER_DATA属性的信息，这些属性在DBA_CONTAINER_DATA数据字典视图中明确设置为<span class="keyword">DEFAULT</span>以外的值。</span><br><span class="line"><span class="keyword">CONNECT</span> <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">COLUMN</span> USERNAME FORMAT A10</span><br><span class="line"><span class="keyword">COLUMN</span> DEFAULT_ATTR FORMAT A7</span><br><span class="line"><span class="keyword">COLUMN</span> OWNER FORMAT A8</span><br><span class="line"><span class="keyword">COLUMN</span> OBJECT_NAME FORMAT A10</span><br><span class="line"><span class="keyword">COLUMN</span> ALL_CONTAINERS FORMAT A3</span><br><span class="line"><span class="keyword">COLUMN</span> CONTAINER_NAME FORMAT A10</span><br><span class="line"><span class="keyword">COLUMN</span> CON_ID FORMAT <span class="number">999</span></span><br><span class="line"><span class="keyword">set</span> pages <span class="number">100</span></span><br><span class="line"><span class="keyword">set</span> line <span class="number">200</span></span><br><span class="line"><span class="keyword">SELECT</span> USERNAME, DEFAULT_ATTR, OWNER, OBJECT_NAME,</span><br><span class="line">            ALL_CONTAINERS, CONTAINER_NAME, CON_ID</span><br><span class="line">     <span class="keyword">FROM</span> CDB_CONTAINER_DATA</span><br><span class="line">     <span class="keyword">WHERE</span> username <span class="keyword">NOT</span> <span class="keyword">IN</span></span><br><span class="line">           (<span class="string">'GSMADMIN_INTERNAL'</span>, <span class="string">'APPQOSSYS'</span>, <span class="string">'DBSNMP'</span>)</span><br><span class="line">     <span class="keyword">ORDER</span> <span class="keyword">BY</span> OBJECT_NAME;</span><br><span class="line"># <span class="number">2.</span>创建普通用户 c##jfv 并授予c##jfv 的系统权限<span class="keyword">CREATE</span> SESSION和<span class="keyword">SET</span> CONTAINER 。</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> c##jfv IDENTIFIED <span class="keyword">BY</span> oracle_4U CONTAINER<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">CREATE</span> SESSION, <span class="keyword">SET</span> CONTAINER <span class="keyword">TO</span> c##jfv CONTAINER<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line"></span><br><span class="line"># <span class="number">3.</span>然后在V_$SESSION视图上授予c##jfv对象特权<span class="keyword">SELECT</span> 。</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">SELECT</span> <span class="keyword">ON</span> sys.v_$session <span class="keyword">TO</span> c##jfv CONTAINER<span class="operator">=</span><span class="keyword">ALL</span>;</span><br><span class="line"></span><br><span class="line"># <span class="number">4.</span>创建另一个以SYS用户身份连接到pdb1_1的会话，并保持连接状态。</span><br><span class="line">ORACLE_SID <span class="operator">=</span> cdb2</span><br><span class="line">sqlplus sys<span class="operator">/</span>oracle_4U<span class="variable">@pdb1_1</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">SHOW</span> CON_NAME</span><br><span class="line"><span class="keyword">ALTER</span> SESSION <span class="keyword">SET</span> CONTAINER<span class="operator">=</span>pdb1_1;</span><br><span class="line"><span class="keyword">SHOW</span> CON_NAME</span><br><span class="line"></span><br><span class="line"># <span class="number">5.</span>在第一个会话中，您应该看到pdb1_1的一行。</span><br><span class="line"><span class="keyword">SELECT</span> username, con_id <span class="keyword">FROM</span> v_$session</span><br><span class="line"><span class="keyword">WHERE</span> username <span class="keyword">IS</span> <span class="keyword">NOT NULL</span> <span class="keyword">AND</span> username <span class="operator">&lt;&gt;</span> <span class="string">'DBSNMP'</span>;</span><br><span class="line"></span><br><span class="line"># <span class="number">6.</span>仍然在第一个会话中，以普通用户c##jfv身份连接。普通用户看不到V_$SESSION中与pdb1_1相关的任何信息。</span><br><span class="line"><span class="keyword">CONNECT</span> c##jfv<span class="operator">/</span>oracle_4U</span><br><span class="line"><span class="keyword">SELECT</span> username, con_id <span class="keyword">FROM</span> sys.v_$session</span><br><span class="line"><span class="keyword">WHERE</span> username <span class="keyword">IS</span> <span class="keyword">NOT NULL</span> <span class="keyword">AND</span> username <span class="operator">&lt;&gt;</span> <span class="string">'DBSNMP'</span>;</span><br><span class="line"></span><br><span class="line"># <span class="number">7.</span>启用普通用户c##jfv来查看V_$SESSION中与pdb1_1相关的信息。</span><br><span class="line"><span class="keyword">CONNECT</span> <span class="operator">/</span> <span class="keyword">AS</span> SYSDBA</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> c##jfv</span><br><span class="line">         <span class="keyword">SET</span> CONTAINER_DATA <span class="operator">=</span> (CDB$ROOT, PDB1_1, PDB2_2)</span><br><span class="line">         <span class="keyword">FOR</span> V_$SESSION</span><br><span class="line">         CONTAINER<span class="operator">=</span><span class="keyword">CURRENT</span>;</span><br><span class="line"></span><br><span class="line"># <span class="number">8.</span>以普通用户c##jfv的身份连接pdb1_1以查看V$SESSION中与以下内容有关的信息：</span><br><span class="line"><span class="keyword">CONNECT</span> c##jfv<span class="operator">/</span>oracle_4U</span><br><span class="line"><span class="keyword">SELECT</span> username, con_id <span class="keyword">FROM</span> sys.v_$session</span><br><span class="line"><span class="keyword">WHERE</span> username <span class="keyword">IS</span> <span class="keyword">NOT NULL</span> <span class="keyword">AND</span> username <span class="operator">&lt;&gt;</span> <span class="string">'DBSNMP'</span>;</span><br><span class="line"></span><br><span class="line"># <span class="number">9.</span>查看对象上公共用户C##JFV的CONTAINER_DATA属性集</span><br><span class="line"><span class="keyword">CONNECT</span> <span class="operator">/</span> <span class="keyword">AS</span> SYSDBA</span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">COLUMN</span> USERNAME FORMAT A25</span><br><span class="line"><span class="keyword">COLUMN</span> DEFAULT_ATTR FORMAT A7</span><br><span class="line"><span class="keyword">COLUMN</span> OWNER FORMAT A15</span><br><span class="line"><span class="keyword">COLUMN</span> OBJECT_NAME FORMAT A15</span><br><span class="line"><span class="keyword">COLUMN</span> ALL_CONTAINERS FORMAT A3</span><br><span class="line"><span class="keyword">COLUMN</span> CONTAINER_NAME FORMAT A10</span><br><span class="line"><span class="keyword">COLUMN</span> CON_ID FORMAT <span class="number">999</span></span><br><span class="line"><span class="keyword">set</span> pages <span class="number">100</span></span><br><span class="line"><span class="keyword">set</span> line <span class="number">200</span></span><br><span class="line"><span class="keyword">SELECT</span> USERNAME, DEFAULT_ATTR, OWNER, OBJECT_NAME,</span><br><span class="line">            ALL_CONTAINERS, CONTAINER_NAME, CON_ID</span><br><span class="line">     <span class="keyword">FROM</span> CDB_CONTAINER_DATA</span><br><span class="line">     <span class="keyword">WHERE</span> username <span class="keyword">NOT</span> <span class="keyword">IN</span></span><br><span class="line">            (<span class="string">'GSMADMIN_INTERNAL'</span>, <span class="string">'APPQOSSYS'</span>, <span class="string">'DBSNMP'</span>)</span><br><span class="line">     <span class="keyword">ORDER</span> <span class="keyword">BY</span> OBJECT_NAME;</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:09.435Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC6%E8%AF%BE%EF%BC%9A%E6%A6%82%E8%BF%B0%E7%9A%84%E7%BB%83%E4%B9%A0"><span class="toc-text">第6课：概述的练习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6"><span class="toc-text">假设条件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A06-1%EF%BC%9A%E7%AE%A1%E7%90%86%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E5%92%8C%E6%9C%AC%E5%9C%B0%E7%94%A8%E6%88%B7"><span class="toc-text">练习6-1：管理普通用户和本地用户</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88-1"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1"><span class="toc-text">任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A06-2%EF%BC%9A%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E8%A7%92%E8%89%B2%E5%92%8C%E5%85%AC%E5%85%B1%E8%A7%92%E8%89%B2"><span class="toc-text">练习6-2：管理本地角色和公共角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88-2"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6-1"><span class="toc-text">假设条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1-1"><span class="toc-text">任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A06-3%EF%BC%9A%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E5%92%8C%E9%80%9A%E7%94%A8%E7%89%B9%E6%9D%83"><span class="toc-text">练习6-3：管理本地和通用特权</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88-3"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E6%9D%A1%E4%BB%B6-2"><span class="toc-text">假设条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1-2"><span class="toc-text">任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A06-4%EF%BC%9A%E4%BD%BF%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E5%8F%AF%E4%BB%A5%E6%9F%A5%E7%9C%8B%E6%9C%89%E5%85%B3PDB%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-text">练习6-4：使普通用户可以查看有关PDB对象的信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%A7%88-4"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1-3"><span class="toc-text">任务</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

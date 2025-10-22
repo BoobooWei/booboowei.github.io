@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>PLSQL-异常处理_匿名块 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/C-PLSQL-02-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/C-PLSQL-02-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2020.01.28 BoobooWei     PLSQL-异常处理_匿名块 异常处理 异常处理程序的优点 异常处理的语法 异常的分类 处理内部定义异常 语法 案例   处理系统预定义异常 语法 案例   处理自定义异常 语法 RAISE声明 RAISE_APPLICATION_ERROR过程 案例-RAISE 案例2-RAISE_APPLICATION_ERROR   课后练习 练习1-使用">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PLSQL-异常处理_匿名块">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/C-PLSQL-02-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2020.01.28 BoobooWei     PLSQL-异常处理_匿名块 异常处理 异常处理程序的优点 异常处理的语法 异常的分类 处理内部定义异常 语法 案例   处理系统预定义异常 语法 案例   处理自定义异常 语法 RAISE声明 RAISE_APPLICATION_ERROR过程 案例-RAISE 案例2-RAISE_APPLICATION_ERROR   课后练习 练习1-使用">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.780Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:45.822Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">PLSQL-异常处理_匿名块</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/C-PLSQL-02-异常处理.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2020.01.28 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#plsql-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86_%E5%8C%BF%E5%90%8D%E5%9D%97">PLSQL-异常处理_匿名块</a><ul>
+<li><a href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86">异常处理</a><ul>
+<li><a href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F%E7%9A%84%E4%BC%98%E7%82%B9">异常处理程序的优点</a></li>
+<li><a href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E7%9A%84%E8%AF%AD%E6%B3%95">异常处理的语法</a></li>
+<li><a href="#%E5%BC%82%E5%B8%B8%E7%9A%84%E5%88%86%E7%B1%BB">异常的分类</a></li>
+<li><a href="#%E5%A4%84%E7%90%86%E5%86%85%E9%83%A8%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8">处理内部定义异常</a><ul>
+<li><a href="#%E8%AF%AD%E6%B3%95">语法</a></li>
+<li><a href="#%E6%A1%88%E4%BE%8B">案例</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E9%A2%84%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8">处理系统预定义异常</a><ul>
+<li><a href="#%E8%AF%AD%E6%B3%95">语法</a></li>
+<li><a href="#%E6%A1%88%E4%BE%8B">案例</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%84%E7%90%86%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8">处理自定义异常</a><ul>
+<li><a href="#%E8%AF%AD%E6%B3%95">语法</a></li>
+<li><a href="#raise%E5%A3%B0%E6%98%8E">RAISE声明</a></li>
+<li><a href="#raise_application_error%E8%BF%87%E7%A8%8B">RAISE_APPLICATION_ERROR过程</a></li>
+<li><a href="#%E6%A1%88%E4%BE%8B-raise">案例-RAISE</a></li>
+<li><a href="#%E6%A1%88%E4%BE%8B2-raise_application_error">案例2-RAISE_APPLICATION_ERROR</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AF%BE%E5%90%8E%E7%BB%83%E4%B9%A0">课后练习</a><ul>
+<li><a href="#%E7%BB%83%E4%B9%A01-%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0sqlerrm%E6%89%93%E5%8D%B0ora-%E6%B6%88%E6%81%AF%E6%8F%8F%E8%BF%B0">练习1-使用函数<code>sqlerrm</code>打印<code>ORA-</code>消息描述</a></li>
+<li><a href="#%E7%BB%83%E4%B9%A02-%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E9%A2%84%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8">练习2-处理系统预定义异常</a></li>
+<li><a href="#%E7%BB%83%E4%B9%A03-%E5%A4%84%E7%90%86%E5%86%85%E9%83%A8%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8ora-02291">练习3-处理内部定义异常<code>ORA-02291</code></a></li>
+<li><a href="#%E7%BB%83%E4%B9%A04-%E7%BB%BC%E5%90%88%E7%BB%83%E4%B9%A0">练习4-综合练习</a></li>
+<li><a href="#%E7%BB%83%E4%B9%A05-%E5%A4%84%E7%90%86%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8">练习5-处理自定义异常</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="异常处理" class="article-heading"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理<a class="article-anchor" href="#异常处理" aria-hidden="true"></a></h2><p>官方文档</p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#LNPLS007">PL/SQL Error Handling</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/exception_declaration.htm#LNPLS01387">Exception Declaration</a></p>
+<h3 id="异常处理程序的优点" class="article-heading"><a href="#异常处理程序的优点" class="headerlink" title="异常处理程序的优点"></a>异常处理程序的优点<a class="article-anchor" href="#异常处理程序的优点" aria-hidden="true"></a></h3><p>使用异常处理程序进行错误处理可以使程序更易于编写和理解，并减少未处理异常的可能性。</p>
+<p>如果没有异常处理程序，则必须检查所有可能发生的错误（可能发生的任何地方），然后进行处理。很容易忽略可能的错误或可能发生的地方，尤其是在无法立即检测到错误的情况下（例如，在您将其用于计算之前，可能无法检测到错误的数据）。错误处理代码分散在整个程序中。</p>
+<p>使用异常处理程序，您不必知道每个可能的错误或任何可能发生的错误。您只需要在可能发生错误的每个块中包括一个异常处理部分。在异常处理部分，您可以包括针对特定错误和未知错误的异常处理程序。如果该块中任何地方（包括子块内部）发生错误，则由异常处理程序进行处理。错误处理代码隔离在块的异常处理部分中。</p>
+<p>在<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#BABFBHGA">示例11-3中</a>，过程使用单个异常处理程序来处理预定义的异常<code>NO_DATA_FOUND</code>，该异常可能发生在两个<code>SELECT</code> <code>INTO</code>语句中的任何一个中。</p>
+<h3 id="异常处理的语法" class="article-heading"><a href="#异常处理的语法" class="headerlink" title="异常处理的语法"></a>异常处理的语法<a class="article-anchor" href="#异常处理的语法" aria-hidden="true"></a></h3><p>异常（PL / SQL运行时错误）可能源于设计错误，编码错误，硬件故障和许多其他来源。您无法预期所有可能的异常，但是可以编写异常处理程序，可让您的程序在存在的情况下继续运行。</p>
+<p>任何PL / SQL块都可以具有一个异常处理部分，该部分可以具有一个或多个异常处理程序。例如，异常处理部分可能具有以下语法：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">EXCEPTION</span><br><span class="line">  WHEN ex_name_1 THEN statements_1                  -异常处理</span><br><span class="line">  WHEN ex_name_2 OR ex_name_3 THEN statements_2   -异常处理</span><br><span class="line">  WHEN OTHERS THEN statements_3                       -例外处理程序</span><br><span class="line">END;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在前面的语法示例中，<code>ex_name_``n</code>是异常的名称，并且<code>statements_``n</code>是一个或多个语句。（有关完整的语法和语义，请参阅<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/exception_handler.htm#i33826">“异常处理程序”</a>。）</p>
+<p>当块的可执行部分中引发异常时，可执行部分将停止并将控制权转移到异常处理部分。如果<code>ex_name_1</code>有人提出来，那<code>statements_1</code>就跑。如果任一<code>ex_name_2</code>或被<code>ex_name_3</code>提出，然后<code>statements_2</code>运行。如果引发了其他任何异常，请<code>statements_3</code>运行。</p>
+<p>运行异常处理程序后，控制权将转移到封闭块的下一条语句。如果没有封闭块，则：</p>
+<ul>
+<li>如果异常处理程序在子程序中，则控制在调用后的语句处返回到调用程序。</li>
+<li>如果异常处理程序位于匿名块中，则控制权将转移到主机环境（例如，SQL * Plus）</li>
+</ul>
+<p>如果在没有异常处理程序的块中引发了异常，则该异常将传播。也就是说，异常会在连续的封闭块中重现，直到一个块具有针对它的处理程序或没有封闭块为止（有关更多信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#i3365">“异常传播”</a>）。如果没有用于异常的处理程序，则PL / SQL将未处理的异常错误返回给调用者或宿主环境，该错误确定结果（有关更多信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#i1889">“未处理的异常”</a>）。</p>
+<h3 id="异常的分类" class="article-heading"><a href="#异常的分类" class="headerlink" title="异常的分类"></a>异常的分类<a class="article-anchor" href="#异常的分类" aria-hidden="true"></a></h3><ul>
+<li><p><strong>内部定义</strong></p>
+<p>运行时系统隐式（自动）引发内部定义的异常。内部定义的异常的示例是ORA-00060（在等待资源时检测到死锁）和ORA-27102（内存不足）。</p>
+<p>内部定义的异常始终具有错误代码，但没有名称，除非PL / SQL给它一个或您给它一个。</p>
+<p>有关更多信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#BABIIEFC">“内部定义的异常”</a>。</p>
+</li>
+<li><p><strong>预定义</strong></p>
+<p>预定义的异常是内部定义的异常，PL / SQL已为其指定了名称。例如，ORA-06500（PL / SQL：存储错误）具有预定义的名称<code>STORAGE_ERROR</code>。</p>
+<p>有关更多信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#i9355">“预定义的异常”</a>。</p>
+</li>
+<li><p><strong>用户自定义</strong></p>
+<p>您可以在任何PL / SQL匿名块，子程序或程序包的声明部分中声明自己的异常。例如，您可以声明一个名称<code>insufficient_funds</code>为标记透支银行帐户的异常。</p>
+<p>您必须显式引发用户定义的异常。</p>
+<p>有关更多信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#i3329">“用户定义的异常”</a>。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">类别</th>
+<th align="left">定义者</th>
+<th align="left">有错误代码</th>
+<th align="left">有名字</th>
+<th align="left">隐式提高</th>
+<th align="left">明确提出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">内部定义</td>
+<td align="left">运行系统</td>
+<td align="left">总是</td>
+<td align="left">仅当您分配一个</td>
+<td align="left">是</td>
+<td align="left">可选<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#BABDABEJ">脚1 </a></td>
+</tr>
+<tr>
+<td align="left">预定义</td>
+<td align="left">运行系统</td>
+<td align="left">总是</td>
+<td align="left">总是</td>
+<td align="left">是</td>
+<td align="left">可选的<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#sthref888">Footref 1</a></td>
+</tr>
+<tr>
+<td align="left">用户自定义</td>
+<td align="left">用户</td>
+<td align="left">仅当您分配一个</td>
+<td align="left">总是</td>
+<td align="left">没有</td>
+<td align="left">总是</td>
+</tr>
+</tbody></table>
+<p>脚注1 有关详细信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#i3355">“使用RAISE语句引发内部定义的异常”</a>。</p>
+<p>对于命名异常，您可以编写特定的异常处理程序，而不是使用<code>OTHERS</code>异常处理程序对其进行处理。特定的异常处理程序比异常处理程序更有效<code>OTHERS</code>，因为后者必须调用一个函数来确定要处理的异常。有关详细信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#i8845">“错误代码和错误消息检索”</a>。</p>
+<h3 id="处理内部定义异常" class="article-heading"><a href="#处理内部定义异常" class="headerlink" title="处理内部定义异常"></a>处理内部定义异常<a class="article-anchor" href="#处理内部定义异常" aria-hidden="true"></a></h3><p><strong>内部定义的异常</strong>（ORA- <em>n</em>错误）在<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/server.112/e17766/toc.htm"><em>Oracle数据库错误消息中</em></a>进行了描述。运行时系统隐式（自动）引发它们。</p>
+<p>内部定义的异常没有名称，除非PL / SQL给它一个（请参阅<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#i9355">“预定义的异常”</a>）或您给它一个。</p>
+<p>如果您知道数据库操作可能会引发没有名称的特定内部定义的异常，请给它们命名，以便您可以专门为其编写异常处理程序。否则，您只能使用<code>OTHERS</code>异常处理程序来处理它们。</p>
+<p>给一个 将其命名为内部定义的异常，请在相应的匿名块，子程序或程序包的声明部分中执行以下操作。（要确定适当的块，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#i3365">“异常传播”</a>。）</p>
+<h4 id="语法" class="article-heading"><a href="#语法" class="headerlink" title="语法"></a>语法<a class="article-anchor" href="#语法" aria-hidden="true"></a></h4><ol>
+<li><p>声明名称。</p>
+<p>异常名称声明具有以下语法：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">exception_name EXCEPTION;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>有关语义信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/exception_declaration.htm#CJABADFA">“异常声明”</a>。</p>
+</li>
+<li><p>将名称与内部定义的异常的错误代码相关联。</p>
+<p>语法为：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">PRAGMA EXCEPTION_INIT（exception_name，error_code）</span><br></pre></td></tr></tbody></table></figure>
+
+<p>有关语义信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/exceptioninit_pragma.htm#i33787">“ EXCEPTION_INIT</a>语法<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/exceptioninit_pragma.htm#i33787">”</a>。</p>
+</li>
+</ol>
+<p>注意：</p>
+<p>具有用户声明的名称的内部定义的异常仍然是内部定义的异常，而不是用户定义的异常。</p>
+<h4 id="案例" class="article-heading"><a href="#案例" class="headerlink" title="案例"></a>案例<a class="article-anchor" href="#案例" aria-hidden="true"></a></h4><p><code>deadlock_detected</code>内部定义的异常ORA-00060（在等待资源时检测到死锁）提供了名称，并在异常处理程序中使用了该名称。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">DECLARE</span><br><span class="line">  deadlock_detected EXCEPTION;</span><br><span class="line">  PRAGMA EXCEPTION_INIT(deadlock_detected, -60);</span><br><span class="line">BEGIN</span><br><span class="line">  ...</span><br><span class="line">EXCEPTION</span><br><span class="line">  WHEN deadlock_detected THEN</span><br><span class="line">    ...</span><br><span class="line">END;</span><br><span class="line">/</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="处理系统预定义异常" class="article-heading"><a href="#处理系统预定义异常" class="headerlink" title="处理系统预定义异常"></a>处理系统预定义异常<a class="article-anchor" href="#处理系统预定义异常" aria-hidden="true"></a></h3><p><strong>预定义异常</strong>是具有预定义名称的内部定义的异常，PL / SQL在包中全局声明了预定义名称<code>STANDARD</code>。运行时系统隐式（自动）引发预定义的异常。因为预定义的异常具有名称，所以您可以为其专门编写异常处理程序。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#CIHHGGDI">表11-3</a>列出了预定义的异常的名称和错误代码。</p>
+<p>表11-3 PL / SQL预定义的异常</p>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>例外名称</strong></th>
+<th align="left">错误代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>ACCESS_INTO_NULL</code></td>
+<td align="left"><code>-6530</code></td>
+</tr>
+<tr>
+<td align="left"><code>CASE_NOT_FOUND</code></td>
+<td align="left"><code>-6592</code></td>
+</tr>
+<tr>
+<td align="left"><code>COLLECTION_IS_NULL</code></td>
+<td align="left"><code>-6531</code></td>
+</tr>
+<tr>
+<td align="left"><code>CURSOR_ALREADY_OPEN</code></td>
+<td align="left"><code>-6511</code></td>
+</tr>
+<tr>
+<td align="left"><code>DUP_VAL_ON_INDEX</code></td>
+<td align="left"><code>-1</code></td>
+</tr>
+<tr>
+<td align="left"><code>INVALID_CURSOR</code></td>
+<td align="left"><code>-1001</code></td>
+</tr>
+<tr>
+<td align="left"><code>INVALID_NUMBER</code></td>
+<td align="left"><code>-1722</code></td>
+</tr>
+<tr>
+<td align="left"><code>LOGIN_DENIED</code></td>
+<td align="left"><code>-1017</code></td>
+</tr>
+<tr>
+<td align="left"><code>NO_DATA_FOUND</code></td>
+<td align="left"><code>+100</code></td>
+</tr>
+<tr>
+<td align="left"><code>NO_DATA_NEEDED</code></td>
+<td align="left"><code>-6548</code></td>
+</tr>
+<tr>
+<td align="left"><code>NOT_LOGGED_ON</code></td>
+<td align="left"><code>-1012</code></td>
+</tr>
+<tr>
+<td align="left"><code>PROGRAM_ERROR</code></td>
+<td align="left"><code>-6501</code></td>
+</tr>
+<tr>
+<td align="left"><code>ROWTYPE_MISMATCH</code></td>
+<td align="left"><code>-6504</code></td>
+</tr>
+<tr>
+<td align="left"><code>SELF_IS_NULL</code></td>
+<td align="left"><code>-30625</code></td>
+</tr>
+<tr>
+<td align="left"><code>STORAGE_ERROR</code></td>
+<td align="left"><code>-6500</code></td>
+</tr>
+<tr>
+<td align="left"><code>SUBSCRIPT_BEYOND_COUNT</code></td>
+<td align="left"><code>-6533</code></td>
+</tr>
+<tr>
+<td align="left"><code>SUBSCRIPT_OUTSIDE_LIMIT</code></td>
+<td align="left"><code>-6532</code></td>
+</tr>
+<tr>
+<td align="left"><code>SYS_INVALID_ROWID</code></td>
+<td align="left"><code>-1410</code></td>
+</tr>
+<tr>
+<td align="left"><code>TIMEOUT_ON_RESOURCE</code></td>
+<td align="left"><code>-51</code></td>
+</tr>
+<tr>
+<td align="left"><code>TOO_MANY_ROWS</code></td>
+<td align="left"><code>-1422</code></td>
+</tr>
+<tr>
+<td align="left"><code>VALUE_ERROR</code></td>
+<td align="left"><code>-6502</code></td>
+</tr>
+<tr>
+<td align="left"><code>ZERO_DIVIDE</code></td>
+<td align="left"><code>-1476</code></td>
+</tr>
+</tbody></table>
+<h4 id="语法-1" class="article-heading"><a href="#语法-1" class="headerlink" title="语法"></a>语法<a class="article-anchor" href="#语法-1" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">exception</span><br><span class="line">  when no_data_found then</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="案例-1" class="article-heading"><a href="#案例-1" class="headerlink" title="案例"></a>案例<a class="article-anchor" href="#案例-1" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">declare</span><br><span class="line">  v_ename emp.ename%type;</span><br><span class="line">  v_sal emp.sal%type;</span><br><span class="line">/*</span><br><span class="line">-1:未选定行</span><br><span class="line">*/</span><br><span class="line">  v_err number;</span><br><span class="line">begin</span><br><span class="line">  select ename,sal into v_ename,v_sal from emp where empno=&amp;p_empno;</span><br><span class="line">  v_err:=0;</span><br><span class="line">  dbms_output.put_line(v_err);</span><br><span class="line">exception</span><br><span class="line">  when no_data_found then</span><br><span class="line">    v_err:=-1;</span><br><span class="line">    dbms_output.put_line(v_err);</span><br><span class="line">end;</span><br><span class="line">/</span><br></pre></td></tr></tbody></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">ACCESS_INTO_NULL -6530</span><br><span class="line">CASE_NOT_FOUND -6592</span><br><span class="line">COLLECTION_IS_NULL -6531</span><br><span class="line">CURSOR_ALREADY_OPEN -6511</span><br><span class="line">DUP_VAL_ON_INDEX -1</span><br><span class="line">INVALID_CURSOR -1001</span><br><span class="line">INVALID_NUMBER -1722</span><br><span class="line">LOGIN_DENIED -1017</span><br><span class="line">NO_DATA_FOUND +100</span><br><span class="line">NO_DATA_NEEDED -6548</span><br><span class="line">NOT_LOGGED_ON -1012</span><br><span class="line">PROGRAM_ERROR -6501</span><br><span class="line">ROWTYPE_MISMATCH -6504</span><br><span class="line">SELF_IS_NULL -30625</span><br><span class="line">STORAGE_ERROR -6500</span><br><span class="line">SUBSCRIPT_BEYOND_COUNT -6533</span><br><span class="line">SUBSCRIPT_OUTSIDE_LIMIT -6532</span><br><span class="line">SYS_INVALID_ROWID -1410</span><br><span class="line">TIMEOUT_ON_RESOURCE -51</span><br><span class="line">TOO_MANY_ROWS -1422</span><br><span class="line">VALUE_ERROR -6502</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="处理自定义异常" class="article-heading"><a href="#处理自定义异常" class="headerlink" title="处理自定义异常"></a>处理自定义异常<a class="article-anchor" href="#处理自定义异常" aria-hidden="true"></a></h3><p>您可以在任何PL / SQL匿名块，子程序或程序包的声明部分中声明自己的异常。</p>
+<h4 id="语法-2" class="article-heading"><a href="#语法-2" class="headerlink" title="语法"></a>语法<a class="article-anchor" href="#语法-2" aria-hidden="true"></a></h4><p>异常名称声明具有以下语法：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">exception_name EXCEPTION;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>有关语义信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/exception_declaration.htm#CJABADFA">“异常声明”</a>。</p>
+<p>您必须显式引发用户定义的异常。有关详细信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/errors.htm#BABFHFBI">“显式引发异常”</a>。</p>
+<h4 id="RAISE声明" class="article-heading"><a href="#RAISE声明" class="headerlink" title="RAISE声明"></a>RAISE声明<a class="article-anchor" href="#RAISE声明" aria-hidden="true"></a></h4><p>的 <code>RAISE</code>语句显式引发异常。在异常处理程序之外，您必须指定异常名称。在异常处理程序内部，如果省略了异常名称，则该<code>RAISE</code>语句将重新引发当前的异常。</p>
+<h4 id="RAISE-APPLICATION-ERROR过程" class="article-heading"><a href="#RAISE-APPLICATION-ERROR过程" class="headerlink" title="RAISE_APPLICATION_ERROR过程"></a>RAISE_APPLICATION_ERROR过程<a class="article-anchor" href="#RAISE-APPLICATION-ERROR过程" aria-hidden="true"></a></h4><p>您可以调用 <code>RAISE_APPLICATION_ERROR``DBMS_STANDARD</code>仅在存储的子程序或方法中执行过程（在包中定义）。通常，您调用此过程来引发用户定义的异常，并将其错误代码和错误消息返回给调用者。</p>
+<p>要调用<code>RAISE_APPLICATION_ERROR</code>，请使用以下语法：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">RAISE_APPLICATION_ERROR（error_code，消息 [，{TRUE | FALSE}]）；</span><br></pre></td></tr></tbody></table></figure>
+
+<p>您必须使用分配<code>error_code</code>给用户定义的异常<code>EXCEPTION_INIT</code>实用 语法为：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">PRAGMA EXCEPTION_INIT（exception_name，error_code）</span><br></pre></td></tr></tbody></table></figure>
+
+<p>有关语义信息，请参见<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/exceptioninit_pragma.htm#i33787">“ EXCEPTION_INIT</a>语法<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/exceptioninit_pragma.htm#i33787">”</a>。</p>
+<h4 id="案例-RAISE" class="article-heading"><a href="#案例-RAISE" class="headerlink" title="案例-RAISE"></a>案例-RAISE<a class="article-anchor" href="#案例-RAISE" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">DECLARE</span><br><span class="line">  salary_too_high   EXCEPTION;</span><br><span class="line">  current_salary    NUMBER := 20000;</span><br><span class="line">  max_salary        NUMBER := 10000;</span><br><span class="line">  erroneous_salary  NUMBER;</span><br><span class="line">BEGIN</span><br><span class="line"></span><br><span class="line">  BEGIN</span><br><span class="line">    IF current_salary &gt; max_salary THEN</span><br><span class="line">      RAISE salary_too_high;   -- raise exception</span><br><span class="line">    END IF;</span><br><span class="line">  EXCEPTION</span><br><span class="line">    WHEN salary_too_high THEN  -- start handling exception</span><br><span class="line">      erroneous_salary := current_salary;</span><br><span class="line">      DBMS_OUTPUT.PUT_LINE('Salary ' || erroneous_salary ||' is out of range.');</span><br><span class="line">      DBMS_OUTPUT.PUT_LINE ('Maximum salary is ' || max_salary || '.');</span><br><span class="line">      RAISE;  -- reraise current exception (exception name is optional)</span><br><span class="line">  END;</span><br><span class="line"></span><br><span class="line">EXCEPTION</span><br><span class="line">  WHEN salary_too_high THEN    -- finish handling exception</span><br><span class="line">    current_salary := max_salary;</span><br><span class="line"></span><br><span class="line">    DBMS_OUTPUT.PUT_LINE (</span><br><span class="line">      'Revising salary from ' || erroneous_salary ||</span><br><span class="line">      ' to ' || current_salary || '.'</span><br><span class="line">    );</span><br><span class="line">END;</span><br><span class="line">/</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Result:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Salary 20000 is out of range.</span><br><span class="line">Maximum salary is 10000.</span><br><span class="line">Revising salary from 20000 to 10000.</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="案例2-RAISE-APPLICATION-ERROR" class="article-heading"><a href="#案例2-RAISE-APPLICATION-ERROR" class="headerlink" title="案例2-RAISE_APPLICATION_ERROR"></a>案例2-RAISE_APPLICATION_ERROR<a class="article-anchor" href="#案例2-RAISE-APPLICATION-ERROR" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">CREATE PROCEDURE account_status (</span><br><span class="line">  due_date DATE,</span><br><span class="line">  today    DATE</span><br><span class="line">) AUTHID DEFINER</span><br><span class="line">IS</span><br><span class="line">BEGIN</span><br><span class="line">  IF due_date &lt; today THEN                   -- explicitly raise exception</span><br><span class="line">    RAISE_APPLICATION_ERROR(-20000, 'Account past due.');</span><br><span class="line">  END IF;</span><br><span class="line">END;</span><br><span class="line">/</span><br><span class="line"></span><br><span class="line">DECLARE</span><br><span class="line">  past_due  EXCEPTION;                       -- declare exception</span><br><span class="line">  PRAGMA EXCEPTION_INIT (past_due, -20000);  -- assign error code to exception</span><br><span class="line">BEGIN</span><br><span class="line">  account_status ('1-JUL-10', '9-JUL-10');   -- invoke procedure</span><br><span class="line">EXCEPTION</span><br><span class="line">  WHEN past_due THEN                         -- handle exception</span><br><span class="line">    DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLERRM(-20000)));</span><br><span class="line">END;</span><br><span class="line">/</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Result:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">ORA-20000: Account past due.</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="课后练习" class="article-heading"><a href="#课后练习" class="headerlink" title="课后练习"></a>课后练习<a class="article-anchor" href="#课后练习" aria-hidden="true"></a></h3><h4 id="练习1-使用函数sqlerrm打印ORA-消息描述" class="article-heading"><a href="#练习1-使用函数sqlerrm打印ORA-消息描述" class="headerlink" title="练习1-使用函数sqlerrm打印ORA-消息描述"></a>练习1-使用函数<code>sqlerrm</code>打印<code>ORA-</code>消息描述<a class="article-anchor" href="#练习1-使用函数sqlerrm打印ORA-消息描述" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">/* 使用函数sqlerrm打印ORA-消息描述：*/</span><br><span class="line">declare</span><br><span class="line">  errm varchar2(1000);</span><br><span class="line">begin</span><br><span class="line">  for errno in 20000..20999 loop</span><br><span class="line">    errm:=sqlerrm(-errno);</span><br><span class="line">    dbms_output.put_line(errm);</span><br><span class="line">  end loop;</span><br><span class="line">end;</span><br><span class="line">/</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="练习2-处理系统预定义异常" class="article-heading"><a href="#练习2-处理系统预定义异常" class="headerlink" title="练习2-处理系统预定义异常"></a>练习2-处理系统预定义异常<a class="article-anchor" href="#练习2-处理系统预定义异常" aria-hidden="true"></a></h4><ul>
+<li>捕获到<code>no_data_found</code>；则输出<code>-1</code>：</li>
+<li>捕获到<code>too_many_row</code>；则输出<code>查询返回太多行</code>;</li>
+<li>捕获到其他异常，则输出<code>未知错误</code>。</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">declare</span><br><span class="line">  v_ename emp.ename%type;</span><br><span class="line">  v_sal emp.sal%type;</span><br><span class="line">  v_err number;</span><br><span class="line">begin</span><br><span class="line">  update emp set deptno=80 where empno=7839;</span><br><span class="line">  select ename,sal into v_ename,v_sal from emp where deptno=&amp;p_deptno;</span><br><span class="line">  v_err:=0;</span><br><span class="line">    dbms_output.put_line(v_err);</span><br><span class="line">exception</span><br><span class="line">  when no_data_found then</span><br><span class="line">    v_err:=-1;</span><br><span class="line">    dbms_output.put_line(v_err);</span><br><span class="line">  when too_many_rows then</span><br><span class="line">    dbms_output.put_line('查询返回太多行');</span><br><span class="line">  when others then</span><br><span class="line">    dbms_output.put_line('未知错误');</span><br><span class="line">end;</span><br><span class="line">/</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="练习3-处理内部定义异常ORA-02291" class="article-heading"><a href="#练习3-处理内部定义异常ORA-02291" class="headerlink" title="练习3-处理内部定义异常ORA-02291"></a>练习3-处理内部定义异常<code>ORA-02291</code><a class="article-anchor" href="#练习3-处理内部定义异常ORA-02291" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@NB-flexgw1 ~]$ oerr ora 2291</span><br><span class="line">02291, 00000,<span class="string">"integrity constraint (%s.%s) violated - parent key not found"</span></span><br><span class="line">// *Cause: A foreign key value has no matching primary key value.</span><br><span class="line">// *Action: Delete the foreign key or add a matching primary key.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果捕获到异常<code>ORA-02291</code>则输出：外键取值错误；</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">declare</span><br><span class="line">  myerr exception;</span><br><span class="line">  pragma exception_init(myerr,-2291);</span><br><span class="line">  v_ename emp.ename%type;</span><br><span class="line">  v_sal emp.sal%type;</span><br><span class="line">  v_err number;</span><br><span class="line">begin</span><br><span class="line">  update emp set deptno=80 where empno=7839;</span><br><span class="line">  select ename,sal into v_ename,v_sal from emp where deptno=&amp;p_deptno;</span><br><span class="line">  v_err:=0;</span><br><span class="line">    dbms_output.put_line(v_err);</span><br><span class="line">exception</span><br><span class="line">  when no_data_found then</span><br><span class="line">    v_err:=-1;</span><br><span class="line">    dbms_output.put_line(v_err);</span><br><span class="line">  when too_many_rows then</span><br><span class="line">    dbms_output.put_line('查询返回太多行');</span><br><span class="line">  when myerr then</span><br><span class="line">    dbms_output.put_line('外键取值错误');</span><br><span class="line">end;</span><br><span class="line">/</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="练习4-综合练习" class="article-heading"><a href="#练习4-综合练习" class="headerlink" title="练习4-综合练习"></a>练习4-综合练习<a class="article-anchor" href="#练习4-综合练习" aria-hidden="true"></a></h4><ul>
+<li><p>获取部门编号为1的员工姓名</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">SCOTT@testdb&gt;select ename from emp where empno=1;</span><br><span class="line"></span><br><span class="line">no rows selected</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>删除部门表中所有的行</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">SCOTT@testdb&gt;delete dept;</span><br><span class="line">delete dept</span><br><span class="line">*</span><br><span class="line">ERROR at line 1:</span><br><span class="line">ORA-02292: integrity constraint (SCOTT.FK_DEPTNO) violated - child record found</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>更新员工表中部门编号为7839的部门编号，手动输入</p>
+</li>
+<li><p>打印员工表中部门编号为手动输入的编号的员工工资</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">/* 异常处理的作用 */</span><br><span class="line">declare</span><br><span class="line">  v_sal number;</span><br><span class="line">begin</span><br><span class="line">  declare</span><br><span class="line">    myerr exception;</span><br><span class="line">    pragma exception_init(myerr,-2292);</span><br><span class="line">    v_deptno number:=&amp;p_deptno;</span><br><span class="line">    v_ename varchar2(10);</span><br><span class="line">  begin</span><br><span class="line">   select ename into v_ename from emp where empno=1;/* 因为不存在empno=1的行，该行会触发异常no_data_found */</span><br><span class="line">    delete dept;/* dept表存在外键，该动作会会触发异常 ORA-02292*/</span><br><span class="line">    update emp set deptno=v_deptno where empno=7839;</span><br><span class="line">  exception</span><br><span class="line">    when myerr then</span><br><span class="line">      dbms_output.put_line('ORA-02292');</span><br><span class="line">    when others then</span><br><span class="line">      dbms_output.put_line('unknown error');</span><br><span class="line">      dbms_output.put_line(sqlcode||' ; '||sqlerrm);</span><br><span class="line">  end;</span><br><span class="line">  select sal into v_sal from emp where empno=&amp;p_empno;</span><br><span class="line">  dbms_output.put_line(v_sal);</span><br><span class="line">end;</span><br><span class="line">/</span><br></pre></td></tr></tbody></table></figure>
+
+<p>出现异常时不会继续往下执行，会跳出当前块，因此<code>delete</code> 和<code>update</code>语句都没有执行；而<code>select sal into v_sal from emp where empno=&amp;p_empno;</code>语句执行成功。</p>
+<p>运行结果</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Enter value for p_deptno: 1</span><br><span class="line">old   7:     v_deptno number:=&amp;p_deptno;</span><br><span class="line">new   7:     v_deptno number:=1;</span><br><span class="line">Enter value for p_empno: 8000</span><br><span class="line">old  20:   select sal into v_sal from emp where empno=&amp;p_empno;</span><br><span class="line">new  20:   select sal into v_sal from emp where empno=8000;</span><br><span class="line">unknown error</span><br><span class="line">100 ; ORA-01403: no data found</span><br><span class="line">1888</span><br><span class="line"></span><br><span class="line">PL/SQL procedure successfully completed.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>我们调整一下代码</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">/* 异常处理的作用 */</span><br><span class="line">declare</span><br><span class="line">  v_sal number;</span><br><span class="line">begin</span><br><span class="line">  declare</span><br><span class="line">    myerr exception;</span><br><span class="line">    pragma exception_init(myerr,-2292);</span><br><span class="line">    v_deptno number:=&amp;p_deptno;</span><br><span class="line">    v_ename varchar2(10);</span><br><span class="line">  begin</span><br><span class="line">    delete dept;/* dept表存在外键，该动作会会触发异常 ORA-02292*/</span><br><span class="line">    update emp set deptno=v_deptno where empno=7839;</span><br><span class="line">  exception</span><br><span class="line">    when myerr then</span><br><span class="line">      dbms_output.put_line('ORA-02292');</span><br><span class="line">    when others then</span><br><span class="line">      dbms_output.put_line('unknown error');</span><br><span class="line">      dbms_output.put_line(sqlcode||' ; '||sqlerrm);</span><br><span class="line">  end;</span><br><span class="line">  select sal into v_sal from emp where empno=&amp;p_empno;</span><br><span class="line">  dbms_output.put_line(v_sal);</span><br><span class="line">end;</span><br><span class="line">/</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Enter value for p_deptno: 1</span><br><span class="line">old   7:     v_deptno number:=&amp;p_deptno;</span><br><span class="line">new   7:     v_deptno number:=1;</span><br><span class="line">Enter value for p_empno: 8000</span><br><span class="line">old  19:   select sal into v_sal from emp where empno=&amp;p_empno;</span><br><span class="line">new  19:   select sal into v_sal from emp where empno=8000;</span><br><span class="line">ORA-02292</span><br><span class="line">1888</span><br></pre></td></tr></tbody></table></figure>
+
+<p>成功触发了<code>ORA-02292</code>异常。</p>
+<h4 id="练习5-处理自定义异常" class="article-heading"><a href="#练习5-处理自定义异常" class="headerlink" title="练习5-处理自定义异常"></a>练习5-处理自定义异常<a class="article-anchor" href="#练习5-处理自定义异常" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">/* 使用自定义异常 */</span><br><span class="line">declare</span><br><span class="line">  myerr exception;</span><br><span class="line">  pragma exception_init(myerr,-20000);</span><br><span class="line">  v_empno number:=&amp;p_empno;</span><br><span class="line">  v_sal number:=&amp;p_sal;</span><br><span class="line">begin</span><br><span class="line">  if v_sal&lt;1000 then</span><br><span class="line">    raise_application_error(-20000,'自定义错误！');</span><br><span class="line">  else</span><br><span class="line">    update emp set sal=v_sal where empno=v_empno;</span><br><span class="line">  end if;</span><br><span class="line">exception</span><br><span class="line">  when myerr then</span><br><span class="line">    dbms_output.put_line('工资太少!');</span><br><span class="line">end;</span><br><span class="line">/</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:45.822Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-text">异常处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-text">异常处理程序的优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E7%9A%84%E8%AF%AD%E6%B3%95"><span class="toc-text">异常处理的语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-text">异常的分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E5%86%85%E9%83%A8%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8"><span class="toc-text">处理内部定义异常</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-text">语法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B"><span class="toc-text">案例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E9%A2%84%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8"><span class="toc-text">处理系统预定义异常</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95-1"><span class="toc-text">语法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-1"><span class="toc-text">案例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8"><span class="toc-text">处理自定义异常</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95-2"><span class="toc-text">语法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RAISE%E5%A3%B0%E6%98%8E"><span class="toc-text">RAISE声明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RAISE-APPLICATION-ERROR%E8%BF%87%E7%A8%8B"><span class="toc-text">RAISE_APPLICATION_ERROR过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-RAISE"><span class="toc-text">案例-RAISE</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B2-RAISE-APPLICATION-ERROR"><span class="toc-text">案例2-RAISE_APPLICATION_ERROR</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BE%E5%90%8E%E7%BB%83%E4%B9%A0"><span class="toc-text">课后练习</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%83%E4%B9%A01-%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0sqlerrm%E6%89%93%E5%8D%B0ORA-%E6%B6%88%E6%81%AF%E6%8F%8F%E8%BF%B0"><span class="toc-text">练习1-使用函数sqlerrm打印ORA-消息描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%83%E4%B9%A02-%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E9%A2%84%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8"><span class="toc-text">练习2-处理系统预定义异常</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%83%E4%B9%A03-%E5%A4%84%E7%90%86%E5%86%85%E9%83%A8%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8ORA-02291"><span class="toc-text">练习3-处理内部定义异常ORA-02291</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%83%E4%B9%A04-%E7%BB%BC%E5%90%88%E7%BB%83%E4%B9%A0"><span class="toc-text">练习4-综合练习</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%83%E4%B9%A05-%E5%A4%84%E7%90%86%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8"><span class="toc-text">练习5-处理自定义异常</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践4:管理实例 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/04-ManagingtheDatabaseInstance-%E7%AE%A1%E7%90%86%E5%AE%9E%E4%BE%8B">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/04-ManagingtheDatabaseInstance-%E7%AE%A1%E7%90%86%E5%AE%9E%E4%BE%8B" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 4: Managing the Database Instance 2020.01.29 BoobooWei    实践4:管理实例&emsp;实践4:概览&emsp;实践4-1:使用Oracle Enterprise Manager Cloud Control管理Oracle实例&emsp;实践4-2:使用Oracle Enterprise Mange">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践4:管理实例">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/04-ManagingtheDatabaseInstance-%E7%AE%A1%E7%90%86%E5%AE%9E%E4%BE%8B">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 4: Managing the Database Instance 2020.01.29 BoobooWei    实践4:管理实例&emsp;实践4:概览&emsp;实践4-1:使用Oracle Enterprise Manager Cloud Control管理Oracle实例&emsp;实践4-2:使用Oracle Enterprise Mange">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.751Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:54.146Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践4:管理实例</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/04-ManagingtheDatabaseInstance-管理实例.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p><strong>Practices for Lesson 4: Managing the Database Instance</strong></p>
+<p>2020.01.29 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:0 updateOnSave:1 -->
+
+<p><a href="#%E5%AE%9E%E8%B7%B54%E7%AE%A1%E7%90%86%E5%AE%9E%E4%BE%8B">实践4:管理实例</a><br> <a href="#%E5%AE%9E%E8%B7%B54%E6%A6%82%E8%A7%88">实践4:概览</a><br> <a href="#%E5%AE%9E%E8%B7%B54-1%E4%BD%BF%E7%94%A8oracle-enterprise-manager-cloud-control%E7%AE%A1%E7%90%86oracle%E5%AE%9E%E4%BE%8B">实践4-1:使用Oracle Enterprise Manager Cloud Control管理Oracle实例</a><br> <a href="#%E5%AE%9E%E8%B7%B54-2%E4%BD%BF%E7%94%A8oracle-enterprise-manger-database-express%E7%AE%A1%E7%90%86oracle%E5%AE%9E%E4%BE%8B">实践4-2:使用Oracle Enterprise Manger Database Express管理Oracle实例</a><br> <a href="#%E5%AE%9E%E8%B7%B54-3%E4%BD%BF%E7%94%A8sqlplus%E7%AE%A1%E7%90%86oracle%E5%AE%9E%E4%BE%8B">实践4-3:使用SQL*Plus管理Oracle实例</a><br>  <a href="#overview">Overview</a><br>  <a href="#tasks">Tasks</a><br>  <a href="#practice">Practice</a><br>  <a href="#knowledgepoint">KnowledgePoint</a><br>   <a href="#12c-%E5%8F%82%E6%95%B0%E6%96%87%E4%BB%B6-%E4%B8%8E-11g-%E5%8F%82%E6%95%B0%E6%96%87%E4%BB%B6%E7%9A%84%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84">12c 参数文件 与 11g 参数文件的不同之处</a><br>   <a href="#%E5%8A%A8%E6%80%81%E5%8F%82%E6%95%B0%E4%BF%AE%E6%94%B9">动态参数修改</a><br>   <a href="#%E9%9D%99%E6%80%81%E5%8F%82%E6%95%B0%E4%BF%AE%E6%94%B9">静态参数修改</a><br>   <a href="#%E6%9F%A5%E7%9C%8B%E5%8F%82%E6%95%B0">查看参数</a><br> <a href="#%E5%AE%9E%E8%B7%B54-4%E9%80%9A%E8%BF%87%E4%BD%BF%E7%94%A8%E8%87%AA%E5%8A%A8%E8%AF%8A%E6%96%AD%E5%AD%98%E5%82%A8%E5%BA%93%E5%91%BD%E4%BB%A4%E6%9F%A5%E7%9C%8B%E8%AD%A6%E6%8A%A5%E6%97%A5%E5%BF%97%E6%8E%A5%E5%8F%A3adrci">实践4-4:通过使用自动诊断存储库命令查看警报日志接口(ADRCI)</a><br>  <a href="#overview">Overview</a><br>  <a href="#tasks">Tasks</a><br>  <a href="#practice">Practice</a><br>  <a href="#knowledgepoint">KnowledgePoint</a></p>
+<!-- /MDTOC -->
+
+<h2 id="实践4-概览" class="article-heading"><a href="#实践4-概览" class="headerlink" title="实践4:概览"></a>实践4:概览<a class="article-anchor" href="#实践4-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 4: Overview</p>
+<p><strong>Background:</strong> The Oracle software has been installed and a database has been created. You want to ensure that you can start and stop the database instance and see the application data.</p>
+<p>背景:已安装Oracle软件，并创建了数据库。您希望确保能够启动和停止数据库实例并查看应用程序数据。</p>
+<h2 id="实践4-1-使用Oracle-Enterprise-Manager-Cloud-Control管理Oracle实例" class="article-heading"><a href="#实践4-1-使用Oracle-Enterprise-Manager-Cloud-Control管理Oracle实例" class="headerlink" title="实践4-1:使用Oracle Enterprise Manager Cloud Control管理Oracle实例"></a>实践4-1:使用Oracle Enterprise Manager Cloud Control管理Oracle实例<a class="article-anchor" href="#实践4-1-使用Oracle-Enterprise-Manager-Cloud-Control管理Oracle实例" aria-hidden="true"></a></h2><p>Practice 4-1: Managing the Oracle Instance by Using Oracle Enterprise Manager Cloud Control</p>
+<h2 id="实践4-2-使用Oracle-Enterprise-Manger-Database-Express管理Oracle实例" class="article-heading"><a href="#实践4-2-使用Oracle-Enterprise-Manger-Database-Express管理Oracle实例" class="headerlink" title="实践4-2:使用Oracle Enterprise Manger Database Express管理Oracle实例"></a>实践4-2:使用Oracle Enterprise Manger Database Express管理Oracle实例<a class="article-anchor" href="#实践4-2-使用Oracle-Enterprise-Manger-Database-Express管理Oracle实例" aria-hidden="true"></a></h2><p>Practice 4-2: Managing the Oracle Instance by Using Oracle Enterprise Manger Database Express</p>
+<h2 id="实践4-3-使用SQL-Plus管理Oracle实例" class="article-heading"><a href="#实践4-3-使用SQL-Plus管理Oracle实例" class="headerlink" title="实践4-3:使用SQL*Plus管理Oracle实例"></a>实践4-3:使用SQL*Plus管理Oracle实例<a class="article-anchor" href="#实践4-3-使用SQL-Plus管理Oracle实例" aria-hidden="true"></a></h2><p>Practice 4-3: Managing the Oracle Instance by Using SQL*Plus</p>
+<h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><p>In this practice, you use SQL*Plus to view and change instance parameters.</p>
+<h3 id="Tasks" class="article-heading"><a href="#Tasks" class="headerlink" title="Tasks"></a>Tasks<a class="article-anchor" href="#Tasks" aria-hidden="true"></a></h3><ol>
+<li>Optimize SQL*Plus：configuring <code>$ORACLE_HOME/sqlplus/admin/glogin.sql</code></li>
+<li>Set the JOB_QUEUE_PROCESSES initialization parameter to 1000 by using SQL*Plus.</li>
+<li>Using SQL*Plus, shut down and restart the orcl database instance.</li>
+<li>Use the <strong>SHOW PARAMETER</strong> command to verify the settings for <strong>SGA_MAX_SIZE</strong>, <strong>DB_CACHE_SIZE</strong>, and <strong>SHARED_POOL_SIZE</strong>.</li>
+<li>Check the value of <strong>JOB_QUEUE_PROCESSES</strong>.</li>
+<li>Exit from SQL*Plus.</li>
+</ol>
+<h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><ol>
+<li><p>优化 SQL*Plus：配置 <code>$ORACLE_HOME/sqlplus/admin/glogin.sql</code></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; <span class="variable">$ORACLE_HOME</span>/sqlplus/admin/glogin.sql &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">define _editor=vi</span></span><br><span class="line"><span class="string">set serveroutput on size 1000000</span></span><br><span class="line"><span class="string">set trimspool on</span></span><br><span class="line"><span class="string">set long 5000</span></span><br><span class="line"><span class="string">set linesize 100</span></span><br><span class="line"><span class="string">set pagesize 9999</span></span><br><span class="line"><span class="string">column plan_plus_exp format a80</span></span><br><span class="line"><span class="string">set sqlprompt '&amp;_user.@&amp;_connect_identifier.&gt;'</span></span><br><span class="line"><span class="string">ENDF</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>设置 JOB_QUEUE_PROCESSES 的初始化参数值为1000</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">sqlplus <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">SHOW</span> <span class="keyword">PARAMETER</span> job</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">SYSTEM</span> <span class="keyword">SET</span> job_queue_processes<span class="operator">=</span><span class="number">1000</span> <span class="keyword">SCOPE</span><span class="operator">=</span><span class="keyword">BOTH</span>;</span><br><span class="line"><span class="keyword">SHOW</span> <span class="keyword">PARAMETER</span> job</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用 SQL*Plus 关闭并重启orcl实例</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">shutdown immediate</span><br><span class="line">startup</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用 <strong>SHOW PARAMETER</strong> 命令查看参数 <strong>SGA_MAX_SIZE</strong>, <strong>DB_CACHE_SIZE</strong>, <strong>SHARED_POOL_SIZE</strong> 的值</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">parameter</span> sga_max_size</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">parameter</span> db_cache_size</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">parameter</span> shared_pool_size</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>检查 <strong>JOB_QUEUE_PROCESSES</strong> 参数的值</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">parameter</span> job_queue_processes</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>退出 SQL*Plus</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<p>拓展</p>
+<ol>
+<li><p>查看参数的属性</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">exec</span> print_table(q<span class="string">'[select * from V$SYSTEM_PARAMETER WHERE name='</span>job_queue_processes<span class="string">']'</span>)</span><br><span class="line">UM			      		    : <span class="number">3106</span></span><br><span class="line">AME			      	    : job_queue_processes</span><br><span class="line">YPE			      	    : <span class="number">3</span></span><br><span class="line">ALUE			      	    : <span class="number">1000</span></span><br><span class="line">ISPLAY_VALUE		      : <span class="number">1000</span></span><br><span class="line">EFAULT_VALUE		      : <span class="number">4000</span></span><br><span class="line">SDEFAULT		      	  : <span class="literal">FALSE</span></span><br><span class="line">SSES_MODIFIABLE	    : <span class="literal">FALSE</span></span><br><span class="line">SSYS_MODIFIABLE	    : IMMEDIATE</span><br><span class="line">SPDB_MODIFIABLE	    : <span class="literal">TRUE</span></span><br><span class="line">SINSTANCE_MODIFIABLE	: <span class="literal">TRUE</span></span><br><span class="line">SMODIFIED		      	: <span class="literal">FALSE</span></span><br><span class="line">SADJUSTED		      	: <span class="literal">FALSE</span></span><br><span class="line">SDEPRECATED		      : <span class="literal">FALSE</span></span><br><span class="line">SBASIC 		      	  : <span class="literal">FALSE</span></span><br><span class="line">ESCRIPTION		      	: maximum number <span class="keyword">of</span> job queue slave processes</span><br><span class="line">PDATE_COMMENT		    :</span><br><span class="line">ASH			     	      : <span class="number">1663833312</span></span><br><span class="line">ON_ID			        	: <span class="number">0</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>说出该参数的重要属性</p>
+<p>ISSES_MODIFIABLE：FALSE —— 不能执行 <code>alter session</code></p>
+<p>ISSYS_MODIFIABLE：IMMEDIATE —— 可动态修改且立刻生效 <code>alter system</code></p>
+<p>ISPDB_MODIFIABLE：TRUE —— pdb级别可以覆盖cdb</p>
+<p>ISINSTANCE_MODIFIABLE：TRUE —— 实例级别可以修改</p>
+</li>
+</ol>
+<h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://github.com/BoobooWei/booboo_oracle/blob/master/D-%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-03-%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84_%E5%8F%82%E6%95%B0%E6%96%87%E4%BB%B6parameter_files.md">11g 参数文件</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/creating-and-configuring-an-oracle-database.html#GUID-7302C60F-E96E-4202-AC81-25A6C93EEFA3">12c 参数文件</a></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.oracle.com/pls/topic/lookup?ctx=en/database/oracle/oracle-database/12.2/admin&amp;id=SQLRF00902"><em>《 Oracle数据库SQL语言参考》</em></a>中有关该<code>ALTER</code> <code>SYSTEM</code>命令的 信息</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/admin/administering-a-cdb-with-sql-plus.html#GUID-E47348D6-5350-4890-ACD6-7BA1C1DD4E95">在CDB中使用ALTER SYSTEM SET语句</a></li>
+</ul>
+<h4 id="视图解释V-SYSTEM-PARAMETER" class="article-heading"><a href="#视图解释V-SYSTEM-PARAMETER" class="headerlink" title="视图解释V$SYSTEM_PARAMETER"></a>视图解释V$SYSTEM_PARAMETER<a class="article-anchor" href="#视图解释V-SYSTEM-PARAMETER" aria-hidden="true"></a></h4><p><code>V$SYSTEM_PARAMETER</code>显示有关实例当前有效的初始化参数的信息。新会话将从实例范围的值继承参数值。</p>
+<table>
+<thead>
+<tr>
+<th align="left">柱</th>
+<th align="left">数据类型</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>NUM</code></td>
+<td align="left"><code>NUMBER</code></td>
+<td align="left">参数编号</td>
+</tr>
+<tr>
+<td align="left"><code>NAME</code></td>
+<td align="left"><code>VARCHAR2(80)</code></td>
+<td align="left">参数名称</td>
+</tr>
+<tr>
+<td align="left"><code>TYPE</code></td>
+<td align="left"><code>NUMBER</code></td>
+<td align="left">参数类型：<code>1</code> -布尔值<code>2</code> -弦<code>3</code> - 整数<code>4</code> -参数文件<code>5</code> -保留<code>6</code> -大整数</td>
+</tr>
+<tr>
+<td align="left"><code>VALUE</code></td>
+<td align="left"><code>VARCHAR2(4000)</code></td>
+<td align="left">实例范围的参数值</td>
+</tr>
+<tr>
+<td align="left"><code>DISPLAY_VALUE</code></td>
+<td align="left"><code>VARCHAR2(4000)</code></td>
+<td align="left">用户友好格式的参数值。例如，如果该<code>VALUE</code>列显示<code>262144</code>大整数参数的值，则该<code>DISPLAY_VALUE</code>列将显示value <code>256K</code>。</td>
+</tr>
+<tr>
+<td align="left"><code>ISDEFAULT</code></td>
+<td align="left"><code>VARCHAR2(9)</code></td>
+<td align="left">指示参数是设置为默认值（<code>TRUE</code>）还是在参数文件中指定了参数值（<code>FALSE</code>）</td>
+</tr>
+<tr>
+<td align="left"><code>ISSES_MODIFIABLE</code></td>
+<td align="left"><code>VARCHAR2(5)</code></td>
+<td align="left">指示是否参数可以与被改变<code>ALTER SESSION</code>（<code>TRUE</code>）否（<code>FALSE</code>）</td>
+</tr>
+<tr>
+<td align="left"><code>ISSYS_MODIFIABLE</code></td>
+<td align="left"><code>VARCHAR2(9)</code></td>
+<td align="left">指示参数是否可以更改<code>ALTER SYSTEM</code>以及更改何时生效：<code>IMMEDIATE</code>- <code>ALTER SYSTEM</code>无论用于启动实例的参数文件的类型如何，都可以更改参数。更改将立即生效。<code>DEFERRED</code>- <code>ALTER SYSTEM</code>无论用于启动实例的参数文件的类型如何，都可以更改参数。该更改在后续会话中生效。<code>FALSE</code>- <code>ALTER SYSTEM</code>除非使用服务器参数文件启动实例，否则无法使用参数进行更改。该更改在后续实例中生效。</td>
+</tr>
+<tr>
+<td align="left"><code>ISINSTANCE_MODIFIABLE</code></td>
+<td align="left"><code>VARCHAR2(5)</code></td>
+<td align="left">对于可以使用更改的参数<code>ALTER SYSTEm</code>，指示参数值对于每个实例（<code>TRUE</code>）可以不同，还是对于所有Real Application Clusters实例（<code>FALSE</code>）参数必须具有相同的值。如果该<code>ISSYS_MODIFIABLE</code>列为<code>FALSE</code>，则此列始终为<code>FALSE</code>。</td>
+</tr>
+<tr>
+<td align="left"><code>ISMODIFIED</code></td>
+<td align="left"><code>VARCHAR2(8)</code></td>
+<td align="left">指示如何修改参数。如果<code>ALTER SYSTEM</code>执行，则值为<code>MODIFIED</code>。</td>
+</tr>
+<tr>
+<td align="left"><code>ISADJUSTED</code></td>
+<td align="left"><code>VARCHAR2(5)</code></td>
+<td align="left">指示Oracle是否将输入值调整为更合适的值（例如，参数值应为质数，但用户输入了非质数，因此Oracle将值调整为下一个质数）</td>
+</tr>
+<tr>
+<td align="left"><code>ISDEPRECATED</code></td>
+<td align="left"><code>VARCHAR2(5)</code></td>
+<td align="left">指示是否已弃用该参数<code>TRUE</code>（<code>FALSE</code>）</td>
+</tr>
+<tr>
+<td align="left"><code>ISBASIC</code></td>
+<td align="left"><code>VARCHAR2(5)</code></td>
+<td align="left">指示参数是否是基本参数（<code>TRUE</code>），或者（<code>FALSE</code>）</td>
+</tr>
+<tr>
+<td align="left"><code>DESCRIPTION</code></td>
+<td align="left"><code>VARCHAR2(255)</code></td>
+<td align="left">参数说明</td>
+</tr>
+<tr>
+<td align="left"><code>UPDATE_COMMENT</code></td>
+<td align="left"><code>VARCHAR2(255)</code></td>
+<td align="left">与最新更新相关的评论</td>
+</tr>
+<tr>
+<td align="left"><code>HASH</code></td>
+<td align="left"><code>NUMBER</code></td>
+<td align="left">参数名称的哈希值</td>
+</tr>
+</tbody></table>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">select</span> <span class="keyword">distinct</span> ISINSTANCE_MODIFIABLE,ISSYS_MODIFIABLE,ISSES_MODIFIABLE,ISPDB_MODIFIABLE <span class="keyword">from</span> v$system_parameter;</span><br><span class="line"></span><br><span class="line">ISINS ISSYS_MOD ISSES ISPDB</span><br><span class="line"><span class="comment">----- --------- ----- -----</span></span><br><span class="line"><span class="literal">FALSE</span> <span class="literal">FALSE</span>	<span class="literal">FALSE</span> <span class="literal">TRUE</span></span><br><span class="line"><span class="literal">TRUE</span>  IMMEDIATE <span class="literal">TRUE</span>  <span class="literal">FALSE</span></span><br><span class="line"><span class="literal">FALSE</span> IMMEDIATE <span class="literal">FALSE</span> <span class="literal">TRUE</span></span><br><span class="line"><span class="literal">TRUE</span>  IMMEDIATE <span class="literal">FALSE</span> <span class="literal">FALSE</span></span><br><span class="line"><span class="literal">TRUE</span>  DEFERRED	<span class="literal">FALSE</span> <span class="literal">FALSE</span></span><br><span class="line"><span class="literal">TRUE</span>  DEFERRED	<span class="literal">TRUE</span>  <span class="literal">TRUE</span></span><br><span class="line"><span class="literal">TRUE</span>  IMMEDIATE <span class="literal">FALSE</span> <span class="literal">TRUE</span></span><br><span class="line"><span class="literal">FALSE</span> <span class="literal">FALSE</span>	<span class="literal">TRUE</span>  <span class="literal">TRUE</span></span><br><span class="line"><span class="literal">FALSE</span> <span class="literal">FALSE</span>	<span class="literal">TRUE</span>  <span class="literal">FALSE</span></span><br><span class="line"><span class="literal">TRUE</span>  IMMEDIATE <span class="literal">TRUE</span>  <span class="literal">TRUE</span></span><br><span class="line"><span class="literal">FALSE</span> IMMEDIATE <span class="literal">FALSE</span> <span class="literal">FALSE</span></span><br><span class="line"><span class="literal">FALSE</span> <span class="literal">FALSE</span>	<span class="literal">FALSE</span> <span class="literal">FALSE</span></span><br><span class="line"></span><br><span class="line"><span class="number">12</span> <span class="keyword">rows</span> selected.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> v$system_parameter;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">COUNT</span>(<span class="operator">*</span>)</span><br><span class="line"><span class="comment">----------</span></span><br><span class="line">       <span class="number">417</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="12c-参数文件-与-11g-参数文件的不同之处" class="article-heading"><a href="#12c-参数文件-与-11g-参数文件的不同之处" class="headerlink" title="12c 参数文件 与 11g 参数文件的不同之处"></a>12c 参数文件 与 11g 参数文件的不同之处<a class="article-anchor" href="#12c-参数文件-与-11g-参数文件的不同之处" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">1. pdb 继承 cdb 的参数</span><br><span class="line">2. pdb 参数可以变更，保存在CDB级别的 pdb_spfile$ 系统表中，对参数文件没有影响</span><br><span class="line">3. pdb 参数哪些可以变更，当 ISPDB_MODIFIABLE 列TRUE用于V<span class="variable">$SYSTEM_PARAMETER</span>视图中的参数时，可以修改PDB的初始化参数。</span><br><span class="line">4. 文本初始化参数文件（PFILE）不能包含特定于PDB的参数值。</span><br><span class="line"></span><br><span class="line">-- 查询可被PDB修改的所有初始化参数：</span><br><span class="line">SELECT NAME FROM V<span class="variable">$SYSTEM_PARAMETER</span> WHERE ISPDB_MODIFIABLE=<span class="string">'TRUE'</span> ORDER BY NAME;</span><br><span class="line"></span><br><span class="line">-- 可被动态修改 且 pdb 中可被覆盖的 参数</span><br><span class="line">SELECT NAME,ISPDB_MODIFIABLE,ISSYS_MODIFIABLE FROM V<span class="variable">$SYSTEM_PARAMETER</span> WHERE ISPDB_MODIFIABLE=<span class="string">'TRUE'</span> and ISSYS_MODIFIABLE&lt;&gt;<span class="string">'FALSE'</span> ORDER BY NAME;</span><br><span class="line"></span><br><span class="line">-- 不可动态修改 且 pdb 中可被覆盖的 参数</span><br><span class="line">SELECT NAME,ISPDB_MODIFIABLE,ISSYS_MODIFIABLE FROM V<span class="variable">$SYSTEM_PARAMETER</span> WHERE ISPDB_MODIFIABLE=<span class="string">'TRUE'</span> and ISSYS_MODIFIABLE=<span class="string">'FALSE'</span> ORDER BY NAME;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="动态参数修改" class="article-heading"><a href="#动态参数修改" class="headerlink" title="动态参数修改"></a>动态参数修改<a class="article-anchor" href="#动态参数修改" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">-- pdb中查看当前动态参数open_cursors</span></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">exec</span> print_table(q<span class="string">'[select * from V$SYSTEM_PARAMETER WHERE name='</span>open_cursors<span class="string">']'</span>)</span><br><span class="line">NUM			      				: <span class="number">3328</span></span><br><span class="line">NAME			     				: open_cursors</span><br><span class="line">TYPE			      			: <span class="number">3</span></span><br><span class="line"><span class="keyword">VALUE</span>			      			: <span class="number">300</span></span><br><span class="line">DISPLAY_VALUE		      : <span class="number">300</span></span><br><span class="line">DEFAULT_VALUE		      : <span class="number">50</span></span><br><span class="line">ISDEFAULT		      		: <span class="literal">FALSE</span></span><br><span class="line">ISSES_MODIFIABLE	    : <span class="literal">FALSE</span></span><br><span class="line">ISSYS_MODIFIABLE	    : IMMEDIATE</span><br><span class="line">ISPDB_MODIFIABLE	    : <span class="literal">TRUE</span></span><br><span class="line">ISINSTANCE_MODIFIABLE	: <span class="literal">TRUE</span></span><br><span class="line">ISMODIFIED		      	: <span class="literal">FALSE</span></span><br><span class="line">ISADJUSTED		      	: <span class="literal">FALSE</span></span><br><span class="line">ISDEPRECATED		      : <span class="literal">FALSE</span></span><br><span class="line">ISBASIC 		      		: <span class="literal">TRUE</span></span><br><span class="line">DESCRIPTION		      	: max # cursors <span class="keyword">per</span> session</span><br><span class="line">UPDATE_COMMENT		    :</span><br><span class="line">HASH			      			: <span class="number">4033294835</span></span><br><span class="line">CON_ID			      		: <span class="number">0</span></span><br><span class="line"><span class="comment">-- 可以在pdb中直接修改</span></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">show</span> pdbs;</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  <span class="keyword">OPEN</span> MODE  RESTRICTED</span><br><span class="line"><span class="comment">---------- ------------------------------ ---------- ----------</span></span><br><span class="line">	 <span class="number">3</span> BOOBOOPDB1			  READ WRITE <span class="keyword">NO</span></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">show</span> <span class="keyword">parameter</span> open_cursors;</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">open_cursors			     <span class="type">integer</span>	 <span class="number">300</span></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">alter</span> <span class="keyword">system</span> <span class="keyword">set</span> open_cursors<span class="operator">=</span><span class="number">500</span> <span class="keyword">scope</span><span class="operator">=</span><span class="keyword">both</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">System</span> altered.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">show</span> <span class="keyword">parameter</span> open_cursors;</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">open_cursors			     <span class="type">integer</span>	 <span class="number">500</span></span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">exec</span> print_table(q<span class="string">'[select * from V$SYSTEM_PARAMETER WHERE name='</span>open_cursors<span class="string">']'</span>)</span><br><span class="line">NUM			      				: <span class="number">3328</span></span><br><span class="line">NAME			     				: open_cursors</span><br><span class="line">TYPE			      			: <span class="number">3</span></span><br><span class="line"><span class="keyword">VALUE</span>			      			: <span class="number">500</span></span><br><span class="line">DISPLAY_VALUE		      : <span class="number">500</span></span><br><span class="line">DEFAULT_VALUE		      : <span class="number">50</span></span><br><span class="line">ISDEFAULT		      		: <span class="literal">FALSE</span></span><br><span class="line">ISSES_MODIFIABLE	    : <span class="literal">FALSE</span></span><br><span class="line">ISSYS_MODIFIABLE	    : IMMEDIATE</span><br><span class="line">ISPDB_MODIFIABLE	    : <span class="literal">TRUE</span></span><br><span class="line">ISINSTANCE_MODIFIABLE	: <span class="literal">TRUE</span></span><br><span class="line">ISMODIFIED		      	: MODIFIED</span><br><span class="line">ISADJUSTED		      	: <span class="literal">FALSE</span></span><br><span class="line">ISDEPRECATED		      : <span class="literal">FALSE</span></span><br><span class="line">ISBASIC 		      		: <span class="literal">TRUE</span></span><br><span class="line">DESCRIPTION		      	: max # cursors <span class="keyword">per</span> session</span><br><span class="line">UPDATE_COMMENT		    :</span><br><span class="line">HASH			      			: <span class="number">4033294835</span></span><br><span class="line">CON_ID			      		: <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--切换到cdb，查看参数值还是300</span></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span>conn <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line">Connected.</span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">show</span> pdbs;</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  <span class="keyword">OPEN</span> MODE  RESTRICTED</span><br><span class="line"><span class="comment">---------- ------------------------------ ---------- ----------</span></span><br><span class="line">	 <span class="number">2</span> PDB$SEED			  READ <span class="keyword">ONLY</span>  <span class="keyword">NO</span></span><br><span class="line">	 <span class="number">3</span> BOOBOOPDB1			  READ WRITE <span class="keyword">NO</span></span><br><span class="line">	 <span class="number">4</span> BOOBOOPDB2			  MOUNTED</span><br><span class="line">	 <span class="number">5</span> BOOBOOPDB3			  MOUNTED</span><br><span class="line">	 <span class="number">6</span> BOOBOOPDB4			  MOUNTED</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">show</span> <span class="keyword">parameter</span> open_cursors;</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">open_cursors			     <span class="type">integer</span>	 <span class="number">300</span></span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">exec</span> print_table(q<span class="string">'[select * from V$PARAMETER WHERE name='</span>open_cursors<span class="string">']'</span>)</span><br><span class="line">NUM			      : <span class="number">3328</span></span><br><span class="line">NAME			      : open_cursors</span><br><span class="line">TYPE			      : <span class="number">3</span></span><br><span class="line"><span class="keyword">VALUE</span>			      : <span class="number">300</span></span><br><span class="line">DISPLAY_VALUE		      : <span class="number">300</span></span><br><span class="line">DEFAULT_VALUE		      : <span class="number">50</span></span><br><span class="line">ISDEFAULT		      : <span class="literal">FALSE</span></span><br><span class="line">ISSES_MODIFIABLE	      : <span class="literal">FALSE</span></span><br><span class="line">ISSYS_MODIFIABLE	      : IMMEDIATE</span><br><span class="line">ISPDB_MODIFIABLE	      : <span class="literal">TRUE</span></span><br><span class="line">ISINSTANCE_MODIFIABLE	      : <span class="literal">TRUE</span></span><br><span class="line">ISMODIFIED		      : <span class="literal">FALSE</span></span><br><span class="line">ISADJUSTED		      : <span class="literal">FALSE</span></span><br><span class="line">ISDEPRECATED		      : <span class="literal">FALSE</span></span><br><span class="line">ISBASIC 		      : <span class="literal">TRUE</span></span><br><span class="line">DESCRIPTION		      : max # cursors <span class="keyword">per</span> session</span><br><span class="line">UPDATE_COMMENT		      :</span><br><span class="line">HASH			      : <span class="number">4033294835</span></span><br><span class="line">CON_ID			      : <span class="number">1</span></span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">exec</span> print_table(q<span class="string">'[select * from V$SYSTEM_PARAMETER WHERE name='</span>open_cursors<span class="string">']'</span>)</span><br><span class="line">NUM			      : <span class="number">3328</span></span><br><span class="line">NAME			      : open_cursors</span><br><span class="line">TYPE			      : <span class="number">3</span></span><br><span class="line"><span class="keyword">VALUE</span>			      : <span class="number">300</span></span><br><span class="line">DISPLAY_VALUE		      : <span class="number">300</span></span><br><span class="line">DEFAULT_VALUE		      : <span class="number">50</span></span><br><span class="line">ISDEFAULT		      : <span class="literal">FALSE</span></span><br><span class="line">ISSES_MODIFIABLE	      : <span class="literal">FALSE</span></span><br><span class="line">ISSYS_MODIFIABLE	      : IMMEDIATE</span><br><span class="line">ISPDB_MODIFIABLE	      : <span class="literal">TRUE</span></span><br><span class="line">ISINSTANCE_MODIFIABLE	      : <span class="literal">TRUE</span></span><br><span class="line">ISMODIFIED		      : <span class="literal">FALSE</span></span><br><span class="line">ISADJUSTED		      : <span class="literal">FALSE</span></span><br><span class="line">ISDEPRECATED		      : <span class="literal">FALSE</span></span><br><span class="line">ISBASIC 		      : <span class="literal">TRUE</span></span><br><span class="line">DESCRIPTION		      : max # cursors <span class="keyword">per</span> session</span><br><span class="line">UPDATE_COMMENT		      :</span><br><span class="line">HASH			      : <span class="number">4033294835</span></span><br><span class="line">CON_ID			      : <span class="number">0</span></span><br><span class="line"><span class="comment">-----------------</span></span><br><span class="line">NUM			      : <span class="number">3328</span></span><br><span class="line">NAME			      : open_cursors</span><br><span class="line">TYPE			      : <span class="number">3</span></span><br><span class="line"><span class="keyword">VALUE</span>			      : <span class="number">500</span></span><br><span class="line">DISPLAY_VALUE		      : <span class="number">500</span></span><br><span class="line">DEFAULT_VALUE		      : <span class="number">50</span></span><br><span class="line">ISDEFAULT		      : <span class="literal">FALSE</span></span><br><span class="line">ISSES_MODIFIABLE	      : <span class="literal">FALSE</span></span><br><span class="line">ISSYS_MODIFIABLE	      : IMMEDIATE</span><br><span class="line">ISPDB_MODIFIABLE	      : <span class="literal">TRUE</span></span><br><span class="line">ISINSTANCE_MODIFIABLE	      : <span class="literal">TRUE</span></span><br><span class="line">ISMODIFIED		      : MODIFIED</span><br><span class="line">ISADJUSTED		      : <span class="literal">FALSE</span></span><br><span class="line">ISDEPRECATED		      : <span class="literal">FALSE</span></span><br><span class="line">ISBASIC 		      : <span class="literal">TRUE</span></span><br><span class="line">DESCRIPTION		      : max # cursors <span class="keyword">per</span> session</span><br><span class="line">UPDATE_COMMENT		      :</span><br><span class="line">HASH			      : <span class="number">4033294835</span></span><br><span class="line">CON_ID			      : <span class="number">3</span></span><br><span class="line"><span class="comment">-----------------</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="静态参数修改" class="article-heading"><a href="#静态参数修改" class="headerlink" title="静态参数修改"></a>静态参数修改<a class="article-anchor" href="#静态参数修改" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">-- pdb中查看当前静态参数memory_max_target</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> pdbs</span><br><span class="line"></span><br><span class="line">    CON_ID CON_NAME			  <span class="keyword">OPEN</span> MODE  RESTRICTED</span><br><span class="line"><span class="comment">---------- ------------------------------ ---------- ----------</span></span><br><span class="line">	 <span class="number">3</span> BOOBOOPDB1			  READ WRITE <span class="keyword">NO</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">column</span> name format a20</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">column</span> <span class="keyword">value</span> format a20</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> NAME,<span class="keyword">VALUE</span>,ISSYS_MODIFIABLE <span class="keyword">from</span> v$<span class="keyword">parameter</span> <span class="keyword">where</span> name<span class="operator">=</span><span class="string">'memory_max_target'</span>;</span><br><span class="line"></span><br><span class="line">NAME		     <span class="keyword">VALUE</span>		  ISSYS_MOD</span><br><span class="line"><span class="comment">-------------------- -------------------- ---------</span></span><br><span class="line">memory_max_target    <span class="number">0</span>			  <span class="literal">FALSE</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查看memory_max_target的ISPDB_MODIFIABLE的值为FALSE，代表pdb中不可以修改</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> num,name,type,<span class="keyword">value</span>,isdefault,ISBASIC,ISPDB_MODIFIABLE <span class="keyword">from</span> v$system_parameter <span class="keyword">where</span> name<span class="operator">=</span><span class="string">'memory_max_target'</span>;</span><br><span class="line"></span><br><span class="line">       NUM NAME 		      TYPE <span class="keyword">VALUE</span>		ISDEFAULT ISBAS</span><br><span class="line"><span class="comment">---------- -------------------- ---------- -------------------- --------- -----</span></span><br><span class="line">ISPDB</span><br><span class="line"><span class="comment">-----</span></span><br><span class="line">      <span class="number">1376</span> memory_max_target		 <span class="number">6</span> <span class="number">0</span>			<span class="literal">TRUE</span>	  <span class="literal">FALSE</span></span><br><span class="line"><span class="literal">FALSE</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- pdb中修改该参数值</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">alter</span> <span class="keyword">system</span> <span class="keyword">set</span> memory_max_target<span class="operator">=</span><span class="number">1</span>g <span class="keyword">scope</span><span class="operator">=</span>spfile;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">system</span> <span class="keyword">set</span> memory_max_target<span class="operator">=</span><span class="number">1</span>g <span class="keyword">scope</span><span class="operator">=</span>spfile</span><br><span class="line"><span class="operator">*</span></span><br><span class="line">ERROR <span class="keyword">at</span> line <span class="number">1</span>:</span><br><span class="line">ORA<span class="number">-65040</span>: operation <span class="keyword">not</span> allowed <span class="keyword">from</span> <span class="keyword">within</span> a pluggable database</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">-- pdb中修改open_links</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> num,name,type,<span class="keyword">value</span>,isdefault,ISBASIC,ISPDB_MODIFIABLE <span class="keyword">from</span> v$system_parameter <span class="keyword">where</span> name<span class="operator">=</span><span class="string">'open_links'</span>;</span><br><span class="line"></span><br><span class="line">       NUM NAME 						    TYPE <span class="keyword">VALUE</span>		      ISDEFAULT ISBAS ISPDB</span><br><span class="line"><span class="comment">---------- -------------------------------------------------- ---------- -------------------- --------- ----- -----</span></span><br><span class="line">      <span class="number">3288</span> open_links						       <span class="number">3</span> <span class="number">4</span>		      <span class="literal">TRUE</span>	<span class="literal">FALSE</span> <span class="literal">TRUE</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">alter</span> <span class="keyword">system</span> <span class="keyword">set</span> open_links<span class="operator">=</span><span class="number">10</span> <span class="keyword">scope</span><span class="operator">=</span>spfile;</span><br><span class="line"></span><br><span class="line"><span class="keyword">System</span> altered.</span><br><span class="line"></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">show</span> <span class="keyword">parameter</span> open_lin;</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">open_links			     <span class="type">integer</span>	 <span class="number">4</span></span><br><span class="line">open_links_per_instance 	     <span class="type">integer</span>	 <span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 通过cdb，重启pdb后生效</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> STARTUP PLUGGABLE DATABASE booboopdb1 FORCE</span><br><span class="line">Pluggable Database opened.</span><br><span class="line"></span><br><span class="line"><span class="comment">-- pdb中查看参数值</span></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span><span class="keyword">show</span> <span class="keyword">parameter</span> open_lin;</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">open_links			     <span class="type">integer</span>	 <span class="number">10</span></span><br><span class="line">open_links_per_instance 	     <span class="type">integer</span>	 <span class="number">4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">--文本初始化参数文件（PFILE）不能包含特定于PDB的参数值。</span></span><br><span class="line"><span class="comment">--PDB 的参数存储在 CDB 的 PDB_SPFILE$ 字典表中以 con_id 区别，所以， PDB 的 PDB_SPFILE$ 表是空的。</span></span><br><span class="line">SYS<span class="variable">@booboo</span><span class="operator">&gt;</span> <span class="keyword">exec</span> print_table(<span class="string">'select PDB_UID, NAME, VALUE$ from pdb_spfile$'</span>)</span><br><span class="line">PDB_UID 		      : <span class="number">2350619425</span></span><br><span class="line">NAME			      : open_cursors</span><br><span class="line"><span class="keyword">VALUE</span>$			      : <span class="number">500</span></span><br><span class="line"><span class="comment">-----------------</span></span><br><span class="line">PDB_UID 		      : <span class="number">2350619425</span></span><br><span class="line">NAME			      : open_links</span><br><span class="line"><span class="keyword">VALUE</span>$			      : <span class="number">10</span></span><br><span class="line"><span class="comment">-----------------</span></span><br><span class="line"></span><br><span class="line">PL<span class="operator">/</span><span class="keyword">SQL</span> <span class="keyword">procedure</span> successfully completed.</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="查看参数" class="article-heading"><a href="#查看参数" class="headerlink" title="查看参数"></a>查看参数<a class="article-anchor" href="#查看参数" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> NAME,ISPDB_MODIFIABLE,ISSYS_MODIFIABLE</span><br><span class="line"><span class="keyword">FROM</span> V$SYSTEM_PARAMETER</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	ISPDB_MODIFIABLE<span class="operator">=</span><span class="string">'TRUE'</span> <span class="keyword">and</span></span><br><span class="line">	ISSYS_MODIFIABLE<span class="operator">&lt;&gt;</span><span class="string">'FALSE'</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> NAME;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> NAME,ISPDB_MODIFIABLE,ISSYS_MODIFIABLE</span><br><span class="line"><span class="keyword">FROM</span> V$SYSTEM_PARAMETER</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	ISPDB_MODIFIABLE<span class="operator">=</span><span class="string">'TRUE'</span> <span class="keyword">and</span></span><br><span class="line">	ISSYS_MODIFIABLE<span class="operator">=</span><span class="string">'FALSE'</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> NAME;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="实践4-4-通过使用自动诊断存储库命令查看警报日志接口-ADRCI" class="article-heading"><a href="#实践4-4-通过使用自动诊断存储库命令查看警报日志接口-ADRCI" class="headerlink" title="实践4-4:通过使用自动诊断存储库命令查看警报日志接口(ADRCI)"></a>实践4-4:通过使用自动诊断存储库命令查看警报日志接口(ADRCI)<a class="article-anchor" href="#实践4-4-通过使用自动诊断存储库命令查看警报日志接口-ADRCI" aria-hidden="true"></a></h2><p>Practice 4-4: Viewing the Alert Log by Using the Automatic Diagnostic Repository Command Interface (ADRCI)</p>
+<h3 id="Overview-1" class="article-heading"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-1" aria-hidden="true"></a></h3><p>In this practice, you use command-line tools to view the orcl instance alert log and find the startup phases.</p>
+<h3 id="Tasks-1" class="article-heading"><a href="#Tasks-1" class="headerlink" title="Tasks"></a>Tasks<a class="article-anchor" href="#Tasks-1" aria-hidden="true"></a></h3><ol>
+<li>In the alert log, view the phases that the database went through during startup. What are they?</li>
+<li>Scroll through the log and review the phases of the database during startup. Use the vi search commands to find the appropriate lines. Your alert log may differ from what is shown in this practice.</li>
+</ol>
+<h3 id="Practice-1" class="article-heading"><a href="#Practice-1" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-1" aria-hidden="true"></a></h3><ol>
+<li><p>在警报日志中，查看数据库在启动期间经历的阶段。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oracle01 ~]$ adrci</span><br><span class="line"></span><br><span class="line">ADRCI: Release 12.2.0.1.0 - Production on Thu Jan 30 02:27:35 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2017, Oracle and/or its affiliates.  All rights reserved.</span><br><span class="line"></span><br><span class="line">ADR base = <span class="string">"/u01/app/oracle"</span></span><br><span class="line">adrci&gt; show alert</span><br><span class="line"></span><br><span class="line">Choose the home from <span class="built_in">which</span> to view the alert <span class="built_in">log</span>:</span><br><span class="line"></span><br><span class="line">1: diag/rdbms/booboo/booboo</span><br><span class="line">2: diag/clients/user_oracle/host_2874269298_107</span><br><span class="line">3: diag/tnslsnr/oracle01/listener</span><br><span class="line">Q: to quit</span><br><span class="line"></span><br><span class="line">Please <span class="keyword">select</span> option: 1</span><br><span class="line">Output the results to file: /tmp/alert_88137_1406_booboo_1.ado</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>Note: 默认会使用vi命令打开alert文件。</strong></p>
+</li>
+<li><p>滚动日志并在启动期间检查数据库的各个阶段。使用vi搜索命令查找适当的行。您的警报日志可能与此实践中显示的有所不同。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">2019-09-22 02:03:08.120000 -07:00</span><br><span class="line">Starting ORACLE instance (normal) (OS <span class="built_in">id</span>: 71748)</span><br><span class="line">......</span><br><span class="line">alter database <span class="string">"booboo"</span> open resetlogs</span><br><span class="line">......</span><br><span class="line">2020-01-29 18:00:00.047000 +08:00</span><br><span class="line">Closing scheduler window</span><br><span class="line">Closing Resource Manager plan via scheduler window</span><br><span class="line">Clearing Resource Manager CDB plan via parameter</span><br><span class="line">2020-01-29 23:08:35.821000 +08:00</span><br><span class="line">Resize operation completed <span class="keyword">for</span> file# 3, old size 563200K, new size 573440K</span><br><span class="line"></span><br><span class="line">--输入:q 退出</span><br><span class="line">--退出vi后继续进入adrci的交互界面</span><br><span class="line">--输入Q</span><br><span class="line">Please <span class="keyword">select</span> option: Q</span><br><span class="line">adrci&gt; <span class="built_in">exit</span></span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h3 id="KnowledgePoint-1" class="article-heading"><a href="#KnowledgePoint-1" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-1" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admin/diagnosing-and-resolving-problems.html#GUID-EA97EEF6-9207-4536-B808-3B91DACA7AD6">自动诊断存储库命令ADRCI</a></p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:54.146Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B54-%E6%A6%82%E8%A7%88"><span class="toc-text">实践4:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B54-1-%E4%BD%BF%E7%94%A8Oracle-Enterprise-Manager-Cloud-Control%E7%AE%A1%E7%90%86Oracle%E5%AE%9E%E4%BE%8B"><span class="toc-text">实践4-1:使用Oracle Enterprise Manager Cloud Control管理Oracle实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B54-2-%E4%BD%BF%E7%94%A8Oracle-Enterprise-Manger-Database-Express%E7%AE%A1%E7%90%86Oracle%E5%AE%9E%E4%BE%8B"><span class="toc-text">实践4-2:使用Oracle Enterprise Manger Database Express管理Oracle实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B54-3-%E4%BD%BF%E7%94%A8SQL-Plus%E7%AE%A1%E7%90%86Oracle%E5%AE%9E%E4%BE%8B"><span class="toc-text">实践4-3:使用SQL*Plus管理Oracle实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tasks"><span class="toc-text">Tasks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%86%E5%9B%BE%E8%A7%A3%E9%87%8AV-SYSTEM-PARAMETER"><span class="toc-text">视图解释V$SYSTEM_PARAMETER</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#12c-%E5%8F%82%E6%95%B0%E6%96%87%E4%BB%B6-%E4%B8%8E-11g-%E5%8F%82%E6%95%B0%E6%96%87%E4%BB%B6%E7%9A%84%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84"><span class="toc-text">12c 参数文件 与 11g 参数文件的不同之处</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E5%8F%82%E6%95%B0%E4%BF%AE%E6%94%B9"><span class="toc-text">动态参数修改</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%8F%82%E6%95%B0%E4%BF%AE%E6%94%B9"><span class="toc-text">静态参数修改</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%8F%82%E6%95%B0"><span class="toc-text">查看参数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B54-4-%E9%80%9A%E8%BF%87%E4%BD%BF%E7%94%A8%E8%87%AA%E5%8A%A8%E8%AF%8A%E6%96%AD%E5%AD%98%E5%82%A8%E5%BA%93%E5%91%BD%E4%BB%A4%E6%9F%A5%E7%9C%8B%E8%AD%A6%E6%8A%A5%E6%97%A5%E5%BF%97%E6%8E%A5%E5%8F%A3-ADRCI"><span class="toc-text">实践4-4:通过使用自动诊断存储库命令查看警报日志接口(ADRCI)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-1"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tasks-1"><span class="toc-text">Tasks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-1"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-1"><span class="toc-text">KnowledgePoint</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Sed 和 AWK 命令 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/0_linux_base/booboo_bash_shell_scripts/03_shell_sed_awk">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/0_linux_base/booboo_bash_shell_scripts/03_shell_sed_awk" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="sed什么是sedsed( 意为流编辑器 , 源自英语 “ stream editor” 的缩写 ) 是 Unix 常见的命令行程序。 sed 用来把文档或字符串里面的文字经过一系列编辑命令转换为另一种格式输出。 sed 通常 用来匹配一个或多个正则表达式的文本进行处理。 分号 (;) 可以用作分隔命令的指示符。尽管 sed 脚本固有的很多限制 , 一连串的 sed 指令加起来可以编程像 仓 库番">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sed 和 AWK 命令">
+<meta property="og:url" content="http://www.toberoot.com/linux/0_linux_base/booboo_bash_shell_scripts/03_shell_sed_awk">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="sed什么是sedsed( 意为流编辑器 , 源自英语 “ stream editor” 的缩写 ) 是 Unix 常见的命令行程序。 sed 用来把文档或字符串里面的文字经过一系列编辑命令转换为另一种格式输出。 sed 通常 用来匹配一个或多个正则表达式的文本进行处理。 分号 (;) 可以用作分隔命令的指示符。尽管 sed 脚本固有的很多限制 , 一连串的 sed 指令加起来可以编程像 仓 库番">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.995Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:28.589Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Sed 和 AWK 命令</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/0_linux_base/booboo_bash_shell_scripts/03_shell_sed_awk.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h2 id="sed" class="article-heading"><a href="#sed" class="headerlink" title="sed"></a>sed<a class="article-anchor" href="#sed" aria-hidden="true"></a></h2><h3 id="什么是sed" class="article-heading"><a href="#什么是sed" class="headerlink" title="什么是sed"></a>什么是sed<a class="article-anchor" href="#什么是sed" aria-hidden="true"></a></h3><p>sed( 意为流编辑器 , 源自英语 “ stream editor” 的缩写 ) 是 Unix 常见的命令行程序。 sed 用来把文档或字符串里面的文字经过一系列编辑命令转换为另一种格式输出。 sed 通常 用来匹配一个或多个正则表达式的文本进行处理。 分号 (;) 可以用作分隔命令的指示符。尽管 sed 脚本固有的很多限制 , 一连串的 sed 指令加起来可以编程像 仓 库番、快打砖块、甚至俄罗斯方块等电脑游戏的复杂程序。</p>
+<h3 id="如何使用sed" class="article-heading"><a href="#如何使用sed" class="headerlink" title="如何使用sed"></a>如何使用sed<a class="article-anchor" href="#如何使用sed" aria-hidden="true"></a></h3><h4 id="语法模式" class="article-heading"><a href="#语法模式" class="headerlink" title="语法模式"></a>语法模式<a class="article-anchor" href="#语法模式" aria-hidden="true"></a></h4><p>• 命令行模式<br>• 脚本模式</p>
+<p>命令行模式</p>
+<p>sed 流编辑器 针对行进行操作的</p>
+<h4 id="sed命令的原理" class="article-heading"><a href="#sed命令的原理" class="headerlink" title="sed命令的原理"></a>sed命令的原理<a class="article-anchor" href="#sed命令的原理" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">读文件---一行一行读</span><br><span class="line">存入缓存空间</span><br><span class="line">匹配行---是---动作--继续读取</span><br><span class="line">     ---不是------ 继续读取</span><br><span class="line">读到最后一行为止</span><br><span class="line">输出</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="sed命令的用法" class="article-heading"><a href="#sed命令的用法" class="headerlink" title="sed命令的用法"></a>sed命令的用法<a class="article-anchor" href="#sed命令的用法" aria-hidden="true"></a></h4><ul>
+<li>sed [-options] ‘[cmd]’ filename</li>
+<li>sed [-options] ‘[哪些行][干什么]’ filename</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cmd</span><br><span class="line">    操作定位（哪一行）</span><br><span class="line">        1    第一行</span><br><span class="line">        2,3    从第二行到第三行</span><br><span class="line">        $    最后一行</span><br><span class="line">        正则表达式</span><br><span class="line">        /^root/    以root开头的行</span><br><span class="line">        /bin$/    以bin结尾的行</span><br><span class="line"></span><br><span class="line">        1. 十进制数字</span><br><span class="line">        2. 正则表达式</span><br><span class="line">        3. 逗号分隔符</span><br><span class="line">        4. 组合方式</span><br><span class="line">        5. 特殊方式</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    函数（干什么）</span><br><span class="line">        p    打印，输出到屏幕上</span><br><span class="line">        d    删除</span><br><span class="line">        s    替换                   sed '/^#/s/\/\*.*\*\///' file</span><br><span class="line">        a    当前行的行后，添加一行    sed '1ahello word' file</span><br><span class="line">        i    当前行的行前，添加一行    sed '1ihello word' file</span><br><span class="line">参数options</span><br><span class="line">    -n 不输出所有的行</span><br><span class="line">    -i 直接修改目标文件</span><br><span class="line">    -e 连接多个cmd</span><br><span class="line"></span><br><span class="line">简单控制流</span><br><span class="line"></span><br><span class="line">1. ! 命令取反</span><br><span class="line">    例如:sed '/kevin/!d' file</span><br><span class="line">    删除不包含字符串”kevin“的行</span><br><span class="line">2. { } 组合多个命令</span><br><span class="line">组合命令作为一个整体被执行,函数命令之间用” ;  “分隔,组合命令可以嵌套。</span><br><span class="line">例如:sed '/kevin/{s/1/2/; /3/d}' file。</span><br><span class="line"></span><br><span class="line">3. n 读取下一输入行,从下一条命令而非第一条命令开始操作</span><br><span class="line">例如:sed '/kevin/{n; d}' file</span><br><span class="line">删除带字符串”kevin“行的下一行</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="课堂练习" class="article-heading"><a href="#课堂练习" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习" aria-hidden="true"></a></h4><ol>
+<li>下载mysqlbinlog.row文件</li>
+<li>打印第三行</li>
+<li>打印1到5行</li>
+<li>打印最后一行</li>
+<li>打印30到最后一行</li>
+<li>打印包含“BEGIN”的行</li>
+<li>打印包含“COMMIT”的行</li>
+<li>打印以“###”开头的行</li>
+<li>删除每一行的“### ”</li>
+<li>删除所有“/<em>到</em>/”</li>
+<li>将“DELETE FROM”替换为“insert into”</li>
+<li>将“INSERT INTO”替换为“delete from”</li>
+<li>将“SET”替换为“where”</li>
+<li>将“WHERE”替换为“set”</li>
+<li>将“@1”替换为“id”</li>
+<li>将“@2”替换为“name”</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@client0 ~]# sed '3p' mysqlbinlog.row</span><br><span class="line">[root@client0 ~]# sed -n '3p' mysqlbinlog.row</span><br><span class="line">[root@client0 ~]# sed -n '1,5p' mysqlbinlog.row</span><br><span class="line">[root@client0 ~]# sed -n '$p' mysqlbinlog.row</span><br><span class="line">[root@client0 ~]# sed -n '30,$p' mysqlbinlog.row</span><br><span class="line">[root@client0 ~]# sed -n '/BEGIN/p' mysqlbinlog.row</span><br><span class="line">[root@client0 ~]# sed -n '/COMMIT/p' mysqlbinlog.row</span><br><span class="line">[root@client0 ~]# sed '{s/### //;s@\/\*.*\*\/@@;s/DELETE FROM/insert into/;s/INSERT INTO/delete from/;s/SET/where/;s/WHERE/set/;s/@1/id/;s/@2/name/}' mysqlbinlog.row</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="课堂练习-1" class="article-heading"><a href="#课堂练习-1" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习-1" aria-hidden="true"></a></h4><ol>
+<li>将192.168.1.1替换成192.168.2.2</li>
+<li>将192.168.1.1替换成192.188.5.1</li>
+<li>将192.168.1.1替换成192.192.192.1</li>
+<li>将hello,babay中babay后面追加”,mybabay”</li>
+<li>将hello,babay中hello后面追加”,mybabay”</li>
+<li>将hello,babay替换为”hello1hello2hello3,babay”</li>
+<li>将/tmp/shadow的内容追加到/tmp/passwd中以root开头的行的后面</li>
+<li>将/tmp/passwd中以root开头的行和后面的2行写入/tmp/shadow</li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@client0 ~]# <span class="built_in">echo</span> 192.168.1.1|sed <span class="string">'s/\(.*\)1.1/\12.2/'</span></span><br><span class="line">192.168.2.2</span><br><span class="line">[root@client0 ~]# <span class="built_in">echo</span> 192.168.1.1|sed <span class="string">'s/\(.*\)168.1\(.*\)/\1188.5\2/'</span></span><br><span class="line">192.188.5.1</span><br><span class="line">[root@client0 ~]# <span class="built_in">echo</span> 192.168.1.1|sed <span class="string">'s/\(.*\)168.1\(.*\)/\1\1\11/'</span></span><br><span class="line">192.192.192.1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@client0 ~]# <span class="built_in">echo</span> hello,babay|sed <span class="string">'s/babay/&amp;,mybabay/'</span></span><br><span class="line">hello,babay,mybabay</span><br><span class="line">[root@client0 ~]# <span class="built_in">echo</span> hello,babay|sed <span class="string">'s/hello/&amp;,mybabay/'</span></span><br><span class="line">hello,mybabay,babay</span><br><span class="line">[root@client0 ~]# <span class="built_in">echo</span> hello,babay|sed <span class="string">'s/hello/&amp;1&amp;2&amp;3/'</span></span><br><span class="line">hello1hello2hello3,babay</span><br><span class="line"></span><br><span class="line">[root@client0 ~]# sed <span class="string">'/^root/r /tmp/shadow'</span> /tmp/passwd</span><br><span class="line">[root@client0 ~]# sed <span class="string">'/^root/,+2w /tmp/shadow'</span> /tmp/passwd</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="课后习题" class="article-heading"><a href="#课后习题" class="headerlink" title="课后习题"></a>课后习题<a class="article-anchor" href="#课后习题" aria-hidden="true"></a></h4><pre><code>1. 将selinux设置成开机关闭状态。用sed完成
+2. 设置当前用户的umask值永久生效为033 ~/.bashrc。用sed完成
+3. 用脚本实现自动化搭建DNS服务器，并自动化配置解析，自动化测试。
+</code></pre>
+<h2 id="awk" class="article-heading"><a href="#awk" class="headerlink" title="awk"></a>awk<a class="article-anchor" href="#awk" aria-hidden="true"></a></h2><h3 id="简介" class="article-heading"><a href="#简介" class="headerlink" title="简介"></a>简介<a class="article-anchor" href="#简介" aria-hidden="true"></a></h3><p>awk是一个强大的文本分析工具，相对于grep的查找，sed的编辑，awk在其对数据分析并生成报告时，显得尤为强大。简单来说awk就是把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分再进行各种分析处理。</p>
+<p>awk有3个不同版本: awk、nawk和gawk，未作特别说明，一般指gawk，gawk 是 AWK 的 GNU 版本。</p>
+<p>awk其名称得自于它的创始人 Alfred Aho 、Peter Weinberger 和 Brian Kernighan 姓氏的首个字母。实际上 AWK 的确拥有自己的语言： AWK 程序设计语言 ， 三位创建者已将它正式定义为“样式扫描和处理语言”。它允许您创建简短的程序，这些程序读取输入文件、为数据排序、处理数据、对输入执行计算以及生成报表，还有无数其他的功能。</p>
+<h3 id="使用方法" class="article-heading"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法<a class="article-anchor" href="#使用方法" aria-hidden="true"></a></h3><p>awk ‘{pattern + action}’ {filenames}</p>
+<p>尽管操作可能会很复杂，但语法总是这样，其中 pattern 表示 AWK 在数据中查找的内容，而 action 是在找到匹配内容时所执行的一系列命令。花括号（{}）不需要在程序中始终出现，但它们用于根据特定的模式对一系列指令进行分组。 pattern就是要表示的正则表达式，用斜杠括起来。</p>
+<p>awk语言的最基本功能是在文件或者字符串中基于指定规则浏览和抽取信息，awk抽取信息后，才能进行其他文本操作。完整的awk脚本通常用来格式化文本文件中的信息。</p>
+<p>通常，awk是以文件的一行为处理单位的。awk每接收文件的一行，然后执行相应的命令，来处理文本。</p>
+<h3 id="调用awk" class="article-heading"><a href="#调用awk" class="headerlink" title="调用awk"></a>调用awk<a class="article-anchor" href="#调用awk" aria-hidden="true"></a></h3><p>有三种方式调用awk</p>
+<ol>
+<li>命令行方式<br>awk [-F field-separator] ‘commands’ input-file(s)</li>
+</ol>
+<p>其中，commands 是真正awk命令，[-F域分隔符]是可选的。 input-file(s) 是待处理的文件。</p>
+<p>在awk中，文件的每一行中，由域分隔符分开的每一项称为一个域。通常，在不指名-F域分隔符的情况下，默认的域分隔符是空格。</p>
+<ol start="2">
+<li>shell脚本方式</li>
+</ol>
+<p>将所有的awk命令插入一个文件，并使awk程序可执行，然后awk命令解释器作为脚本的首行，一遍通过键入脚本名称来调用。</p>
+<p>相当于shell脚本首行的：#!/bin/sh</p>
+<p>可以换成：#!/bin/awk</p>
+<ol start="3">
+<li>将所有的awk命令插入一个单独文件，然后调用：<br>awk -f awk-script-file input-file(s)</li>
+</ol>
+<p>其中，-f选项加载awk-script-file中的awk脚本，input-file(s)跟上面的是一样的。</p>
+<p>本章重点介绍命令行方式。</p>
+<h3 id="入门实例" class="article-heading"><a href="#入门实例" class="headerlink" title="入门实例"></a>入门实例<a class="article-anchor" href="#入门实例" aria-hidden="true"></a></h3><p>假设last -n 5的输出如下</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@www ~]# last -n 5 &lt;==仅取出前五行</span><br><span class="line">root     pts/1   192.168.1.100  Tue Feb 10 11:21   still logged in</span><br><span class="line">root     pts/1   192.168.1.100  Tue Feb 10 00:46 - 02:28  (01:41)</span><br><span class="line">root     pts/1   192.168.1.100  Mon Feb  9 11:41 - 18:30  (06:48)</span><br><span class="line">dmtsai   pts/1   192.168.1.100  Mon Feb  9 11:41 - 11:41  (00:00)</span><br><span class="line">root     tty1                   Fri Sep  5 14:09 - 14:10  (00:01)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果只是显示最近登录的5个帐号</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">last -n 5 | awk  <span class="string">'{print $1}'</span></span></span><br><span class="line">root</span><br><span class="line">root</span><br><span class="line">root</span><br><span class="line">dmtsai</span><br><span class="line">root</span><br></pre></td></tr></tbody></table></figure>
+
+<p>awk工作流程是这样的：读入有’\n’换行符分割的一条记录，然后将记录按指定的域分隔符划分域，填充域，$0则表示所有域,$1表示第一个域,$n表示第n个域。默认域分隔符是”空白键” 或 “[tab]键”,所以$1表示登录用户，$3表示登录用户ip,以此类推。</p>
+<p>如果只是显示/etc/passwd的账户</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="built_in">cat</span> /etc/passwd |awk  -F <span class="string">':'</span>  <span class="string">'{print $1}'</span></span></span><br><span class="line">root</span><br><span class="line">daemon</span><br><span class="line">bin</span><br><span class="line">sys</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这种是awk+action的示例，每行都会执行action{print $1}。</p>
+<p>-F指定域分隔符为’:’。</p>
+<p>如果只是显示/etc/passwd的账户和账户对应的shell,而账户与shell之间以tab键分割</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="built_in">cat</span> /etc/passwd |awk  -F <span class="string">':'</span>  <span class="string">'{print $1"\t"$7}'</span></span></span><br><span class="line">root    /bin/bash</span><br><span class="line">daemon  /bin/sh</span><br><span class="line">bin     /bin/sh</span><br><span class="line">sys     /bin/sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果只是显示/etc/passwd的账户和账户对应的shell,而账户与shell之间以逗号分割,而且在所有行添加列名name,shell,在最后一行添加”blue,/bin/nosh”。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cat /etc/passwd |awk  -F ':'  'BEGIN {print "name,shell"}  {print $1","$7} END {print "blue,/bin/nosh"}'</span><br><span class="line">name,shell</span><br><span class="line">root,/bin/bash</span><br><span class="line">daemon,/bin/sh</span><br><span class="line">bin,/bin/sh</span><br><span class="line">sys,/bin/sh</span><br><span class="line">....</span><br><span class="line">blue,/bin/nosh</span><br></pre></td></tr></tbody></table></figure>
+
+<p>awk工作流程是这样的：先执行BEGING，然后读取文件，读入有/n换行符分割的一条记录，然后将记录按指定的域分隔符划分域，填充域，$0则表示所有域,$1表示第一个域,$n表示第n个域,随后开始执行模式所对应的动作action。接着开始读入第二条记录······直到所有的记录都读完，最后执行END操作。</p>
+<p>搜索/etc/passwd有root关键字的所有行</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">awk -F: <span class="string">'/root/'</span> /etc/passwd</span></span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这种是pattern的使用示例，匹配了pattern(这里是root)的行才会执行action(没有指定action，默认输出每行的内容)。</p>
+<p>搜索支持正则，例如找root开头的: awk -F: ‘/^root/‘ /etc/passwd</p>
+<p>搜索/etc/passwd有root关键字的所有行，并显示对应的shell</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">awk -F: <span class="string">'/root/{print $7}'</span> /etc/passwd</span></span><br><span class="line">/bin/bash</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里指定了action{print $7}</p>
+<h3 id="awk内置变量" class="article-heading"><a href="#awk内置变量" class="headerlink" title="awk内置变量"></a>awk内置变量<a class="article-anchor" href="#awk内置变量" aria-hidden="true"></a></h3><p>awk有许多内置变量用来设置环境信息，这些变量可以被改变，下面给出了最常用的一些变量。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ARGC               命令行参数个数</span><br><span class="line">ARGV               命令行参数排列</span><br><span class="line">ENVIRON            支持队列中系统环境变量的使用</span><br><span class="line">FILENAME           awk浏览的文件名</span><br><span class="line">FNR                浏览文件的记录数</span><br><span class="line">FS                 设置输入域分隔符，等价于命令行 -F选项</span><br><span class="line">NF                 浏览记录的域的个数</span><br><span class="line">NR                 已读的记录数</span><br><span class="line">OFS                输出域分隔符</span><br><span class="line">ORS                输出记录分隔符</span><br><span class="line">RS                 控制记录分隔符</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此外,$0变量是指整条记录。$1表示当前行的第一个域,$2表示当前行的第二个域,……以此类推。</p>
+<p>统计/etc/passwd:文件名，每行的行号，每行的列数，对应的完整行内容:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">awk  -F <span class="string">':'</span>  <span class="string">'{print "filename:" FILENAME ",linenumber:" NR ",columns:" NF ",linecontent:"$0}'</span> /etc/passwd</span></span><br><span class="line">filename:/etc/passwd,linenumber:1,columns:7,linecontent:root:x:0:0:root:/root:/bin/bash</span><br><span class="line">filename:/etc/passwd,linenumber:2,columns:7,linecontent:daemon:x:1:1:daemon:/usr/sbin:/bin/sh</span><br><span class="line">filename:/etc/passwd,linenumber:3,columns:7,linecontent:bin:x:2:2:bin:/bin:/bin/sh</span><br><span class="line">filename:/etc/passwd,linenumber:4,columns:7,linecontent:sys:x:3:3:sys:/dev:/bin/sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p>使用printf替代print,可以让代码更加简洁，易读</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">awk  -F ':'  '{printf("filename:%10s,linenumber:%s,columns:%s,linecontent:%s\n",FILENAME,NR,NF,$0)}' /etc/passwd</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="print和printf" class="article-heading"><a href="#print和printf" class="headerlink" title="print和printf"></a>print和printf<a class="article-anchor" href="#print和printf" aria-hidden="true"></a></h3><p>awk中同时提供了print和printf两种打印输出的函数。</p>
+<p>其中print函数的参数可以是变量、数值或者字符串。字符串必须用双引号引用，参数用逗号分隔。如果没有逗号，参数就串联在一起而无法区分。这里，逗号的作用与输出文件的分隔符的作用是一样的，只是后者是空格而已。</p>
+<p>printf函数，其用法和c语言中printf基本相似,可以格式化字符串,输出复杂时，printf更加好用，代码更易懂。</p>
+<h3 id="awk编程" class="article-heading"><a href="#awk编程" class="headerlink" title="awk编程"></a>awk编程<a class="article-anchor" href="#awk编程" aria-hidden="true"></a></h3><h4 id="变量和赋值" class="article-heading"><a href="#变量和赋值" class="headerlink" title="变量和赋值"></a>变量和赋值<a class="article-anchor" href="#变量和赋值" aria-hidden="true"></a></h4><p>除了awk的内置变量，awk还可以自定义变量。</p>
+<p>下面统计/etc/passwd的账户人数</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">awk '{count++;print $0;} END{print "user count is ", count}' /etc/passwd</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">......</span><br><span class="line">user count is  40</span><br></pre></td></tr></tbody></table></figure>
+
+<p>count是自定义变量。之前的action{}里都是只有一个print,其实print只是一个语句，而action{}可以有多个语句，以;号隔开。</p>
+<p>这里没有初始化count，虽然默认是0，但是妥当的做法还是初始化为0:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">awk 'BEGIN {count=0;print "[start]user count is ", count} {count=count+1;print $0;} END{print "[end]user count is ", count}' /etc/passwd</span><br><span class="line">[start]user count is  0</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">...</span><br><span class="line">[end]user count is  40</span><br></pre></td></tr></tbody></table></figure>
+
+<p>统计某个文件夹下的文件占用的字节数</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ls -l |awk 'BEGIN {size=0;} {size=size+$5;} END{print "[end]size is ", size}'</span><br><span class="line">[end]size is  8657198</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果以M为单位显示:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ls -l |awk 'BEGIN {size=0;} {size=size+$5;} END{print "[end]size is ", size/1024/1024,"M"}'</span><br><span class="line">[end]size is  8.25889 M</span><br></pre></td></tr></tbody></table></figure>
+
+<p>注意，统计不包括文件夹的子目录。</p>
+<h4 id="条件语句" class="article-heading"><a href="#条件语句" class="headerlink" title="条件语句"></a>条件语句<a class="article-anchor" href="#条件语句" aria-hidden="true"></a></h4><p>awk中的条件语句是从C语言中借鉴来的，见如下声明方式：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">if (expression) {</span><br><span class="line">    statement;</span><br><span class="line">    statement;</span><br><span class="line">    ... ...</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">if (expression) {</span><br><span class="line">    statement;</span><br><span class="line">} else {</span><br><span class="line">    statement2;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">if (expression) {</span><br><span class="line">    statement1;</span><br><span class="line">} else if (expression1) {</span><br><span class="line">    statement2;</span><br><span class="line">} else {</span><br><span class="line">    statement3;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>统计某个文件夹下的文件占用的字节数,过滤4096大小的文件(一般都是文件夹):</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ls -l |awk 'BEGIN {size=0;print "[start]size is ", size} {if($5!=4096){size=size+$5;}} END{print "[end]size is ", size/1024/1024,"M"}'</span><br><span class="line">[end]size is  8.22339 M</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="循环语句" class="article-heading"><a href="#循环语句" class="headerlink" title="循环语句"></a>循环语句<a class="article-anchor" href="#循环语句" aria-hidden="true"></a></h4><p>awk中的循环语句同样借鉴于C语言，支持while、do/while、for、break、continue，这些关键字的语义和C语言中的语义完全相同。</p>
+<h4 id="数组" class="article-heading"><a href="#数组" class="headerlink" title="数组"></a>数组<a class="article-anchor" href="#数组" aria-hidden="true"></a></h4><p>因为awk中数组的下标可以是数字和字母，数组的下标通常被称为关键字(key)。值和关键字都存储在内部的一张针对key/value应用hash的表格里。由于hash不是顺序存储，因此在显示数组内容时会发现，它们并不是按照你预料的顺序显示出来的。数组和变量一样，都是在使用时自动创建的，awk也同样会自动判断其存储的是数字还是字符串。一般而言，awk中的数组用来从记录中收集信息，可以用于计算总和、统计单词以及跟踪模板被匹配的次数等等。</p>
+<p>显示/etc/passwd的账户</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">awk -F ':' 'BEGIN {count=0;} {name[count] = $1;count++;}; END{for (i = 0; i &lt; NR; i++) print i, name[i]}' /etc/passwd</span><br><span class="line">0 root</span><br><span class="line">1 daemon</span><br><span class="line">2 bin</span><br><span class="line">3 sys</span><br><span class="line">4 sync</span><br><span class="line">5 games</span><br><span class="line">......</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里使用for循环遍历数组</p>
+<p>awk编程的内容极多，这里只罗列简单常用的用法，更多请参考 <a target="_blank" rel="noopener" href="http://www.gnu.org/software/gawk/manual/gawk.html">http://www.gnu.org/software/gawk/manual/gawk.html</a></p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:28.589Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#sed"><span class="toc-text">sed</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFsed"><span class="toc-text">什么是sed</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8sed"><span class="toc-text">如何使用sed</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="toc-text">语法模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sed%E5%91%BD%E4%BB%A4%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-text">sed命令的原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sed%E5%91%BD%E4%BB%A4%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-text">sed命令的用法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0"><span class="toc-text">课堂练习</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0-1"><span class="toc-text">课堂练习</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BE%E5%90%8E%E4%B9%A0%E9%A2%98"><span class="toc-text">课后习题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#awk"><span class="toc-text">awk</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-text">使用方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8awk"><span class="toc-text">调用awk</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A5%E9%97%A8%E5%AE%9E%E4%BE%8B"><span class="toc-text">入门实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#awk%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="toc-text">awk内置变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#print%E5%92%8Cprintf"><span class="toc-text">print和printf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#awk%E7%BC%96%E7%A8%8B"><span class="toc-text">awk编程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%92%8C%E8%B5%8B%E5%80%BC"><span class="toc-text">变量和赋值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5"><span class="toc-text">条件语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5"><span class="toc-text">循环语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E7%BB%84"><span class="toc-text">数组</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

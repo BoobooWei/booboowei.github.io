@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践11:管理审计 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/11-ImplementingOracleDatabaseAuditing-%E7%AE%A1%E7%90%86%E5%AE%A1%E8%AE%A1">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/11-ImplementingOracleDatabaseAuditing-%E7%AE%A1%E7%90%86%E5%AE%A1%E8%AE%A1" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 11: Implementing Oracle Database Auditing 2020.01.29 BoobooWei     实践11:管理审计 实践11:概览 实践11-1:启用统一的审计 Overview Task Practice KnowledgePoint   实践11-2:创建审计用户 Overview Task Practice K">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践11:管理审计">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/11-ImplementingOracleDatabaseAuditing-%E7%AE%A1%E7%90%86%E5%AE%A1%E8%AE%A1">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 11: Implementing Oracle Database Auditing 2020.01.29 BoobooWei     实践11:管理审计 实践11:概览 实践11-1:启用统一的审计 Overview Task Practice KnowledgePoint   实践11-2:创建审计用户 Overview Task Practice K">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.731Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:56.905Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践11:管理审计</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/11-ImplementingOracleDatabaseAuditing-管理审计.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p><strong>Practices for Lesson 11: Implementing Oracle Database Auditing</strong></p>
+<p>2020.01.29 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#%E5%AE%9E%E8%B7%B511%E7%AE%A1%E7%90%86%E5%AE%A1%E8%AE%A1">实践11:管理审计</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B511%E6%A6%82%E8%A7%88">实践11:概览</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B511-1%E5%90%AF%E7%94%A8%E7%BB%9F%E4%B8%80%E7%9A%84%E5%AE%A1%E8%AE%A1">实践11-1:启用统一的审计</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#task">Task</a></li>
+<li><a href="#practice">Practice</a></li>
+<li><a href="#knowledgepoint">KnowledgePoint</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9E%E8%B7%B511-2%E5%88%9B%E5%BB%BA%E5%AE%A1%E8%AE%A1%E7%94%A8%E6%88%B7">实践11-2:创建审计用户</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#task">Task</a></li>
+<li><a href="#practice">Practice</a></li>
+<li><a href="#knowledgepoint">KnowledgePoint</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9E%E8%B7%B511-3%E5%88%9B%E5%BB%BA%E5%AE%A1%E8%AE%A1%E7%AD%96%E7%95%A5">实践11-3:创建审计策略</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#task">Task</a></li>
+<li><a href="#practice">Practice</a></li>
+<li><a href="#knowledgepoint">KnowledgePoint</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="实践11-概览" class="article-heading"><a href="#实践11-概览" class="headerlink" title="实践11:概览"></a>实践11:概览<a class="article-anchor" href="#实践11-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 11: Overview</p>
+<p>In the practices for this lesson, you will:</p>
+<p>• Enable unified audit</p>
+<p>• Create audit users</p>
+<p>• Create an audit policy</p>
+<p>• Assign the audit policy to multiple users</p>
+<p>• Change an audited table</p>
+<p>• Review audit trail data in the UNIFIED_AUDIT_TRAIL view</p>
+<p>• Maintain the audit trail</p>
+<p><strong>Background:</strong> You have just been informed of suspicious activities in the HR.JOBS table in your orcl database. The highest salaries seem to fluctuate in a strange way. You decide to enable auditing and monitor data manipulation language (DML) activities in this table.</p>
+<p>在本课的练习中，你将:</p>
+<ul>
+<li>启用统一审计</li>
+<li>创建审计用户</li>
+<li>创建审计策略</li>
+<li>将审计策略分配给多个用户</li>
+<li>更改已审核的表</li>
+<li>在UNIFIED_AUDIT_TRAIL视图中查看审计跟踪数据</li>
+<li>维护审计记录</li>
+</ul>
+<p>背景：你刚刚被告知在HR有可疑的活动。orcl数据库中的JOBS表。最高工资似乎以一种奇怪的方式波动。您决定在此表中启用审计并监视数据操作语言(DML)活动。</p>
+<h2 id="实践11-1-启用统一的审计" class="article-heading"><a href="#实践11-1-启用统一的审计" class="headerlink" title="实践11-1:启用统一的审计"></a>实践11-1:启用统一的审计<a class="article-anchor" href="#实践11-1-启用统一的审计" aria-hidden="true"></a></h2><p>Practice 11-1: Enabling Unified Auditing</p>
+<h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><p>In this practice, you enable unified auditing.</p>
+<p>在这个实践中，您可以启用统一审计。</p>
+<h3 id="Task" class="article-heading"><a href="#Task" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task" aria-hidden="true"></a></h3><ol>
+<li>Shut down all Oracle processes of all instances.</li>
+<li>Enable the unified auditing feature.</li>
+<li>Restart the processes.</li>
+</ol>
+<h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><ol>
+<li><p>关闭所有实例的所有Oracle进程。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 关闭监听</span></span><br><span class="line">lsnrctl stop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 关闭OMS服务</span></span><br><span class="line"><span class="built_in">export</span> OMS_HOME=/u01/app/oracle/middleware_booboo/oms</span><br><span class="line"><span class="variable">$OMS_HOME</span>/bin/emctl stop oms</span><br><span class="line"></span><br><span class="line"><span class="comment"># 关闭数据库实例</span></span><br><span class="line">ps -ef|grep pmon</span><br><span class="line">sqlplus / as sysdba &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">shutdown immediate</span></span><br><span class="line"><span class="string">exit</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 确认实例关闭</span></span><br><span class="line">ps -ef|grep pmon</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@ocm ~]$ <span class="comment"># 关闭监听</span></span><br><span class="line">[oracle@ocm ~]$ lsnrctl stop</span><br><span class="line"></span><br><span class="line">LSNRCTL <span class="keyword">for</span> Linux: Version 12.2.0.1.0 - Production on 03-FEB-2020 19:37:54</span><br><span class="line"></span><br><span class="line">Copyright (c) 1991, 2016, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=ocm)(PORT=1521)))</span><br><span class="line">The <span class="built_in">command</span> completed successfully</span><br><span class="line">[oracle@ocm ~]$ <span class="built_in">cd</span> /u01/software/</span><br><span class="line">[oracle@ocm software]$ <span class="comment"># 关闭OMS服务</span></span><br><span class="line">[oracle@ocm software]$ <span class="built_in">export</span> OMS_HOME=/u01/app/oracle/middleware_booboo/oms</span><br><span class="line">[oracle@ocm software]$ <span class="variable">$OMS_HOME</span>/bin/emctl stop oms</span><br><span class="line">Oracle Enterprise Manager Cloud Control 12c Release 5</span><br><span class="line">Copyright (c) 1996, 2015 Oracle Corporation.  All rights reserved.</span><br><span class="line">Stopping WebTier...</span><br><span class="line">WebTier Successfully Stopped</span><br><span class="line">Stopping Oracle Management Server...</span><br><span class="line">Oracle Management Server Successfully Stopped</span><br><span class="line">Oracle Management Server is Down</span><br><span class="line">[oracle@ocm ~]$ <span class="comment"># 关闭数据库实例</span></span><br><span class="line">[oracle@ocm ~]$ ps -ef|grep pmon</span><br><span class="line">oracle    14193      1  0 09:37 ?        00:00:03 ora_pmon_emcdb</span><br><span class="line">oracle    24204  23888  0 19:33 pts/1    00:00:00 grep --color=auto pmon</span><br><span class="line">[oracle@ocm software]$ sqlplus / as sysdba &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">&gt; shutdown immediate</span></span><br><span class="line"><span class="string">&gt; exit</span></span><br><span class="line"><span class="string">&gt; EOF</span></span><br><span class="line">SQL*Plus: Release 12.2.0.1.0 Production on Mon Feb 3 19:41:00 2020</span><br><span class="line">Copyright (c) 1982, 2016, Oracle.  All rights reserved.</span><br><span class="line">Connected to:</span><br><span class="line">Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line">Database closed.</span><br><span class="line">Database dismounted.</span><br><span class="line">ORACLE instance shut down.</span><br><span class="line">SQL&gt; Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line">[oracle@ocm software]<span class="variable">$#</span> <span class="comment"># 确认实例关闭</span></span><br><span class="line">[oracle@ocm software]<span class="variable">$#</span> ps -ef|grep pmon</span><br><span class="line">oracle    25626  25583  0 19:43 pts/1    00:00:00 grep --color=auto pmon</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>启用统一审计功能。</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 启用统一审计功能</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$ORACLE_HOME</span>/rdbms/lib</span><br><span class="line">make -f ins_rdbms.mk uniaud_on ioracle</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@ocm ~]$ <span class="comment"># 启用统一审计功能</span></span><br><span class="line">[oracle@ocm ~]$ <span class="built_in">cd</span> <span class="variable">$ORACLE_HOME</span>/rdbms/lib</span><br><span class="line">[oracle@ocm lib]$ make -f ins_rdbms.mk uniaud_on ioracle</span><br><span class="line">/usr/bin/ar d /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/libknlopt.a kzanang.o</span><br><span class="line">/usr/bin/ar cr /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/libknlopt.a /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/kzaiang.o</span><br><span class="line"><span class="built_in">chmod</span> 755 /u01/app/oracle/product/12.2.0/db_1/bin</span><br><span class="line"></span><br><span class="line"> - Linking Oracle</span><br><span class="line"><span class="built_in">rm</span> -f /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/oracle</span><br><span class="line">/u01/app/oracle/product/12.2.0/db_1/bin/orald  -o /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/oracle -m64 -z noexecstack -Wl,--disable-new-dtags -L/u01/app/oracle/product/12.2.0/db_1/rdbms/lib/ -L/u01/app/oracle/product/12.2.0/db_1/lib/ -L/u01/app/oracle/product/12.2.0/db_1/lib/stubs/   -Wl,-E /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/opimai.o /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/ssoraed.o /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/ttcsoi.o -Wl,--whole-archive -lperfsrv12 -Wl,--no-whole-archive /u01/app/oracle/product/12.2.0/db_1/lib/nautab.o /u01/app/oracle/product/12.2.0/db_1/lib/naeet.o /u01/app/oracle/product/12.2.0/db_1/lib/naect.o /u01/app/oracle/product/12.2.0/db_1/lib/naedhs.o /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/config.o  -ldmext -lserver12 -lodm12 -lofs -lcell12 -lnnet12 -lskgxp12 -lsnls12 -lnls12  -lcore12 -lsnls12 -lnls12 -lcore12 -lsnls12 -lnls12 -lxml12 -lcore12 -lunls12 -lsnls12 -lnls12 -lcore12 -lnls12 -lclient12  -lvsn12 -lcommon12 -lgeneric12 -lknlopt `<span class="keyword">if</span> /usr/bin/ar tv /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/libknlopt.a | grep xsyeolap.o &gt; /dev/null 2&gt;&amp;1 ; <span class="keyword">then</span> <span class="built_in">echo</span> <span class="string">"-loraolap12"</span> ; <span class="keyword">fi</span>` -lskjcx12 -lslax12 -lpls12  -lrt -lplp12 -ldmext -lserver12 -lclient12  -lvsn12 -lcommon12 -lgeneric12 `<span class="keyword">if</span> [ -f /u01/app/oracle/product/12.2.0/db_1/lib/libavserver12.a ] ; <span class="keyword">then</span> <span class="built_in">echo</span> <span class="string">"-lavserver12"</span> ; <span class="keyword">else</span> <span class="built_in">echo</span> <span class="string">"-lavstub12"</span>; <span class="keyword">fi</span>` `<span class="keyword">if</span> [ -f /u01/app/oracle/product/12.2.0/db_1/lib/libavclient12.a ] ; <span class="keyword">then</span> <span class="built_in">echo</span> <span class="string">"-lavclient12"</span> ; <span class="keyword">fi</span>` -lknlopt -lslax12 -lpls12  -lrt -lplp12 -ljavavm12 -lserver12  -lwwg  `<span class="built_in">cat</span> /u01/app/oracle/product/12.2.0/db_1/lib/ldflags`    -lncrypt12 -lnsgr12 -lnzjs12 -ln12 -lnl12 -lngsmshd12 -lnro12 `<span class="built_in">cat</span> /u01/app/oracle/product/12.2.0/db_1/lib/ldflags`    -lncrypt12 -lnsgr12 -lnzjs12 -ln12 -lnl12 -lngsmshd12 -lnnzst12 -lzt12 -lztkg12 -lmm -lsnls12 -lnls12  -lcore12 -lsnls12 -lnls12 -lcore12 -lsnls12 -lnls12 -lxml12 -lcore12 -lunls12 -lsnls12 -lnls12 -lcore12 -lnls12 -lztkg12 `<span class="built_in">cat</span> /u01/app/oracle/product/12.2.0/db_1/lib/ldflags`    -lncrypt12 -lnsgr12 -lnzjs12 -ln12 -lnl12 -lngsmshd12 -lnro12 `<span class="built_in">cat</span> /u01/app/oracle/product/12.2.0/db_1/lib/ldflags`    -lncrypt12 -lnsgr12 -lnzjs12 -ln12 -lnl12 -lngsmshd12 -lnnzst12 -lzt12 -lztkg12   -lsnls12 -lnls12  -lcore12 -lsnls12 -lnls12 -lcore12 -lsnls12 -lnls12 -lxml12 -lcore12 -lunls12 -lsnls12 -lnls12 -lcore12 -lnls12 `<span class="keyword">if</span> /usr/bin/ar tv /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/libknlopt.a | grep <span class="string">"kxmnsd.o"</span> &gt; /dev/null 2&gt;&amp;1 ; <span class="keyword">then</span> <span class="built_in">echo</span> <span class="string">" "</span> ; <span class="keyword">else</span> <span class="built_in">echo</span> <span class="string">"-lordsdo12 -lserver12"</span>; <span class="keyword">fi</span>` -L/u01/app/oracle/product/12.2.0/db_1/ctx/lib/ -lctxc12 -lctx12 -lzx12 -lgx12 -lctx12 -lzx12 -lgx12 -lordimt12 -lclsra12 -ldbcfg12 -lhasgen12 -lskgxn2 -lnnzst12 -lzt12 -lxml12 -lgeneric12 -locr12 -locrb12 -locrutl12 -lhasgen12 -lskgxn2 -lnnzst12 -lzt12 -lxml12 -lgeneric12  -lgeneric12 -lorazip -loraz -llzopro5 -lorabz2 -lipp_z -lipp_bz2 -lippdcemerged -lippsemerged -lippdcmerged  -lippsmerged -lippcore  -lippcpemerged -lippcpmerged  -lsnls12 -lnls12  -lcore12 -lsnls12 -lnls12 -lcore12 -lsnls12 -lnls12 -lxml12 -lcore12 -lunls12 -lsnls12 -lnls12 -lcore12 -lnls12 -lsnls12 -lunls12  -lsnls12 -lnls12  -lcore12 -lsnls12 -lnls12 -lcore12 -lsnls12 -lnls12 -lxml12 -lcore12 -lunls12 -lsnls12 -lnls12 -lcore12 -lnls12 -lasmclnt12 -lcommon12 -lcore12  -laio -lons  -lfthread12   `<span class="built_in">cat</span> /u01/app/oracle/product/12.2.0/db_1/lib/sysliblist` -Wl,-rpath,/u01/app/oracle/product/12.2.0/db_1/lib -lm    `<span class="built_in">cat</span> /u01/app/oracle/product/12.2.0/db_1/lib/sysliblist` -ldl -lm   -L/u01/app/oracle/product/12.2.0/db_1/lib `<span class="built_in">test</span> -x /usr/bin/hugeedit -a -r /usr/lib64/libhugetlbfs.so &amp;&amp; <span class="built_in">test</span> -r /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/shugetlbfs.o &amp;&amp; <span class="built_in">echo</span> -Wl,-zcommon-page-size=2097152 -Wl,-zmax-page-size=2097152 -lhugetlbfs`</span><br><span class="line"><span class="built_in">test</span> ! -f /u01/app/oracle/product/12.2.0/db_1/bin/oracle || (\</span><br><span class="line">   <span class="built_in">mv</span> -f /u01/app/oracle/product/12.2.0/db_1/bin/oracle /u01/app/oracle/product/12.2.0/db_1/bin/oracleO &amp;&amp;\</span><br><span class="line">   <span class="built_in">chmod</span> 600 /u01/app/oracle/product/12.2.0/db_1/bin/oracleO )</span><br><span class="line"><span class="built_in">mv</span> /u01/app/oracle/product/12.2.0/db_1/rdbms/lib/oracle /u01/app/oracle/product/12.2.0/db_1/bin/oracle</span><br><span class="line"><span class="built_in">chmod</span> 6751 /u01/app/oracle/product/12.2.0/db_1/bin/oracle</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li>重新启动进程。</li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 启动监听</span></span><br><span class="line">lsnrctl start</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动数据库实例</span></span><br><span class="line">sqlplus / as sysdba &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">startup</span></span><br><span class="line"><span class="string">exit</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动 OMS &lt; take 10 minutes &gt;</span></span><br><span class="line"><span class="built_in">export</span> OMS_HOME=/u01/app/oracle/middleware_booboo/oms</span><br><span class="line"><span class="variable">$OMS_HOME</span>/bin/emctl start oms</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查统一审计功能是否开启</span></span><br><span class="line">sqlplus / as sysdba &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">select value from v$option where parameter = 'Unified Auditing';</span></span><br><span class="line"><span class="string">exit</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@ocm lib]$ <span class="comment"># 启动监听</span></span><br><span class="line">[oracle@ocm lib]$ lsnrctl start</span><br><span class="line"></span><br><span class="line">LSNRCTL <span class="keyword">for</span> Linux: Version 12.2.0.1.0 - Production on 03-FEB-2020 19:49:11</span><br><span class="line"></span><br><span class="line">Copyright (c) 1991, 2016, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Starting /u01/app/oracle/product/12.2.0/db_1/bin/tnslsnr: please <span class="built_in">wait</span>...</span><br><span class="line"></span><br><span class="line">TNSLSNR <span class="keyword">for</span> Linux: Version 12.2.0.1.0 - Production</span><br><span class="line">System parameter file is /u01/app/oracle/product/12.2.0/db_1/network/admin/listener.ora</span><br><span class="line">Log messages written to /u01/app/oracle/diag/tnslsnr/ocm/listener/alert/log.xml</span><br><span class="line">Listening on: (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=ocm)(PORT=1521)))</span><br><span class="line">Listening on: (DESCRIPTION=(ADDRESS=(PROTOCOL=ipc)(KEY=EXTPROC1521)))</span><br><span class="line"></span><br><span class="line">Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=ocm)(PORT=1521)))</span><br><span class="line">STATUS of the LISTENER</span><br><span class="line">------------------------</span><br><span class="line">Alias                     LISTENER</span><br><span class="line">Version                   TNSLSNR <span class="keyword">for</span> Linux: Version 12.2.0.1.0 - Production</span><br><span class="line">Start Date                03-FEB-2020 19:49:11</span><br><span class="line">Uptime                    0 days 0 hr. 0 min. 5 sec</span><br><span class="line">Trace Level               off</span><br><span class="line">Security                  ON: Local OS Authentication</span><br><span class="line">SNMP                      OFF</span><br><span class="line">Listener Parameter File   /u01/app/oracle/product/12.2.0/db_1/network/admin/listener.ora</span><br><span class="line">Listener Log File         /u01/app/oracle/diag/tnslsnr/ocm/listener/alert/log.xml</span><br><span class="line">Listening Endpoints Summary...</span><br><span class="line">  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=ocm)(PORT=1521)))</span><br><span class="line">  (DESCRIPTION=(ADDRESS=(PROTOCOL=ipc)(KEY=EXTPROC1521)))</span><br><span class="line">The listener supports no services</span><br><span class="line">The <span class="built_in">command</span> completed successfully</span><br><span class="line">[oracle@ocm lib]$</span><br><span class="line">[oracle@ocm lib]$ <span class="comment"># 启动数据库实例</span></span><br><span class="line">[oracle@ocm lib]$ sqlplus / as sysdba &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">&gt; startup</span></span><br><span class="line"><span class="string">&gt; exit</span></span><br><span class="line"><span class="string">&gt; EOF</span></span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 12.2.0.1.0 Production on Mon Feb 3 19:49:54 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2016, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Connected to an idle instance.</span><br><span class="line"></span><br><span class="line">SQL&gt; ORACLE instance started.</span><br><span class="line"></span><br><span class="line">Total System Global Area  838860800 bytes</span><br><span class="line">Fixed Size		    8798312 bytes</span><br><span class="line">Variable Size		  490737560 bytes</span><br><span class="line">Database Buffers	  331350016 bytes</span><br><span class="line">Redo Buffers		    7974912 bytes</span><br><span class="line">Database mounted.</span><br><span class="line">Database opened.</span><br><span class="line">SQL&gt; Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line">[oracle@ocm lib]$ <span class="comment"># 启动 OMS</span></span><br><span class="line">[oracle@ocm lib]$ <span class="built_in">export</span> OMS_HOME=/u01/app/oracle/middleware_booboo/oms</span><br><span class="line">[oracle@ocm lib]$ <span class="variable">$OMS_HOME</span>/bin/emctl start oms</span><br><span class="line">Oracle Enterprise Manager Cloud Control 12c Release 5</span><br><span class="line">Copyright (c) 1996, 2015 Oracle Corporation.  All rights reserved.</span><br><span class="line">Starting Oracle Management Server...</span><br><span class="line">Starting WebTier...</span><br><span class="line">WebTier Successfully Started</span><br><span class="line">Oracle Management Server Successfully Started</span><br><span class="line">Oracle Management Server is Up</span><br><span class="line">SQL&gt; <span class="built_in">exec</span> print_table(q<span class="string">'[select parameter,value from v$option where parameter='</span>Unified Auditing<span class="string">']'</span>)</span><br><span class="line">PARAMETER		      : Unified Auditing</span><br><span class="line">VALUE			      : TRUE</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3><h2 id="实践11-2-创建审计用户" class="article-heading"><a href="#实践11-2-创建审计用户" class="headerlink" title="实践11-2:创建审计用户"></a>实践11-2:创建审计用户<a class="article-anchor" href="#实践11-2-创建审计用户" aria-hidden="true"></a></h2><p>Practice 11-2: Creating Audit Users</p>
+<h3 id="Overview-1" class="article-heading"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-1" aria-hidden="true"></a></h3><p>In this practice you will create audit users: one account to administer the audit settings and another account to be used by the external auditor. These additional users are optional, but are a good practice that provides a clear separation of duties required in many businesses.</p>
+<p>在此实践中，您将创建审计用户:</p>
+<ul>
+<li><p>一个帐户用于管理审计设置</p>
+</li>
+<li><p>另一个帐户用于外部审计人员,这些额外的用户是可选的，但这是一个很好的实践，它提供了许多业务中所需的职责的明确分离。</p>
+<p><strong>Assumptions</strong></p>
+</li>
+</ul>
+<p>Unified auditing has been enabled in the orcl database. Preferred SYSDBA credentials have been set.</p>
+<p>数据库中已经启用了统一审计,已设置了首选SYSDBA凭据。</p>
+<h3 id="Task-1" class="article-heading"><a href="#Task-1" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-1" aria-hidden="true"></a></h3><ol>
+<li>Create a database user to be the administrator of the audit settings and policies. Name this user AUDMGR with the password oracle_4U, and assign the AUDIT_ADMIN role to this user. Use Enterprise Manager Cloud Control to perform this task.</li>
+<li>Create a database user to be used by any person that needs to view the audit data. Name this user AUDVWR with the password oracle_4U and assign the AUDIT_VIEWER role to this user.</li>
+</ol>
+<h3 id="Practice-1" class="article-heading"><a href="#Practice-1" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-1" aria-hidden="true"></a></h3><ol>
+<li><p>创建一个数据库用户作为审计设置和策略的管理员。命名用户AUDMGR ，密码oracle_4U，并将AUDIT_ADMIN角色分配给这个用户。使用Enterprise Manager云控制执行此任务。</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Cloud Control</td>
+<td>Login: User: <strong>ADMIN</strong> Password: <strong>oracle_4U</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Enterprise Summary</td>
+<td>Navigate to the <strong>emrep</strong> database home page.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>orcl database home</td>
+<td>Click <strong>Security &gt; Users</strong>.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Database Login</td>
+<td>Select Credential: <strong>Preferred</strong> Preferred Credential Name <strong>SYSDBA Database Credentials</strong> Click <strong>Login</strong>.</td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Users</td>
+<td>Click <strong>Create</strong>.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Create User :General tab</td>
+<td>Enter Name: <strong>AUDMGR</strong> Password: <strong>oracle_4U</strong> Default Tablespace: <strong>SYSAUX</strong> Temporary Tablespace: <strong>TEMP</strong> Click the <strong>Roles</strong> tab.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>Create User :Roles tab</td>
+<td>Click <strong>Edit List.</strong></td>
+</tr>
+<tr>
+<td>h.</td>
+<td>Modify Roles</td>
+<td>Select <strong>AUDIT_ADMIN</strong>. Move to <strong>Selected Roles</strong>. Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>i.</td>
+<td>Create User :Roles tab</td>
+<td>Click <strong>Show SQL</strong>. Click <strong>Return</strong>.</td>
+</tr>
+<tr>
+<td>j.</td>
+<td>Create User :Roles tab</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>k.</td>
+<td>Users</td>
+<td>An update message is displayed.</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>创建一个数据库用户，供需要查看审计数据的任何人使用。将此用户命名为AUDVWR，使用密码oracle_4U，并将AUDIT_VIEWER角色分配给该用户。</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Cloud Control</td>
+<td>Login: User: <strong>AUDVWR</strong> Password: <strong>oracle_4U</strong></td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Enterprise Summary</td>
+<td>Navigate to the <strong>emrep</strong> database home page.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>orcl database home</td>
+<td>Click <strong>Security &gt; Users</strong>.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Database Login</td>
+<td>Select Credential: <strong>Preferred</strong> Preferred Credential Name <strong>SYSDBA Database Credentials</strong> Click <strong>Login</strong>.</td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Users</td>
+<td>Click <strong>Create</strong>.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Create User :General tab</td>
+<td>Enter Name: <strong>AUDVWR</strong> Password: <strong>oracle_4U</strong> Default Tablespace: <strong>SYSAUX</strong> Temporary Tablespace: <strong>TEMP</strong> Click the <strong>Roles</strong> tab.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>Create User :Roles tab</td>
+<td>Click <strong>Edit List.</strong></td>
+</tr>
+<tr>
+<td>h.</td>
+<td>Modify Roles</td>
+<td>Select <strong>AUDIT_VIEWER</strong>. Move to <strong>Selected Roles</strong>. Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>i.</td>
+<td>Create User :Roles tab</td>
+<td>Click <strong>Show SQL</strong>. Click <strong>Return</strong>.</td>
+</tr>
+<tr>
+<td>j.</td>
+<td>Create User :Roles tab</td>
+<td>Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>k.</td>
+<td>Users</td>
+<td>An update message is displayed.</td>
+</tr>
+</tbody></table>
+<p><img src="pic/1101.png"></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> "AUDMGR" PROFILE "DEFAULT" IDENTIFIED <span class="keyword">BY</span> "oracle_4U" <span class="keyword">DEFAULT</span> TABLESPACE "SYSAUX" TEMPORARY TABLESPACE "TEMP" ACCOUNT UNLOCK</span><br><span class="line"><span class="keyword">GRANT</span> "AUDIT_ADMIN" <span class="keyword">TO</span> "AUDMGR"</span><br><span class="line"><span class="keyword">GRANT</span> "CONNECT" <span class="keyword">TO</span> "AUDMGR";</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> "AUDVWR" PROFILE "DEFAULT" IDENTIFIED <span class="keyword">BY</span> "oracle_4U" <span class="keyword">DEFAULT</span> TABLESPACE "SYSAUX" TEMPORARY TABLESPACE "TEMP" ACCOUNT UNLOCK</span><br><span class="line"><span class="keyword">GRANT</span> "AUDIT_VIEWER" <span class="keyword">TO</span> "AUDVWR"</span><br><span class="line"><span class="keyword">GRANT</span> "CONNECT" <span class="keyword">TO</span> "AUDVWR";</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h3 id="KnowledgePoint-1" class="article-heading"><a href="#KnowledgePoint-1" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-1" aria-hidden="true"></a></h3><h2 id="实践11-3-创建审计策略" class="article-heading"><a href="#实践11-3-创建审计策略" class="headerlink" title="实践11-3:创建审计策略"></a>实践11-3:创建审计策略<a class="article-anchor" href="#实践11-3-创建审计策略" aria-hidden="true"></a></h2><p>Practice 11-3: Creating an Audit Policy</p>
+<h3 id="Overview-2" class="article-heading"><a href="#Overview-2" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-2" aria-hidden="true"></a></h3><p>In this practice, as the AUDMGR user you will create an audit policy to monitor activity in the</p>
+<p>HR.JOBS table and apply it to multiple users.</p>
+<p>在此实践中，作为AUDMGR用户，您将创建一个审计策略来监视<code>HR.JOBS</code>。并将其应用于多个用户。</p>
+<p><strong>Assumptions</strong></p>
+<p>The AUDMGR user has been created. Several users with DML privileges on HR.JOBS have been created.</p>
+<p>假设<br>AUDMGR用户已经创建。HR上具有DML特权的几个用户已存在，例如用户ngreenberg 和 smavris 。</p>
+<h3 id="Task-2" class="article-heading"><a href="#Task-2" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-2" aria-hidden="true"></a></h3><ol>
+<li>Invoke SQL*Plus and connect to the orcl database as the AUDMGR user. Create a policy named JOBS_AUDIT_UPD that audits all auditable statements for the HR.JOBS table.</li>
+<li>Assign the policy to all users.</li>
+<li>View information about the audit policy.</li>
+<li>Test the audit policy by connecting as a user that has privileges to update rows in the HR.JOBS table.</li>
+</ol>
+<h3 id="Practice-2" class="article-heading"><a href="#Practice-2" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-2" aria-hidden="true"></a></h3><ol>
+<li><p>调用<code>SQL*Plus</code>并作为AUDMGR用户连接到数据库。创建一个名为JOBS_AUDIT_UPD的策略，用于审计<code> HR.JOBS</code>的所有可审计语句。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">sqlplus audmgr<span class="operator">/</span>oracle_4U<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">CREATE</span> AUDIT POLICY jobs_audit_upd ACTIONS <span class="keyword">update</span> <span class="keyword">ON</span> hr.jobs;</span><br><span class="line"><span class="keyword">SELECT</span> audit_option, audit_option_type, object_schema, object_name</span><br><span class="line"><span class="keyword">FROM</span> audit_unified_policies</span><br><span class="line"><span class="keyword">WHERE</span> policy_name <span class="operator">=</span> <span class="string">'JOBS_AUDIT_UPD'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>问题：如果您有多个具有相同用户和数据的数据库，例如QA和开发数据库，您如何确保该策略适用于所有数据库?<br>回答：这里展示了两种方法:</p>
+<p>1)创建SQL脚本并在其他数据库中运行脚本。</p>
+<p>2)使用云控制在多个数据库中运行。</p>
+<p>第三个选项是在应用更改之后从生产数据库重新创建其他数据库。这项技术超出了本课程的范围。</p>
+</li>
+<li><p>将策略分配给所有用户。</p>
+</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">AUDIT POLICY jobs_audit_upd;</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li>查看有关审计策略的信息。</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">column</span> POLICY_NAME format A20</span><br><span class="line"><span class="keyword">column</span> USER_NAME format A20</span><br><span class="line"><span class="keyword">SELECT</span> policy_name, enabled_opt,</span><br><span class="line">user_name, success, failure</span><br><span class="line"><span class="keyword">FROM</span> audit_unified_enabled_policies;</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li><p>通过连接具有更新<code> HR.JOBS</code>中的行权限的用户来测试审计策略。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># 模拟用户操作</span><br><span class="line">sqlplus ngreenberg<span class="operator">/</span>oracle_4U<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">desc</span> hr.jobs</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> hr.jobs <span class="keyword">where</span> job_title <span class="operator">=</span> <span class="string">'President'</span>;</span><br><span class="line"><span class="keyword">update</span> hr.jobs <span class="keyword">set</span> max_salary <span class="operator">=</span> <span class="number">50000</span> <span class="keyword">where</span> JOB_ID <span class="operator">=</span> <span class="string">'AD_PRES'</span>;</span><br><span class="line">exit</span><br><span class="line"></span><br><span class="line"># 查看审计记录</span><br><span class="line">sqlplus audmgr<span class="operator">/</span>oracle_4U<span class="variable">@emrep</span></span><br><span class="line">col unified_audit_policies format a25</span><br><span class="line">col action_name format a10</span><br><span class="line">col object_schema format a10</span><br><span class="line">col object_name format a10</span><br><span class="line"><span class="keyword">select</span> unified_audit_policies, action_name,</span><br><span class="line">object_schema, object_name</span><br><span class="line"><span class="keyword">from</span> unified_audit_trail</span><br><span class="line"><span class="keyword">where</span> dbusername <span class="operator">=</span> <span class="string">'NGREENBERG'</span>;</span><br><span class="line"></span><br><span class="line"># 手动刷新审计记录</span><br><span class="line"><span class="keyword">EXEC</span> DBMS_AUDIT_MGMT.FLUSH_UNIFIED_AUDIT_TRAIL;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">UNIFIED_AUDIT_POLICIES	  ACTION_NAM OBJECT_SCH OBJECT_NAM</span><br><span class="line"><span class="comment">------------------------- ---------- ---------- ----------</span></span><br><span class="line">JOBS_AUDIT_UPD		  <span class="keyword">UPDATE</span>     HR 	JOBS</span><br><span class="line">JOBS_AUDIT_UPD		  <span class="keyword">UPDATE</span>     HR 	JOBS</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h3 id="KnowledgePoint-2" class="article-heading"><a href="#KnowledgePoint-2" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-2" aria-hidden="true"></a></h3><ol>
+<li>开启统一的审计需要停服编译</li>
+<li>创建审计用户，授予管理角色<strong>AUDIT_ADMIN</strong>和查看角色<strong>AUDIT_VIEWER</strong></li>
+<li>创建审计策略<code>CREATE AUDIT POLICY jobs_audit_upd ACTIONS update ON hr.jobs;</code></li>
+<li>应用审计策略<code>AUDIT POLICY jobs_audit_upd;</code></li>
+<li>查看审计记录<code>unified_audit_trail</code></li>
+<li>手动刷新审计记录<code>EXEC DBMS_AUDIT_MGMT.FLUSH_UNIFIED_AUDIT_TRAIL;</code></li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:56.905Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B511-%E6%A6%82%E8%A7%88"><span class="toc-text">实践11:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B511-1-%E5%90%AF%E7%94%A8%E7%BB%9F%E4%B8%80%E7%9A%84%E5%AE%A1%E8%AE%A1"><span class="toc-text">实践11-1:启用统一的审计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B511-2-%E5%88%9B%E5%BB%BA%E5%AE%A1%E8%AE%A1%E7%94%A8%E6%88%B7"><span class="toc-text">实践11-2:创建审计用户</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-1"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-1"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-1"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-1"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B511-3-%E5%88%9B%E5%BB%BA%E5%AE%A1%E8%AE%A1%E7%AD%96%E7%95%A5"><span class="toc-text">实践11-3:创建审计策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-2"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-2"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-2"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-2"><span class="toc-text">KnowledgePoint</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

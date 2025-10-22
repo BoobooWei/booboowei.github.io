@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>05-Kapacitor监控案例-A-从一个最基本的cpu.alert开始 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/5_tick/kapacitor/05_Kapacitor%E7%9B%91%E6%8E%A7%E6%A1%88%E4%BE%8B/01_%E4%BB%8E%E4%B8%80%E4%B8%AA%E6%9C%80%E5%9F%BA%E6%9C%AC%E7%9A%84cpu.alert%E5%BC%80%E5%A7%8B">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/5_tick/kapacitor/05_Kapacitor%E7%9B%91%E6%8E%A7%E6%A1%88%E4%BE%8B/01_%E4%BB%8E%E4%B8%80%E4%B8%AA%E6%9C%80%E5%9F%BA%E6%9C%AC%E7%9A%84cpu.alert%E5%BC%80%E5%A7%8B" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="CPU Alert 开始之前 示范数据 Tickscript 语言 基础命令   创建一个最简单的 Stream Task Stream Task 要求 解题过程 1. 画出DAG图 2. 编写 TICKscript 3. 声明脚本 4. 查看Task     创建一个包含数据库声明的 Stream Task Stream Task 要求 解题过程 1. 画出DAG图 2. 编写 TICKs">
+<meta property="og:type" content="website">
+<meta property="og:title" content="05-Kapacitor监控案例-A-从一个最基本的cpu.alert开始">
+<meta property="og:url" content="http://www.toberoot.com/linux/5_tick/kapacitor/05_Kapacitor%E7%9B%91%E6%8E%A7%E6%A1%88%E4%BE%8B/01_%E4%BB%8E%E4%B8%80%E4%B8%AA%E6%9C%80%E5%9F%BA%E6%9C%AC%E7%9A%84cpu.alert%E5%BC%80%E5%A7%8B">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="CPU Alert 开始之前 示范数据 Tickscript 语言 基础命令   创建一个最简单的 Stream Task Stream Task 要求 解题过程 1. 画出DAG图 2. 编写 TICKscript 3. 声明脚本 4. 查看Task     创建一个包含数据库声明的 Stream Task Stream Task 要求 解题过程 1. 画出DAG图 2. 编写 TICKs">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2020-04-14T11:31:51.000Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:13.618Z">
+<meta property="article:author" content="魏亚萍">
+<meta property="article:tag" content="TICK技术栈">
+<meta property="article:tag" content="TICK技术栈之kapacitor监控案例">
+<meta property="article:tag" content="监控告警">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">05-Kapacitor监控案例-A-从一个最基本的cpu.alert开始</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/5_tick/kapacitor/05_Kapacitor监控案例/01_从一个最基本的cpu.alert开始.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --><html><head></head><body><ul>
+<li><a href="#cpu-alert">CPU Alert</a><ul>
+<li><a href="#%E5%BC%80%E5%A7%8B%E4%B9%8B%E5%89%8D">开始之前</a><ul>
+<li><a href="#%E7%A4%BA%E8%8C%83%E6%95%B0%E6%8D%AE">示范数据</a></li>
+<li><a href="#tickscript-%E8%AF%AD%E8%A8%80">Tickscript 语言</a></li>
+<li><a href="#%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4">基础命令</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84-stream-task">创建一个最简单的 Stream Task</a><ul>
+<li><a href="#stream-task-%E8%A6%81%E6%B1%82">Stream Task 要求</a></li>
+<li><a href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B">解题过程</a><ul>
+<li><a href="#1-%E7%94%BB%E5%87%BAdag%E5%9B%BE">1. 画出DAG图</a></li>
+<li><a href="#2-%E7%BC%96%E5%86%99-tickscript">2. 编写 TICKscript</a></li>
+<li><a href="#3-%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC">3. 声明脚本</a></li>
+<li><a href="#4-%E6%9F%A5%E7%9C%8Btask">4. 查看Task</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8C%85%E5%90%AB%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A3%B0%E6%98%8E%E7%9A%84-stream-task">创建一个包含数据库声明的 Stream Task</a><ul>
+<li><a href="#stream-task-%E8%A6%81%E6%B1%82">Stream Task 要求</a></li>
+<li><a href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B">解题过程</a><ul>
+<li><a href="#1-%E7%94%BB%E5%87%BAdag%E5%9B%BE">1. 画出DAG图</a></li>
+<li><a href="#2-%E7%BC%96%E5%86%99-tickscript">2. 编写 TICKscript</a></li>
+<li><a href="#3-%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC">3. 声明脚本</a></li>
+<li><a href="#4-%E6%9F%A5%E7%9C%8Btask">4. 查看Task</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%90%AF%E5%8A%A8-cpu-task-%E4%BB%BB%E5%8A%A1">启动 CPU Task 任务</a><ul>
+<li><a href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E">任务说明</a></li>
+<li><a href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0">课堂练习</a></li>
+</ul>
+</li>
+<li><a href="#%E5%81%9C%E6%AD%A2-cpu-task-%E4%BB%BB%E5%8A%A1">停止 CPU Task 任务</a><ul>
+<li><a href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E">任务说明</a></li>
+<li><a href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0">课堂练习</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%B8%A6%E6%97%B6%E9%97%B4%E7%AA%97%E5%8F%A3%E7%9A%84-stream-task">创建一个带时间窗口的 Stream Task</a><ul>
+<li><a href="#stream-task-%E8%A6%81%E6%B1%82">Stream Task 要求</a></li>
+<li><a href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B">解题过程</a><ul>
+<li><a href="#1-%E7%94%BB%E5%87%BAdag%E5%9B%BE">1. 画出DAG图</a></li>
+<li><a href="#2-%E7%BC%96%E5%86%99-tickscript">2. 编写 TICKscript</a></li>
+<li><a href="#3-%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC">3. 声明脚本</a></li>
+<li><a href="#4-%E5%90%AF%E5%8A%A8task">4. 启动Task</a></li>
+<li><a href="#5-%E6%9F%A5%E7%9C%8Btask%E5%88%97%E8%A1%A8">5. 查看Task列表</a></li>
+<li><a href="#6-%E6%9F%A5%E7%9C%8Btask%E4%BB%BB%E5%8A%A1%E6%98%8E%E7%BB%86">6. 查看Task任务明细</a></li>
+<li><a href="#7-%E6%9F%A5%E7%9C%8Btask%E6%97%A5%E5%BF%97">7. 查看Task日志</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%B8%A6%E8%BF%87%E6%BB%A4%E6%9D%A1%E4%BB%B6%E7%9A%84-stream-task">创建一个带过滤条件的 Stream Task</a><ul>
+<li><a href="#stream-task-%E8%A6%81%E6%B1%82">Stream Task 要求</a></li>
+<li><a href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B">解题过程</a><ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E8%A7%A3%E6%B3%95">第一种解法</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%E8%A7%A3%E6%B3%95">第二种解法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8F%AF%E4%BB%A5%E8%A7%A6%E5%8F%91%E5%91%8A%E8%AD%A6%E7%9A%84-stream-task">创建一个可以触发告警的 Stream Task</a><ul>
+<li><a href="#stream-task-%E8%A6%81%E6%B1%82">Stream Task 要求</a></li>
+<li><a href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B">解题过程</a><ul>
+<li><a href="#1-%E7%94%BB%E5%87%BAdag%E5%9B%BE">1. 画出DAG图</a></li>
+<li><a href="#2-%E7%BC%96%E5%86%99-tickscript">2. 编写 TICKscript</a></li>
+<li><a href="#3-%E5%90%AF%E5%8A%A8%E5%90%8E%E6%9F%A5%E7%9C%8B%E6%97%A5%E5%BF%97">3. 启动后查看日志</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%89%B9%E5%A4%84%E7%90%86%E7%9A%84cpu%E4%BB%BB%E5%8A%A1">创建一个批处理的CPU任务</a><ul>
+<li><a href="#batch-task-%E8%A6%81%E6%B1%82">Batch Task &nbsp;要求</a></li>
+<li><a href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B">解题过程</a><ul>
+<li><a href="#1-%E7%94%BB%E5%87%BAdag%E5%9B%BE">1. 画出DAG图</a></li>
+<li><a href="#2-%E7%BC%96%E5%86%99-tickscript">2. 编写 TICKscript</a></li>
+<li><a href="#3-%E5%90%AF%E5%8A%A8%E5%90%8E%E6%9F%A5%E7%9C%8B%E6%97%A5%E5%BF%97">3. 启动后查看日志</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a><ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E4%B8%AD%E8%AE%BE%E5%AE%9A%E7%9A%84%E5%91%8A%E8%AD%A6%E8%A7%84%E5%88%99">创建一个生产环境中设定的告警规则</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h1 id="从一个最基本的CPU-Alert开始" class="article-heading"><a href="#从一个最基本的CPU-Alert开始" class="headerlink" title="从一个最基本的CPU Alert开始"></a>从一个最基本的CPU Alert开始<a class="article-anchor" href="#从一个最基本的CPU-Alert开始" aria-hidden="true"></a></h1><h2 id="开始之前" class="article-heading"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前<a class="article-anchor" href="#开始之前" aria-hidden="true"></a></h2><h3 id="示范数据" class="article-heading"><a href="#示范数据" class="headerlink" title="示范数据"></a>示范数据<a class="article-anchor" href="#示范数据" aria-hidden="true"></a></h3><p>InfluxDB 数据库中<code>telegraf.autogen.cpu</code>的数据点示范</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@tick:/var/lib/kapacitor/task]# zy_influx -format <span class="string">'csv'</span> -database telegraf -execute <span class="string">'select * from cpu limit 1'</span></span><br><span class="line">name,<span class="keyword">time</span>,cpu,host,usage_guest,usage_guest_nice,usage_idle,usage_iowait,usage_irq,usage_nice,usage_softirq,usage_steal,usage_system,usage_user</span><br><span class="line">cpu,1564963200000000000,cpu-total,influxdb,0,0,99.03894367190544,0.158783219116127,0,0,0.008357011532397735,0,0.2757813805708354,0.5181347150052392</span><br><span class="line">cpu,1564963260000000000,cpu-total,influxdb,0,0,98.7377748073443,0.20061857394411767,0,0,0.00835910724767157,0,0.3092869681602368,0.7439605450429597</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>Tag keys</strong></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@tick:/var/lib/kapacitor/task]# zy_influx -format <span class="string">'csv'</span> -database telegraf -execute <span class="string">'show tag keys from cpu'</span></span><br><span class="line">name,tagKey</span><br><span class="line">cpu,cpu</span><br><span class="line">cpu,host</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>Field keys</strong></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@tick:/var/lib/kapacitor/task]# zy_influx -format <span class="string">'csv'</span> -database telegraf -execute <span class="string">'show field keys from cpu'</span></span><br><span class="line">name,fieldKey,fieldType</span><br><span class="line">cpu,usage_guest,<span class="built_in">float</span></span><br><span class="line">cpu,usage_guest_nice,<span class="built_in">float</span></span><br><span class="line">cpu,usage_idle,<span class="built_in">float</span></span><br><span class="line">cpu,usage_iowait,<span class="built_in">float</span></span><br><span class="line">cpu,usage_irq,<span class="built_in">float</span></span><br><span class="line">cpu,usage_nice,<span class="built_in">float</span></span><br><span class="line">cpu,usage_softirq,<span class="built_in">float</span></span><br><span class="line">cpu,usage_steal,<span class="built_in">float</span></span><br><span class="line">cpu,usage_system,<span class="built_in">float</span></span><br><span class="line">cpu,usage_user,<span class="built_in">float</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="Tickscript-语言" class="article-heading"><a href="#Tickscript-语言" class="headerlink" title="Tickscript 语言"></a>Tickscript 语言<a class="article-anchor" href="#Tickscript-语言" aria-hidden="true"></a></h3><p><a href="%5Bhttps://github.com/BoobooWei/booboo_TimeSeriesDBMS/tree/master/Kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80%5D(https://github.com/BoobooWei/booboo_TimeSeriesDBMS/tree/master/Kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80)">学习教程</a></p>
+<h3 id="基础命令" class="article-heading"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令<a class="article-anchor" href="#基础命令" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.influxdata.com/kapacitor/v1.5/working/cli_client/">官方帮助</a></p>
+<h2 id="创建一个最简单的-Stream-Task" class="article-heading"><a href="#创建一个最简单的-Stream-Task" class="headerlink" title="创建一个最简单的 Stream Task"></a>创建一个最简单的 Stream Task<a class="article-anchor" href="#创建一个最简单的-Stream-Task" aria-hidden="true"></a></h2><h3 id="Stream-Task-要求" class="article-heading"><a href="#Stream-Task-要求" class="headerlink" title="Stream Task 要求"></a>Stream Task 要求<a class="article-anchor" href="#Stream-Task-要求" aria-hidden="true"></a></h3><p>流式获取 Influxdb数据库中</p>
+<ul>
+<li>库名<code>database</code>：<code>telegraf</code>.<code>autogen</code></li>
+<li>测量名<code>measurement</code>：<code>cpu</code></li>
+</ul>
+<p>的数据点，输出到日志中。</p>
+<h3 id="解题过程" class="article-heading"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程<a class="article-anchor" href="#解题过程" aria-hidden="true"></a></h3><h4 id="1-画出DAG图" class="article-heading"><a href="#1-画出DAG图" class="headerlink" title="1. 画出DAG图"></a>1. 画出DAG图<a class="article-anchor" href="#1-画出DAG图" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">  A(StreamNode)--&gt;B</span><br><span class="line">  B(FromNode)--&gt;C</span><br><span class="line">  C(LogNode)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="2-编写-TICKscript" class="article-heading"><a href="#2-编写-TICKscript" class="headerlink" title="2. 编写 TICKscript"></a>2. 编写 TICKscript<a class="article-anchor" href="#2-编写-TICKscript" aria-hidden="true"></a></h4><figure class="highlight js"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">//cpu.tick</span></span><br><span class="line">stream | <span class="title function_">from</span>().<span class="title function_">measurement</span>(<span class="string">"cpu"</span>) | <span class="title function_">log</span>();</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-声明脚本" class="article-heading"><a href="#3-声明脚本" class="headerlink" title="3. 声明脚本"></a>3. 声明脚本<a class="article-anchor" href="#3-声明脚本" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor define cpu -tick cpu.tick -dbrp telegraf.autogen</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="4-查看Task" class="article-heading"><a href="#4-查看Task" class="headerlink" title="4. 查看Task"></a>4. 查看Task<a class="article-anchor" href="#4-查看Task" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor list tasks</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="创建一个包含数据库声明的-Stream-Task" class="article-heading"><a href="#创建一个包含数据库声明的-Stream-Task" class="headerlink" title="创建一个包含数据库声明的 Stream Task"></a>创建一个包含数据库声明的 Stream Task<a class="article-anchor" href="#创建一个包含数据库声明的-Stream-Task" aria-hidden="true"></a></h2><h3 id="Stream-Task-要求-1" class="article-heading"><a href="#Stream-Task-要求-1" class="headerlink" title="Stream Task 要求"></a>Stream Task 要求<a class="article-anchor" href="#Stream-Task-要求-1" aria-hidden="true"></a></h3><p>流式获取 Influxdb数据库中</p>
+<ul>
+<li>库名<code>database</code>：<code>telegraf</code>.<code>autogen</code></li>
+<li>测量名<code>measurement</code>：<code>cpu</code></li>
+</ul>
+<p>的数据点，输出到日志中。</p>
+<h3 id="解题过程-1" class="article-heading"><a href="#解题过程-1" class="headerlink" title="解题过程"></a>解题过程<a class="article-anchor" href="#解题过程-1" aria-hidden="true"></a></h3><h4 id="1-画出DAG图-1" class="article-heading"><a href="#1-画出DAG图-1" class="headerlink" title="1. 画出DAG图"></a>1. 画出DAG图<a class="article-anchor" href="#1-画出DAG图-1" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">  A(StreamNode)--&gt;B</span><br><span class="line">  B(FromNode)--&gt;C</span><br><span class="line">  C(LogNode)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="2-编写-TICKscript-1" class="article-heading"><a href="#2-编写-TICKscript-1" class="headerlink" title="2. 编写 TICKscript"></a>2. 编写 TICKscript<a class="article-anchor" href="#2-编写-TICKscript-1" aria-hidden="true"></a></h4><figure class="highlight js"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">//cpu.tick</span></span><br><span class="line">dbrp <span class="string">"telegraf"</span>.<span class="string">"autogen"</span></span><br><span class="line"></span><br><span class="line">stream</span><br><span class="line">  |<span class="title function_">from</span>()</span><br><span class="line">		.<span class="title function_">measurement</span>(<span class="string">'cpu'</span>)</span><br><span class="line">	|<span class="title function_">log</span>()</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-声明脚本-1" class="article-heading"><a href="#3-声明脚本-1" class="headerlink" title="3. 声明脚本"></a>3. 声明脚本<a class="article-anchor" href="#3-声明脚本-1" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor define cpu -tick cpu.tick</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="4-查看Task-1" class="article-heading"><a href="#4-查看Task-1" class="headerlink" title="4. 查看Task"></a>4. 查看Task<a class="article-anchor" href="#4-查看Task-1" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor list tasks</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="启动-CPU-Task-任务" class="article-heading"><a href="#启动-CPU-Task-任务" class="headerlink" title="启动 CPU Task 任务"></a>启动 CPU Task 任务<a class="article-anchor" href="#启动-CPU-Task-任务" aria-hidden="true"></a></h2><h3 id="任务说明" class="article-heading"><a href="#任务说明" class="headerlink" title="任务说明"></a>任务说明<a class="article-anchor" href="#任务说明" aria-hidden="true"></a></h3><p>通过执行<code>kapacitor enable &lt;TASK_ID&gt; &lt;TASK_ID&gt;.. </code>命令启动 <code>cpu</code>任务。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor <span class="built_in">enable</span> cpu</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行<code>kapacitor show &lt;TASK_ID&gt; </code> 查看任务状态。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor show cpu</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="课堂练习" class="article-heading"><a href="#课堂练习" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@tick:/var/lib/kapacitor/task]# kapacitor <span class="built_in">enable</span> cpu</span><br><span class="line">[root@tick:/var/lib/kapacitor/task]# kapacitor list cpu</span><br><span class="line">cannot list <span class="string">'cpu'</span> did you mean <span class="string">'tasks'</span>, <span class="string">'recordings'</span>, <span class="string">'replays'</span>, <span class="string">'topics'</span>, <span class="string">'topic-handlers'</span> or <span class="string">'service-tests'</span>?</span><br><span class="line">[root@tick:/var/lib/kapacitor/task]# kapacitor show cpu</span><br><span class="line">ID: cpu</span><br><span class="line">Error:</span><br><span class="line">Template:</span><br><span class="line">Type: stream</span><br><span class="line">Status: enabled</span><br><span class="line">Executing: <span class="literal">true</span></span><br><span class="line">Created: 08 Sep 19 20:43 CST</span><br><span class="line">Modified: 08 Sep 19 20:43 CST</span><br><span class="line">LastEnabled: 08 Sep 19 20:43 CST</span><br><span class="line">Databases Retention Policies: [<span class="string">"telegraf"</span>.<span class="string">"autogen"</span>]</span><br><span class="line">TICKscript:</span><br><span class="line">dbrp <span class="string">"telegraf"</span>.<span class="string">"autogen"</span></span><br><span class="line"></span><br><span class="line">stream</span><br><span class="line">    |from()</span><br><span class="line">        .measurement(<span class="string">'cpu'</span>)</span><br><span class="line">    |<span class="built_in">log</span>()</span><br><span class="line"></span><br><span class="line">DOT:</span><br><span class="line">digraph cpu {</span><br><span class="line">graph [throughput=<span class="string">"0.00 points/s"</span>];</span><br><span class="line"></span><br><span class="line">stream0 [avg_exec_time_ns=<span class="string">"0s"</span> errors=<span class="string">"0"</span> working_cardinality=<span class="string">"0"</span> ];</span><br><span class="line">stream0 -&gt; from1 [processed=<span class="string">"2"</span>];</span><br><span class="line"></span><br><span class="line">from1 [avg_exec_time_ns=<span class="string">"0s"</span> errors=<span class="string">"0"</span> working_cardinality=<span class="string">"0"</span> ];</span><br><span class="line">from1 -&gt; log2 [processed=<span class="string">"2"</span>];</span><br><span class="line"></span><br><span class="line">log2 [avg_exec_time_ns=<span class="string">"0s"</span> errors=<span class="string">"0"</span> working_cardinality=<span class="string">"0"</span> ];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="停止-CPU-Task-任务" class="article-heading"><a href="#停止-CPU-Task-任务" class="headerlink" title="停止 CPU Task 任务"></a>停止 CPU Task 任务<a class="article-anchor" href="#停止-CPU-Task-任务" aria-hidden="true"></a></h2><h3 id="任务说明-1" class="article-heading"><a href="#任务说明-1" class="headerlink" title="任务说明"></a>任务说明<a class="article-anchor" href="#任务说明-1" aria-hidden="true"></a></h3><p>通过执行<code>kapacitor disable &lt;TASK_ID&gt; &lt;TASK_ID&gt;.. </code>命令停止 <code>cpu</code>任务。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor <span class="built_in">disable</span> cpu</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行<code>kapacitor show &lt;TASK_ID&gt; </code> 查看任务状态。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor show cpu</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="课堂练习-1" class="article-heading"><a href="#课堂练习-1" class="headerlink" title="课堂练习"></a>课堂练习<a class="article-anchor" href="#课堂练习-1" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@tick:/var/lib/kapacitor/task]# kapacitor <span class="built_in">disable</span> cpu</span><br><span class="line">[root@tick:/var/lib/kapacitor/task]# kapacitor show cpu</span><br><span class="line">ID: cpu</span><br><span class="line">Error:</span><br><span class="line">Template:</span><br><span class="line">Type: stream</span><br><span class="line">Status: disabled</span><br><span class="line">Executing: <span class="literal">false</span></span><br><span class="line">Created: 08 Sep 19 20:43 CST</span><br><span class="line">Modified: 08 Sep 19 20:46 CST</span><br><span class="line">LastEnabled: 08 Sep 19 20:43 CST</span><br><span class="line">Databases Retention Policies: [<span class="string">"telegraf"</span>.<span class="string">"autogen"</span>]</span><br><span class="line">TICKscript:</span><br><span class="line">dbrp <span class="string">"telegraf"</span>.<span class="string">"autogen"</span></span><br><span class="line"></span><br><span class="line">stream</span><br><span class="line">    |from()</span><br><span class="line">        .measurement(<span class="string">'cpu'</span>)</span><br><span class="line">    |<span class="built_in">log</span>()</span><br><span class="line"></span><br><span class="line">DOT:</span><br><span class="line">digraph cpu {</span><br><span class="line">stream0 -&gt; from1;</span><br><span class="line">from1 -&gt; log2;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="创建一个带时间窗口的-Stream-Task" class="article-heading"><a href="#创建一个带时间窗口的-Stream-Task" class="headerlink" title="创建一个带时间窗口的 Stream Task"></a>创建一个带时间窗口的 Stream Task<a class="article-anchor" href="#创建一个带时间窗口的-Stream-Task" aria-hidden="true"></a></h2><h3 id="Stream-Task-要求-2" class="article-heading"><a href="#Stream-Task-要求-2" class="headerlink" title="Stream Task 要求"></a>Stream Task 要求<a class="article-anchor" href="#Stream-Task-要求-2" aria-hidden="true"></a></h3><p>流式获取 Influxdb数据库中</p>
+<ul>
+<li><p>库名<code>database</code>：<code>telegraf</code>.<code>autogen</code></p>
+</li>
+<li><p>测量名<code>measurement</code>：<code>cpu</code></p>
+</li>
+<li><p>时间窗口为：<code>10min</code></p>
+</li>
+<li><p>计算<code>usage_user</code>每5分钟的平均值</p>
+</li>
+</ul>
+<p>输出到日志中。</p>
+<h3 id="解题过程-2" class="article-heading"><a href="#解题过程-2" class="headerlink" title="解题过程"></a>解题过程<a class="article-anchor" href="#解题过程-2" aria-hidden="true"></a></h3><h4 id="1-画出DAG图-2" class="article-heading"><a href="#1-画出DAG图-2" class="headerlink" title="1. 画出DAG图"></a>1. 画出DAG图<a class="article-anchor" href="#1-画出DAG图-2" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">  A(StreamNode)--&gt;B</span><br><span class="line">  B(FromNode)--&gt;C</span><br><span class="line">  C(WindowNode)--&gt;D</span><br><span class="line">  D(InfluxQLNode)--&gt;E</span><br><span class="line">  E(LogNode)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="2-编写-TICKscript-2" class="article-heading"><a href="#2-编写-TICKscript-2" class="headerlink" title="2. 编写 TICKscript"></a>2. 编写 TICKscript<a class="article-anchor" href="#2-编写-TICKscript-2" aria-hidden="true"></a></h4><figure class="highlight js"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">//cpu.tick</span></span><br><span class="line">dbrp <span class="string">"telegraf"</span>.<span class="string">"autogen"</span></span><br><span class="line"></span><br><span class="line">stream</span><br><span class="line">  |<span class="title function_">from</span>()</span><br><span class="line">    .<span class="title function_">measurement</span>(<span class="string">'cpu'</span>)</span><br><span class="line">  |<span class="title function_">window</span>()</span><br><span class="line">    .<span class="title function_">period</span>(10m)</span><br><span class="line">    .<span class="title function_">every</span>(5m)</span><br><span class="line">  |<span class="title function_">mean</span>(<span class="string">'usage_user'</span>)</span><br><span class="line">    .<span class="title function_">as</span>(<span class="string">'mean_usage_user'</span>)</span><br><span class="line">  |<span class="title function_">log</span>()</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>10 minute</code> 的时间窗口，每5分钟计算一次5分钟的平均值。</p>
+<h4 id="3-声明脚本-2" class="article-heading"><a href="#3-声明脚本-2" class="headerlink" title="3. 声明脚本"></a>3. 声明脚本<a class="article-anchor" href="#3-声明脚本-2" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor define cpu -tick cpu.tick</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="4-启动Task" class="article-heading"><a href="#4-启动Task" class="headerlink" title="4. 启动Task"></a>4. 启动Task<a class="article-anchor" href="#4-启动Task" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor <span class="built_in">enable</span> cpu</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="5-查看Task列表" class="article-heading"><a href="#5-查看Task列表" class="headerlink" title="5. 查看Task列表"></a>5. 查看Task列表<a class="article-anchor" href="#5-查看Task列表" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor list tasks</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="6-查看Task任务明细" class="article-heading"><a href="#6-查看Task任务明细" class="headerlink" title="6. 查看Task任务明细"></a>6. 查看Task任务明细<a class="article-anchor" href="#6-查看Task任务明细" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kapacitor show cpu</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="7-查看Task日志" class="article-heading"><a href="#7-查看Task日志" class="headerlink" title="7. 查看Task日志"></a>7. 查看Task日志<a class="article-anchor" href="#7-查看Task日志" aria-hidden="true"></a></h4><p><code>kapacitor watch &lt;TASK_ID&gt;</code>命令遵循与<strong>任务</strong>关联的日志</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@tick:/var/lib/kapacitor]# kapacitor show cpu</span><br><span class="line">ID: cpu</span><br><span class="line">Error:</span><br><span class="line">Template:</span><br><span class="line">Type: stream</span><br><span class="line">Status: enabled</span><br><span class="line">Executing: <span class="literal">true</span></span><br><span class="line">Created: 08 Sep 19 20:43 CST</span><br><span class="line">Modified: 08 Sep 19 21:00 CST</span><br><span class="line">LastEnabled: 08 Sep 19 21:00 CST</span><br><span class="line">Databases Retention Policies: [<span class="string">"telegraf"</span>.<span class="string">"autogen"</span>]</span><br><span class="line">TICKscript:</span><br><span class="line">// cpu.tick</span><br><span class="line">dbrp <span class="string">"telegraf"</span>.<span class="string">"autogen"</span></span><br><span class="line"></span><br><span class="line">stream</span><br><span class="line">    |from()</span><br><span class="line">        .measurement(<span class="string">'cpu'</span>)</span><br><span class="line">    |window()</span><br><span class="line">        .period(5m)</span><br><span class="line">        .every(1m)</span><br><span class="line">    |mean(<span class="string">'usage_user'</span>)</span><br><span class="line">        .as(<span class="string">'mean_usage_user'</span>)</span><br><span class="line">    |<span class="built_in">log</span>()</span><br><span class="line"></span><br><span class="line">DOT:</span><br><span class="line">digraph cpu {</span><br><span class="line">graph [throughput=<span class="string">"0.00 points/s"</span>];</span><br><span class="line"></span><br><span class="line">stream0 [avg_exec_time_ns=<span class="string">"0s"</span> errors=<span class="string">"0"</span> working_cardinality=<span class="string">"0"</span> ];</span><br><span class="line">stream0 -&gt; from1 [processed=<span class="string">"7"</span>];</span><br><span class="line"></span><br><span class="line">from1 [avg_exec_time_ns=<span class="string">"0s"</span> errors=<span class="string">"0"</span> working_cardinality=<span class="string">"0"</span> ];</span><br><span class="line">from1 -&gt; window2 [processed=<span class="string">"7"</span>];</span><br><span class="line"></span><br><span class="line">window2 [avg_exec_time_ns=<span class="string">"9.195µs"</span> errors=<span class="string">"0"</span> working_cardinality=<span class="string">"1"</span> ];</span><br><span class="line">window2 -&gt; mean3 [processed=<span class="string">"6"</span>];</span><br><span class="line"></span><br><span class="line">mean3 [avg_exec_time_ns=<span class="string">"0s"</span> errors=<span class="string">"0"</span> working_cardinality=<span class="string">"1"</span> ];</span><br><span class="line">mean3 -&gt; log4 [processed=<span class="string">"6"</span>];</span><br><span class="line"></span><br><span class="line">log4 [avg_exec_time_ns=<span class="string">"0s"</span> errors=<span class="string">"0"</span> working_cardinality=<span class="string">"0"</span> ];</span><br><span class="line">}</span><br><span class="line">[root@tick:/var/lib/kapacitor]# kapacitor watch cpu</span><br><span class="line">ts=2019-09-08T21:14:10.014+08:00 lvl=info msg=point service=kapacitor task_master=main task=cpu node=log4 prefix= name=cpu db= rp= group=   field_mean_usage_user=1.172135513652473 <span class="keyword">time</span>=2019-09-08T13:14:00Z</span><br><span class="line">ts=2019-09-08T21:15:10.014+08:00 lvl=info msg=point service=kapacitor task_master=main task=cpu node=log4 prefix= name=cpu db= rp= group=   field_mean_usage_user=1.0886898609303208 <span class="keyword">time</span>=2019-09-08T13:15:00Z</span><br><span class="line">[root@tick:/var/lib/kapacitor]# kapacitor <span class="built_in">disable</span> cpu</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="创建一个带过滤条件的-Stream-Task" class="article-heading"><a href="#创建一个带过滤条件的-Stream-Task" class="headerlink" title="创建一个带过滤条件的 Stream Task"></a>创建一个带过滤条件的 Stream Task<a class="article-anchor" href="#创建一个带过滤条件的-Stream-Task" aria-hidden="true"></a></h2><h3 id="Stream-Task-要求-3" class="article-heading"><a href="#Stream-Task-要求-3" class="headerlink" title="Stream Task 要求"></a>Stream Task 要求<a class="article-anchor" href="#Stream-Task-要求-3" aria-hidden="true"></a></h3><p>在之前<code>cpu</code>任务的基础上，过滤<code>tag</code>，<code>cpu = cpu-total</code>的值</p>
+<h3 id="解题过程-3" class="article-heading"><a href="#解题过程-3" class="headerlink" title="解题过程"></a>解题过程<a class="article-anchor" href="#解题过程-3" aria-hidden="true"></a></h3><p>过滤有两种解法：</p>
+<ol>
+<li>使用<code>WhereNode</code>过滤；</li>
+<li>使用<code>FromNode</code>的节点方法<code>where()</code>过滤</li>
+</ol>
+<h4 id="第一种解法" class="article-heading"><a href="#第一种解法" class="headerlink" title="第一种解法"></a>第一种解法<a class="article-anchor" href="#第一种解法" aria-hidden="true"></a></h4><figure class="highlight js"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">//cpu.tick</span></span><br><span class="line">dbrp <span class="string">"telegraf"</span>.<span class="string">"autogen"</span></span><br><span class="line"></span><br><span class="line">stream</span><br><span class="line">  |<span class="title function_">from</span>()</span><br><span class="line">    .<span class="title function_">measurement</span>(<span class="string">'cpu'</span>)</span><br><span class="line">  |<span class="title function_">where</span>(<span class="attr">lambda</span>: <span class="string">"cpu"</span> == <span class="string">'cpu-total'</span>)</span><br><span class="line">  |<span class="title function_">window</span>()</span><br><span class="line">    .<span class="title function_">period</span>(10m)</span><br><span class="line">    .<span class="title function_">every</span>(5m)</span><br><span class="line">  |<span class="title function_">mean</span>(<span class="string">'usage_user'</span>)</span><br><span class="line">    .<span class="title function_">as</span>(<span class="string">'mean_usage_user'</span>)</span><br><span class="line">    |<span class="title function_">log</span>()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>DAG图</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">  A(StreamNode)--&gt;B</span><br><span class="line">  B(FromNode)--&gt;C</span><br><span class="line">  C(WhereNode)--&gt;D</span><br><span class="line">  D(WindowNode)--&gt;E</span><br><span class="line">  E(InfluxQLNode)--&gt;F</span><br><span class="line">  F(LogNode)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>该解法，一共有6个节点。</p>
+<h4 id="第二种解法" class="article-heading"><a href="#第二种解法" class="headerlink" title="第二种解法"></a>第二种解法<a class="article-anchor" href="#第二种解法" aria-hidden="true"></a></h4><figure class="highlight js"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">//cpu.tick</span></span><br><span class="line">dbrp <span class="string">"telegraf"</span>.<span class="string">"autogen"</span></span><br><span class="line"></span><br><span class="line">stream</span><br><span class="line">  |<span class="title function_">from</span>()</span><br><span class="line">    .<span class="title function_">measurement</span>(<span class="string">'cpu'</span>)</span><br><span class="line">    .<span class="title function_">where</span>(<span class="attr">lambda</span>: <span class="string">"cpu"</span> == <span class="string">'cpu-total'</span>)</span><br><span class="line">  |<span class="title function_">window</span>()</span><br><span class="line">    .<span class="title function_">period</span>(10m)</span><br><span class="line">    .<span class="title function_">every</span>(5m)</span><br><span class="line">  |<span class="title function_">mean</span>(<span class="string">'usage_user'</span>)</span><br><span class="line">    .<span class="title function_">as</span>(<span class="string">'mean_usage_user'</span>)</span><br><span class="line">  |<span class="title function_">log</span>()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>DAG图</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">  A(StreamNode)--&gt;B</span><br><span class="line">  B(FromNode)--&gt;C</span><br><span class="line">  C(WindowNode)--&gt;D</span><br><span class="line">  D(InfluxQLNode)--&gt;E</span><br><span class="line">  E(LogNode)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>该解法保持5个节点。</p>
+<h2 id="创建一个可以触发告警的-Stream-Task" class="article-heading"><a href="#创建一个可以触发告警的-Stream-Task" class="headerlink" title="创建一个可以触发告警的 Stream Task"></a>创建一个可以触发告警的 Stream Task<a class="article-anchor" href="#创建一个可以触发告警的-Stream-Task" aria-hidden="true"></a></h2><h3 id="Stream-Task-要求-4" class="article-heading"><a href="#Stream-Task-要求-4" class="headerlink" title="Stream Task 要求"></a>Stream Task 要求<a class="article-anchor" href="#Stream-Task-要求-4" aria-hidden="true"></a></h3><p>在之前<code>cpu</code>任务的基础上，如果<code>mean_usage_user &gt; 80</code>则发出严重告警。</p>
+<h3 id="解题过程-4" class="article-heading"><a href="#解题过程-4" class="headerlink" title="解题过程"></a>解题过程<a class="article-anchor" href="#解题过程-4" aria-hidden="true"></a></h3><h4 id="1-画出DAG图-3" class="article-heading"><a href="#1-画出DAG图-3" class="headerlink" title="1. 画出DAG图"></a>1. 画出DAG图<a class="article-anchor" href="#1-画出DAG图-3" aria-hidden="true"></a></h4><p>DAG图</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">  A(StreamNode)--&gt;B</span><br><span class="line">  B(FromNode)--&gt;C</span><br><span class="line">  C(WindowNode)--&gt;D</span><br><span class="line">  D(InfluxQLNode)--&gt;E</span><br><span class="line">  E(LogNode)--&gt; F</span><br><span class="line">  F(AlertNode)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="2-编写-TICKscript-3" class="article-heading"><a href="#2-编写-TICKscript-3" class="headerlink" title="2. 编写 TICKscript"></a>2. 编写 TICKscript<a class="article-anchor" href="#2-编写-TICKscript-3" aria-hidden="true"></a></h4><figure class="highlight js"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">//cpu.tick</span></span><br><span class="line">dbrp <span class="string">"telegraf"</span>.<span class="string">"autogen"</span></span><br><span class="line"></span><br><span class="line">stream</span><br><span class="line">  |<span class="title function_">from</span>()</span><br><span class="line">    .<span class="title function_">measurement</span>(<span class="string">'cpu'</span>)</span><br><span class="line">    .<span class="title function_">where</span>(<span class="attr">lambda</span>: <span class="string">"cpu"</span> == <span class="string">'cpu-total'</span>)</span><br><span class="line">    .<span class="title function_">groupBy</span>(*)</span><br><span class="line">  |<span class="title function_">window</span>()</span><br><span class="line">    .<span class="title function_">period</span>(10m)</span><br><span class="line">    .<span class="title function_">every</span>(5m)</span><br><span class="line">  |<span class="title function_">mean</span>(<span class="string">'usage_user'</span>)</span><br><span class="line">    .<span class="title function_">as</span>(<span class="string">'mean_usage_user'</span>)</span><br><span class="line">  |<span class="title function_">log</span>()</span><br><span class="line">  |<span class="title function_">alert</span>()</span><br><span class="line">    .<span class="title function_">crit</span>(<span class="attr">lambda</span>: <span class="string">"mean_usage_user"</span> &gt; <span class="number">80</span>)</span><br><span class="line">    .<span class="title function_">message</span>(<span class="string">'CPU is to high!'</span>)</span><br><span class="line">    .<span class="title function_">email</span>(<span class="string">'rgweiyaping@hotmail.com'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-启动后查看日志" class="article-heading"><a href="#3-启动后查看日志" class="headerlink" title="3. 启动后查看日志"></a>3. 启动后查看日志<a class="article-anchor" href="#3-启动后查看日志" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@tick:/var/lib/kapacitor/task]# kapacitor watch cpu</span><br><span class="line">ts=2019-09-08T22:23:10.011+08:00 lvl=info msg=point service=kapacitor task_master=main task=cpu node=alert5 prefix= name=cpu db= rp= group=cpu=cpu-total,host=influxdb dimension_0=cpu dimension_1=host tag_cpu=cpu-total tag_host=influxdb field_mean_usage_user=1.212475959527466 <span class="keyword">time</span>=2019-09-08T14:23:00Z</span><br><span class="line">ts=2019-09-08T22:23:10.011+08:00 lvl=debug msg=<span class="string">"alert triggered"</span> service=kapacitor task_master=main task=cpu node=alert5 level=CRITICAL <span class="built_in">id</span>=cpu:cpu=cpu-total,host=influxdb event_message=<span class="string">"CPU is to high!"</span> data=<span class="string">"&amp;{cpu map[host:influxdb cpu:cpu-total] [time mean_usage_user] [[2019-09-08 14:23:00 +0000 UTC 1.212475959527466]]}"</span></span><br><span class="line">ts=2019-09-08T22:23:10.012+08:00 lvl=error msg=<span class="string">"failed to send email"</span> service=smtp task=cpu err=<span class="string">"service is not enabled"</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>从日志中可以看到<code>data="&amp;{cpu map[host:influxdb cpu:cpu-total] [time mean_usage_user] [[2019-09-08 14:23:00 +0000 UTC 1.212475959527466]]}"</code></p>
+<p><code>groupBy()</code>方法分组后可以将Tag输出到data中。</p>
+<h2 id="创建一个批处理的CPU任务" class="article-heading"><a href="#创建一个批处理的CPU任务" class="headerlink" title="创建一个批处理的CPU任务"></a>创建一个批处理的CPU任务<a class="article-anchor" href="#创建一个批处理的CPU任务" aria-hidden="true"></a></h2><h3 id="Batch-Task-要求" class="article-heading"><a href="#Batch-Task-要求" class="headerlink" title="Batch Task &nbsp;要求"></a>Batch Task &nbsp;要求<a class="article-anchor" href="#Batch-Task-要求" aria-hidden="true"></a></h3><p>批量获取 Influxdb数据库中</p>
+<ul>
+<li>库名<code>database</code>：<code>telegraf</code>.<code>autogen</code></li>
+<li>测量名<code>measurement</code>：<code>cpu</code></li>
+<li>时间窗口为：<code>2min</code></li>
+<li>计算<code>usage_user</code>近1分钟的平均值</li>
+</ul>
+<p>输出到日志中；</p>
+<h3 id="解题过程-5" class="article-heading"><a href="#解题过程-5" class="headerlink" title="解题过程"></a>解题过程<a class="article-anchor" href="#解题过程-5" aria-hidden="true"></a></h3><h4 id="1-画出DAG图-4" class="article-heading"><a href="#1-画出DAG图-4" class="headerlink" title="1. 画出DAG图"></a>1. 画出DAG图<a class="article-anchor" href="#1-画出DAG图-4" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">  A(BatchNode)--&gt;B</span><br><span class="line">  B(QueryNode)--&gt;C</span><br><span class="line">  C(InfluxQLNode)--&gt;D</span><br><span class="line">  D(LogNode)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="2-编写-TICKscript-4" class="article-heading"><a href="#2-编写-TICKscript-4" class="headerlink" title="2. 编写 TICKscript"></a>2. 编写 TICKscript<a class="article-anchor" href="#2-编写-TICKscript-4" aria-hidden="true"></a></h4><figure class="highlight js"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// cpu.tick</span></span><br><span class="line">dbrp <span class="string">"telegraf"</span>.<span class="string">"autogen"</span></span><br><span class="line"></span><br><span class="line">batch</span><br><span class="line">    |<span class="title function_">query</span>(<span class="string">''</span><span class="string">'select mean(usage_user) as mean_usage_user from telegraf.autogen.cpu where cpu = '</span>cpu-total<span class="string">'</span></span><br><span class="line"><span class="string">         '</span><span class="string">''</span>)</span><br><span class="line">        .<span class="title function_">period</span>(2m)</span><br><span class="line">        .<span class="title function_">every</span>(1m)</span><br><span class="line">    |<span class="title function_">log</span>()</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-启动后查看日志-1" class="article-heading"><a href="#3-启动后查看日志-1" class="headerlink" title="3. 启动后查看日志"></a>3. 启动后查看日志<a class="article-anchor" href="#3-启动后查看日志-1" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@tick:/var/lib/kapacitor/task]# kapacitor watch cpu</span><br><span class="line">ts=2019-09-08T22:07:29.562+08:00 lvl=debug msg=<span class="string">"starting next batch query"</span> service=kapacitor task_master=main task=cpu node=log2 query=<span class="string">"SELECT mean(usage_user) AS mean_usage_user FROM telegraf.autogen.cpu WHERE cpu = 'cpu-total' AND time &gt;= '2019-09-08T14:05:29.562830856Z' AND time &lt; '2019-09-08T14:07:29.562830856Z'"</span></span><br><span class="line">ts=2019-09-08T22:07:29.564+08:00 lvl=info msg=<span class="string">"begin batch"</span> service=kapacitor task_master=main task=cpu node=log2 prefix= name=cpu group=  <span class="keyword">time</span>=2019-09-08T22:07:29.562830856+08:00</span><br><span class="line">ts=2019-09-08T22:07:29.564+08:00 lvl=info msg=<span class="string">"batch point"</span> service=kapacitor task_master=main task=cpu node=log2 prefix= name=cpu group=  field_mean_usage_user=1.1829510136651877 <span class="keyword">time</span>=2019-09-08T14:05:29.562830856Z</span><br><span class="line">ts=2019-09-08T22:07:29.564+08:00 lvl=info msg=<span class="string">"end batch"</span> service=kapacitor task_master=main task=cpu node=log2 prefix= name=cpu group=  <span class="keyword">time</span>=2019-09-08T22:07:29.562830856+08:00</span><br><span class="line">ts=2019-09-08T22:08:29.562+08:00 lvl=debug msg=<span class="string">"starting next batch query"</span> service=kapacitor task_master=main task=cpu node=log2 query=<span class="string">"SELECT mean(usage_user) AS mean_usage_user FROM telegraf.autogen.cpu WHERE cpu = 'cpu-total' AND time &gt;= '2019-09-08T14:06:29.562830788Z' AND time &lt; '2019-09-08T14:08:29.562830788Z'"</span></span><br><span class="line">ts=2019-09-08T22:08:29.564+08:00 lvl=info msg=<span class="string">"begin batch"</span> service=kapacitor task_master=main task=cpu node=log2 prefix= name=cpu group=  <span class="keyword">time</span>=2019-09-08T22:08:29.562830788+08:00</span><br><span class="line">ts=2019-09-08T22:08:29.564+08:00 lvl=info msg=<span class="string">"batch point"</span> service=kapacitor task_master=main task=cpu node=log2 prefix= name=cpu group=  field_mean_usage_user=1.1247909374907248 <span class="keyword">time</span>=2019-09-08T14:06:29.562830788Z</span><br><span class="line">ts=2019-09-08T22:08:29.564+08:00 lvl=info msg=<span class="string">"end batch"</span> service=kapacitor task_master=main task=cpu node=log2 prefix= name=cpu group=  <span class="keyword">time</span>=2019-09-08T22:08:29.562830788+08:00</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><h3 id="创建一个生产环境中设定的告警规则" class="article-heading"><a href="#创建一个生产环境中设定的告警规则" class="headerlink" title="创建一个生产环境中设定的告警规则"></a>创建一个生产环境中设定的告警规则<a class="article-anchor" href="#创建一个生产环境中设定的告警规则" aria-hidden="true"></a></h3><p>cpu的指标是1分钟采集一次，告警规则为：</p>
+<p>每分钟检测一次，获取近五分钟的cpu空闲平均值，</p>
+<p>如果使用率超过90%，且持续5分钟，则告警。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">  A(StreamNode)--&gt;B</span><br><span class="line">  B(FromNode)--&gt;C</span><br><span class="line">  C(WindowNode)--&gt;D</span><br><span class="line">  D(InfluxQLNode)--&gt;E</span><br><span class="line">  E(EvalNode)--&gt;F</span><br><span class="line">  F(LogNode)--&gt; G</span><br><span class="line">  G(AlertNode)</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight js"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">//cpu_alert_stream.tick</span></span><br><span class="line">dbrp <span class="string">"telegraf"</span>.<span class="string">"autogen"</span></span><br><span class="line"></span><br><span class="line">stream</span><br><span class="line">    |<span class="title function_">from</span>()</span><br><span class="line">      .<span class="title function_">measurement</span>(<span class="string">'cpu'</span>)</span><br><span class="line">      .<span class="title function_">groupBy</span>(*)</span><br><span class="line">    |<span class="title function_">window</span>()</span><br><span class="line">      .<span class="title function_">period</span>(5m)</span><br><span class="line">      .<span class="title function_">every</span>(1m)</span><br><span class="line">    |<span class="title function_">mean</span>(<span class="string">'usage_idle'</span>)</span><br><span class="line">      .<span class="title function_">as</span>(<span class="string">'mean_usage_idle'</span>)</span><br><span class="line">    |<span class="built_in">eval</span>(<span class="attr">lambda</span>: <span class="number">100.0</span> - <span class="title function_">float</span>(<span class="string">"mean_usage_idle"</span>))</span><br><span class="line">      .<span class="title function_">as</span>(<span class="string">'cpu_usage'</span>)</span><br><span class="line">      .<span class="title function_">keep</span>()</span><br><span class="line">    |<span class="title function_">log</span>()</span><br><span class="line">    |<span class="title function_">alert</span>()</span><br><span class="line">      .<span class="title function_">crit</span>(<span class="attr">lambda</span>: <span class="title function_">float</span>(<span class="string">"cpu_usage"</span>) &gt; <span class="number">90.0</span>)</span><br><span class="line">      .<span class="title function_">stateChangesOnly</span>() <span class="comment">//发送状态更改的事件。每个不同的警报级别OK，INFO，WARNING和CRITICAL都被视为不同的状态。</span></span><br><span class="line">      .<span class="title function_">message</span>(<span class="string">'{</span></span><br><span class="line"><span class="string">      "type": "cpu_usage",</span></span><br><span class="line"><span class="string">      "id": "主机 CPU 使用率大于90%",</span></span><br><span class="line"><span class="string">      "host": "{{ index .Tags "host" }}",</span></span><br><span class="line"><span class="string">      "description": "主机{{ index .Tags "host" }} CPU使用率{{ index .Fields "cpu_usage" | printf "%0.2f" }}%,CPU负载过高会导致服务器运行缓慢，应用无法正常使用等问题。请查看CPU使用率高的进程/应用是否为异常导致"</span></span><br><span class="line"><span class="string">    }'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Debug 该脚本时，将大于90.0改为0.0</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@tick:/var/lib/kapacitor/task]# kapacitor watch cpu_alert_stream</span><br><span class="line">ts=2019-09-08T22:45:10.018+08:00 lvl=info msg=point service=kapacitor task_master=main task=cpu_alert_stream node=alert6 prefix= name=cpu db= rp= group=cpu=cpu-total,host=influxdb dimension_0=cpu dimension_1=host tag_cpu=cpu-total tag_host=influxdb field_mean_usage_idle=97.94331577862968 field_cpu_usage=2.0566842213703183 <span class="keyword">time</span>=2019-09-08T14:45:00Z</span><br><span class="line">ts=2019-09-08T22:45:10.019+08:00 lvl=debug msg=<span class="string">"alert triggered"</span> service=kapacitor task_master=main task=cpu_alert_stream node=alert6 level=CRITICAL <span class="built_in">id</span>=cpu:cpu=cpu-total,host=influxdb event_message=<span class="string">"{                                                                                                 \n      \"type\": \"cpu_usage\",\n      \"id\": \"主机 CPU 使用率大于90%\",\n      \"host\": \"influxdb\",                                                                           \n      \"description\": \"主机influxdb CPU使用率2.06%,CPU负载过高会导致服务器运行缓慢，应用无法正常使用等问题。请查看CPU使用率高的进程/应用是否为异常导致\"\n    }"</span> data=<span class="string">"&amp;{cpu map[cpu:cpu-total host:influxdb] [time cpu_usage mean_usage_idle] [[2019-09-08 14:45:00 +0000 UTC 2.0566842213703183 97.94331577862968]]}"</span></span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:13.618Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%8E%E4%B8%80%E4%B8%AA%E6%9C%80%E5%9F%BA%E6%9C%AC%E7%9A%84CPU-Alert%E5%BC%80%E5%A7%8B"><span class="toc-text">从一个最基本的CPU Alert开始</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B%E4%B9%8B%E5%89%8D"><span class="toc-text">开始之前</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E8%8C%83%E6%95%B0%E6%8D%AE"><span class="toc-text">示范数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tickscript-%E8%AF%AD%E8%A8%80"><span class="toc-text">Tickscript 语言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4"><span class="toc-text">基础命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84-Stream-Task"><span class="toc-text">创建一个最简单的 Stream Task</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Stream-Task-%E8%A6%81%E6%B1%82"><span class="toc-text">Stream Task 要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B"><span class="toc-text">解题过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%94%BB%E5%87%BADAG%E5%9B%BE"><span class="toc-text">1. 画出DAG图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%BC%96%E5%86%99-TICKscript"><span class="toc-text">2. 编写 TICKscript</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC"><span class="toc-text">3. 声明脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%9F%A5%E7%9C%8BTask"><span class="toc-text">4. 查看Task</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8C%85%E5%90%AB%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A3%B0%E6%98%8E%E7%9A%84-Stream-Task"><span class="toc-text">创建一个包含数据库声明的 Stream Task</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Stream-Task-%E8%A6%81%E6%B1%82-1"><span class="toc-text">Stream Task 要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B-1"><span class="toc-text">解题过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%94%BB%E5%87%BADAG%E5%9B%BE-1"><span class="toc-text">1. 画出DAG图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%BC%96%E5%86%99-TICKscript-1"><span class="toc-text">2. 编写 TICKscript</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC-1"><span class="toc-text">3. 声明脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%9F%A5%E7%9C%8BTask-1"><span class="toc-text">4. 查看Task</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8-CPU-Task-%E4%BB%BB%E5%8A%A1"><span class="toc-text">启动 CPU Task 任务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text">任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0"><span class="toc-text">课堂练习</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%81%9C%E6%AD%A2-CPU-Task-%E4%BB%BB%E5%8A%A1"><span class="toc-text">停止 CPU Task 任务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E-1"><span class="toc-text">任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E7%BB%83%E4%B9%A0-1"><span class="toc-text">课堂练习</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%B8%A6%E6%97%B6%E9%97%B4%E7%AA%97%E5%8F%A3%E7%9A%84-Stream-Task"><span class="toc-text">创建一个带时间窗口的 Stream Task</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Stream-Task-%E8%A6%81%E6%B1%82-2"><span class="toc-text">Stream Task 要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B-2"><span class="toc-text">解题过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%94%BB%E5%87%BADAG%E5%9B%BE-2"><span class="toc-text">1. 画出DAG图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%BC%96%E5%86%99-TICKscript-2"><span class="toc-text">2. 编写 TICKscript</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC-2"><span class="toc-text">3. 声明脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%90%AF%E5%8A%A8Task"><span class="toc-text">4. 启动Task</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E6%9F%A5%E7%9C%8BTask%E5%88%97%E8%A1%A8"><span class="toc-text">5. 查看Task列表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E6%9F%A5%E7%9C%8BTask%E4%BB%BB%E5%8A%A1%E6%98%8E%E7%BB%86"><span class="toc-text">6. 查看Task任务明细</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E6%9F%A5%E7%9C%8BTask%E6%97%A5%E5%BF%97"><span class="toc-text">7. 查看Task日志</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%B8%A6%E8%BF%87%E6%BB%A4%E6%9D%A1%E4%BB%B6%E7%9A%84-Stream-Task"><span class="toc-text">创建一个带过滤条件的 Stream Task</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Stream-Task-%E8%A6%81%E6%B1%82-3"><span class="toc-text">Stream Task 要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B-3"><span class="toc-text">解题过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E8%A7%A3%E6%B3%95"><span class="toc-text">第一种解法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%E8%A7%A3%E6%B3%95"><span class="toc-text">第二种解法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8F%AF%E4%BB%A5%E8%A7%A6%E5%8F%91%E5%91%8A%E8%AD%A6%E7%9A%84-Stream-Task"><span class="toc-text">创建一个可以触发告警的 Stream Task</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Stream-Task-%E8%A6%81%E6%B1%82-4"><span class="toc-text">Stream Task 要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B-4"><span class="toc-text">解题过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%94%BB%E5%87%BADAG%E5%9B%BE-3"><span class="toc-text">1. 画出DAG图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%BC%96%E5%86%99-TICKscript-3"><span class="toc-text">2. 编写 TICKscript</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%90%AF%E5%8A%A8%E5%90%8E%E6%9F%A5%E7%9C%8B%E6%97%A5%E5%BF%97"><span class="toc-text">3. 启动后查看日志</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%89%B9%E5%A4%84%E7%90%86%E7%9A%84CPU%E4%BB%BB%E5%8A%A1"><span class="toc-text">创建一个批处理的CPU任务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Batch-Task-%E8%A6%81%E6%B1%82"><span class="toc-text">Batch Task  要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B-5"><span class="toc-text">解题过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%94%BB%E5%87%BADAG%E5%9B%BE-4"><span class="toc-text">1. 画出DAG图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%BC%96%E5%86%99-TICKscript-4"><span class="toc-text">2. 编写 TICKscript</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%90%AF%E5%8A%A8%E5%90%8E%E6%9F%A5%E7%9C%8B%E6%97%A5%E5%BF%97-1"><span class="toc-text">3. 启动后查看日志</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E4%B8%AD%E8%AE%BE%E5%AE%9A%E7%9A%84%E5%91%8A%E8%AD%A6%E8%A7%84%E5%88%99"><span class="toc-text">创建一个生产环境中设定的告警规则</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

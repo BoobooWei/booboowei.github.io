@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>OpenLDAP | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/0_linux_base/booboo_middle_service/04-ldap">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/0_linux_base/booboo_middle_service/04-ldap" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="openldap简介LDAP的全称Lightweight Directory Access Protocol。它是基于X.500标准的， 但是简单多了并且可以根据需要定制。与X.500不同，LDAP支持TCP&#x2F;IP，这对访Internet是必须的。LDAP可以让运行在几乎所有计算机平台上的所有的应用程序 从LDAP目录中获取信息。提供了一个安全的集中化信息查询服务。LDAP目录中可以存储">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OpenLDAP">
+<meta property="og:url" content="http://www.toberoot.com/linux/0_linux_base/booboo_middle_service/04-ldap">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="openldap简介LDAP的全称Lightweight Directory Access Protocol。它是基于X.500标准的， 但是简单多了并且可以根据需要定制。与X.500不同，LDAP支持TCP&#x2F;IP，这对访Internet是必须的。LDAP可以让运行在几乎所有计算机平台上的所有的应用程序 从LDAP目录中获取信息。提供了一个安全的集中化信息查询服务。LDAP目录中可以存储">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.998Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:57.348Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">OpenLDAP</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/0_linux_base/booboo_middle_service/04-ldap.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h2 id="openldap简介" class="article-heading"><a href="#openldap简介" class="headerlink" title="openldap简介"></a>openldap简介<a class="article-anchor" href="#openldap简介" aria-hidden="true"></a></h2><p>LDAP的全称Lightweight Directory Access Protocol。它是基于X.500标准的， 但是简单多了并且可以根据需要定制。与X.500不同，LDAP支持TCP/IP，这对访Internet是必须的。LDAP可以让运行在几乎所有计算机平台上的所有的应用程序 从LDAP目录中获取信息。提供了一个安全的集中化信息查询服务。LDAP目录中可以存储各种类型的数据：电子邮件地址、 邮件路由信息、人力资源数据、公用密匙、联系人列表，等等。作为系统集成中 的一个重要环节，可以简化员工在企业内部查询信息的步骤，甚至连主要的数据 源都可以放在任何地方。</p>
+<p>LDAP对数据的读取做了很多优化，比如优化了数据类型，修改了锁机制，取消了 不必要的函数，取消了回滚机制等等，非常适用于读多写少的环境。如果你有一 些面向查询的服务，那LDAP无疑是一个不错的选择。<br>LDAP协议是跨平台的和标准的协议，得到了业界的广泛认可。产商都很愿意在产 品中加入对LDAP的支持，因为他们根本不用考虑另一端（客户端或服务端）是怎 么样的。</p>
+<p>&nbsp; &nbsp;&nbsp; &nbsp;LDAP允许你根据需要使用ACI（一般都称为ACL或者访问控制列表）控制对数据读 和写的权限。ACI可以根据谁访问数据、访问什么数据、数据存在什么地方以及其 它对数据进行访问控制。这些都是由LDAP目录服务器完成，非常的安全。<br>在使用LDAP存储你的数据前，你应该先问以下几个问题</p>
+<ul>
+<li>你的数据是不是需要在不同的平台上读取？</li>
+<li>你的数据是不是很少发生更改，但是会被频繁的读取？</li>
+<li>你的数据是否能存放于一个平面数据库中</li>
+</ul>
+<p>&nbsp; &nbsp;&nbsp; &nbsp;如果都为是，那么恭喜，LDAP将是你最好的选择。</p>
+<p>&nbsp; &nbsp;&nbsp; &nbsp;LDAP目录以树状的层次结构来存储数据。而不是用表格。正因为这样，我们在查 询时不能用SQL语句了。在这个树型结构上的每个数据节点，我们称之为“条目（Entry）” ，LDAP目录树的最顶部就是根，也就是所谓的”base DN”。为了好记， 我们常用公司的域名做base DN。比如本公司的域名是example.com，则我的base DN为 “dc=example, dc=com” 。在根目录下，要把数据从逻辑上区分开，大多数LDAP目录用OU从逻辑上把数据分开来。OU 表示“Organization Unit”，在X.500协议中 是用来表示公司内部的机构：销售部、财务部，等等。比如我要表示本公司销售 部的经理级人员，我们可以这样表示， “ou=manager,ou=sales,dc=example,dc=com”。 要表示本公司销售部的经理级人员flyer和sky。那么我可以这样写”uid=flyer,ou=manager, ou=sales,dc=example,dc=com”，”uid=sky,ou=manager, ou=sales,dc=example,dc=com”，可以看到这两个员工的条目有很多相同的字段，但最左端的uid是不一样的，以此来保证条目的唯一性，最左的描述又称为RDN。</p>
+<p>&nbsp; &nbsp;&nbsp; &nbsp;在LDAP目录数据库中，所有的条目都必须定义objectClass这个属性。每个条目（ LDAP Entry）都要定义自己的Object Classes。Object Class定义了条目的属性 集，包括必有属性（requited attribute）和可选属性（option attribute）。</p>
+<p>&nbsp; &nbsp;&nbsp; &nbsp;一个条目的属性是由它所继承的所有Object Classes的属性集合决定的，此外可 以包括LDAP中规定的“操作属性”（操作属性是一种独立于Object Class而存在 的属性，它可以赋给目录中的任意条目）。如果你想添加的属性不在Object Classes定义属性的范畴，也不是LDAP规定的操作属性，那么是不能直接绑定（在 LDAP中，给Entry赋予属性的过程称为绑定）到条目上的，你必须自定义一个含有 你需要的属性的Object Class，而后将此类型赋给条目。 Object Class是可以被 继承的，这使它看上去真的很像Java语言。继承类的对象实例也必须实现父类规 定的必有属性（requited attribute），同时拥有父类规定的可选属性（option attribute）。继承类可以扩展父类的必有属性和可选属性。</p>
+<p>&nbsp; &nbsp;&nbsp; &nbsp;LDAP的另一个重要的组成部分就是Schema，Schema定义了LDAP目录所应遵循的结 构和规则，比如一个 objectclass会有哪些属性，这些属性又是什么结构等等。</p>
+<blockquote>
+<p>ldap 术语列表<br>entry　条目：ldap内部的最基本的数据单元，ldap内部每个条目标识名称应该都是唯一的。</p>
+</blockquote>
+<blockquote>
+<p>dn：用于标识条目，由于entry标识应该唯一，所以每个dn应该是唯一的。其中顶层的起始DN称做base dn。dn标识过程中会用到的一些常见的属性字段如下：</p>
+<ul>
+<li>cn : commonName 基本名称</li>
+<li>sn：surname　姓氏</li>
+<li>c：countryName　国家名称</li>
+<li>o：organizationName　组织名称</li>
+<li>ou：organizationalUnitName　组织单位名称　</li>
+<li>l：localityName　市名</li>
+<li>st：stateOrProvinceName　省或州名</li>
+<li>street：streetAddress　住址</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>更多字段可参考RFC2256<br>attribute　属性：用于描述条目的属性特征。比如有一个定义公司组织的条目，其属性可能包涵地址，传真等等。有一个定义用户人员的条目，其属性可能有帐号，密码，家目录等等。</p>
+</blockquote>
+<h2 id="openldap基础配置与操作" class="article-heading"><a href="#openldap基础配置与操作" class="headerlink" title="openldap基础配置与操作"></a>openldap基础配置与操作<a class="article-anchor" href="#openldap基础配置与操作" aria-hidden="true"></a></h2><h3 id="安装openldap" class="article-heading"><a href="#安装openldap" class="headerlink" title="安装openldap"></a>安装openldap<a class="article-anchor" href="#安装openldap" aria-hidden="true"></a></h3><p>相关安装包</p>
+<table>
+<thead>
+<tr>
+<th align="left">包名</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">openldap</td>
+<td align="left">基础依赖包</td>
+</tr>
+<tr>
+<td align="left">openldap-clients</td>
+<td align="left">客户端常用命令包，查看修改所使用</td>
+</tr>
+<tr>
+<td align="left">openldap-servers</td>
+<td align="left">服务端主程序包</td>
+</tr>
+<tr>
+<td align="left">compat-openldap</td>
+<td align="left">ldap兼容库</td>
+</tr>
+</tbody></table>
+<p>安装命令</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">yum install openldap openldap-clients openldap-servers</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>重要提示 ：请确保 ldap用户对　/var/lib/ldap 目录有读写权限</p>
+</blockquote>
+<blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">chown　-R ldap.ldap /var/lib/ldap</span><br></pre></td></tr></tbody></table></figure></blockquote>
+<p>&nbsp; &nbsp;&nbsp; &nbsp;</p>
+<p>openldap server相关命令</p>
+<table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">slapacl</td>
+<td align="left">访问控制列表配置命令。</td>
+</tr>
+<tr>
+<td align="left">slapadd</td>
+<td align="left">通过ldif文件添加条目的命令</td>
+</tr>
+<tr>
+<td align="left">slapauth</td>
+<td align="left">认证授权相关命令</td>
+</tr>
+<tr>
+<td align="left">slappasswd</td>
+<td align="left">创建加密密码</td>
+</tr>
+<tr>
+<td align="left">slaptest</td>
+<td align="left">检查配置文件命令</td>
+</tr>
+</tbody></table>
+<p>openldap client相关命令</p>
+<table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ldapadd</td>
+<td align="left">添加条目命令</td>
+</tr>
+<tr>
+<td align="left">ldapdelete</td>
+<td align="left">删除条目命令</td>
+</tr>
+<tr>
+<td align="left">ldapmodify</td>
+<td align="left">修改条目命令</td>
+</tr>
+<tr>
+<td align="left">ldappasswd</td>
+<td align="left">设置用户密码命令</td>
+</tr>
+<tr>
+<td align="left">ldapsearch</td>
+<td align="left">查询条目命令</td>
+</tr>
+</tbody></table>
+<h3 id="配置openldap" class="article-heading"><a href="#配置openldap" class="headerlink" title="配置openldap"></a>配置openldap<a class="article-anchor" href="#配置openldap" aria-hidden="true"></a></h3><p>ldap配置文件与目录</p>
+<table>
+<thead>
+<tr>
+<th align="left">配置文件</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">/etc/openldap/ldap.conf</td>
+<td align="left">客户端配置文件</td>
+</tr>
+<tr>
+<td align="left">/etc/openldap/slapd.d/</td>
+<td align="left">服务端配置文件目录</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>提示：openldap不再使用/etc/openldap/slapd.conf配置文件，它通过/etc/openldap/slapd.d/目录来进行配置，如果你有一个slapd.conf配置文件，可以通过以下命令转换</p>
+</blockquote>
+<blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d/</span><br></pre></td></tr></tbody></table></figure></blockquote>
+<p>####全局配置文件</p>
+<blockquote>
+<p>/etc/openldap/slapd.d/cn=config.ldif</p>
+</blockquote>
+<p>主要参数</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数名称</th>
+<th align="left">作用</th>
+<th align="left">范例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">olcAllows</td>
+<td align="left">定义启用功能特性，默认值为bind_v2</td>
+<td align="left">olcAllows: bind_v2</td>
+</tr>
+<tr>
+<td align="left">olcConnMaxPending</td>
+<td align="left">定义匿名会话的最大数量 ，默认值100</td>
+<td align="left">olcConnMaxPending: 100</td>
+</tr>
+<tr>
+<td align="left">olcConnMaxPendingAuth</td>
+<td align="left">定义已认证会话的最大数量 ，默认值1000</td>
+<td align="left">olcConnMaxPendingAuth: 1000</td>
+</tr>
+<tr>
+<td align="left">olcDisallows</td>
+<td align="left">定义禁用功能特性</td>
+<td align="left">olcDisallows: bind_anon</td>
+</tr>
+<tr>
+<td align="left">olcIdleTimeout</td>
+<td align="left">定义关闭空闲连接的等待时间</td>
+<td align="left">olcIdleTimeout: 180</td>
+</tr>
+<tr>
+<td align="left">olcLogFile</td>
+<td align="left">定义日志文件</td>
+<td align="left">olcLogFile: /var/log/slapd.log</td>
+</tr>
+<tr>
+<td align="left">olcReferral</td>
+<td align="left">定义一个Refer url地址，的服务器故障时使用</td>
+<td align="left">olcReferral: ldap://root.openldap.org</td>
+</tr>
+<tr>
+<td align="left">olcWriteTimeout</td>
+<td align="left">定义写请求超时</td>
+<td align="left">olcWriteTimeout: 180</td>
+</tr>
+</tbody></table>
+<p>####数据库配置文件</p>
+<blockquote>
+<p>/etc/openldap/slapd.d/cn=config/olcDatabase={1}bdb.ldif</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">参数名称</th>
+<th align="left">作用</th>
+<th align="left">范例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">olcReadOnly</td>
+<td align="left">数据库readonly模式，默认FALSE</td>
+<td align="left">olcReadOnly: TRUE</td>
+</tr>
+<tr>
+<td align="left">olcRootDN</td>
+<td align="left">定义管理员（无访问限制）</td>
+<td align="left">olcRootDN: cn=root,dn=example,dn=com</td>
+</tr>
+<tr>
+<td align="left">olcRootPW</td>
+<td align="left">定义管理员密码</td>
+<td align="left">olcRootPW: {SSHA}WczWsyPEnMchFf1GRTweq2q7XJcvmSxD</td>
+</tr>
+<tr>
+<td align="left">olcSuffix</td>
+<td align="left">定义域名</td>
+<td align="left">olcSuffix: dc=example,dc=com</td>
+</tr>
+</tbody></table>
+<p>####建立安全连接</p>
+<p>&nbsp; &nbsp;&nbsp; &nbsp;OpenLDAP的客户端和服务器可以使用Transport Layer Security（TLS）的框架，TLS是一个加密协议。<br>&nbsp; &nbsp;&nbsp; &nbsp;要使用TLS建立安全连接，必须在服务器与客户机上同时配置相关参数，服务器需要配置相关CA中心与自签名证书，客户端需要信任相关CA证书。</p>
+<p>#####证书配置相关参数</p>
+<p>服务端相关配置文件</p>
+<blockquote>
+<p>/etc/openldap/slapd.d/cn=config.ldif</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">参数名称</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">olcTLSCACertificateFile</td>
+<td align="left">指定ＣＡ证书文件</td>
+</tr>
+<tr>
+<td align="left">olcTLSCACertificatePath</td>
+<td align="left">指定ＣＡ文件目录</td>
+</tr>
+<tr>
+<td align="left">olcTLSCertificateFile</td>
+<td align="left">指定server证书文件</td>
+</tr>
+<tr>
+<td align="left">olcTLSCertificateKeyFile</td>
+<td align="left">指定私钥文件</td>
+</tr>
+</tbody></table>
+<h3 id="启动openldap" class="article-heading"><a href="#启动openldap" class="headerlink" title="启动openldap"></a>启动openldap<a class="article-anchor" href="#启动openldap" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">systemctl start slapd.service</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="系统用户转换迁移到openldap" class="article-heading"><a href="#系统用户转换迁移到openldap" class="headerlink" title="系统用户转换迁移到openldap"></a>系统用户转换迁移到openldap<a class="article-anchor" href="#系统用户转换迁移到openldap" aria-hidden="true"></a></h3><p>安装编辑转换脚本</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">yum install migrationtools</span><br><span class="line">vi /usr/share/migrationtools/migrate_common.ph</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash"><span class="comment"># Default DNS domain</span></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash"><span class="variable">$DEFAULT_MAIL_DOMAIN</span> = <span class="string">"example.com"</span>;</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash"><span class="comment"># Default base</span></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash"><span class="variable">$DEFAULT_BASE</span> = <span class="string">"dc=example,dc=com"</span>;</span></span><br><span class="line">/usr/share/migrationtools/migrate_all_online.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="openldap认证系统登录用户" class="article-heading"><a href="#openldap认证系统登录用户" class="headerlink" title="openldap认证系统登录用户"></a>openldap认证系统登录用户<a class="article-anchor" href="#openldap认证系统登录用户" aria-hidden="true"></a></h2><h3 id="环境介绍" class="article-heading"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍<a class="article-anchor" href="#环境介绍" aria-hidden="true"></a></h3><p>&nbsp; &nbsp;&nbsp; &nbsp;总共使用3台虚拟机</p>
+<table>
+<thead>
+<tr>
+<th align="left">主机</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">servera.pod0.example.com (172.25.0.10/24)</td>
+<td align="left">运行openldap服务，提供集中化认证与数据共享服务</td>
+</tr>
+<tr>
+<td align="left">serverb.pod0.example.com (172.25.0.11/24)</td>
+<td align="left">提供基本用户登录，ssh服务，ftp服务与http服务，所有的用户认证均通过servera来认证</td>
+</tr>
+<tr>
+<td align="left">workstation.pod0.example.com (172.25.0.9/24)</td>
+<td align="left">client测试端，通过ssh，ftp，http等方式访问serverb。</td>
+</tr>
+</tbody></table>
+<h3 id="安装配置openldap" class="article-heading"><a href="#安装配置openldap" class="headerlink" title="安装配置openldap"></a>安装配置openldap<a class="article-anchor" href="#安装配置openldap" aria-hidden="true"></a></h3><h4 id="安装opendap" class="article-heading"><a href="#安装opendap" class="headerlink" title="安装opendap"></a>安装opendap<a class="article-anchor" href="#安装opendap" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[kiosk@foundation0 ~]$ rht-vmctl  start servera</span><br><span class="line">[kiosk@foundation0 ~]$ ssh root@172.25.0.10</span><br><span class="line">Last login: Sun Aug  9 17:52:00 2015</span><br><span class="line">[root@servera ~]# iptables -F</span><br><span class="line">[root@servera ~]# setenforce 0</span><br><span class="line">[root@servera ~]# yum install openldap-clients migrationtools openldap-servers openldap -y</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">rhel_dvd                                         | 4.1 kB     00:00</span><br><span class="line">(1/2): rhel_dvd/group_gz                           | 134 kB   00:00</span><br><span class="line">(2/2): rhel_dvd/primary_db                         | 3.4 MB   00:00</span><br><span class="line">Package openldap-2.4.39-6.el7.x86_64 already installed and latest version</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package migrationtools.noarch 0:47-15.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package openldap-clients.x86_64 0:2.4.39-6.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package openldap-servers.x86_64 0:2.4.39-6.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: libltdl.so.7()(64bit) <span class="keyword">for</span> package: openldap-servers-2.4.39-6.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package libtool-ltdl.x86_64 0:2.4.2-20.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line">Dependencies Resolved</span><br><span class="line">========================================================================</span><br><span class="line"> Package              Arch       Version             Repository    Size</span><br><span class="line">========================================================================</span><br><span class="line">Installing:</span><br><span class="line"> migrationtools       noarch     47-15.el7           rhel_dvd      26 k</span><br><span class="line"> openldap-clients     x86_64     2.4.39-6.el7        rhel_dvd     184 k</span><br><span class="line"> openldap-servers     x86_64     2.4.39-6.el7        rhel_dvd     2.1 M</span><br><span class="line">Installing for dependencies:</span><br><span class="line"> libtool-ltdl         x86_64     2.4.2-20.el7        rhel_dvd      49 k</span><br><span class="line">Transaction Summary</span><br><span class="line">========================================================================</span><br><span class="line">Install  3 Packages (+1 Dependent package)</span><br><span class="line">Total download size: 2.3 M</span><br><span class="line">Installed size: 5.4 M</span><br><span class="line">Downloading packages:</span><br><span class="line">(1/4): libtool-ltdl-2.4.2-20.el7.x86_64.rpm        |  49 kB   00:00</span><br><span class="line">(2/4): migrationtools-47-15.el7.noarch.rpm         |  26 kB   00:00</span><br><span class="line">(3/4): openldap-clients-2.4.39-6.el7.x86_64.rpm    | 184 kB   00:00</span><br><span class="line">(4/4): openldap-servers-2.4.39-6.el7.x86_64.rpm    | 2.1 MB   00:00</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">Total                                      7.0 MB/s | 2.3 MB  00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : libtool-ltdl-2.4.2-20.el7.x86_64                     1/4</span><br><span class="line">  Installing : openldap-servers-2.4.39-6.el7.x86_64                 2/4</span><br><span class="line">  Installing : migrationtools-47-15.el7.noarch                      3/4</span><br><span class="line">  Installing : openldap-clients-2.4.39-6.el7.x86_64                 4/4</span><br><span class="line">  Verifying  : libtool-ltdl-2.4.2-20.el7.x86_64                     1/4</span><br><span class="line">  Verifying  : openldap-servers-2.4.39-6.el7.x86_64                 2/4</span><br><span class="line">  Verifying  : migrationtools-47-15.el7.noarch                      3/4</span><br><span class="line">  Verifying  : openldap-clients-2.4.39-6.el7.x86_64                 4/4</span><br><span class="line">Installed:</span><br><span class="line">  migrationtools.noarch 0:47-15.el7</span><br><span class="line">  openldap-clients.x86_64 0:2.4.39-6.el7</span><br><span class="line">  openldap-servers.x86_64 0:2.4.39-6.el7</span><br><span class="line">Dependency Installed:</span><br><span class="line">  libtool-ltdl.x86_64 0:2.4.2-20.el7</span><br><span class="line">Complete!</span><br><span class="line">[root@servera ~]#</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="配置启动openldap" class="article-heading"><a href="#配置启动openldap" class="headerlink" title="配置启动openldap"></a>配置启动openldap<a class="article-anchor" href="#配置启动openldap" aria-hidden="true"></a></h4><p>&nbsp; &nbsp;&nbsp; &nbsp;openldap配置文件存放于/etc/openldap/slapd.d/目录下，你可以直接修改此目录下的文件，由于此文件格式本身并不直观，所以建议先使用旧式的配置文件/etc/openldap/slapd.conf，待配置完成后，再通过格式转换命令转成标准配置文件。</p>
+<p>&nbsp; &nbsp;&nbsp; &nbsp;在配置过程中需要定义管理员密码，建议先使用slappasswd命令产生一个密文的密码，再将此密码定义到配置文件中，以提高安全性。实验中全局管理员密码为config</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# slappasswd</span><br><span class="line">New password:</span><br><span class="line">Re-enter new password:</span><br><span class="line">{SSHA}IeopqaxvZY1/I7HavmzRQ8zEp4vwNjmF</span><br></pre></td></tr></tbody></table></figure>
+
+<p>产生旧式的配置文件，并做格式转换</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# vi /etc/openldap/slapd.conf</span><br><span class="line">include         /etc/openldap/schema/corba.schema</span><br><span class="line">include         /etc/openldap/schema/core.schema</span><br><span class="line">include         /etc/openldap/schema/cosine.schema</span><br><span class="line">include         /etc/openldap/schema/duaconf.schema</span><br><span class="line">include         /etc/openldap/schema/dyngroup.schema</span><br><span class="line">include         /etc/openldap/schema/inetorgperson.schema</span><br><span class="line">include         /etc/openldap/schema/java.schema</span><br><span class="line">include         /etc/openldap/schema/misc.schema</span><br><span class="line">include         /etc/openldap/schema/nis.schema</span><br><span class="line">include         /etc/openldap/schema/openldap.schema</span><br><span class="line">include         /etc/openldap/schema/pmi.schema</span><br><span class="line">include         /etc/openldap/schema/ppolicy.schema</span><br><span class="line">include         /etc/openldap/schema/collective.schema</span><br><span class="line">allow bind_v2</span><br><span class="line">pidfile         /var/run/openldap/slapd.pid</span><br><span class="line">argsfile        /var/run/openldap/slapd.args</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">###  Encrypting Connections</span></span></span><br><span class="line">TLSCACertificateFile /etc/pki/tls/certs/ca.crt</span><br><span class="line">TLSCertificateFile /etc/pki/tls/certs/slapd.crt</span><br><span class="line">TLSCertificateKeyFile /etc/pki/tls/certs/slapd.key</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">## Database Config###</span></span></span><br><span class="line">database config</span><br><span class="line">rootdn "cn=admin,cn=config"</span><br><span class="line">rootpw {SSHA}IeopqaxvZY1/I7HavmzRQ8zEp4vwNjmF</span><br><span class="line">access to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">## Enable Monitoring</span></span></span><br><span class="line">database monitor</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">allow only rootdn to <span class="built_in">read</span> the monitor</span></span><br><span class="line">access to * by dn.exact="cn=admin,cn=config" read by * none</span><br><span class="line">[root@servera ~]#</span><br><span class="line">[root@servera ~]# rm -rf /etc/openldap/slapd.d/*</span><br><span class="line">[root@servera ~]# slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d</span><br><span class="line">config file testing succeeded</span><br><span class="line">[root@servera ~]# chown -R ldap:ldap /etc/openldap/slapd.d</span><br><span class="line">[root@servera ~]# chmod -R 000 /etc/openldap/slapd.d</span><br><span class="line">[root@servera ~]# chmod -R u+rwX /etc/openldap/slapd.d</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在配置过程中，由于安全需要，启动了相关加密，整个过程中定义<br>了相关证书文件</p>
+<blockquote>
+<p>TLSCACertificateFile /etc/pki/tls/certs/ca.crt<br>TLSCertificateFile /etc/pki/tls/certs/slapd.crt<br>TLSCertificateKeyFile /etc/pki/tls/certs/slapd.key</p>
+</blockquote>
+<p>我们需要将这些文件创建出来，以便openldap可以使用密文传输。创建证书过程可以通过openssl命令实现，或者直接从服务器上下载证书创建脚本来创建证书。脚本在创建过程中使用的主机名为你当前hostname，如果要修改，可以自行更改脚本。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# wget http://172.25.254.254/content/courses/up200/rhel7.1/materials/mkcert.sh</span><br><span class="line">--2016-09-18 03:45:24--  http://172.25.254.254/content/courses/up200/rhel7.1/materials/mkcert.sh</span><br><span class="line">Connecting to 172.25.254.254:80... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 3454 (3.4K) [application/x-sh]</span><br><span class="line">Saving to: ‘mkcert.sh’</span><br><span class="line"><span class="meta prompt_">100%</span><span class="language-bash">[==============================&gt;] 3,454       --.-K/s   <span class="keyword">in</span> 0s</span></span><br><span class="line">2016-09-18 03:45:24 (355 MB/s) - ‘mkcert.sh’ saved [3454/3454]</span><br><span class="line">[root@servera ~]# chmod +x mkcert.sh</span><br><span class="line">[root@servera ~]# ./mkcert.sh --create-ca-keys</span><br><span class="line">create the keys: my-ca.key,my-ca.crt</span><br><span class="line">the keys will save in : /etc/pki/CA/ and /etc/pki/CA/private/</span><br><span class="line">create finished , please check.</span><br><span class="line">[root@servera ~]# ./mkcert.sh --create-ldap-keys</span><br><span class="line">create the keys: ldap_server.key,ldap_server.crt</span><br><span class="line">the keys will save in : /etc/pki/CA/</span><br><span class="line">create finished , please check.</span><br><span class="line">[root@servera ~]# ls /etc/pki/CA/</span><br><span class="line">certs      index.txt.attr   ldap_server.csr  newcerts  serial.old</span><br><span class="line">crl        index.txt.old    ldap_server.key  private</span><br><span class="line">index.txt  ldap_server.crt  my-ca.crt        serial</span><br><span class="line">[root@servera ~]# cd /etc/pki/CA/</span><br><span class="line">[root@servera CA]# cp my-ca.crt /etc/pki/tls/certs/ca.crt</span><br><span class="line">[root@servera CA]# cp ldap_server.key /etc/pki/tls/certs/slapd.key</span><br><span class="line">[root@servera CA]# cp ldap_server.crt  /etc/pki/tls/certs/slapd.crt</span><br><span class="line">[root@servera CA]# cd ~</span><br></pre></td></tr></tbody></table></figure>
+
+<p>检查一下配置是否正确</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# cat /etc/openldap/slapd.d/cn\=config.ldif</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">CRC32 ae3c5fca</span></span><br><span class="line">dn: cn=config</span><br><span class="line">objectClass: olcGlobal</span><br><span class="line">cn: config</span><br><span class="line">olcConfigFile: /etc/openldap/slapd.conf</span><br><span class="line">olcConfigDir: /etc/openldap/slapd.d</span><br><span class="line">olcAllows: bind_v2</span><br><span class="line">olcArgsFile: /var/run/openldap/slapd.args</span><br><span class="line">olcAttributeOptions: lang-</span><br><span class="line">olcAuthzPolicy: none</span><br><span class="line">olcConcurrency: 0</span><br><span class="line">olcConnMaxPending: 100</span><br><span class="line">olcConnMaxPendingAuth: 1000</span><br><span class="line">olcGentleHUP: FALSE</span><br><span class="line">olcIdleTimeout: 0</span><br><span class="line">olcIndexSubstrIfMaxLen: 4</span><br><span class="line">olcIndexSubstrIfMinLen: 2</span><br><span class="line">olcIndexSubstrAnyLen: 4</span><br><span class="line">olcIndexSubstrAnyStep: 2</span><br><span class="line">olcIndexIntLen: 4</span><br><span class="line">olcListenerThreads: 1</span><br><span class="line">olcLocalSSF: 71</span><br><span class="line">olcLogLevel: 0</span><br><span class="line">olcPidFile: /var/run/openldap/slapd.pid</span><br><span class="line">olcReadOnly: FALSE</span><br><span class="line">olcReverseLookup: FALSE</span><br><span class="line">olcSaslSecProps: noplain,noanonymous</span><br><span class="line">olcSockbufMaxIncoming: 262143</span><br><span class="line">olcSockbufMaxIncomingAuth: 16777215</span><br><span class="line">olcThreads: 16</span><br><span class="line">olcTLSCACertificateFile: /etc/pki/tls/certs/ca.crt</span><br><span class="line">olcTLSCertificateFile: /etc/pki/tls/certs/slapd.crt</span><br><span class="line">olcTLSCertificateKeyFile: /etc/pki/tls/certs/slapd.key</span><br><span class="line">olcTLSVerifyClient: never</span><br><span class="line">olcTLSProtocolMin: 0.0</span><br><span class="line">olcToolThreads: 1</span><br><span class="line">olcWriteTimeout: 0</span><br><span class="line">structuralObjectClass: olcGlobal</span><br><span class="line">entryUUID: 76d13f64-1285-1036-8231-1325989af1ca</span><br><span class="line">creatorsName: cn=config</span><br><span class="line">createTimestamp: 20160919072145Z</span><br><span class="line">entryCSN: 20160919072145.074896Z#000000#000#000000</span><br><span class="line">modifiersName: cn=config</span><br><span class="line">modifyTimestamp: 20160919072145Z</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@servera ~]# cat /etc/openldap/slapd.d/cn\=config/olcDatabase\=\{0\}config.ldif</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">CRC32 ef81c122</span></span><br><span class="line">dn: olcDatabase={0}config</span><br><span class="line">objectClass: olcDatabaseConfig</span><br><span class="line">olcDatabase: {0}config</span><br><span class="line">olcAccess: {0}to *  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage  by * +0 break</span><br><span class="line">olcAddContentAcl: TRUE</span><br><span class="line">olcLastMod: TRUE</span><br><span class="line">olcMaxDerefDepth: 15</span><br><span class="line">olcReadOnly: FALSE</span><br><span class="line">olcRootDN: cn=admin,cn=config</span><br><span class="line">olcRootPW:: e1NTSEF9SWVvcHFheHZaWTEvSTdIYXZtelJROHpFcDR2d05qbUY=</span><br><span class="line">olcSyncUseSubentry: FALSE</span><br><span class="line">olcMonitoring: FALSE</span><br><span class="line">structuralObjectClass: olcDatabaseConfig</span><br><span class="line">entryUUID: 76daa130-1285-1036-8241-1325989af1ca</span><br><span class="line">creatorsName: cn=config</span><br><span class="line">createTimestamp: 20160919072145Z</span><br><span class="line">entryCSN: 20160919072145.074896Z#000000#000#000000</span><br><span class="line">modifiersName: cn=config</span><br><span class="line">modifyTimestamp: 20160919072145Z</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以看到关键性的几个参数已经生效</p>
+<blockquote>
+<p>olcAllows: bind_v2<br>olcTLSCACertificateFile: /etc/pki/tls/certs/ca.crt<br>olcTLSCertificateFile: /etc/pki/tls/certs/slapd.crt<br>olcTLSCertificateKeyFile: /etc/pki/tls/certs/slapd.key</p>
+<p>dn: olcDatabase={0}config<br>olcDatabase: {0}config<br>olcAccess: {0}to _ by dn.base=”gidNumber=0+uidNumber=0,cn=peercred,cn=externa l,cn=auth” manage by _ +0 break<br>olcRootDN: cn=admin,cn=config<br>olcRootPW:: e1NTSEF9SWVvcHFheHZaWTEvSTdIYXZtelJROHpFcDR2d05qbUY=</p>
+</blockquote>
+<p>再对openldap数据文件做一些基本配置定义就可以启动了。配置文件为DB_CONFIG</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# rm -rf /var/lib/ldap/*</span><br><span class="line">[root@servera ~]# chown ldap.ldap /var/lib/ldap</span><br><span class="line">[root@servera ~]# cp -p /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG</span><br><span class="line">[root@servera ~]# chown ldap. /var/lib/ldap/DB_CONFIG</span><br><span class="line">[root@servera ~]# systemctl start  slapd.service</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="创建用户数据库" class="article-heading"><a href="#创建用户数据库" class="headerlink" title="创建用户数据库"></a>创建用户数据库<a class="article-anchor" href="#创建用户数据库" aria-hidden="true"></a></h4><p>openldap虽然已经启动，但并没有任何数据，添加数据主要分2步，先做一些定义，然后添加条目。<br>定义用户数据库</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# mkdir ~/ldif</span><br><span class="line">[root@servera ~]# vi ~/ldif/bdb.ldif</span><br><span class="line">dn: olcDatabase=bdb,cn=config</span><br><span class="line">objectClass: olcDatabaseConfig</span><br><span class="line">objectClass: olcBdbConfig</span><br><span class="line">olcDatabase: {1}bdb</span><br><span class="line">olcSuffix: dc=example,dc=org</span><br><span class="line">olcDbDirectory: /var/lib/ldap</span><br><span class="line">olcRootDN: cn=Manager,dc=example,dc=org</span><br><span class="line">olcRootPW: redhat</span><br><span class="line">olcLimits: dn.exact="cn=Manager,dc=example,dc=org" time.soft=unlimited time.hard=unlimited size.soft=unlimited size.hard=unlimited</span><br><span class="line">olcDbIndex: uid pres,eq</span><br><span class="line">olcDbIndex: cn,sn,displayName pres,eq,approx,sub</span><br><span class="line">olcDbIndex: uidNumber,gidNumber eq</span><br><span class="line">olcDbIndex: memberUid eq</span><br><span class="line">olcDbIndex: objectClass eq</span><br><span class="line">olcDbIndex: entryUUID pres,eq</span><br><span class="line">olcDbIndex: entryCSN pres,eq</span><br><span class="line">olcAccess: to attrs=userPassword by self write by anonymous auth by dn.children="ou=admins,dc=example,dc=org" write  by * none</span><br><span class="line">olcAccess: to * by self write by dn.children="ou=admins,dc=example,dc=org" write by * read</span><br><span class="line">[root@servera ~]# ldapsearch -x -b "cn=config" -D "cn=admin,cn=config" -w config -h localhost dn -LLL | grep -v ^$</span><br><span class="line">dn: cn=config</span><br><span class="line">dn: cn=schema,cn=config</span><br><span class="line">dn: cn={0}corba,cn=schema,cn=config</span><br><span class="line">dn: cn={1}core,cn=schema,cn=config</span><br><span class="line">dn: cn={2}cosine,cn=schema,cn=config</span><br><span class="line">dn: cn={3}duaconf,cn=schema,cn=config</span><br><span class="line">dn: cn={4}dyngroup,cn=schema,cn=config</span><br><span class="line">dn: cn={5}inetorgperson,cn=schema,cn=config</span><br><span class="line">dn: cn={6}java,cn=schema,cn=config</span><br><span class="line">dn: cn={7}misc,cn=schema,cn=config</span><br><span class="line">dn: cn={8}nis,cn=schema,cn=config</span><br><span class="line">dn: cn={9}openldap,cn=schema,cn=config</span><br><span class="line">dn: cn={10}pmi,cn=schema,cn=config</span><br><span class="line">dn: cn={11}ppolicy,cn=schema,cn=config</span><br><span class="line">dn: cn={12}collective,cn=schema,cn=config</span><br><span class="line">dn: olcDatabase={-1}frontend,cn=config</span><br><span class="line">dn: olcDatabase={0}config,cn=config</span><br><span class="line">dn: olcDatabase={1}monitor,cn=config</span><br><span class="line">[root@servera ~]# ldapadd -x -D "cn=admin,cn=config" -w config -f ~/ldif/bdb.ldif -h localhost</span><br><span class="line">adding new entry "olcDatabase=bdb,cn=config"</span><br><span class="line">[root@servera ~]# ldapsearch -x -b "cn=config" -D "cn=admin,cn=config" -w config -h localhost dn -LLL | grep -v ^$</span><br><span class="line">dn: cn=config</span><br><span class="line">dn: cn=schema,cn=config</span><br><span class="line">dn: cn={0}corba,cn=schema,cn=config</span><br><span class="line">dn: cn={1}core,cn=schema,cn=config</span><br><span class="line">dn: cn={2}cosine,cn=schema,cn=config</span><br><span class="line">dn: cn={3}duaconf,cn=schema,cn=config</span><br><span class="line">dn: cn={4}dyngroup,cn=schema,cn=config</span><br><span class="line">dn: cn={5}inetorgperson,cn=schema,cn=config</span><br><span class="line">dn: cn={6}java,cn=schema,cn=config</span><br><span class="line">dn: cn={7}misc,cn=schema,cn=config</span><br><span class="line">dn: cn={8}nis,cn=schema,cn=config</span><br><span class="line">dn: cn={9}openldap,cn=schema,cn=config</span><br><span class="line">dn: cn={10}pmi,cn=schema,cn=config</span><br><span class="line">dn: cn={11}ppolicy,cn=schema,cn=config</span><br><span class="line">dn: cn={12}collective,cn=schema,cn=config</span><br><span class="line">dn: olcDatabase={-1}frontend,cn=config</span><br><span class="line">dn: olcDatabase={0}config,cn=config</span><br><span class="line">dn: olcDatabase={1}monitor,cn=config</span><br><span class="line">dn: olcDatabase={2}bdb,cn=config</span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以看到第二次查询的时候，我们看到了自己定义的bdb</p>
+<blockquote>
+<p>dn: olcDatabase={2}bdb,cn=config</p>
+</blockquote>
+<p>检查bdb配置</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# cat /etc/openldap/slapd.d/cn\=config/olcDatabase\=\{2\}bdb.ldif</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">CRC32 24749b9f</span></span><br><span class="line">dn: olcDatabase={2}bdb</span><br><span class="line">objectClass: olcDatabaseConfig</span><br><span class="line">objectClass: olcBdbConfig</span><br><span class="line">olcDatabase: {2}bdb</span><br><span class="line">olcDbDirectory: /var/lib/ldap</span><br><span class="line">olcSuffix: dc=example,dc=org</span><br><span class="line">olcAccess: {0}to attrs=userPassword by self write by anonymous auth by dn.chil</span><br><span class="line"> dren="ou=admins,dc=example,dc=org" write  by * none</span><br><span class="line">olcAccess: {1}to * by self write by dn.children="ou=admins,dc=example,dc=org"</span><br><span class="line"> write by * read</span><br><span class="line">olcLimits: {0}dn.exact="cn=Manager,dc=example,dc=org" time.soft=unlimited time</span><br><span class="line"> .hard=unlimited size.soft=unlimited size.hard=unlimited</span><br><span class="line">olcRootDN: cn=Manager,dc=example,dc=org</span><br><span class="line">olcRootPW:: cmVkaGF0</span><br><span class="line">olcDbIndex: uid pres,eq</span><br><span class="line">olcDbIndex: cn,sn,displayName pres,eq,approx,sub</span><br><span class="line">olcDbIndex: uidNumber,gidNumber eq</span><br><span class="line">olcDbIndex: memberUid eq</span><br><span class="line">olcDbIndex: objectClass eq</span><br><span class="line">olcDbIndex: entryUUID pres,eq</span><br><span class="line">olcDbIndex: entryCSN pres,eq</span><br><span class="line">structuralObjectClass: olcBdbConfig</span><br><span class="line">entryUUID: bf8176ac-1285-1036-9b37-e346a96f1369</span><br><span class="line">creatorsName: cn=admin,cn=config</span><br><span class="line">createTimestamp: 20160919072347Z</span><br><span class="line">entryCSN: 20160919072347.025734Z#000000#000#000000</span><br><span class="line">modifiersName: cn=admin,cn=config</span><br><span class="line">modifyTimestamp: 20160919072347Z</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>生效的关键性参数</p>
+<blockquote>
+<p>dn: olcDatabase={2}bdb<br>objectClass: olcDatabaseConfig<br>objectClass: olcBdbConfig<br>olcDatabase: {2}bdb<br>olcDbDirectory: /var/lib/ldap<br>olcSuffix: dc=example,dc=org<br>olcSuffix: dc=example,dc=org<br>olcAccess: {0}to attrs=userPassword by self write by anonymous auth by dn.children=”ou=admins,dc=example,dc=org” write by * none<br>olcRootDN: cn=Manager,dc=example,dc=org<br>olcRootPW:: cmVkaGF0</p>
+</blockquote>
+<p>添加用户条目过程中，本身条目格式定义比较麻烦，所以我通过ldap转换脚本来实现将系统用户转换成ldap用户。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# cd /usr/share/migrationtools/</span><br><span class="line">[root@servera migrationtools]# vi /usr/share/migrationtools/migrate_common.ph</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Default DNS domain</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">DEFAULT_MAIL_DOMAIN = <span class="string">"example.org"</span>;</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Default base</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">DEFAULT_BASE = <span class="string">"dc=example,dc=org"</span>;</span></span><br><span class="line">[root@servera migrationtools]# mkdir /ldapuser</span><br><span class="line">[root@servera migrationtools]# groupadd ldapuser1 -g 100001</span><br><span class="line">[root@servera migrationtools]# useradd ldapuser1 -u 100001 -g 100001 -d /ldapuser/ldapuser1</span><br><span class="line">[root@servera migrationtools]# groupadd ldapuser2 -g 100002</span><br><span class="line">[root@servera migrationtools]# useradd ldapuser2 -u 100002 -g 100002 -d /ldapuser/ldapuser2</span><br><span class="line">[root@servera migrationtools]# echo uplooking | passwd ldapuser1 --stdin</span><br><span class="line">Changing password for user ldapuser1.</span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br><span class="line">[root@servera migrationtools]# echo uplooking | passwd ldapuser2 --stdin</span><br><span class="line">Changing password for user ldapuser2.</span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br><span class="line">[root@servera migrationtools]# ./migrate_base.pl &gt; ~/ldif/base.ldif</span><br><span class="line">[root@servera migrationtools]# ./migrate_passwd.pl /etc/passwd &gt; ~/ldif/passwd.ldif</span><br><span class="line">[root@servera migrationtools]# ./migrate_group.pl /etc/group &gt; ~/ldif/group.ldif</span><br><span class="line">[root@servera migrationtools]# cd</span><br></pre></td></tr></tbody></table></figure>
+
+<p>通过ldap的转换脚本，已经将所有系统中的用户转换成了ldap语法格式，总共有3个ldap文件</p>
+<blockquote>
+<p>~/ldif/base.ldif<br>~/ldif/passwd.ldif<br>~/ldif/group.ldif</p>
+</blockquote>
+<p>这3个文件中并非所有的内容都需要，我们实验过程中只需要将ldapuser1与ldapuser2添加到ldap用户数据库中，所以修改这3个文件，将不需要的内容删除，确保这3个文件的内容如下：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# vi ldif/base.ldif</span><br><span class="line">dn: dc=example,dc=org</span><br><span class="line">dc: example</span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: domain</span><br><span class="line">dn: ou=People,dc=example,dc=org</span><br><span class="line">ou: People</span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: organizationalUnit</span><br><span class="line">dn: ou=Group,dc=example,dc=org</span><br><span class="line">ou: Group</span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: organizationalUnit</span><br><span class="line">[root@servera ~]# vi ldif/passwd.ldif</span><br><span class="line">dn: uid=ldapuser1,ou=People,dc=example,dc=org</span><br><span class="line">uid: ldapuser1</span><br><span class="line">cn: ldapuser1</span><br><span class="line">objectClass: account</span><br><span class="line">objectClass: posixAccount</span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: shadowAccount</span><br><span class="line">userPassword: {crypt}$6$bnRPbjMr$zA/LqFk9TSNMjQohKQ24l5pccMDD/kr0yO6gxXd8jbC3AVwGQ3WJqWNThjNpNZ3irAVM9pBIb.k.JakDCbPQa/</span><br><span class="line">shadowLastChange: 17063</span><br><span class="line">shadowMin: 0</span><br><span class="line">shadowMax: 99999</span><br><span class="line">shadowWarning: 7</span><br><span class="line">loginShell: /bin/bash</span><br><span class="line">uidNumber: 100001</span><br><span class="line">gidNumber: 100001</span><br><span class="line">homeDirectory: /ldapuser/ldapuser1</span><br><span class="line">dn: uid=ldapuser2,ou=People,dc=example,dc=org</span><br><span class="line">uid: ldapuser2</span><br><span class="line">cn: ldapuser2</span><br><span class="line">objectClass: account</span><br><span class="line">objectClass: posixAccount</span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: shadowAccount</span><br><span class="line">userPassword: {crypt}$6$6rpvFntm$dVBVcMmLFDnvREB9rTBx83mGXvId7whrOBvnWWdQH0mqkTbshTu23oiVlXw7yGxgakNTSl/5/5E.V570oA7qV0</span><br><span class="line">shadowLastChange: 17063</span><br><span class="line">shadowMin: 0</span><br><span class="line">shadowMax: 99999</span><br><span class="line">shadowWarning: 7</span><br><span class="line">loginShell: /bin/bash</span><br><span class="line">uidNumber: 100002</span><br><span class="line">gidNumber: 100002</span><br><span class="line">homeDirectory: /ldapuser/ldapuser2</span><br><span class="line">[root@servera ~]# vi ldif/group.ldif</span><br><span class="line">dn: cn=ldapuser1,ou=Group,dc=example,dc=org</span><br><span class="line">objectClass: posixGroup</span><br><span class="line">objectClass: top</span><br><span class="line">cn: ldapuser1</span><br><span class="line">userPassword: {crypt}x</span><br><span class="line">gidNumber: 100001</span><br><span class="line">dn: cn=ldapuser2,ou=Group,dc=example,dc=org</span><br><span class="line">objectClass: posixGroup</span><br><span class="line">objectClass: top</span><br><span class="line">cn: ldapuser2</span><br><span class="line">userPassword: {crypt}x</span><br><span class="line">gidNumber: 100002</span><br><span class="line">[root@servera ~]#</span><br></pre></td></tr></tbody></table></figure>
+
+<p><em>重要：ldif文件的格式要求非常，非常的严格，一定要注意空白行不能少了。</em><br>最后将用户条目添加到ldap数据库中。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# ldapadd -x -D "cn=Manager,dc=example,dc=org" -w redhat -h localhost -f ~/ldif/base.ldif</span><br><span class="line">adding new entry "dc=example,dc=org"</span><br><span class="line">adding new entry "ou=People,dc=example,dc=org"</span><br><span class="line">adding new entry "ou=Group,dc=example,dc=org"</span><br><span class="line">[root@servera ~]# ldapadd -x -D "cn=Manager,dc=example,dc=org" -w redhat -h localhost -f ~/ldif/passwd.ldif</span><br><span class="line">adding new entry "uid=ldapuser1,ou=People,dc=example,dc=org"</span><br><span class="line">adding new entry "uid=ldapuser2,ou=People,dc=example,dc=org"</span><br><span class="line">[root@servera ~]# ldapadd -x -D "cn=Manager,dc=example,dc=org" -w redhat -h localhost -f ~/ldif/group.ldif</span><br><span class="line">adding new entry "cn=ldapuser1,ou=Group,dc=example,dc=org"</span><br><span class="line">adding new entry "cn=ldapuser2,ou=Group,dc=example,dc=org"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在测试认证过程中，serverb主机需要用到ca.crt文件 ，与用户家目录，所以通过http方式共享出ca.crt文件，通过nfs方式共享出用户家目录。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@servera ~]# yum install httpd -y</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package httpd.x86_64 0:2.4.6-31.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: httpd-tools = 2.4.6-31.el7 <span class="keyword">for</span> package: httpd-2.4.6-31.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: /etc/mime.types <span class="keyword">for</span> package: httpd-2.4.6-31.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: libapr-1.so.0()(64bit) <span class="keyword">for</span> package: httpd-2.4.6-31.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: libaprutil-1.so.0()(64bit) <span class="keyword">for</span> package: httpd-2.4.6-31.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package apr.x86_64 0:1.4.8-3.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package apr-util.x86_64 0:1.5.2-6.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package httpd-tools.x86_64 0:2.4.6-31.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package mailcap.noarch 0:2.1.41-2.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line">Dependencies Resolved</span><br><span class="line">========================================================================</span><br><span class="line"> Package           Arch         Version            Repository      Size</span><br><span class="line">========================================================================</span><br><span class="line">Installing:</span><br><span class="line"> httpd             x86_64       2.4.6-31.el7       rhel_dvd       1.2 M</span><br><span class="line">Installing for dependencies:</span><br><span class="line"> apr               x86_64       1.4.8-3.el7        rhel_dvd       103 k</span><br><span class="line"> apr-util          x86_64       1.5.2-6.el7        rhel_dvd        92 k</span><br><span class="line"> httpd-tools       x86_64       2.4.6-31.el7       rhel_dvd        79 k</span><br><span class="line"> mailcap           noarch       2.1.41-2.el7       rhel_dvd        31 k</span><br><span class="line">Transaction Summary</span><br><span class="line">========================================================================</span><br><span class="line">Install  1 Package (+4 Dependent packages)</span><br><span class="line">Total download size: 1.5 M</span><br><span class="line">Installed size: 4.3 M</span><br><span class="line">Downloading packages:</span><br><span class="line">(1/5): apr-1.4.8-3.el7.x86_64.rpm                  | 103 kB   00:00</span><br><span class="line">(2/5): httpd-2.4.6-31.el7.x86_64.rpm               | 1.2 MB   00:00</span><br><span class="line">(3/5): apr-util-1.5.2-6.el7.x86_64.rpm             |  92 kB   00:00</span><br><span class="line">(4/5): httpd-tools-2.4.6-31.el7.x86_64.rpm         |  79 kB   00:00</span><br><span class="line">(5/5): mailcap-2.1.41-2.el7.noarch.rpm             |  31 kB   00:00</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">Total                                      5.3 MB/s | 1.5 MB  00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : apr-1.4.8-3.el7.x86_64                               1/5</span><br><span class="line">  Installing : apr-util-1.5.2-6.el7.x86_64                          2/5</span><br><span class="line">  Installing : httpd-tools-2.4.6-31.el7.x86_64                      3/5</span><br><span class="line">  Installing : mailcap-2.1.41-2.el7.noarch                          4/5</span><br><span class="line">  Installing : httpd-2.4.6-31.el7.x86_64                            5/5</span><br><span class="line">  Verifying  : mailcap-2.1.41-2.el7.noarch                          1/5</span><br><span class="line">  Verifying  : httpd-2.4.6-31.el7.x86_64                            2/5</span><br><span class="line">  Verifying  : apr-1.4.8-3.el7.x86_64                               3/5</span><br><span class="line">  Verifying  : apr-util-1.5.2-6.el7.x86_64                          4/5</span><br><span class="line">  Verifying  : httpd-tools-2.4.6-31.el7.x86_64                      5/5</span><br><span class="line">Installed:</span><br><span class="line">  httpd.x86_64 0:2.4.6-31.el7</span><br><span class="line">Dependency Installed:</span><br><span class="line">  apr.x86_64 0:1.4.8-3.el7             apr-util.x86_64 0:1.5.2-6.el7</span><br><span class="line">  httpd-tools.x86_64 0:2.4.6-31.el7    mailcap.noarch 0:2.1.41-2.el7</span><br><span class="line">Complete!</span><br><span class="line">[root@servera ~]#</span><br><span class="line">[root@servera ~]# cp /etc/pki/tls/certs/ca.crt /var/www/html/</span><br><span class="line">[root@servera ~]# systemctl  start httpd</span><br><span class="line">[root@servera ~]# vi /etc/exports</span><br><span class="line">/ldapuser 172.25.0.0/24(rw,async)</span><br><span class="line">[root@servera ~]# systemctl  start nfs</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="配置serverb使用ldap认证" class="article-heading"><a href="#配置serverb使用ldap认证" class="headerlink" title="配置serverb使用ldap认证"></a>配置serverb使用ldap认证<a class="article-anchor" href="#配置serverb使用ldap认证" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[kiosk@foundation0 Desktop]$ rht-vmctl  start serverb</span><br><span class="line">Starting serverb.</span><br><span class="line">[kiosk@foundation0 Desktop]$ ssh root@172.25.0.11</span><br><span class="line">Last login: Sun Sep 18 04:03:47 2016 from 172.25.0.250</span><br><span class="line">[root@serverb ~]# setenforce 0</span><br><span class="line">[root@serverb ~]# yum install openldap openldap-clients nss-pam-ldapd -y</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">Package openldap-2.4.39-6.el7.x86_64 already installed and latest version</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package nss-pam-ldapd.x86_64 0:0.8.13-8.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: nscd <span class="keyword">for</span> package: nss-pam-ldapd-0.8.13-8.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package openldap-clients.x86_64 0:2.4.39-6.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package nscd.x86_64 0:2.17-78.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line">Dependencies Resolved</span><br><span class="line">========================================================================</span><br><span class="line"> Package              Arch       Version             Repository    Size</span><br><span class="line">========================================================================</span><br><span class="line">Installing:</span><br><span class="line"> nss-pam-ldapd        x86_64     0.8.13-8.el7        rhel_dvd     159 k</span><br><span class="line"> openldap-clients     x86_64     2.4.39-6.el7        rhel_dvd     184 k</span><br><span class="line">Installing for dependencies:</span><br><span class="line"> nscd                 x86_64     2.17-78.el7         rhel_dvd     255 k</span><br><span class="line">Transaction Summary</span><br><span class="line">========================================================================</span><br><span class="line">Install  2 Packages (+1 Dependent package)</span><br><span class="line">Total download size: 597 k</span><br><span class="line">Installed size: 1.1 M</span><br><span class="line">Downloading packages:</span><br><span class="line">(1/3): nscd-2.17-78.el7.x86_64.rpm                 | 255 kB   00:00</span><br><span class="line">(2/3): openldap-clients-2.4.39-6.el7.x86_64.rpm    | 184 kB   00:00</span><br><span class="line">(3/3): nss-pam-ldapd-0.8.13-8.el7.x86_64.rpm       | 159 kB   00:00</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">Total                                      2.0 MB/s | 597 kB  00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : nscd-2.17-78.el7.x86_64                              1/3</span><br><span class="line">  Installing : nss-pam-ldapd-0.8.13-8.el7.x86_64                    2/3</span><br><span class="line">  Installing : openldap-clients-2.4.39-6.el7.x86_64                 3/3</span><br><span class="line">  Verifying  : nss-pam-ldapd-0.8.13-8.el7.x86_64                    1/3</span><br><span class="line">  Verifying  : nscd-2.17-78.el7.x86_64                              2/3</span><br><span class="line">  Verifying  : openldap-clients-2.4.39-6.el7.x86_64                 3/3</span><br><span class="line">Installed:</span><br><span class="line">  nss-pam-ldapd.x86_64 0:0.8.13-8.el7</span><br><span class="line">  openldap-clients.x86_64 0:2.4.39-6.el7</span><br><span class="line">Dependency Installed:</span><br><span class="line">  nscd.x86_64 0:2.17-78.el7</span><br><span class="line">Complete!</span><br><span class="line">[root@serverb ~]# id ldapuser1</span><br><span class="line">id: ldapuser1: no such user</span><br><span class="line">[root@serverb ~]# authconfig --enableldap --enableldapauth --ldapserver=servera.pod0.example.com --ldapbasedn="dc=example,dc=org" --enableldaptls --ldaploadcacert=http://servera.pod0.example.com/ca.crt   --update</span><br><span class="line">[root@serverb ~]# id ldapuser1</span><br><span class="line">uid=1001(ldapuser1) gid=1001(ldapuser1) groups=1001(ldapuser1)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>目前只能通过验证，如果真使用ldapuser1用户登录，会发现在serverb上并没有用户家目录，所以需要将servera的ldapuser1…用户安目录挂接到serverb。挂接方式有2种，一种是写/etc/fstab文件的开机过程中自动挂接，另一种是使用autofs。推荐使用autofs。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@serverb ~]# su - ldapuser1</span><br><span class="line">su: warning: cannot change directory to /ldapuser/ldapuser1: No such file or directory</span><br><span class="line">-bash-4.2$</span><br><span class="line">-bash-4.2$ exit</span><br><span class="line">logout</span><br><span class="line">[root@serverb ~]# yum install autofs -y</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package autofs.x86_64 1:5.0.7-48.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: libhesiod.so.0()(64bit) <span class="keyword">for</span> package: 1:autofs-5.0.7-48.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package hesiod.x86_64 0:3.2.1-3.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line">Dependencies Resolved</span><br><span class="line">========================================================================</span><br><span class="line"> Package      Arch         Version                 Repository      Size</span><br><span class="line">========================================================================</span><br><span class="line">Installing:</span><br><span class="line"> autofs       x86_64       1:5.0.7-48.el7          rhel_dvd       789 k</span><br><span class="line">Installing for dependencies:</span><br><span class="line"> hesiod       x86_64       3.2.1-3.el7             rhel_dvd        30 k</span><br><span class="line">Transaction Summary</span><br><span class="line">========================================================================</span><br><span class="line">Install  1 Package (+1 Dependent package)</span><br><span class="line">Total download size: 819 k</span><br><span class="line">Installed size: 5.1 M</span><br><span class="line">Downloading packages:</span><br><span class="line">(1/2): autofs-5.0.7-48.el7.x86_64.rpm              | 789 kB   00:00</span><br><span class="line">(2/2): hesiod-3.2.1-3.el7.x86_64.rpm               |  30 kB   00:00</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">Total                                      2.9 MB/s | 819 kB  00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : hesiod-3.2.1-3.el7.x86_64                            1/2</span><br><span class="line">  Installing : 1:autofs-5.0.7-48.el7.x86_64                         2/2</span><br><span class="line">  Verifying  : hesiod-3.2.1-3.el7.x86_64                            1/2</span><br><span class="line">  Verifying  : 1:autofs-5.0.7-48.el7.x86_64                         2/2</span><br><span class="line">Installed:</span><br><span class="line">  autofs.x86_64 1:5.0.7-48.el7</span><br><span class="line">Dependency Installed:</span><br><span class="line">  hesiod.x86_64 0:3.2.1-3.el7</span><br><span class="line">Complete!</span><br><span class="line">[root@serverb ~]# vi /etc/auto.master</span><br><span class="line">[root@serverb ~]# echo '/ldapuser /etc/auto.ldapuser' &gt;&gt; /etc/auto.master</span><br><span class="line">[root@serverb ~]# echo '* -rw,soft,intr servera.pod0.example.com:/ldapuser/&amp;' &gt; /etc/auto.ldapuser</span><br><span class="line">[root@serverb ~]# ls /</span><br><span class="line">bin   dev  home  lib64  mnt  proc  run   srv  tmp  var</span><br><span class="line">boot  etc  lib   media  opt  root  sbin  sys  usr</span><br><span class="line">[root@serverb ~]# systemctl  start autofs</span><br><span class="line">[root@serverb ~]# ls /</span><br><span class="line">bin   dev  home      lib    media  mnt  opt   root  sbin  sys  usr</span><br><span class="line">boot  etc  ldapuser  lib64  misc   net  proc  run   srv   tmp  var</span><br><span class="line">[root@serverb ~]# su - ldapuser1</span><br><span class="line">Last login: Mon Sep 19 03:35:19 EDT 2016 on pts/0</span><br><span class="line">[ldapuser1@serverb ~]$ exit</span><br><span class="line">logout</span><br><span class="line">[root@serverb ~]# mount | grep ldapuser1</span><br><span class="line">servera.pod0.example.com:/ldapuser/ldapuser1 on /ldapuser/ldapuser1 type nfs4 (ro,relatime,vers=4.0,rsize=65536,wsize=65536,namlen=255,soft,proto=tcp,port=0,timeo=600,retrans=2,sec=sys,clientaddr=172.25.0.11,local_lock=none,addr=172.25.0.10)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>####serverb上使用tty登录测试</p>
+<p><img src="/open_ldap/ldapuser-001.png" alt="ldapuserlogin"></p>
+<p><img src="/open_ldap/ldapuser-002.png" alt="ldapuserlogin"></p>
+<p><img src="/open_ldap/ldapuser-003.png" alt="ldapuserlogin"></p>
+<h4 id="workstation使用ssh测试" class="article-heading"><a href="#workstation使用ssh测试" class="headerlink" title="workstation使用ssh测试"></a>workstation使用ssh测试<a class="article-anchor" href="#workstation使用ssh测试" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[kiosk@foundation0 ~]$ rht-vmctl  start workstation</span><br><span class="line">Starting workstation.</span><br><span class="line">[kiosk@foundation0 ~]$ ssh root@172.25.0.9</span><br><span class="line">Last login: Sun Aug  9 17:45:12 2015</span><br><span class="line">[root@workstation ~]# ssh ldapuser1@172.25.0.11</span><br><span class="line">The authenticity of host '172.25.0.11 (172.25.0.11)' can't be established.</span><br><span class="line">ECDSA key fingerprint is 0b:1f:3b:13:2e:d2:10:53:4c:3d:c8:f4:86:24:d3:5e.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br><span class="line">Warning: Permanently added '172.25.0.11' (ECDSA) to the list of known hosts.</span><br><span class="line">ldapuser1@172.25.0.11's password:</span><br><span class="line">Last login: Mon Sep 19 03:48:08 2016 from 172.25.0.250</span><br><span class="line">[ldapuser1@serverb ~]$ exit</span><br><span class="line">logout</span><br><span class="line">Connection to 172.25.0.11 closed.</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="openldap认证ftp登录用户" class="article-heading"><a href="#openldap认证ftp登录用户" class="headerlink" title="openldap认证ftp登录用户"></a>openldap认证ftp登录用户<a class="article-anchor" href="#openldap认证ftp登录用户" aria-hidden="true"></a></h4><p>serverb安装启动vsftpd</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@serverb ~]# yum install vsftpd -y</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package vsftpd.x86_64 0:3.0.2-9.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line">Dependencies Resolved</span><br><span class="line">========================================================================</span><br><span class="line"> Package       Arch          Version              Repository       Size</span><br><span class="line">========================================================================</span><br><span class="line">Installing:</span><br><span class="line"> vsftpd        x86_64        3.0.2-9.el7          rhel_dvd        166 k</span><br><span class="line">Transaction Summary</span><br><span class="line">========================================================================</span><br><span class="line">Install  1 Package</span><br><span class="line">Total download size: 166 k</span><br><span class="line">Installed size: 343 k</span><br><span class="line">Downloading packages:</span><br><span class="line">vsftpd-3.0.2-9.el7.x86_64.rpm                      | 166 kB   00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : vsftpd-3.0.2-9.el7.x86_64                            1/1</span><br><span class="line">  Verifying  : vsftpd-3.0.2-9.el7.x86_64                            1/1</span><br><span class="line">Installed:</span><br><span class="line">  vsftpd.x86_64 0:3.0.2-9.el7</span><br><span class="line">Complete!</span><br><span class="line">[root@serverb ~]# systemctl  start vsftpd</span><br></pre></td></tr></tbody></table></figure>
+
+<p>workstation测试</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@workstation ~]# yum install lftp -y</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">rhel_dvd                                                            | 4.1 kB  00:00:00</span><br><span class="line">(1/2): rhel_dvd/group_gz                                            | 134 kB  00:00:00</span><br><span class="line">(2/2): rhel_dvd/primary_db                                          | 3.4 MB  00:00:00</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package lftp.x86_64 0:4.4.8-3.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line">Dependencies Resolved</span><br><span class="line">===========================================================================================</span><br><span class="line"> Package          Arch               Version                    Repository            Size</span><br><span class="line">===========================================================================================</span><br><span class="line">Installing:</span><br><span class="line"> lftp             x86_64             4.4.8-3.el7                rhel_dvd             749 k</span><br><span class="line">Transaction Summary</span><br><span class="line">===========================================================================================</span><br><span class="line">Install  1 Package</span><br><span class="line">Total download size: 749 k</span><br><span class="line">Installed size: 2.4 M</span><br><span class="line">Downloading packages:</span><br><span class="line">lftp-4.4.8-3.el7.x86_64.rpm                                         | 749 kB  00:00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : lftp-4.4.8-3.el7.x86_64                                                 1/1</span><br><span class="line">  Verifying  : lftp-4.4.8-3.el7.x86_64                                                 1/1</span><br><span class="line">Installed:</span><br><span class="line">  lftp.x86_64 0:4.4.8-3.el7</span><br><span class="line">Complete!</span><br><span class="line">[root@workstation ~]# lftp ldapuser1@172.25.0.11</span><br><span class="line">Password:</span><br><span class="line">lftp ldapuser1@172.25.0.11:~&gt; ls -a</span><br><span class="line">drwx------    2 100001   100001         59 Sep 19 07:24 .</span><br><span class="line">drwxr-xr-x    3 0        0               0 Sep 19 07:42 ..</span><br><span class="line">-rw-r--r--    1 100001   100001         18 Jan 11  2015 .bash_logout</span><br><span class="line">-rw-r--r--    1 100001   100001        193 Jan 11  2015 .bash_profile</span><br><span class="line">-rw-r--r--    1 100001   100001        231 Jan 11  2015 .bashrc</span><br><span class="line">lftp ldapuser1@172.25.0.11:~&gt; put anaconda-ks.cfg</span><br><span class="line">9462 bytes transferred</span><br><span class="line">lftp ldapuser1@172.25.0.11:~&gt; ls -a</span><br><span class="line">drwx------    2 100001   100001         81 Sep 19 07:56 .</span><br><span class="line">drwxr-xr-x    3 0        0               0 Sep 19 07:56 ..</span><br><span class="line">-rw-r--r--    1 100001   100001         18 Jan 11  2015 .bash_logout</span><br><span class="line">-rw-r--r--    1 100001   100001        193 Jan 11  2015 .bash_profile</span><br><span class="line">-rw-r--r--    1 100001   100001        231 Jan 11  2015 .bashrc</span><br><span class="line">-rw-r--r--    1 100001   100001       9462 Sep 19 07:56 anaconda-ks.cfg</span><br><span class="line">lftp ldapuser1@172.25.0.11:~&gt; exit</span><br><span class="line">[root@workstation ~]#</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="openldap认证apache登录用户" class="article-heading"><a href="#openldap认证apache登录用户" class="headerlink" title="openldap认证apache登录用户"></a>openldap认证apache登录用户<a class="article-anchor" href="#openldap认证apache登录用户" aria-hidden="true"></a></h3><p>serverb安装配置apache</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@serverb ~]# yum install wget -y</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">Package wget-1.14-10.el7_0.1.x86_64 already installed and latest version</span><br><span class="line">Nothing to do</span><br><span class="line">[root@serverb ~]# yum install wget -y</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">Package wget-1.14-10.el7_0.1.x86_64 already installed and latest version</span><br><span class="line">Nothing to do</span><br><span class="line">[root@serverb ~]# rpm -e wget</span><br><span class="line">[root@serverb ~]# yum install wget -y</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package wget.x86_64 0:1.14-10.el7_0.1 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line">Dependencies Resolved</span><br><span class="line">========================================================================</span><br><span class="line"> Package     Arch          Version                Repository       Size</span><br><span class="line">========================================================================</span><br><span class="line">Installing:</span><br><span class="line"> wget        x86_64        1.14-10.el7_0.1        rhel_dvd        546 k</span><br><span class="line">Transaction Summary</span><br><span class="line">========================================================================</span><br><span class="line">Install  1 Package</span><br><span class="line">Total download size: 546 k</span><br><span class="line">Installed size: 2.0 M</span><br><span class="line">Downloading packages:</span><br><span class="line">wget-1.14-10.el7_0.1.x86_64.rpm                    | 546 kB   00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">Warning: RPMDB altered outside of yum.</span><br><span class="line">  Installing : wget-1.14-10.el7_0.1.x86_64                          1/1</span><br><span class="line">  Verifying  : wget-1.14-10.el7_0.1.x86_64                          1/1</span><br><span class="line">Installed:</span><br><span class="line">  wget.x86_64 0:1.14-10.el7_0.1</span><br><span class="line">Complete!</span><br><span class="line">[root@serverb ~]# yum install httpd -y</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package httpd.x86_64 0:2.4.6-31.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: httpd-tools = 2.4.6-31.el7 <span class="keyword">for</span> package: httpd-2.4.6-31.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: /etc/mime.types <span class="keyword">for</span> package: httpd-2.4.6-31.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: libapr-1.so.0()(64bit) <span class="keyword">for</span> package: httpd-2.4.6-31.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: libaprutil-1.so.0()(64bit) <span class="keyword">for</span> package: httpd-2.4.6-31.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package apr.x86_64 0:1.4.8-3.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package apr-util.x86_64 0:1.5.2-6.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package httpd-tools.x86_64 0:2.4.6-31.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package mailcap.noarch 0:2.1.41-2.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line">Dependencies Resolved</span><br><span class="line">========================================================================</span><br><span class="line"> Package           Arch         Version            Repository      Size</span><br><span class="line">========================================================================</span><br><span class="line">Installing:</span><br><span class="line"> httpd             x86_64       2.4.6-31.el7       rhel_dvd       1.2 M</span><br><span class="line">Installing for dependencies:</span><br><span class="line"> apr               x86_64       1.4.8-3.el7        rhel_dvd       103 k</span><br><span class="line"> apr-util          x86_64       1.5.2-6.el7        rhel_dvd        92 k</span><br><span class="line"> httpd-tools       x86_64       2.4.6-31.el7       rhel_dvd        79 k</span><br><span class="line"> mailcap           noarch       2.1.41-2.el7       rhel_dvd        31 k</span><br><span class="line">Transaction Summary</span><br><span class="line">========================================================================</span><br><span class="line">Install  1 Package (+4 Dependent packages)</span><br><span class="line">Total download size: 1.5 M</span><br><span class="line">Installed size: 4.3 M</span><br><span class="line">Downloading packages:</span><br><span class="line">(1/5): apr-1.4.8-3.el7.x86_64.rpm                  | 103 kB   00:00</span><br><span class="line">(2/5): apr-util-1.5.2-6.el7.x86_64.rpm             |  92 kB   00:00</span><br><span class="line">(3/5): httpd-2.4.6-31.el7.x86_64.rpm               | 1.2 MB   00:00</span><br><span class="line">(4/5): httpd-tools-2.4.6-31.el7.x86_64.rpm         |  79 kB   00:00</span><br><span class="line">(5/5): mailcap-2.1.41-2.el7.noarch.rpm             |  31 kB   00:00</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">Total                                      5.2 MB/s | 1.5 MB  00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : apr-1.4.8-3.el7.x86_64                               1/5</span><br><span class="line">  Installing : apr-util-1.5.2-6.el7.x86_64                          2/5</span><br><span class="line">  Installing : httpd-tools-2.4.6-31.el7.x86_64                      3/5</span><br><span class="line">  Installing : mailcap-2.1.41-2.el7.noarch                          4/5</span><br><span class="line">  Installing : httpd-2.4.6-31.el7.x86_64                            5/5</span><br><span class="line">  Verifying  : mailcap-2.1.41-2.el7.noarch                          1/5</span><br><span class="line">  Verifying  : httpd-2.4.6-31.el7.x86_64                            2/5</span><br><span class="line">  Verifying  : apr-1.4.8-3.el7.x86_64                               3/5</span><br><span class="line">  Verifying  : apr-util-1.5.2-6.el7.x86_64                          4/5</span><br><span class="line">  Verifying  : httpd-tools-2.4.6-31.el7.x86_64                      5/5</span><br><span class="line">Installed:</span><br><span class="line">  httpd.x86_64 0:2.4.6-31.el7</span><br><span class="line">Dependency Installed:</span><br><span class="line">  apr.x86_64 0:1.4.8-3.el7             apr-util.x86_64 0:1.5.2-6.el7</span><br><span class="line">  httpd-tools.x86_64 0:2.4.6-31.el7    mailcap.noarch 0:2.1.41-2.el7</span><br><span class="line">Complete!</span><br><span class="line">[root@serverb ~]# wget http://172.25.254.254/content/courses/up200/rhel7.1/materials/mod_ldap_httpd.repo -O /etc/yum.repos.d/mod_ldap_httpd.repo</span><br><span class="line">--2016-09-19 04:22:27--  http://172.25.254.254/content/courses/up200/rhel7.1/materials/mod_ldap_httpd.repo</span><br><span class="line">Connecting to 172.25.254.254:80... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 136</span><br><span class="line">Saving to: ‘/etc/yum.repos.d/mod_ldap_httpd.repo’</span><br><span class="line"><span class="meta prompt_">100%</span><span class="language-bash">[==============================&gt;] 136         --.-K/s   <span class="keyword">in</span> 0s</span></span><br><span class="line">2016-09-19 04:22:27 (14.3 MB/s) - ‘/etc/yum.repos.d/mod_ldap_httpd.repo’ saved [136/136]</span><br><span class="line">ot@serverb ~]# yum makecache</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">mod_ldap_httpd                                   | 2.9 kB     00:00</span><br><span class="line">rhel_dvd                                         | 4.1 kB     00:00</span><br><span class="line">(1/5): mod_ldap_httpd/primary_db                   | 2.4 kB   00:00</span><br><span class="line">(2/5): mod_ldap_httpd/filelists_db                 |  950 B   00:00</span><br><span class="line">(3/5): mod_ldap_httpd/other_db                     | 2.2 kB   00:00</span><br><span class="line">(4/5): rhel_dvd/filelists_db                       | 3.1 MB   00:00</span><br><span class="line">(5/5): rhel_dvd/other_db                           | 1.3 MB   00:00</span><br><span class="line">Metadata Cache Created</span><br><span class="line">[root@serverb ~]# yum install mod_ldap -y</span><br><span class="line">Loaded plugins: langpacks</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package mod_ldap.x86_64 0:2.4.6-31.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Processing Dependency: apr-util-ldap <span class="keyword">for</span> package: mod_ldap-2.4.6-31.el7.x86_64</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package apr-util-ldap.x86_64 0:1.5.2-6.el7 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line">Dependencies Resolved</span><br><span class="line">========================================================================</span><br><span class="line"> Package           Arch       Version          Repository          Size</span><br><span class="line">========================================================================</span><br><span class="line">Installing:</span><br><span class="line"> mod_ldap          x86_64     2.4.6-31.el7     mod_ldap_httpd      58 k</span><br><span class="line">Installing for dependencies:</span><br><span class="line"> apr-util-ldap     x86_64     1.5.2-6.el7      mod_ldap_httpd      17 k</span><br><span class="line">Transaction Summary</span><br><span class="line">========================================================================</span><br><span class="line">Install  1 Package (+1 Dependent package)</span><br><span class="line">Total download size: 76 k</span><br><span class="line">Installed size: 134 k</span><br><span class="line">Downloading packages:</span><br><span class="line">(1/2): apr-util-ldap-1.5.2-6.el7.x86_64.rpm        |  17 kB   00:00</span><br><span class="line">(2/2): mod_ldap-2.4.6-31.el7.x86_64.rpm            |  58 kB   00:00</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">Total                                      570 kB/s |  76 kB  00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : apr-util-ldap-1.5.2-6.el7.x86_64                     1/2</span><br><span class="line">  Installing : mod_ldap-2.4.6-31.el7.x86_64                         2/2</span><br><span class="line">  Verifying  : mod_ldap-2.4.6-31.el7.x86_64                         1/2</span><br><span class="line">  Verifying  : apr-util-ldap-1.5.2-6.el7.x86_64                     2/2</span><br><span class="line">Installed:</span><br><span class="line">  mod_ldap.x86_64 0:2.4.6-31.el7</span><br><span class="line">Dependency Installed:</span><br><span class="line">  apr-util-ldap.x86_64 0:1.5.2-6.el7</span><br><span class="line">Complete!</span><br><span class="line">[root@serverb ~]# wget http://servera.pod0.example.com/ca.crt -O /etc/httpd/ca.crt</span><br><span class="line">--2016-09-19 04:13:39--  http://servera.pod0.example.com/ca.crt</span><br><span class="line">Resolving servera.pod0.example.com (servera.pod0.example.com)... 172.25.0.10</span><br><span class="line">Connecting to servera.pod0.example.com (servera.pod0.example.com)|172.25.0.10|:80... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 1476 (1.4K)</span><br><span class="line">Saving to: ‘/etc/httpd/ca.crt’</span><br><span class="line"><span class="meta prompt_">100%</span><span class="language-bash">[==============================&gt;] 1,476       --.-K/s   <span class="keyword">in</span> 0s</span></span><br><span class="line">2016-09-19 04:13:39 (231 MB/s) - ‘/etc/httpd/ca.crt’ saved [1476/1476]</span><br><span class="line">[root@serverb ~]# vi /etc/httpd/conf.d/www.ldapuser.com.conf</span><br><span class="line">LDAPTrustedGlobalCert CA_BASE64 /etc/httpd/ca.crt</span><br><span class="line">&lt;VirtualHost *:80&gt;</span><br><span class="line">        ServerName www.ldapuser.com</span><br><span class="line">        DocumentRoot /var/www/ldapuser.com</span><br><span class="line">        &lt;Directory "/var/www/ldapuser.com"&gt;</span><br><span class="line">                AuthName ldap</span><br><span class="line">                AuthType basic</span><br><span class="line">                AuthBasicProvider ldap</span><br><span class="line">                AuthLDAPUrl "ldap://servera.pod0.example.com/dc=example,dc=org" TLS</span><br><span class="line">                Require valid-user</span><br><span class="line">        &lt;/Directory&gt;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br><span class="line">[root@serverb ~]# mkdir /var/www/ldapuser.com</span><br><span class="line">[root@serverb ~]# echo ldapuser test &gt; /var/www/ldapuser.com/index.html</span><br><span class="line">[root@serverb ~]# systemctl  start httpd</span><br></pre></td></tr></tbody></table></figure>
+
+<p>workstation登录测试</p>
+<p><img src="open_ldap/ldapuser-004.png" alt="ldapuserweblogin"></p>
+<p><img src="open_ldap/ldapuser-005.png" alt="ldapuserweblogin"></p>
+<p><img src="open_ldap/ldapuser-006.png" alt="ldapuserweblogin"></p>
+<h1 id="OpenLDAP-实验" class="article-heading"><a href="#OpenLDAP-实验" class="headerlink" title="OpenLDAP 实验"></a>OpenLDAP 实验<a class="article-anchor" href="#OpenLDAP-实验" aria-hidden="true"></a></h1><p><img src="open_ldap/01.png"><br><img src="open_ldap/02.png"><br><img src="open_ldap/03.png"><br><img src="open_ldap/04.png"></p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:57.348Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#openldap%E7%AE%80%E4%BB%8B"><span class="toc-text">openldap简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#openldap%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E4%B8%8E%E6%93%8D%E4%BD%9C"><span class="toc-text">openldap基础配置与操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85openldap"><span class="toc-text">安装openldap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEopenldap"><span class="toc-text">配置openldap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8openldap"><span class="toc-text">启动openldap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E7%94%A8%E6%88%B7%E8%BD%AC%E6%8D%A2%E8%BF%81%E7%A7%BB%E5%88%B0openldap"><span class="toc-text">系统用户转换迁移到openldap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#openldap%E8%AE%A4%E8%AF%81%E7%B3%BB%E7%BB%9F%E7%99%BB%E5%BD%95%E7%94%A8%E6%88%B7"><span class="toc-text">openldap认证系统登录用户</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D"><span class="toc-text">环境介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEopenldap"><span class="toc-text">安装配置openldap</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85opendap"><span class="toc-text">安装opendap</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%90%AF%E5%8A%A8openldap"><span class="toc-text">配置启动openldap</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">创建用户数据库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEserverb%E4%BD%BF%E7%94%A8ldap%E8%AE%A4%E8%AF%81"><span class="toc-text">配置serverb使用ldap认证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#workstation%E4%BD%BF%E7%94%A8ssh%E6%B5%8B%E8%AF%95"><span class="toc-text">workstation使用ssh测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#openldap%E8%AE%A4%E8%AF%81ftp%E7%99%BB%E5%BD%95%E7%94%A8%E6%88%B7"><span class="toc-text">openldap认证ftp登录用户</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#openldap%E8%AE%A4%E8%AF%81apache%E7%99%BB%E5%BD%95%E7%94%A8%E6%88%B7"><span class="toc-text">openldap认证apache登录用户</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#OpenLDAP-%E5%AE%9E%E9%AA%8C"><span class="toc-text">OpenLDAP 实验</span></a>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

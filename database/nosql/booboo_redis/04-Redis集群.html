@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Redis 集群 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/nosql/booboo_redis/04-Redis%E9%9B%86%E7%BE%A4">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/nosql/booboo_redis/04-Redis%E9%9B%86%E7%BE%A4" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="60s1万条是正常的 mycat多实例join的分析 hash算法  redis使用哈希槽，而不是一致性hash 没有槽的节点不发生切换（S升级为主），为何还要保留没有槽的节点？ 当有槽节点压力大时，可以作数据迁移，分当压力 数据一致性保证M和S各8个节点如果2号M节点出现故障，那么2号S节点立刻升级为M当master fail，S会全量同步，是否会有数据丢失呢？ save 900 1 #15分">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Redis 集群">
+<meta property="og:url" content="http://www.toberoot.com/database/nosql/booboo_redis/04-Redis%E9%9B%86%E7%BE%A4">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="60s1万条是正常的 mycat多实例join的分析 hash算法  redis使用哈希槽，而不是一致性hash 没有槽的节点不发生切换（S升级为主），为何还要保留没有槽的节点？ 当有槽节点压力大时，可以作数据迁移，分当压力 数据一致性保证M和S各8个节点如果2号M节点出现故障，那么2号S节点立刻升级为M当master fail，S会全量同步，是否会有数据丢失呢？ save 900 1 #15分">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.874Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:31.695Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Redis 集群</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/nosql/booboo_redis/04-Redis集群.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><ul>
+<li>60s1万条是正常的</li>
+<li>mycat多实例join的分析</li>
+<li>hash算法</li>
+</ul>
+<p>redis使用哈希槽，而不是一致性hash</p>
+<p>没有槽的节点不发生切换（S升级为主），为何还要保留没有槽的节点？</p>
+<p>当有槽节点压力大时，可以作数据迁移，分当压力</p>
+<h3 id="数据一致性保证" class="article-heading"><a href="#数据一致性保证" class="headerlink" title="数据一致性保证"></a>数据一致性保证<a class="article-anchor" href="#数据一致性保证" aria-hidden="true"></a></h3><p>M和S各8个节点<br>如果2号M节点出现故障，那么2号S节点立刻升级为M<br>当master fail，S会全量同步，是否会有数据丢失呢？</p>
+<p>save 900 1 #15分钟1条<br>save 300 1000 #5分钟1000条<br>save 60 10000 #1分钟1万条</p>
+<p>假设距离上一次保存后的52秒写了9999条，那么就会全部丢了</p>
+<p>可以使用AOF，有点类似mysql的二进制的日志，redis写一条记一条。</p>
+<h3 id="redis集群搭建步骤" class="article-heading"><a href="#redis集群搭建步骤" class="headerlink" title="redis集群搭建步骤"></a>redis集群搭建步骤<a class="article-anchor" href="#redis集群搭建步骤" aria-hidden="true"></a></h3><h4 id="1-安装软件" class="article-heading"><a href="#1-安装软件" class="headerlink" title="1.安装软件"></a>1.安装软件<a class="article-anchor" href="#1-安装软件" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# cp redis-3.0.7.tar.gz /usr/local</span><br><span class="line">[root@mastera0 redis]# cd /usr/local/</span><br><span class="line">[root@mastera0 local]# ls</span><br><span class="line">bin  etc  games  include  lib  lib64  libexec  redis-3.0.7.tar.gz  sbin  share  src</span><br><span class="line">[root@mastera0 local]# tar -xf redis-3.0.7.tar.gz</span><br><span class="line">[root@mastera0 local]# ls</span><br><span class="line">bin  etc  games  include  lib  lib64  libexec  redis-3.0.7  redis-3.0.7.tar.gz  sbin  share  src</span><br><span class="line"></span><br><span class="line">[root@mastera0 local]# ln -s  redis-3.0.7 redis</span><br><span class="line">[root@mastera0 redis]# ls</span><br><span class="line">00-RELEASENOTES  CONTRIBUTING  deps     Makefile   README      runtest          runtest-sentinel  src    utils</span><br><span class="line">BUGS             COPYING       INSTALL  MANIFESTO  redis.conf  runtest-cluster  sentinel.conf     tests</span><br></pre></td></tr></tbody></table></figure>
+
+<p>创建数据目录</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# mkdir /app/redis_cluster/node{6380..6385} -p</span><br></pre></td></tr></tbody></table></figure>
+
+<p>创建配置目录</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# mkdir /app/redis_cluster/conf</span><br></pre></td></tr></tbody></table></figure>
+
+<p>源码编译</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# yum install -y gcc*</span><br><span class="line">[root@mastera0 redis]# make</span><br><span class="line">[root@mastera0 redis]# make install</span><br><span class="line">cd src &amp;&amp; make install</span><br><span class="line">make[1]: Entering directory `/usr/local/redis-3.0.7/src'</span><br><span class="line"></span><br><span class="line">Hint: It's a good idea to run 'make test' ;)</span><br><span class="line"></span><br><span class="line">    INSTALL install</span><br><span class="line">    INSTALL install</span><br><span class="line">    INSTALL install</span><br><span class="line">    INSTALL install</span><br><span class="line">    INSTALL install</span><br><span class="line">make[1]: Leaving directory `/usr/local/redis-3.0.7/src'</span><br><span class="line">[root@mastera0 redis]#</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="2-集群配置文件" class="article-heading"><a href="#2-集群配置文件" class="headerlink" title="2.集群配置文件"></a>2.集群配置文件<a class="article-anchor" href="#2-集群配置文件" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">port 6380</span><br><span class="line">pidfile /var/run/redis6380.pid</span><br><span class="line">dir /app/redis_cluster/node6380</span><br><span class="line">cluster-enabled yes</span><br><span class="line">cluster-config-file node6380.conf</span><br><span class="line">cluster-node-timeout 5000</span><br><span class="line"></span><br><span class="line">[root@mastera0 redis]# vim create_redis_conf.sh</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">for i in `seq $1 $2`</span><br><span class="line">do</span><br><span class="line">	cat &gt; $3/redis$i.conf &lt;&lt; ENDF</span><br><span class="line">daemonize no</span><br><span class="line">pidfile /var/run/redis$i.pid</span><br><span class="line">port $i</span><br><span class="line">tcp-backlog 511</span><br><span class="line">timeout 0</span><br><span class="line">tcp-keepalive 0</span><br><span class="line">loglevel notice</span><br><span class="line">logfile ""</span><br><span class="line">databases 16</span><br><span class="line">save 900 1</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000</span><br><span class="line">stop-writes-on-bgsave-error yes</span><br><span class="line">rdbcompression yes</span><br><span class="line">rdbchecksum yes</span><br><span class="line">dbfilename dump.rdb</span><br><span class="line">dir /app/redis_cluster/node$i</span><br><span class="line">slave-serve-stale-data yes</span><br><span class="line">slave-read-only yes</span><br><span class="line">repl-diskless-sync no</span><br><span class="line">repl-diskless-sync-delay 5</span><br><span class="line">repl-disable-tcp-nodelay no</span><br><span class="line">slave-priority 100</span><br><span class="line">appendonly no</span><br><span class="line">appendfilename "appendonly.aof"</span><br><span class="line">appendfsync everysec</span><br><span class="line">no-appendfsync-on-rewrite no</span><br><span class="line">auto-aof-rewrite-percentage 100</span><br><span class="line">auto-aof-rewrite-min-size 64mb</span><br><span class="line">aof-load-truncated yes</span><br><span class="line">lua-time-limit 5000</span><br><span class="line">slowlog-log-slower-than 10000</span><br><span class="line">slowlog-max-len 128</span><br><span class="line">latency-monitor-threshold 0</span><br><span class="line">notify-keyspace-events ""</span><br><span class="line">hash-max-ziplist-entries 512</span><br><span class="line">hash-max-ziplist-value 64</span><br><span class="line">list-max-ziplist-entries 512</span><br><span class="line">list-max-ziplist-value 64</span><br><span class="line">set-max-intset-entries 512</span><br><span class="line">zset-max-ziplist-entries 128</span><br><span class="line">zset-max-ziplist-value 64</span><br><span class="line">hll-sparse-max-bytes 3000</span><br><span class="line">activerehashing yes</span><br><span class="line">client-output-buffer-limit normal 0 0 0</span><br><span class="line">client-output-buffer-limit slave 256mb 64mb 60</span><br><span class="line">client-output-buffer-limit pubsub 32mb 8mb 60</span><br><span class="line">hz 10</span><br><span class="line">aof-rewrite-incremental-fsync yes</span><br><span class="line">cluster-enabled yes</span><br><span class="line">cluster-config-file node$i.conf</span><br><span class="line">cluster-node-timeout 5000</span><br><span class="line">ENDF</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">[root@mastera0 redis]# bash create_redis_conf.sh 6380 6384 /app/redis_cluster/conf</span><br><span class="line">[root@mastera0 redis]# ll /app/redis_cluster/conf</span><br><span class="line">total 24</span><br><span class="line">-rw-r--r--. 1 root root 1232 Dec 17 12:57 redis6380.conf</span><br><span class="line">-rw-r--r--. 1 root root 1232 Dec 17 12:57 redis6381.conf</span><br><span class="line">-rw-r--r--. 1 root root 1232 Dec 17 12:57 redis6382.conf</span><br><span class="line">-rw-r--r--. 1 root root 1232 Dec 17 12:57 redis6383.conf</span><br><span class="line">-rw-r--r--. 1 root root 1232 Dec 17 12:57 redis6384.conf</span><br><span class="line">-rw-r--r--. 1 root root 1232 Dec 17 13:27 redis6385.conf</span><br><span class="line"></span><br><span class="line">[root@mastera0 redis]# pwd</span><br><span class="line">/usr/local/redis</span><br><span class="line">[root@mastera0 redis]# cd /app/redis_cluster/</span><br><span class="line">[root@mastera0 redis_cluster]# ls</span><br><span class="line">conf  node6380  node6381  node6382  node6383  node6384</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="3-启动redis服务" class="article-heading"><a href="#3-启动redis服务" class="headerlink" title="3.启动redis服务"></a>3.启动redis服务<a class="article-anchor" href="#3-启动redis服务" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis_cluster]# redis-server /app/redis_cluster/conf/node6380.conf</span><br><span class="line">29837:M 17 Dec 13:02:36.216 * Increased maximum number of open files to 10032 (it was originally set to 1024).</span><br><span class="line">29837:M 17 Dec 13:02:36.226 * No cluster configuration found, I'm d3609c8b68dcc4884501d14ec7803eef6223513b</span><br><span class="line">                _._</span><br><span class="line">           _.-``__ ''-._</span><br><span class="line">      _.-``    `.  `_.  ''-._           Redis 3.0.7 (00000000/0) 64 bit</span><br><span class="line">  .-`` .-```.  ```\/    _.,_ ''-._</span><br><span class="line"> (    '      ,       .-`  | `,    )     Running in cluster mode</span><br><span class="line"> |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6380</span><br><span class="line"> |    `-._   `._    /     _.-'    |     PID: 29837</span><br><span class="line">  `-._    `-._  `-./  _.-'    _.-'</span><br><span class="line"> |`-._`-._    `-.__.-'    _.-'_.-'|</span><br><span class="line"> |    `-._`-._        _.-'_.-'    |           http://redis.io</span><br><span class="line">  `-._    `-._`-.__.-'_.-'    _.-'</span><br><span class="line"> |`-._`-._    `-.__.-'    _.-'_.-'|</span><br><span class="line"> |    `-._`-._        _.-'_.-'    |</span><br><span class="line">  `-._    `-._`-.__.-'_.-'    _.-'</span><br><span class="line">      `-._    `-.__.-'    _.-'</span><br><span class="line">          `-._        _.-'</span><br><span class="line">              `-.__.-'</span><br><span class="line"></span><br><span class="line">29837:M 17 Dec 13:02:36.422 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.</span><br><span class="line">29837:M 17 Dec 13:02:36.422 # Server started, Redis version 3.0.7</span><br><span class="line">29837:M 17 Dec 13:02:36.422 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.</span><br><span class="line">29837:M 17 Dec 13:02:36.423 * The server is now ready to accept connections on port 6380</span><br><span class="line">^C29837:signal-handler (1481950975) Received SIGINT scheduling shutdown...</span><br><span class="line">29837:M 17 Dec 13:02:55.685 # User requested shutdown...</span><br><span class="line">29837:M 17 Dec 13:02:55.686 * Saving the final RDB snapshot before exiting.</span><br><span class="line">29837:M 17 Dec 13:02:55.850 * DB saved on disk</span><br><span class="line">29837:M 17 Dec 13:02:55.850 # Redis is now ready to exit, bye bye...</span><br><span class="line"></span><br><span class="line">[root@mastera0 redis_cluster]# vim /etc/sysctl.conf</span><br><span class="line">vm.overcommit_memory = 1</span><br><span class="line">[root@mastera0 redis_cluster]# sysctl -a</span><br><span class="line"></span><br><span class="line">[root@mastera0 redis_cluster]# redis-server /app/redis_cluster/conf/node6380.conf</span><br><span class="line">29861:M 17 Dec 13:04:39.478 * Increased maximum number of open files to 10032 (it was originally set to 1024).</span><br><span class="line">29861:M 17 Dec 13:04:39.479 * Node configuration loaded, I'm d3609c8b68dcc4884501d14ec7803eef6223513b</span><br><span class="line">                _._</span><br><span class="line">           _.-``__ ''-._</span><br><span class="line">      _.-``    `.  `_.  ''-._           Redis 3.0.7 (00000000/0) 64 bit</span><br><span class="line">  .-`` .-```.  ```\/    _.,_ ''-._</span><br><span class="line"> (    '      ,       .-`  | `,    )     Running in cluster mode</span><br><span class="line"> |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6380</span><br><span class="line"> |    `-._   `._    /     _.-'    |     PID: 29861</span><br><span class="line">  `-._    `-._  `-./  _.-'    _.-'</span><br><span class="line"> |`-._`-._    `-.__.-'    _.-'_.-'|</span><br><span class="line"> |    `-._`-._        _.-'_.-'    |           http://redis.io</span><br><span class="line">  `-._    `-._`-.__.-'_.-'    _.-'</span><br><span class="line"> |`-._`-._    `-.__.-'    _.-'_.-'|</span><br><span class="line"> |    `-._`-._        _.-'_.-'    |</span><br><span class="line">  `-._    `-._`-.__.-'_.-'    _.-'</span><br><span class="line">      `-._    `-.__.-'    _.-'</span><br><span class="line">          `-._        _.-'</span><br><span class="line">              `-.__.-'</span><br><span class="line"></span><br><span class="line">29861:M 17 Dec 13:04:39.480 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.</span><br><span class="line">29861:M 17 Dec 13:04:39.480 # Server started, Redis version 3.0.7</span><br><span class="line">29861:M 17 Dec 13:04:39.480 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.</span><br><span class="line">29861:M 17 Dec 13:04:39.480 * DB loaded from disk: 0.000 seconds</span><br><span class="line">29861:M 17 Dec 13:04:39.480 * The server is now ready to accept connections on port 6380</span><br></pre></td></tr></tbody></table></figure>
+
+<p>测试1台成功后，同时启动6台</p>
+<h4 id="4-安装ruby-rubygems" class="article-heading"><a href="#4-安装ruby-rubygems" class="headerlink" title="4.安装ruby rubygems"></a>4.安装ruby rubygems<a class="article-anchor" href="#4-安装ruby-rubygems" aria-hidden="true"></a></h4><p>目的是使用gem工具安装redis.gem</p>
+<p>ruby，rhel6中自带，而rubygems没有，需要下载</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis_cluster]# cd</span><br><span class="line">[root@mastera0 ~]# ls</span><br><span class="line">anaconda-ks.cfg  Downloads           Music     rubygems-1.3.7-5.el6.noarch.rpm</span><br><span class="line">Desktop          install.log         Pictures  Templates</span><br><span class="line">Documents        install.log.syslog  Public    Videos</span><br><span class="line">[root@mastera0 ~]# yum install -y ruby</span><br><span class="line">[root@mastera0 ~]# rpm -ivh rubygems-1.3.7-5.el6.noarch.rpm</span><br><span class="line">warning: rubygems-1.3.7-5.el6.noarch.rpm: Header V3 RSA/SHA1 Signature, key ID c105b9de: NOKEY</span><br><span class="line">error: Failed dependencies:</span><br><span class="line">	ruby-rdoc is needed by rubygems-1.3.7-5.el6.noarch</span><br><span class="line">[root@mastera0 ~]# yum localinstall -y rubygems-1.3.7-5.el6.noarch.rpm</span><br><span class="line"></span><br><span class="line">[root@mastera0 ~]# cp /mnt/lesson9/redis/redis-3.0.7.gem ~</span><br><span class="line">[root@mastera0 ~]# ls</span><br><span class="line">anaconda-ks.cfg  install.log         Public                           Videos</span><br><span class="line">Desktop          install.log.syslog  redis-3.0.7.gem</span><br><span class="line">Documents        Music               rubygems-1.3.7-5.el6.noarch.rpm</span><br><span class="line">Downloads        Pictures            Templates</span><br><span class="line">[root@mastera0 ~]# gem install redis-3.0.7.gem</span><br><span class="line">Successfully installed redis-3.0.7</span><br><span class="line">1 gem installed</span><br><span class="line">Installing ri documentation for redis-3.0.7...</span><br><span class="line">Installing RDoc documentation for redis-3.0.7...</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="5-启动reids集群" class="article-heading"><a href="#5-启动reids集群" class="headerlink" title="5.启动reids集群"></a>5.启动reids集群<a class="article-anchor" href="#5-启动reids集群" aria-hidden="true"></a></h4><p>至少 3 master</p>
+<p>此处写了一个小脚本来实现多个实例启动关闭</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# cat redis_multi_ctl.sh</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">redis_conf_dir="/app/redis_cluster/conf"</span><br><span class="line">redis_data_dir="/app/redis_cluster"</span><br><span class="line">ALL_start()</span><br><span class="line">{</span><br><span class="line">	for i in `seq 6380 6385`</span><br><span class="line">	do</span><br><span class="line">	 	redis-server $redis_conf_dir/redis$i.conf &amp;&gt; $redis_data_dir/redis$i.log &amp;</span><br><span class="line">	done</span><br><span class="line"></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">ALL_stop()</span><br><span class="line">{</span><br><span class="line">	for i in `ps -ef|grep redis|grep cluster |awk '{print $2}'`</span><br><span class="line">	do</span><br><span class="line">		kill -9 $i</span><br><span class="line">	done</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">ALL_status()</span><br><span class="line">{</span><br><span class="line">	ps -ef|grep redis</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">case $1 in</span><br><span class="line">start)</span><br><span class="line">	ALL_start;;</span><br><span class="line">status)</span><br><span class="line">	ALL_status;;</span><br><span class="line">stop)</span><br><span class="line">	ALL_stop;;</span><br><span class="line">*)</span><br><span class="line">	echo "start|stop|status";;</span><br><span class="line">esac</span><br><span class="line">[root@mastera0 redis]# bash redis_multi_ctl.sh start</span><br><span class="line">[root@mastera0 redis]# bash redis_multi_ctl.sh status</span><br><span class="line">root     30115     1  0 13:47 pts/0    00:00:00 redis-server *:6380 [cluster]</span><br><span class="line">root     30116     1  0 13:47 pts/0    00:00:00 redis-server *:6381 [cluster]</span><br><span class="line">root     30117     1  0 13:47 pts/0    00:00:00 redis-server *:6382 [cluster]</span><br><span class="line">root     30118     1  0 13:47 pts/0    00:00:00 redis-server *:6383 [cluster]</span><br><span class="line">root     30119     1  0 13:47 pts/0    00:00:00 redis-server *:6384 [cluster]</span><br><span class="line">root     30120     1  0 13:47 pts/0    00:00:00 redis-server *:6385 [cluster]</span><br><span class="line">root     30133  1717  0 13:47 pts/0    00:00:00 bash redis_multi_ctl.sh status</span><br><span class="line">root     30135 30133  0 13:47 pts/0    00:00:00 grep redis</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此时还没有启动集群，只启动了节点</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster info</span><br><span class="line">cluster_state:fail</span><br><span class="line">cluster_slots_assigned:0</span><br><span class="line">cluster_slots_ok:0</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:1</span><br><span class="line">cluster_size:0</span><br><span class="line">cluster_current_epoch:0</span><br><span class="line">cluster_my_epoch:0</span><br><span class="line">cluster_stats_messages_sent:0</span><br><span class="line">cluster_stats_messages_received:0</span><br></pre></td></tr></tbody></table></figure>
+
+<p>启动集群的命令为 src/redis-trib.rb</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# pwd</span><br><span class="line">/usr/local/redis</span><br><span class="line">[root@mastera0 redis]# src/redis-trib.rb create --replicas 1 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384 127.0.0.1:6385</span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Creating cluster</span></span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Performing <span class="built_in">hash</span> slots allocation on 6 nodes...</span></span><br><span class="line">Using 3 masters:</span><br><span class="line">127.0.0.1:6380</span><br><span class="line">127.0.0.1:6381</span><br><span class="line">127.0.0.1:6382</span><br><span class="line">Adding replica 127.0.0.1:6383 to 127.0.0.1:6380</span><br><span class="line">Adding replica 127.0.0.1:6384 to 127.0.0.1:6381</span><br><span class="line">Adding replica 127.0.0.1:6385 to 127.0.0.1:6382</span><br><span class="line">M: d3609c8b68dcc4884501d14ec7803eef6223513b 127.0.0.1:6380</span><br><span class="line">   slots:0-5460 (5461 slots) master</span><br><span class="line">M: 0dedd063912ddd0eae7cf111f8be805929290c6e 127.0.0.1:6381</span><br><span class="line">   slots:5461-10922 (5462 slots) master</span><br><span class="line">M: cb5c188083e726c85ac1270f203255ba1c784894 127.0.0.1:6382</span><br><span class="line">   slots:10923-16383 (5461 slots) master</span><br><span class="line">S: 7fd120256350adf8f0d1378f60bd6ea9ddd8376f 127.0.0.1:6383</span><br><span class="line">   replicates d3609c8b68dcc4884501d14ec7803eef6223513b</span><br><span class="line">S: 26b67747334de461c57eef438f282c332d736a8b 127.0.0.1:6384</span><br><span class="line">   replicates 0dedd063912ddd0eae7cf111f8be805929290c6e</span><br><span class="line">S: a6a4c51535ad00407f8c636cd620b63a4469c796 127.0.0.1:6385</span><br><span class="line">   replicates cb5c188083e726c85ac1270f203255ba1c784894</span><br><span class="line">Can I set the above configuration? (type 'yes' to accept): yes</span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Nodes configuration updated</span></span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Assign a different config epoch to each node</span></span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Sending CLUSTER MEET messages to <span class="built_in">join</span> the cluster</span></span><br><span class="line">Waiting for the cluster to join...</span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Performing Cluster Check (using node 127.0.0.1:6380)</span></span><br><span class="line">M: d3609c8b68dcc4884501d14ec7803eef6223513b 127.0.0.1:6380</span><br><span class="line">   slots:0-5460 (5461 slots) master</span><br><span class="line">M: 0dedd063912ddd0eae7cf111f8be805929290c6e 127.0.0.1:6381</span><br><span class="line">   slots:5461-10922 (5462 slots) master</span><br><span class="line">M: cb5c188083e726c85ac1270f203255ba1c784894 127.0.0.1:6382</span><br><span class="line">   slots:10923-16383 (5461 slots) master</span><br><span class="line">M: 7fd120256350adf8f0d1378f60bd6ea9ddd8376f 127.0.0.1:6383</span><br><span class="line">   slots: (0 slots) master</span><br><span class="line">   replicates d3609c8b68dcc4884501d14ec7803eef6223513b</span><br><span class="line">M: 26b67747334de461c57eef438f282c332d736a8b 127.0.0.1:6384</span><br><span class="line">   slots: (0 slots) master</span><br><span class="line">   replicates 0dedd063912ddd0eae7cf111f8be805929290c6e</span><br><span class="line">M: a6a4c51535ad00407f8c636cd620b63a4469c796 127.0.0.1:6385</span><br><span class="line">   slots: (0 slots) master</span><br><span class="line">   replicates cb5c188083e726c85ac1270f203255ba1c784894</span><br><span class="line">[OK] All nodes agree about slots configuration.</span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Check <span class="keyword">for</span> open slots...</span></span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Check slots coverage...</span></span><br><span class="line">[OK] All 16384 slots covered.</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="6-查看redis集群状态" class="article-heading"><a href="#6-查看redis集群状态" class="headerlink" title="6.查看redis集群状态"></a>6.查看redis集群状态<a class="article-anchor" href="#6-查看redis集群状态" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# for i in `seq 6380 6385`;do redis-cli -p $i cluster info;echo ======================;done</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:16384</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:6</span><br><span class="line">cluster_my_epoch:1</span><br><span class="line">cluster_stats_messages_sent:742</span><br><span class="line">cluster_stats_messages_received:742</span><br><span class="line">======================</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:16384</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:6</span><br><span class="line">cluster_my_epoch:2</span><br><span class="line">cluster_stats_messages_sent:724</span><br><span class="line">cluster_stats_messages_received:724</span><br><span class="line">======================</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:16384</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:6</span><br><span class="line">cluster_my_epoch:3</span><br><span class="line">cluster_stats_messages_sent:720</span><br><span class="line">cluster_stats_messages_received:720</span><br><span class="line">======================</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:16384</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:6</span><br><span class="line">cluster_my_epoch:1</span><br><span class="line">cluster_stats_messages_sent:745</span><br><span class="line">cluster_stats_messages_received:745</span><br><span class="line">======================</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:16384</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:6</span><br><span class="line">cluster_my_epoch:2</span><br><span class="line">cluster_stats_messages_sent:719</span><br><span class="line">cluster_stats_messages_received:719</span><br><span class="line">======================</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:16384</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:6</span><br><span class="line">cluster_my_epoch:3</span><br><span class="line">cluster_stats_messages_sent:718</span><br><span class="line">cluster_stats_messages_received:718</span><br><span class="line">======================</span><br></pre></td></tr></tbody></table></figure>
+
+<p>redis-trib.rb 命令使用方法</p>
+<ul>
+<li><p>启动集群 <code>create --replicas 1 ip:port</code></p>
+<ul>
+<li>添加节点<code>add-node masterip</code> <code>add-node --slave --master-id [masterid] slaveip:prot</code></li>
+</ul>
+</li>
+<li><p>删除节点 <code>del-node ip:port id</code></p>
+<p>删除时节点必须为空，无数据</p>
+</li>
+</ul>
+<h4 id="7-使用reids集群" class="article-heading"><a href="#7-使用reids集群" class="headerlink" title="7. 使用reids集群"></a>7. 使用reids集群<a class="article-anchor" href="#7-使用reids集群" aria-hidden="true"></a></h4><p>客户端以集群的方式来连接，-c 任意一个master的端口即可</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380</span><br><span class="line">127.0.0.1:6380&gt; set name booboo</span><br><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">Redirected to slot [5798] located at 127.0.0.1:6381</span></span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6381&gt; set age 99</span><br><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">Redirected to slot [741] located at 127.0.0.1:6380</span></span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6380&gt; set addr shagnhai</span><br><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">Redirected to slot [12790] located at 127.0.0.1:6382</span></span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6382&gt; set tel 10086</span><br><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">Redirected to slot [7485] located at 127.0.0.1:6381</span></span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6381&gt; get name</span><br><span class="line">"booboo"</span><br><span class="line">127.0.0.1:6381&gt; get tel</span><br><span class="line">"10086"</span><br><span class="line">127.0.0.1:6381&gt; get age</span><br><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">Redirected to slot [741] located at 127.0.0.1:6380</span></span><br><span class="line">"99"</span><br><span class="line">127.0.0.1:6380&gt; get addr</span><br><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">Redirected to slot [12790] located at 127.0.0.1:6382</span></span><br><span class="line">"shagnhai"</span><br><span class="line">127.0.0.1:6382&gt; exit</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6380</span><br><span class="line">127.0.0.1:6380&gt; get name</span><br><span class="line">(error) MOVED 5798 127.0.0.1:6381</span><br><span class="line">127.0.0.1:6380&gt; get age</span><br><span class="line">"99"</span><br><span class="line">127.0.0.1:6380&gt; get addr</span><br><span class="line">(error) MOVED 12790 127.0.0.1:6382</span><br><span class="line">127.0.0.1:6380&gt; get tel</span><br><span class="line">(error) MOVED 7485 127.0.0.1:6381</span><br><span class="line">127.0.0.1:6380&gt; exit</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="8-哈希槽的配置" class="article-heading"><a href="#8-哈希槽的配置" class="headerlink" title="8.哈希槽的配置"></a>8.哈希槽的配置<a class="article-anchor" href="#8-哈希槽的配置" aria-hidden="true"></a></h4><p>redis-cli</p>
+<p>集群命令</p>
+<ul>
+<li>CLUSTER INFO 打印集群的信息</li>
+<li>CLUSTER NODES 列出集群当前已知的所有节点( node ),以及这些节点的相关信息。</li>
+</ul>
+<p>节点</p>
+<ul>
+<li>CLUSTER MEET <ip> <port> 将 ip 和 port 所指定的节点添加到集群当中,让它成为集群的一份子。</port></ip></li>
+<li>CLUSTER FORGET <node_id> 从集群中移除 node_id 指定的节点。</node_id></li>
+<li>CLUSTER REPLICATE <node_id> 将当前节点设置为 node_id 指定的节点的从节点。</node_id></li>
+<li>CLUSTER SAVECONFIG 将节点的配置文件保存到硬盘里面。</li>
+</ul>
+<p>槽 (slot)</p>
+<ul>
+<li>CLUSTER ADDSLOTS <slot> [slot …] 将一个或多个槽( slot )指派( assign )给当前节点。</slot></li>
+<li>CLUSTER DELSLOTS <slot> [slot …] 移除一个或多个槽对当前节点的指派。</slot></li>
+<li>CLUSTER FLUSHSLOTS 移除指派给当前节点的所有槽,让当前节点变成一个没有指派任何槽的节点。</li>
+<li>CLUSTER SETSLOT <slot> NODE <node_id> 将槽 slot 指派给 node_id 指定的节点,如果槽已经指派给另一个节点,那么先让另一个节点删除该槽 &gt; ,然后再进行指派。</node_id></slot></li>
+<li>CLUSTER SETSLOT <slot> MIGRATING <node_id> 将本节点的槽 slot 迁移到 node_id 指定的节点中。</node_id></slot></li>
+<li>CLUSTER SETSLOT <slot> IMPORTING <node_id> 从 node_id 指定的节点中导入槽 slot 到本节点。</node_id></slot></li>
+<li>CLUSTER SETSLOT <slot> STABLE 取消对槽 slot 的导入( import )或者迁移( migrate )。</slot></li>
+</ul>
+<p>键</p>
+<ul>
+<li>CLUSTER KEYSLOT <key> 计算键 key 应该被放置在哪个槽上。</key></li>
+<li>CLUSTER COUNTKEYSINSLOT <slot> 返回槽 slot 目前包含的键值对数量。</slot></li>
+<li>CLUSTER GETKEYSINSLOT <slot> <count> 返回 count 个 slot 槽中的键。</count></slot></li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -p 6380 -c</span><br><span class="line">127.0.0.1:6380&gt; cluster info</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:16384</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:6</span><br><span class="line">cluster_my_epoch:1</span><br><span class="line">cluster_stats_messages_sent:3410</span><br><span class="line">cluster_stats_messages_received:3410</span><br><span class="line">127.0.0.1:6380&gt; cluster nodes</span><br><span class="line">7fd120256350adf8f0d1378f60bd6ea9ddd8376f 127.0.0.1:6383 slave d3609c8b68dcc4884501d14ec7803eef6223513b 0 1481954680681 4 connected</span><br><span class="line">26b67747334de461c57eef438f282c332d736a8b 127.0.0.1:6384 slave 0dedd063912ddd0eae7cf111f8be805929290c6e 0 1481954681683 5 connected</span><br><span class="line">a6a4c51535ad00407f8c636cd620b63a4469c796 127.0.0.1:6385 slave cb5c188083e726c85ac1270f203255ba1c784894 0 1481954682685 6 connected</span><br><span class="line">0dedd063912ddd0eae7cf111f8be805929290c6e 127.0.0.1:6381 master - 0 1481954681683 2 connected 5461-10922</span><br><span class="line">cb5c188083e726c85ac1270f203255ba1c784894 127.0.0.1:6382 master - 0 1481954681683 3 connected 10923-16383</span><br><span class="line">d3609c8b68dcc4884501d14ec7803eef6223513b 127.0.0.1:6380 myself,master - 0 0 1 connected 0-5460</span><br><span class="line">127.0.0.1:6380&gt; CLUSTER SLOTS</span><br><span class="line">1) 1) (integer) 5461</span><br><span class="line">   2) (integer) 10922</span><br><span class="line">   3) 1) "127.0.0.1"</span><br><span class="line">      2) (integer) 6381</span><br><span class="line">   4) 1) "127.0.0.1"</span><br><span class="line">      2) (integer) 6384</span><br><span class="line">2) 1) (integer) 10923</span><br><span class="line">   2) (integer) 16383</span><br><span class="line">   3) 1) "127.0.0.1"</span><br><span class="line">      2) (integer) 6382</span><br><span class="line">   4) 1) "127.0.0.1"</span><br><span class="line">      2) (integer) 6385</span><br><span class="line">3) 1) (integer) 0</span><br><span class="line">   2) (integer) 5460</span><br><span class="line">   3) 1) "127.0.0.1"</span><br><span class="line">      2) (integer) 6380</span><br><span class="line">   4) 1) "127.0.0.1"</span><br><span class="line">      2) (integer) 6383</span><br></pre></td></tr></tbody></table></figure>
+
+<p>redis集群不应该配密码</p>
+<h3 id="redis集群测试" class="article-heading"><a href="#redis集群测试" class="headerlink" title="redis集群测试"></a>redis集群测试<a class="article-anchor" href="#redis集群测试" aria-hidden="true"></a></h3><ol>
+<li>向集群中循环插入10000个key</li>
+<li>模拟node6380fail，查看集群状态；重新启动node6380，查看集群状态</li>
+<li>模拟node6384fial后，插入记录，其主node6381fail，查看集群是否失效</li>
+</ol>
+<p>什么时候整个集群不可用(cluster_state:fail)?</p>
+<p>a:如果集群任意 master 挂掉,且当前 master 没有 slave.集群进入 fail 状态,也可以理解成集群的 slot 映射[0-16383]不完成 时进入 fail 状态. ps : redis-3.0.0.rc1 加入 cluster-require-full-coverage 参数,默认关闭,打开集群兼容部分失败.</p>
+<p>b:如果集群超过半数以上 master 挂掉,无论是否有 slave 集群进入 fail 状态.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# cat insert.sh</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">for i in `seq 1 10000`</span><br><span class="line">do</span><br><span class="line">cat &gt;&gt; insert.file &lt;&lt; ENDF</span><br><span class="line">set name$i $i</span><br><span class="line">ENDF</span><br><span class="line">done</span><br><span class="line">[root@mastera0 redis]# bash insert.sh</span><br><span class="line">[root@mastera0 redis]# tail insert.file</span><br><span class="line">set name9991 9991</span><br><span class="line">set name9992 9992</span><br><span class="line">set name9993 9993</span><br><span class="line">set name9994 9994</span><br><span class="line">set name9995 9995</span><br><span class="line">set name9996 9996</span><br><span class="line">set name9997 9997</span><br><span class="line">set name9998 9998</span><br><span class="line">set name9999 9999</span><br><span class="line">set name10000 10000</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 &lt; insert.file</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 get name100</span><br><span class="line">"100"</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 get name10000</span><br><span class="line">"10000"</span><br><span class="line">-------------------------</span><br><span class="line">[root@mastera0 redis]# ps -ef|grep redis</span><br><span class="line">root      8073  1717  0 14:33 pts/0    00:00:00 grep redis</span><br><span class="line">root     30293     1  0 14:19 pts/0    00:00:01 redis-server *:6380 [cluster]</span><br><span class="line">root     30294     1  0 14:19 pts/0    00:00:01 redis-server *:6381 [cluster]</span><br><span class="line">root     30295     1  0 14:19 pts/0    00:00:01 redis-server *:6382 [cluster]</span><br><span class="line">root     30296     1  0 14:19 pts/0    00:00:01 redis-server *:6383 [cluster]</span><br><span class="line">root     30297     1  0 14:19 pts/0    00:00:01 redis-server *:6384 [cluster]</span><br><span class="line">root     30298     1  0 14:19 pts/0    00:00:01 redis-server *:6385 [cluster]</span><br><span class="line">[root@mastera0 redis]# kill -9 30293</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6381 cluster nodes</span><br><span class="line">7fd120256350adf8f0d1378f60bd6ea9ddd8376f 127.0.0.1:6383 master - 0 1481956452010 7 connected 0-5460</span><br><span class="line">a6a4c51535ad00407f8c636cd620b63a4469c796 127.0.0.1:6385 slave cb5c188083e726c85ac1270f203255ba1c784894 0 1481956450405 3 connected</span><br><span class="line">d3609c8b68dcc4884501d14ec7803eef6223513b 127.0.0.1:6380 master,fail - 1481956439636 1481956438935 1 disconnected</span><br><span class="line">0dedd063912ddd0eae7cf111f8be805929290c6e 127.0.0.1:6381 myself,master - 0 0 2 connected 5461-10922</span><br><span class="line">cb5c188083e726c85ac1270f203255ba1c784894 127.0.0.1:6382 master - 0 1481956449903 3 connected 10923-16383</span><br><span class="line">26b67747334de461c57eef438f282c332d736a8b 127.0.0.1:6384 slave 0dedd063912ddd0eae7cf111f8be805929290c6e 0 1481956451408 5 connected</span><br></pre></td></tr></tbody></table></figure>
+
+<p>看到master6380挂了后，slave6383已经升级为master了</p>
+<p>重新启动6380，发现他已经变成了slave</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-server /app/redis_cluster/conf/redis6380.conf &amp;&gt; /app/redis_cluster/node6380/node6380.log &amp;</span><br><span class="line">[2] 8093</span><br><span class="line"></span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster nodes</span><br><span class="line">7fd120256350adf8f0d1378f60bd6ea9ddd8376f 127.0.0.1:6383 master - 0 1481956789544 7 connected 0-5460</span><br><span class="line">0dedd063912ddd0eae7cf111f8be805929290c6e 127.0.0.1:6381 master - 0 1481956787538 2 connected 5461-10922</span><br><span class="line">a6a4c51535ad00407f8c636cd620b63a4469c796 127.0.0.1:6385 slave cb5c188083e726c85ac1270f203255ba1c784894 0 1481956789544 6 connected</span><br><span class="line">26b67747334de461c57eef438f282c332d736a8b 127.0.0.1:6384 slave 0dedd063912ddd0eae7cf111f8be805929290c6e 0 1481956788541 5 connected</span><br><span class="line">d3609c8b68dcc4884501d14ec7803eef6223513b 127.0.0.1:6380 myself,slave 7fd120256350adf8f0d1378f60bd6ea9ddd8376f 0 0 1 connected</span><br><span class="line">cb5c188083e726c85ac1270f203255ba1c784894 127.0.0.1:6382 master - 0 1481956788039 3 connected 10923-16383</span><br><span class="line"></span><br><span class="line">-----------</span><br><span class="line"></span><br><span class="line">[root@mastera0 redis]# ps -ef |grep redis</span><br><span class="line">root      8093  1717  0 14:38 pts/0    00:00:00 redis-server *:6380 [cluster]</span><br><span class="line">root      8120  1717  0 14:43 pts/0    00:00:00 grep redis</span><br><span class="line">root     30294     1  0 14:19 pts/0    00:00:02 redis-server *:6381 [cluster]</span><br><span class="line">root     30295     1  0 14:19 pts/0    00:00:02 redis-server *:6382 [cluster]</span><br><span class="line">root     30296     1  0 14:19 pts/0    00:00:01 redis-server *:6383 [cluster]</span><br><span class="line">root     30297     1  0 14:19 pts/0    00:00:01 redis-server *:6384 [cluster]</span><br><span class="line">root     30298     1  0 14:19 pts/0    00:00:01 redis-server *:6385 [cluster]</span><br><span class="line">[root@mastera0 redis]# kill -9 30297</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6384 cluster slots</span><br><span class="line">Could not connect to Redis at 127.0.0.1:6384: Connection refused</span><br><span class="line">[root@mastera0 redis]# vim insert.sh</span><br><span class="line">[root@mastera0 redis]# cat insert.sh</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">for i in `seq 1 10000`</span><br><span class="line">do</span><br><span class="line">cat &gt;&gt; insert.file &lt;&lt; ENDF</span><br><span class="line">set age$i $i</span><br><span class="line">ENDF</span><br><span class="line">done</span><br><span class="line">[root@mastera0 redis]# bash insert.sh</span><br><span class="line">[root@mastera0 redis]# tail -n 4 insert.file</span><br><span class="line">set age9997 9997</span><br><span class="line">set age9998 9998</span><br><span class="line">set age9999 9999</span><br><span class="line">set age10000 10000</span><br><span class="line">[root@mastera0 redis]# time redis-cli -c -p 6381 &lt; insert.file &amp;&gt; /dev/null</span><br><span class="line"></span><br><span class="line">real	0m4.140s</span><br><span class="line">user	0m0.473s</span><br><span class="line">sys	0m1.859s</span><br><span class="line">[root@mastera0 redis]# kill -9 30294</span><br><span class="line"></span><br><span class="line">[root@mastera0 redis]# ps -ef|grep redis</span><br><span class="line">root      8093  1717  0 14:38 pts/0    00:00:01 redis-server *:6380 [cluster]</span><br><span class="line">root     18142  1717  0 14:46 pts/0    00:00:00 grep redis</span><br><span class="line">root     30295     1  0 14:19 pts/0    00:00:03 redis-server *:6382 [cluster]</span><br><span class="line">root     30296     1  0 14:19 pts/0    00:00:03 redis-server *:6383 [cluster]</span><br><span class="line">root     30298     1  0 14:19 pts/0    00:00:02 redis-server *:6385 [cluster]</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6382 cluster nodes</span><br><span class="line">cb5c188083e726c85ac1270f203255ba1c784894 127.0.0.1:6382 myself,master - 0 0 3 connected 10923-16383</span><br><span class="line">0dedd063912ddd0eae7cf111f8be805929290c6e 127.0.0.1:6381 master,fail - 1481957155300 1481957154698 2 disconnected 5461-10922</span><br><span class="line">d3609c8b68dcc4884501d14ec7803eef6223513b 127.0.0.1:6380 slave 7fd120256350adf8f0d1378f60bd6ea9ddd8376f 0 1481957227007 7 connected</span><br><span class="line">26b67747334de461c57eef438f282c332d736a8b 127.0.0.1:6384 slave,fail 0dedd063912ddd0eae7cf111f8be805929290c6e 1481957013040 1481957012739 5 disconnected</span><br><span class="line">7fd120256350adf8f0d1378f60bd6ea9ddd8376f 127.0.0.1:6383 master - 0 1481957226003 7 connected 0-5460</span><br><span class="line">a6a4c51535ad00407f8c636cd620b63a4469c796 127.0.0.1:6385 slave cb5c188083e726c85ac1270f203255ba1c784894 0 1481957226506 3 connected</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6382 cluster slots</span><br><span class="line">1) 1) (integer) 10923</span><br><span class="line">   2) (integer) 16383</span><br><span class="line">   3) 1) "127.0.0.1"</span><br><span class="line">      2) (integer) 6382</span><br><span class="line">   4) 1) "127.0.0.1"</span><br><span class="line">      2) (integer) 6385</span><br><span class="line">2) 1) (integer) 5461</span><br><span class="line">   2) (integer) 10922</span><br><span class="line">   3) 1) "127.0.0.1"</span><br><span class="line">      2) (integer) 6381</span><br><span class="line">3) 1) (integer) 0</span><br><span class="line">   2) (integer) 5460</span><br><span class="line">   3) 1) "127.0.0.1"</span><br><span class="line">      2) (integer) 6383</span><br><span class="line">   4) 1) "127.0.0.1"</span><br><span class="line">      2) (integer) 6380</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6382</span><br><span class="line">127.0.0.1:6382&gt; get age10000</span><br><span class="line">(error) CLUSTERDOWN The cluster is down</span><br><span class="line">127.0.0.1:6382&gt; cluster info</span><br><span class="line">cluster_state:fail</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:10922</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:5462</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:7</span><br><span class="line">cluster_my_epoch:3</span><br><span class="line">cluster_stats_messages_sent:14759</span><br><span class="line">cluster_stats_messages_received:6997</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="redis集群手动启动" class="article-heading"><a href="#redis集群手动启动" class="headerlink" title="redis集群手动启动"></a>redis集群手动启动<a class="article-anchor" href="#redis集群手动启动" aria-hidden="true"></a></h3><p>除了使用src/redis-trib.rb 还可以通过redis-cli</p>
+<ul>
+<li>cluster meet 配置集群中的master<ul>
+<li><p>cluster replicate配置master的slave</p>
+</li>
+<li><p>cluster addslots配置hash槽</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# bash redis_multi_ctl.sh stop</span><br><span class="line">[2]-  Killed                  redis-server /app/redis_cluster/conf/redis6380.conf &amp;&gt;/app/redis_cluster/node6380/node6380.log</span><br><span class="line">[root@mastera0 redis]# bash redis_multi_ctl.sh status</span><br><span class="line">root     18185  1717  0 14:54 pts/0    00:00:00 bash redis_multi_ctl.sh status</span><br><span class="line">root     18187 18185  0 14:54 pts/0    00:00:00 grep redis</span><br><span class="line">[3]+  Killed                  redis-server /app/redis_cluster/conf/redis6381.conf &amp;&gt;/app/redis_cluster/node6381/node6381.log</span><br><span class="line">[root@mastera0 redis]# bash redis_multi_ctl.sh status</span><br><span class="line">root     18189  1717  0 14:55 pts/0    00:00:00 bash redis_multi_ctl.sh status</span><br><span class="line">root     18191 18189  0 14:55 pts/0    00:00:00 grep redis</span><br><span class="line">[root@mastera0 redis]# cd /app/redis_cluster/</span><br><span class="line">[root@mastera0 redis_cluster]# ls</span><br><span class="line">conf      node6381  node6383  node6385       redis6381.log  redis6383.log  redis6385.log</span><br><span class="line">node6380  node6382  node6384  redis6380.log  redis6382.log  redis6384.log</span><br><span class="line">[root@mastera0 redis_cluster]# ll node6380</span><br><span class="line">total 96</span><br><span class="line">-rw-r--r--. 1 root root 82548 Dec 17 14:50 dump.rdb</span><br><span class="line">-rw-r--r--. 1 root root   753 Dec 17 14:51 node6380.conf</span><br><span class="line">-rw-r--r--. 1 root root  4191 Dec 17 14:51 node6380.log</span><br><span class="line">[root@mastera0 redis_cluster]# vim conf/redis6380.conf</span><br><span class="line">[root@mastera0 redis_cluster]# rm -rf node6380/*</span><br><span class="line">[root@mastera0 redis_cluster]# rm -rf node6381/*</span><br><span class="line">[root@mastera0 redis_cluster]# rm -rf node6382/*</span><br><span class="line">[root@mastera0 redis_cluster]# rm -rf node6383/*</span><br><span class="line">[root@mastera0 redis_cluster]# rm -rf node6384/*</span><br><span class="line">[root@mastera0 redis_cluster]# rm -rf node6385/*</span><br><span class="line">[root@mastera0 redis_cluster]# rm -rf *.log</span><br><span class="line">[root@mastera0 redis_cluster]# ls</span><br><span class="line">conf  node6380  node6381  node6382  node6383  node6384  node6385</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@mastera0 redis_cluster]# cd -</span><br><span class="line">/usr/local/redis</span><br><span class="line">[root@mastera0 redis]# pwd</span><br><span class="line">/usr/local/redis</span><br><span class="line">[root@mastera0 redis]# bash redis_multi_ctl.sh start</span><br><span class="line">[root@mastera0 redis]# bash redis_multi_ctl.sh status</span><br><span class="line">root     18293     1  0 15:07 pts/0    00:00:00 redis-server *:6380 [cluster]</span><br><span class="line">root     18294     1  0 15:07 pts/0    00:00:00 redis-server *:6381 [cluster]</span><br><span class="line">root     18295     1  0 15:07 pts/0    00:00:00 redis-server *:6382 [cluster]</span><br><span class="line">root     18296     1  0 15:07 pts/0    00:00:00 redis-server *:6383 [cluster]</span><br><span class="line">root     18297     1  0 15:07 pts/0    00:00:00 redis-server *:6384 [cluster]</span><br><span class="line">root     18298     1  0 15:07 pts/0    00:00:00 redis-server *:6385 [cluster]</span><br><span class="line">root     18311  1717  0 15:07 pts/0    00:00:00 bash redis_multi_ctl.sh status</span><br><span class="line">root     18313 18311  0 15:07 pts/0    00:00:00 grep redis</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看当前的集群信息，发现每一个节点就是一个独立的集群</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# for i in `seq 6380 6385`;do redis-cli -p $i cluster nodes;done</span><br><span class="line">8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2 :6380 myself,master - 0 0 0 connected</span><br><span class="line">f95d8a90e129c8b9067ba1c97e77cd71508c42a0 :6381 myself,master - 0 0 0 connected</span><br><span class="line">0e0958e72964fd922820ef9ed4377d10a33a2356 :6382 myself,master - 0 0 0 connected</span><br><span class="line">ef29f1294accee3ec85d9272becbe20307f4fc9e :6383 myself,master - 0 0 0 connected</span><br><span class="line">d4f9c7b0dc141a86a9d1b7b1381540d8aca04b5a :6384 myself,master - 0 0 0 connected</span><br><span class="line">fa7c7d5e866359f3863d9ef54654f3cfee8ccc4a :6385 myself,master - 0 0 0 connected</span><br></pre></td></tr></tbody></table></figure>
+
+<p>将master节点加入一个集群中</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster meet 127.0.0.1 6381</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster meet 127.0.0.1 6382</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster meet 127.0.0.1 6383</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster meet 127.0.0.1 6384</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster meet 127.0.0.1 6385</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster nodes</span><br><span class="line">0e0958e72964fd922820ef9ed4377d10a33a2356 127.0.0.1:6382 master - 0 1481958712420 2 connected</span><br><span class="line">8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2 127.0.0.1:6380 myself,master - 0 0 1 connected</span><br><span class="line">f95d8a90e129c8b9067ba1c97e77cd71508c42a0 127.0.0.1:6381 master - 0 1481958712921 0 connected</span><br></pre></td></tr></tbody></table></figure>
+
+<p>设置主从</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -p 6381 cluster replicate 8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6383 cluster replicate 0e0958e72964fd922820ef9ed4377d10a33a2356</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6385 cluster replicate d4f9c7b0dc141a86a9d1b7b1381540d8aca04b5a</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster nodes</span><br><span class="line">fa7c7d5e866359f3863d9ef54654f3cfee8ccc4a 127.0.0.1:6385 slave d4f9c7b0dc141a86a9d1b7b1381540d8aca04b5a 0 1481959454916 3 connected</span><br><span class="line">d4f9c7b0dc141a86a9d1b7b1381540d8aca04b5a 127.0.0.1:6384 master - 0 1481959453913 3 connected</span><br><span class="line">0e0958e72964fd922820ef9ed4377d10a33a2356 127.0.0.1:6382 master - 0 1481959452911 2 connected</span><br><span class="line">8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2 127.0.0.1:6380 myself,master - 0 0 1 connected</span><br><span class="line">f95d8a90e129c8b9067ba1c97e77cd71508c42a0 127.0.0.1:6381 slave 8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2 0 1481959454416 1 connected</span><br><span class="line">ef29f1294accee3ec85d9272becbe20307f4fc9e 127.0.0.1:6383 slave 0e0958e72964fd922820ef9ed4377d10a33a2356 0 1481959455079 4 connected</span><br></pre></td></tr></tbody></table></figure>
+
+<p>哈希槽还没有设置</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster slots</span><br><span class="line">(empty list or set)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>0-16383 （16383是15 * 2^10）</p>
+<p>通过cluster addslots来为节点分配槽</p>
+<p>如果平均分配，则为每个node为5461个槽</p>
+<ul>
+<li>0-5460</li>
+<li>5461-10922</li>
+<li>10923-16383</li>
+</ul>
+<p>我有三个master，分配如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">节点</th>
+<th align="left">node6380</th>
+<th align="left">6382</th>
+<th align="left">6384</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">槽范围</td>
+<td align="left">0-15999</td>
+<td align="left">16000-16200</td>
+<td align="left">16201-16383</td>
+</tr>
+<tr>
+<td align="left">槽数量</td>
+<td align="left">16000</td>
+<td align="left">200</td>
+<td align="left">182</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# for i in `seq 0 16000`;do redis-cli -p 6380 cluster addslots $i;done</span><br><span class="line">[root@mastera0 redis]# for i in `seq 16001 16200`;do redis-cli -p 6382 cluster addslots $i;done</span><br><span class="line">[root@mastera0 redis]# for i in `seq 16201 16383`;do redis-cli -p 6384 cluster addslots $i;done</span><br><span class="line"></span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster info</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:16384</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:4</span><br><span class="line">cluster_my_epoch:1</span><br><span class="line">cluster_stats_messages_sent:7042</span><br><span class="line">cluster_stats_messages_received:7042</span><br><span class="line"></span><br><span class="line">[root@mastera0 redis]# redis-cli -p 6380 cluster nodes|grep master</span><br><span class="line">d4f9c7b0dc141a86a9d1b7b1381540d8aca04b5a 127.0.0.1:6384 master - 0 1481960686619 3 connected 16201-16383</span><br><span class="line">0e0958e72964fd922820ef9ed4377d10a33a2356 127.0.0.1:6382 master - 0 1481960685617 2 connected 16001-16200</span><br><span class="line">8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2 127.0.0.1:6380 myself,master - 0 0 1 connected 0-16000</span><br></pre></td></tr></tbody></table></figure>
+
+<p>0-16383的槽是固定的，一定是连续的，否则集群的状态就会是no。</p>
+<p>向集群中插入10000条数据</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# cat insert.sh</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">for i in `seq 1 10000`</span><br><span class="line">do</span><br><span class="line">cat &gt;&gt; insert.file &lt;&lt; ENDF</span><br><span class="line">set $i $i</span><br><span class="line">ENDF</span><br><span class="line">done</span><br><span class="line">[root@mastera0 redis]# bash insert.sh</span><br><span class="line">[root@mastera0 redis]# tail -n 3 insert.file</span><br><span class="line">set 9998 9998</span><br><span class="line">set 9999 9999</span><br><span class="line">set 10000 10000</span><br><span class="line"></span><br><span class="line">[root@mastera0 redis]# time redis-cli -c -p 6380 &lt; insert.file &amp;&gt; /dev/null</span><br><span class="line"></span><br><span class="line">real	0m2.383s</span><br><span class="line">user	0m0.438s</span><br><span class="line">sys	0m1.024s</span><br></pre></td></tr></tbody></table></figure>
+
+<p>到此已经成功插入10000条记录</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -c -p 6384</span><br><span class="line">127.0.0.1:6384&gt; get 1</span><br><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">Redirected to slot [9842] located at 127.0.0.1:6380</span></span><br><span class="line">"1"</span><br><span class="line">127.0.0.1:6380&gt; get 2</span><br><span class="line">"2"</span><br><span class="line">127.0.0.1:6380&gt; get 3</span><br><span class="line">"3"</span><br><span class="line">127.0.0.1:6380&gt; get 5</span><br><span class="line">"5"</span><br><span class="line">127.0.0.1:6380&gt; get 100</span><br><span class="line">"100"</span><br><span class="line">127.0.0.1:6380&gt; get 1000</span><br><span class="line">"1000"</span><br><span class="line">127.0.0.1:6380&gt; get 10000</span><br><span class="line">"10000"</span><br><span class="line">127.0.0.1:6380&gt; exit</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="redis数据迁移" class="article-heading"><a href="#redis数据迁移" class="headerlink" title="redis数据迁移"></a>redis数据迁移<a class="article-anchor" href="#redis数据迁移" aria-hidden="true"></a></h2><p>实验目标：将9842槽（6380实例）中的数据key 1迁移到6382实例中</p>
+<p>通过dbsize来判断数据是否丢失</p>
+<p>数据迁移之前的总大小为30000</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# for i in 6380 6382 6384;do redis-cli -p $i dbsize;done|awk 'BEGIN{sum=0};{sum=$1+sum};END{print sum}'</span><br><span class="line">30000</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看要迁移的数据在哪个槽上</p>
+<p>1.get的时候返回信息</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -c -p 6384</span><br><span class="line">127.0.0.1:6384&gt; get 1</span><br><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">Redirected to slot [9842] located at 127.0.0.1:6380</span></span><br><span class="line">"1"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>2.cluster keyslot查看</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -c -p 6384 cluster keyslot 1</span><br><span class="line">(integer) 9842</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6384 cluster keyslot 10000</span><br><span class="line">(integer) 15413</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h3 id="slot数据迁移详细步骤" class="article-heading"><a href="#slot数据迁移详细步骤" class="headerlink" title="slot数据迁移详细步骤"></a>slot数据迁移详细步骤<a class="article-anchor" href="#slot数据迁移详细步骤" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">1. 保存数据 save</span><br><span class="line">2. 备份数据 tar -jcf /tmp/redis.all /app/redis_cluster/</span><br><span class="line">3. 查看要迁移数据所在节点和槽</span><br><span class="line">4. 开始迁移</span><br><span class="line">	1）目标原节点接收原节点的槽		&lt;old_port&gt; cluster setslot &lt;slot&gt; migrating &lt;new_node_id&gt;</span><br><span class="line">	2）原节点移出槽到目标节点 	&lt;new_port&gt; cluster setslot &lt;slot&gt; importing &lt;old_node_id&gt;</span><br><span class="line">	3）查看槽中key的个数		cluster countkeysinslot &lt;slot&gt;</span><br><span class="line">	   返回槽中num个数量的key		cluster getkeysinslot &lt;slot&gt; &lt;num&gt;</span><br><span class="line">	4）将槽中的key value迁移到目标槽中	&lt;old_port&gt; migrate &lt;ip&gt;  &lt;new_port&gt; &lt;key&gt; 0 1000</span><br><span class="line"> 	5）将槽指派给节点			&lt;port&gt; cluster setslot &lt;slot&gt; node &lt;node_id&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -c -p 6384 cluster nodes</span><br><span class="line">f95d8a90e129c8b9067ba1c97e77cd71508c42a0 127.0.0.1:6381 slave 8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2 0 1481964122803 1 connected</span><br><span class="line">ef29f1294accee3ec85d9272becbe20307f4fc9e 127.0.0.1:6383 slave 0e0958e72964fd922820ef9ed4377d10a33a2356 0 1481964122303 4 connected</span><br><span class="line">d4f9c7b0dc141a86a9d1b7b1381540d8aca04b5a 127.0.0.1:6384 myself,master - 0 0 3 connected 16201-16383</span><br><span class="line">8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2 127.0.0.1:6380 master - 0 1481964121901 1 connected 0-16000</span><br><span class="line">fa7c7d5e866359f3863d9ef54654f3cfee8ccc4a 127.0.0.1:6385 slave d4f9c7b0dc141a86a9d1b7b1381540d8aca04b5a 0 1481964120798 3 connected</span><br><span class="line">0e0958e72964fd922820ef9ed4377d10a33a2356 127.0.0.1:6382 master - 0 1481964122803 2 connected 16001-16200</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6384 cluster keyslot 1</span><br><span class="line">(integer) 9842</span><br></pre></td></tr></tbody></table></figure>
+
+<p>从以上查询的信息得到以下分析：</p>
+<p>分析结果</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">slot=9842</span><br><span class="line">old_port=6380</span><br><span class="line">old_node_id=8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2</span><br><span class="line">key=1</span><br><span class="line">new_port=6382</span><br><span class="line">newo_node_id=0e0958e72964fd922820ef9ed4377d10a33a2356</span><br></pre></td></tr></tbody></table></figure>
+
+<p>目标节点6382你愿意接收原节点6380指定的槽9842吗？</p>
+<p>原节点6380你确定要将槽9842迁移到目标节点6382吗？</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -c -p 6382 cluster setslot 9842 importing 8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 cluster setslot 9842 migrating 0e0958e72964fd922820ef9ed4377d10a33a2356</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 cluster nodes|grep master|sort -r</span><br><span class="line">d4f9c7b0dc141a86a9d1b7b1381540d8aca04b5a 127.0.0.1:6384 master - 0 1481964395490 3 connected 16201-16383</span><br><span class="line">8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2 127.0.0.1:6380 myself,master - 0 0 1 connected 0-16000 [9842-&gt;-0e0958e72964fd922820ef9ed4377d10a33a2356]</span><br><span class="line">0e0958e72964fd922820ef9ed4377d10a33a2356 127.0.0.1:6382 master - 0 1481964394488 2 connected 16001-16200</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看9842槽中的key</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 cluster countkeysinslot 9842</span><br><span class="line">(integer) 3</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 cluster getkeysinslot 9842 3</span><br><span class="line">1) "1"</span><br><span class="line">2) "age8413"</span><br><span class="line">3) "name1087"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>将槽中的key迁移到目标节点</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 migrate 127.0.0.1 6382 1 0 1000</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 migrate 127.0.0.1 6382 age8413 0 1000</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 migrate 127.0.0.1 6382 name1087 0 1000</span><br></pre></td></tr></tbody></table></figure>
+
+<p>双方确认槽的去向</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 cluster setslot 9842 node 8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6382 cluster setslot 9842 node 0e0958e72964fd922820ef9ed4377d10a33a2356</span><br><span class="line">OK</span><br><span class="line">[root@mastera0 redis]# redis-cli -c -p 6380 cluster nodes|grep master|sort -r</span><br><span class="line">d4f9c7b0dc141a86a9d1b7b1381540d8aca04b5a 127.0.0.1:6384 master - 0 1481965375019 3 connected 16201-16383</span><br><span class="line">8b60be5c7dc08c85fbf3e46854f13bb0f36f59b2 127.0.0.1:6380 myself,master - 0 0 1 connected 0-9841 9843-16000</span><br><span class="line">0e0958e72964fd922820ef9ed4377d10a33a2356 127.0.0.1:6382 master - 0 1481965376021 5 connected 9842 16001-16200</span><br></pre></td></tr></tbody></table></figure>
+
+<p>测试</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 redis]# redis-cli  -p 6380 get 1</span><br><span class="line">(error) MOVED 9842 127.0.0.1:6382</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:31.695Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E4%BF%9D%E8%AF%81"><span class="toc-text">数据一致性保证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%E6%AD%A5%E9%AA%A4"><span class="toc-text">redis集群搭建步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6"><span class="toc-text">1.安装软件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">2.集群配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%90%AF%E5%8A%A8redis%E6%9C%8D%E5%8A%A1"><span class="toc-text">3.启动redis服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%AE%89%E8%A3%85ruby-rubygems"><span class="toc-text">4.安装ruby rubygems</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%90%AF%E5%8A%A8reids%E9%9B%86%E7%BE%A4"><span class="toc-text">5.启动reids集群</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E6%9F%A5%E7%9C%8Bredis%E9%9B%86%E7%BE%A4%E7%8A%B6%E6%80%81"><span class="toc-text">6.查看redis集群状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E4%BD%BF%E7%94%A8reids%E9%9B%86%E7%BE%A4"><span class="toc-text">7. 使用reids集群</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E5%93%88%E5%B8%8C%E6%A7%BD%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="toc-text">8.哈希槽的配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redis%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95"><span class="toc-text">redis集群测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redis%E9%9B%86%E7%BE%A4%E6%89%8B%E5%8A%A8%E5%90%AF%E5%8A%A8"><span class="toc-text">redis集群手动启动</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#redis%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB"><span class="toc-text">redis数据迁移</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#slot%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB%E8%AF%A6%E7%BB%86%E6%AD%A5%E9%AA%A4"><span class="toc-text">slot数据迁移详细步骤</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

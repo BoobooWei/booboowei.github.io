@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>数据库备份规范 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E8%A7%84%E8%8C%83">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E8%A7%84%E8%8C%83" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="自建数据库MySQL备份方案   备份方案 适用场景 备份周期 备份存放路径 备份和恢复工具    逻辑备份 数据量小于50G 每天一次 &#x2F;alidata&#x2F;backup mysqldump&#x2F;mysql   物理备份 数据量大于50G 每周一全备，每天一增备 &#x2F;alidata&#x2F;backup innobackupex    数据量小于50G建议采用逻辑备份；  数据量大于50G建议采用物理备份；  备">
+<meta property="og:type" content="website">
+<meta property="og:title" content="数据库备份规范">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/dba_mysql/08-MySQL%E7%AE%A1%E7%90%86%E8%A7%84%E8%8C%83/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E8%A7%84%E8%8C%83">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="自建数据库MySQL备份方案   备份方案 适用场景 备份周期 备份存放路径 备份和恢复工具    逻辑备份 数据量小于50G 每天一次 &#x2F;alidata&#x2F;backup mysqldump&#x2F;mysql   物理备份 数据量大于50G 每周一全备，每天一增备 &#x2F;alidata&#x2F;backup innobackupex    数据量小于50G建议采用逻辑备份；  数据量大于50G建议采用物理备份；  备">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.824Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:07.846Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">数据库备份规范</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/dba_mysql/08-MySQL管理规范/数据库备份规范.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h1 id="自建数据库" class="article-heading"><a href="#自建数据库" class="headerlink" title="自建数据库"></a>自建数据库<a class="article-anchor" href="#自建数据库" aria-hidden="true"></a></h1><h2 id="MySQL备份方案" class="article-heading"><a href="#MySQL备份方案" class="headerlink" title="MySQL备份方案"></a>MySQL备份方案<a class="article-anchor" href="#MySQL备份方案" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th>备份方案</th>
+<th>适用场景</th>
+<th>备份周期</th>
+<th>备份存放路径</th>
+<th>备份和恢复工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>逻辑备份</strong></td>
+<td>数据量小于<code>50G</code></td>
+<td>每天一次</td>
+<td><code>/alidata/backup</code></td>
+<td><code>mysqldump/mysql</code></td>
+</tr>
+<tr>
+<td><strong>物理备份</strong></td>
+<td>数据量大于<code>50G</code></td>
+<td>每周一全备，每天一增备</td>
+<td><code>/alidata/backup</code></td>
+<td><code>innobackupex</code></td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>数据量小于<code>50G</code>建议采用<strong>逻辑备份</strong>；</p>
+</li>
+<li><p>数据量大于<code>50G</code>建议采用<strong>物理备份</strong>；</p>
+</li>
+<li><p>备份文件建议存放于本地，需要确保磁盘空间够用；</p>
+</li>
+<li><p>逻辑备份周期建议每天一次；</p>
+</li>
+<li><p>物理备份周期建议每周一全备，每天一增备；</p>
+</li>
+<li><p>逻辑备份工具<code>mysqldump</code></p>
+</li>
+<li><p>物理备份工具<code>innobackupex</code></p>
+</li>
+<li><p>备份存放地址<code>/alidata/backup</code> （便于后期巡检）</p>
+</li>
+<li><p>物理备份恢复方法通过<code>innobackupex</code>手动恢复即可</p>
+</li>
+</ul>
+<h3 id="MySQL逻辑备份脚本" class="article-heading"><a href="#MySQL逻辑备份脚本" class="headerlink" title="MySQL逻辑备份脚本"></a>MySQL逻辑备份脚本<a class="article-anchor" href="#MySQL逻辑备份脚本" aria-hidden="true"></a></h3><p>备份数据库常用案例：</p>
+<table>
+<thead>
+<tr>
+<th align="left">备份内容</th>
+<th align="left">情况1</th>
+<th align="left">参数</th>
+<th align="left">情况2</th>
+<th align="left">参数</th>
+<th align="left">情况3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">库的数量</td>
+<td align="left">所有</td>
+<td align="left">-A</td>
+<td align="left">多个</td>
+<td align="left">-B db1 db2 db3</td>
+<td align="left">db1</td>
+</tr>
+<tr>
+<td align="left">表的数量</td>
+<td align="left">所有</td>
+<td align="left"></td>
+<td align="left">多个</td>
+<td align="left">–table t1 t2</td>
+<td align="left">一个 t1</td>
+</tr>
+<tr>
+<td align="left">结构</td>
+<td align="left">导出</td>
+<td align="left"></td>
+<td align="left">不导出</td>
+<td align="left">-t</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">数据</td>
+<td align="left">导出</td>
+<td align="left"></td>
+<td align="left">不导出</td>
+<td align="left">-d</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">列名</td>
+<td align="left">导出</td>
+<td align="left">-c</td>
+<td align="left">不导出</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">存储过程</td>
+<td align="left">导出</td>
+<td align="left">-R</td>
+<td align="left">不导出</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">创建数据库</td>
+<td align="left">导出</td>
+<td align="left"></td>
+<td align="left">不导出</td>
+<td align="left">-n</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h4 id="生成库同步测试库" class="article-heading"><a href="#生成库同步测试库" class="headerlink" title="生成库同步测试库"></a>生成库同步测试库<a class="article-anchor" href="#生成库同步测试库" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># 同步生产库与测试库脚本版本 V.18.06.21.0</span></span><br><span class="line"><span class="comment"># 备份目标 ecshop库</span></span><br><span class="line">DBUser=root</span><br><span class="line">DBPwd=uplooking</span><br><span class="line">DBName=ecshoptest</span><br><span class="line">DBName_test=temp_ecshoptest</span><br><span class="line">DBHost=localhost</span><br><span class="line">BackupPath=<span class="string">"/alidata/rdsbackup"</span></span><br><span class="line">BackupFile=<span class="string">"<span class="variable">$DBName</span>-"</span>$(<span class="built_in">date</span> +%y%m%d_%H)<span class="string">".sql"</span></span><br><span class="line">BackupLog=<span class="string">"<span class="variable">$DBName</span>-"</span>$(<span class="built_in">date</span> +%y%m%d_%H)<span class="string">".log"</span></span><br><span class="line"><span class="comment"># Backup Dest directory, change this if you have someother location</span></span><br><span class="line"><span class="keyword">if</span> !(<span class="built_in">test</span> -d <span class="variable">$BackupPath</span>)</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"><span class="built_in">mkdir</span> <span class="variable">$BackupPath</span> -p</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$BackupPath</span></span><br><span class="line">a=`mysqldump -u<span class="variable">$DBUser</span> -p<span class="variable">$DBPwd</span> -h<span class="variable">$DBHost</span> <span class="variable">$DBName</span> --opt --set-gtid-purged=OFF --default-character-set=utf8  --single-transaction --hex-blob --skip-triggers --max_allowed_packet=824288000 &gt; <span class="string">"<span class="variable">$BackupPath</span>"</span>/<span class="string">"<span class="variable">$BackupFile</span>"</span> 2&gt; /dev/null; <span class="built_in">echo</span> $?`</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> != 0 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 备份失败"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 备份成功"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line">        <span class="comment">#开始导入测试库</span></span><br><span class="line">        <span class="comment">## 预先清除测试库中所有的表,删除开发库，再新建开发库</span></span><br><span class="line">        mysql -u<span class="variable">$DBUser</span> -p<span class="variable">$DBPwd</span> -h<span class="variable">$DBHost</span> -e <span class="string">"drop database <span class="variable">$DBName_test</span>;create database <span class="variable">$DBName_test</span>"</span></span><br><span class="line">        b=`mysql -u<span class="variable">$DBUser</span> -p<span class="variable">$DBPwd</span> -h<span class="variable">$DBHost</span> <span class="variable">$DBName_test</span> &lt; <span class="string">"<span class="variable">$BackupPath</span>"</span>/<span class="string">"<span class="variable">$BackupFile</span>"</span> 2&gt; /dev/null; <span class="built_in">echo</span> $?`</span><br><span class="line">        <span class="keyword">if</span> [ <span class="variable">$b</span> != 0 ]</span><br><span class="line">        <span class="keyword">then</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 导入失败"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 导入成功"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Delete sql type file &amp; log file</span></span><br><span class="line">find <span class="string">"<span class="variable">$BackupPath</span>"</span> -name <span class="string">"<span class="variable">$DBname</span>*[log,sql]"</span> -<span class="built_in">type</span> f -mtime +3 -<span class="built_in">exec</span> <span class="built_in">rm</span> -rf {} \;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="备份全库" class="article-heading"><a href="#备份全库" class="headerlink" title="备份全库"></a>备份全库<a class="article-anchor" href="#备份全库" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># backup_mysql_all_databases.sh</span></span><br><span class="line"><span class="comment"># 备份全库 V.18.06.21.0</span></span><br><span class="line"><span class="comment"># 备份目标 所有的库表</span></span><br><span class="line">DBUser=</span><br><span class="line">DBPwd=</span><br><span class="line">DBName=</span><br><span class="line">DBHost=</span><br><span class="line">BackupPath=<span class="string">"/alidata/rdsbackup"</span></span><br><span class="line">BackupFile=<span class="string">"mysql.all."</span>$(<span class="built_in">date</span> +%y%m%d_%H)<span class="string">".sql"</span></span><br><span class="line">BackupLog=<span class="string">"mysql.all."</span>$(<span class="built_in">date</span> +%y%m%d_%H)<span class="string">".log"</span></span><br><span class="line"><span class="comment"># Backup Dest directory, change this if you have someother location</span></span><br><span class="line"><span class="keyword">if</span> !(<span class="built_in">test</span> -d <span class="variable">$BackupPath</span>)</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"><span class="built_in">mkdir</span> <span class="variable">$BackupPath</span> -p</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$BackupPath</span></span><br><span class="line">a=`mysqldump -u<span class="variable">$DBUser</span> -p<span class="variable">$DBPwd</span> -h<span class="variable">$DBHost</span> -A --opt --set-gtid-purged=OFF --default-character-set=utf8 --single-transaction --hex-blob --skip-triggers --max_allowed_packet=824288000 &gt; <span class="string">"<span class="variable">$BackupPath</span>"</span>/<span class="string">"<span class="variable">$BackupFile</span>"</span> 2&gt; /dev/null; <span class="built_in">echo</span> $?`</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> -ne 0 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 备份失败"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 备份成功"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="comment">#Delete sql type file &amp; log file</span></span><br><span class="line">find <span class="string">"<span class="variable">$BackupPath</span>"</span> -name <span class="string">"mysql.all*[log,sql]"</span> -<span class="built_in">type</span> f -mtime +3 -<span class="built_in">exec</span> <span class="built_in">rm</span> -rf {} \;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="备份除系统库外的所有库" class="article-heading"><a href="#备份除系统库外的所有库" class="headerlink" title="备份除系统库外的所有库"></a>备份除系统库外的所有库<a class="article-anchor" href="#备份除系统库外的所有库" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># 备份除系统库外的所有库 V.18.06.21.0</span></span><br><span class="line"><span class="comment"># backup_mysql_except_sys.sh</span></span><br><span class="line">DBUser=</span><br><span class="line">DBPwd=</span><br><span class="line">DBName=</span><br><span class="line">DBHost=</span><br><span class="line">BackupPath=<span class="string">"/alidata/rdsbackup"</span></span><br><span class="line">BackupFile=<span class="string">"mysql.except.sys."</span>$(<span class="built_in">date</span> +%y%m%d_%H)<span class="string">".sql"</span></span><br><span class="line">BackupLog=<span class="string">"mysql.except.sys."</span>$(<span class="built_in">date</span> +%y%m%d_%H)<span class="string">".log"</span></span><br><span class="line"><span class="comment"># Backup Dest directory, change this if you have someother location</span></span><br><span class="line"><span class="keyword">if</span> !(<span class="built_in">test</span> -d <span class="variable">$BackupPath</span>)</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"><span class="built_in">mkdir</span> <span class="variable">$BackupPath</span> -p</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$BackupPath</span></span><br><span class="line">a=`mysql -u<span class="variable">$user</span> -p<span class="variable">$password</span> -e <span class="string">'show databases;'</span> | grep -Ev <span class="string">'Database|information_schema|performance_schema|mysql|test|sys'</span> | xargs mysqldump -u<span class="variable">$user</span> -p<span class="variable">$password</span> --databases --set-gtid-purged=OFF --opt --default-character-set=utf8  --single-transaction --hex-blob --skip-triggers --max_allowed_packet=824288000 -d  &gt; <span class="string">"<span class="variable">$BackupPath</span>"</span>/<span class="string">"<span class="variable">$BackupFile</span>"</span> 2&gt; /dev/null; <span class="built_in">echo</span> $?`</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> -ne 0 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 备份失败"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 备份成功"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="comment">#Delete sql type file &amp; log file</span></span><br><span class="line">find <span class="string">"<span class="variable">$BackupPath</span>"</span> -name <span class="string">"mysql.except.sys.*[log,sql]"</span> -<span class="built_in">type</span> f -mtime +3 -<span class="built_in">exec</span> <span class="built_in">rm</span> -rf {} \;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="备份单库结构和数据" class="article-heading"><a href="#备份单库结构和数据" class="headerlink" title="备份单库结构和数据"></a>备份单库结构和数据<a class="article-anchor" href="#备份单库结构和数据" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># 自动备份ks考试系统</span></span><br><span class="line"><span class="comment"># booboowei 2020.07.07</span></span><br><span class="line">DBUser=</span><br><span class="line">DBPwd=</span><br><span class="line">DBName=pe6</span><br><span class="line">DBHost=localhost</span><br><span class="line">BackupPath=<span class="string">"/alidata/cloudcare_dba/ks_backup"</span></span><br><span class="line">BackupFile=<span class="string">"<span class="variable">$DBName</span>-"</span>$(<span class="built_in">date</span> +%y%m%d_%H)<span class="string">".sql"</span></span><br><span class="line">BackupLog=<span class="string">"<span class="variable">$DBName</span>-"</span>$(<span class="built_in">date</span> +%y%m%d_%H)<span class="string">".log"</span></span><br><span class="line"><span class="comment"># Backup Dest directory, change this if you have someother location</span></span><br><span class="line"><span class="keyword">if</span> !(<span class="built_in">test</span> -d <span class="variable">$BackupPath</span>)</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"><span class="built_in">mkdir</span> <span class="variable">$BackupPath</span> -p</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$BackupPath</span></span><br><span class="line">a=`mysqldump -u<span class="variable">$DBUser</span> -p<span class="variable">$DBPwd</span> -h<span class="variable">$DBHost</span> <span class="variable">$DBName</span> --opt --set-gtid-purged=OFF --default-character-set=utf8 --single-transaction --hex-blob --skip-triggers --max_allowed_packet=824288000 &gt; <span class="string">"<span class="variable">$BackupPath</span>"</span>/<span class="string">"<span class="variable">$BackupFile</span>"</span> 2&gt; /dev/null; <span class="built_in">echo</span> $?`</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> -ne 0 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 备份失败"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 备份成功"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="comment">#Delete sql type file &amp; log file</span></span><br><span class="line">find <span class="string">"<span class="variable">$BackupPath</span>"</span> -name <span class="string">"<span class="variable">$DBname</span>*[log,sql]"</span> -<span class="built_in">type</span> f -mtime +3 -<span class="built_in">exec</span> <span class="built_in">rm</span> -rf {} \;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="备份单表的结构和数据" class="article-heading"><a href="#备份单表的结构和数据" class="headerlink" title="备份单表的结构和数据"></a>备份单表的结构和数据<a class="article-anchor" href="#备份单表的结构和数据" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># 备份单表 V.18.06.21.0</span></span><br><span class="line"><span class="comment"># 备份目标 ecshop库</span></span><br><span class="line">DBUser=</span><br><span class="line">DBPwd=</span><br><span class="line">DBName=</span><br><span class="line">DBHost=</span><br><span class="line">T1=</span><br><span class="line">T2=</span><br><span class="line">BackupPath=<span class="string">"/alidata/rdsbackup"</span></span><br><span class="line">BackupFile=<span class="string">"<span class="variable">$DBName</span>-"</span>$(<span class="built_in">date</span> +%y%m%d_%H)<span class="string">".sql"</span></span><br><span class="line">BackupLog=<span class="string">"<span class="variable">$DBName</span>-"</span>$(<span class="built_in">date</span> +%y%m%d_%H)<span class="string">".log"</span></span><br><span class="line"><span class="comment"># Backup Dest directory, change this if you have someother location</span></span><br><span class="line"><span class="keyword">if</span> !(<span class="built_in">test</span> -d <span class="variable">$BackupPath</span>)</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"><span class="built_in">mkdir</span> <span class="variable">$BackupPath</span> -p</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$BackupPath</span></span><br><span class="line">a=`mysqldump -u<span class="variable">$DBUser</span> -p<span class="variable">$DBPwd</span> -h<span class="variable">$DBHost</span> <span class="variable">$DBName</span> --tables <span class="variable">$T1</span> <span class="variable">$T2</span> --opt --set-gtid-purged=OFF --default-character-set=utf8 --single-transaction --hex-blob --skip-triggers --max_allowed_packet=824288000 &gt; <span class="string">"<span class="variable">$BackupPath</span>"</span>/<span class="string">"<span class="variable">$BackupFile</span>"</span> 2&gt; /dev/null; <span class="built_in">echo</span> $?`</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> -ne 0 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 备份失败"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"<span class="subst">$(date +%y%m%d_%H:%M:%S)</span> 备份成功"</span> &gt;&gt; <span class="variable">$BackupLog</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="comment">#Delete sql type file &amp; log file</span></span><br><span class="line">find <span class="string">"<span class="variable">$BackupPath</span>"</span> -name <span class="string">"<span class="variable">$DBname</span>*[log,sql]"</span> -<span class="built_in">type</span> f -mtime +3 -<span class="built_in">exec</span> <span class="built_in">rm</span> -rf {} \;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="备份数据库的表结构" class="article-heading"><a href="#备份数据库的表结构" class="headerlink" title="备份数据库的表结构"></a>备份数据库的表结构<a class="article-anchor" href="#备份数据库的表结构" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 备份脚本backup_mysql_meta.sh</span></span><br><span class="line"><span class="comment"># 用户名</span></span><br><span class="line">user=xx</span><br><span class="line"><span class="comment"># mysql 密码</span></span><br><span class="line">password=xx</span><br><span class="line"><span class="comment"># 备份所有对象的表结构</span></span><br><span class="line">mysqldump -u<span class="variable">$user</span> -p<span class="variable">$password</span> -A --set-gtid-purged=OFF --opt --default-character-set=utf8 --single-transaction --hex-blob -d --skip-triggers  --max_allowed_packet=824288000 &gt; mysql.all.meta.sql</span><br><span class="line"><span class="comment"># 备份除了系统库外的表结构</span></span><br><span class="line">mysql -u<span class="variable">$user</span> -p<span class="variable">$password</span> -e <span class="string">'show databases;'</span> | grep -Ev <span class="string">'Database|information_schema|performance_schema|mysql|test|sys'</span> | xargs mysqldump -u<span class="variable">$user</span> -p<span class="variable">$password</span> --databases --set-gtid-purged=OFF --opt --default-character-set=utf8  --single-transaction --hex-blob --skip-triggers --max_allowed_packet=824288000 -d  &gt; mysql.except.sys.meta.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="导出单表为表格" class="article-heading"><a href="#导出单表为表格" class="headerlink" title="导出单表为表格"></a>导出单表为表格<a class="article-anchor" href="#导出单表为表格" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment"># Database info</span></span><br><span class="line">DB_USER=<span class="string">"xxx"</span></span><br><span class="line">DB_PASS=<span class="string">"xx"</span></span><br><span class="line">DB_HOST=<span class="string">"xxx"</span></span><br><span class="line">DB_NAME=<span class="string">"xxx"</span></span><br><span class="line"><span class="comment"># 数据库表</span></span><br><span class="line">TABLE1=<span class="string">"xxx"</span></span><br><span class="line">TABLE2=<span class="string">"xxx"</span></span><br><span class="line">DB_TABLE=<span class="variable">$TABLE1</span> <span class="variable">$TABLE2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Others vars</span></span><br><span class="line">BIN_DIR=<span class="string">"/alidata/mysql/bin"</span>            <span class="comment">#the mysql bin path</span></span><br><span class="line">BCK_DIR=<span class="string">"/alidata/backup_account"</span>    <span class="comment">#the backup file directory</span></span><br><span class="line">DATE=<span class="string">"`date +%Y-%m-%d`"</span></span><br><span class="line">DB_PATH=<span class="variable">$BCK_DIR</span>/<span class="variable">$DATE</span></span><br><span class="line"><span class="comment"># 打印存储路径</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$DB_PATH</span></span><br><span class="line"><span class="comment"># 判断路径是否存在</span></span><br><span class="line"><span class="keyword">if</span> [ ! -d <span class="variable">$DB_PATH</span> ];<span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$DB_PATH</span></span><br><span class="line"><span class="built_in">mkdir</span> <span class="variable">$DB_PATH</span></span><br><span class="line"><span class="built_in">chown</span> mysql. <span class="variable">$DB_PATH</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$DB_PATH</span></span><br><span class="line"><span class="built_in">rm</span> -rf <span class="variable">$DB_PATH</span></span><br><span class="line"><span class="built_in">mkdir</span> <span class="variable">$DB_PATH</span></span><br><span class="line"><span class="built_in">chown</span> mysql. <span class="variable">$DB_PATH</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># TODO</span></span><br><span class="line"><span class="comment"># 备份数据</span></span><br><span class="line"><span class="variable">$BIN_DIR</span>/mysqldump --opt --single-transaction --set-gtid-purged=OFF -u<span class="variable">$DB_USER</span> -p<span class="variable">$DB_PASS</span> -h<span class="variable">$DB_HOST</span> <span class="variable">$DB_NAME</span> <span class="variable">$DB_TABLE</span> &gt; <span class="variable">$DB_PATH</span>/db_data_<span class="variable">${TABLE1}</span>_<span class="variable">${TABLE2}</span>.sql</span><br><span class="line"></span><br><span class="line"><span class="comment"># 导出excel</span></span><br><span class="line">mysql -u<span class="variable">$DB_USER</span> -p<span class="variable">$DB_PASS</span> -h<span class="variable">$DB_HOST</span> <span class="variable">$DB_NAME</span>  -e <span class="string">"select * from <span class="variable">$TABLE1</span> into outfile '<span class="variable">$DB_PATH</span>/<span class="variable">$TABLE1</span>.xls'"</span>;</span><br><span class="line"></span><br><span class="line">mysql -u<span class="variable">$DB_USER</span> -p<span class="variable">$DB_PASS</span> -h<span class="variable">$DB_HOST</span> <span class="variable">$DB_NAME</span>  -e <span class="string">"select * from <span class="variable">$TABLE2</span> into outfile '<span class="variable">$DB_PATH</span>/<span class="variable">$TABLE2</span>.xls'"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 远程传输到备份服务器</span></span><br><span class="line">scp -r <span class="variable">$DB_PATH</span> mysqlbackup@192.168.20.3:/alidata/backup_account/</span><br><span class="line"></span><br><span class="line"><span class="comment">#还原数据库</span></span><br><span class="line"><span class="comment">#用mysql-front导入前一天的 *.sql 文件即可恢复数据</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="关于权限问题" class="article-heading"><a href="#关于权限问题" class="headerlink" title="关于权限问题"></a>关于权限问题<a class="article-anchor" href="#关于权限问题" aria-hidden="true"></a></h4><p>导出为sql，则需要待备份对象的只读权限<code>select</code></p>
+<p>导出为表格，则需要</p>
+<ul>
+<li><p>添加<code>file,select</code>两个权限 ；</p>
+</li>
+<li><p>修改<code>secure_file_priv</code>权限为允许导出到任意目录</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># root用户（主从）授权file，导出表格</span><br><span class="line"><span class="operator">&gt;</span> <span class="keyword">grant</span> file,<span class="keyword">select</span> <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">to</span> backup_xls@<span class="string">'%'</span> identified <span class="keyword">by</span> <span class="string">'bQ4QMKaxH7vkzUFQQd0u'</span>;</span><br><span class="line"><span class="operator">&gt;</span> flush privileges;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$ vim <span class="operator">/</span>etc<span class="operator">/</span>my.cnf</span><br><span class="line"></span><br><span class="line"># <span class="number">2018</span><span class="number">-07</span><span class="number">-13</span> CloudCareDBA</span><br><span class="line">secure_file_priv<span class="operator">=</span><span class="string">''</span></span><br><span class="line">份跳过某个表或某个视图</span><br><span class="line"></span><br><span class="line"># <span class="comment">--ignore-table=dbname.tbname</span></span><br><span class="line">mysqldump <span class="operator">-</span>hxxx <span class="operator">-</span>uxxx <span class="operator">-</span>pxxx hdmpdb  <span class="comment">--opt --set-gtid-purged=OFF  --skip-definer --default-character-set=utf8 --single-transaction --hex-blob --max_allowed_packet=824288000  --ignore-table=hdmpdb .circ_000037_dtl_54_v   --ignore-table=hdmpdb .circ_000037_sum_54_v &gt; hdmpdb.sql</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="逻辑备份恢复问题" class="article-heading"><a href="#逻辑备份恢复问题" class="headerlink" title="逻辑备份恢复问题"></a>逻辑备份恢复问题<a class="article-anchor" href="#逻辑备份恢复问题" aria-hidden="true"></a></h4><h5 id="错误信息" class="article-heading"><a href="#错误信息" class="headerlink" title="错误信息"></a>错误信息<a class="article-anchor" href="#错误信息" aria-hidden="true"></a></h5><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[Err] <span class="number">1227</span> <span class="operator">-</span> Access denied; you need (<span class="keyword">at</span> least <span class="keyword">one</span> <span class="keyword">of</span>) the SUPER privilege(s) <span class="keyword">for</span> this operation <span class="comment">--常见于 RDS MySQL 5.6</span></span><br><span class="line">ERROR <span class="number">1725</span> (HY000) <span class="keyword">at</span> line <span class="number">1936</span>: OPERATION need <span class="keyword">to</span> be executed <span class="keyword">set</span> <span class="keyword">by</span> ADMIN <span class="comment">--常见于 RDS MySQL 5.5</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h5 id="错误出现的场景" class="article-heading"><a href="#错误出现的场景" class="headerlink" title="错误出现的场景"></a>错误出现的场景<a class="article-anchor" href="#错误出现的场景" aria-hidden="true"></a></h5><ul>
+<li>在创建 存储过程、函数、触发器、事件、视图的时候出现这个错误。</li>
+<li>从本地数据库导出 SQL，在 RDS 上应用该 SQL 的时候出现该错误。</li>
+<li>从 RDS MySQL 5.6 实例下载逻辑备份，导入到 RDS 或本地数据库中。</li>
+</ul>
+<h5 id="错误原因" class="article-heading"><a href="#错误原因" class="headerlink" title="错误原因"></a>错误原因<a class="article-anchor" href="#错误原因" aria-hidden="true"></a></h5><ul>
+<li>导入RDS MySQL 实例：SQL 语句中含有需要 Supper 权限才可以执行的语句，而 RDS MySQL不提供 Super 权限，因此需要去除这类语句。</li>
+<li>本地 MySQL 实例没有启用 GTID。</li>
+</ul>
+<h5 id="解决" class="article-heading"><a href="#解决" class="headerlink" title="解决"></a>解决<a class="article-anchor" href="#解决" aria-hidden="true"></a></h5><p>1 去除 DEFINER 子句</p>
+<p>检查 SQL 文件，去除下面类似的子句</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">DEFINER<span class="operator">=</span>`root`@`<span class="operator">%</span>`</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在 Linux 平台下，可以尝试使用下面的语句去除：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sed -e <span class="string">'s/DEFINER[ ]*=[ ]*[^*]*\*/\*/ '</span> your.sql &gt; your_revised.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<p>2 去除 GTID_PURGED 子句</p>
+<p>检查 SQL 文件，去除下面类似的语句</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SET</span> @<span class="variable">@GLOBAL</span>.GTID_PURGED<span class="operator">=</span><span class="string">'d0502171-3e23-11e4-9d65-d89d672af420:1-373, d5deee4e-3e23-11e4-9d65-d89d672a9530:1-616234'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在 Linux 平台，可以使用下面的语句去除</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">awk <span class="string">'{ if (index($0,"GTID_PURGED")) { getline; while (length($0) &gt; 0) { getline; } } else { print $0 } }'</span> your.sql | grep -iv <span class="string">'set @@'</span> &gt; your_revised.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<p>3 检查修改后的文件</p>
+<p>修改完毕后，通过下面的语句检查是否合乎要求。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">egrep -<span class="keyword">in</span> <span class="string">"definer|set @@"</span> your_revised.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果上面的语句没有输出，说明 SQL 文件符合要求。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sed -e <span class="string">'s/DEFINER[ ]*=[ ]*.*@.*[ ]*//'</span> dayshare.sql &gt; your.sql</span><br><span class="line">sed -n <span class="string">'/DEFINER[ ]*=[ ]*.*@.*[ ]*/p'</span> your.sql</span><br><span class="line">egrep -<span class="keyword">in</span> <span class="string">"definer|set @@"</span> your.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="XtraBackup物理备份脚本" class="article-heading"><a href="#XtraBackup物理备份脚本" class="headerlink" title="XtraBackup物理备份脚本"></a>XtraBackup物理备份脚本<a class="article-anchor" href="#XtraBackup物理备份脚本" aria-hidden="true"></a></h3><blockquote>
+<p>MySQL基于innobackupex的物理全备和增量备份</p>
+</blockquote>
+<blockquote>
+<p>2018-03-07 BoobooWei</p>
+</blockquote>
+<h4 id="功能概述" class="article-heading"><a href="#功能概述" class="headerlink" title="功能概述"></a>功能概述<a class="article-anchor" href="#功能概述" aria-hidden="true"></a></h4><ul>
+<li>实现MySQL数据库物理备份；</li>
+<li>一周一全备，每天一增备；</li>
+<li>自动清理过期备份（只保留最近的全备+增备）</li>
+<li>备份任务每日定时执行</li>
+</ul>
+<h4 id="安装percona-xtrabackupex" class="article-heading"><a href="#安装percona-xtrabackupex" class="headerlink" title="安装percona-xtrabackupex"></a>安装percona-xtrabackupex<a class="article-anchor" href="#安装percona-xtrabackupex" aria-hidden="true"></a></h4><p>官网下载对应版本的percona-xtrabackupex软件</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd /alidata/install</span><br><span class="line">yum install -y lrzsz libev</span><br><span class="line">tar -xf Percona-XtraBackup-2.4.9-ra467167cdd4-el7-x86_64-bundle.tar</span><br><span class="line">rpm -ivh percona-xtrabackup-24-2.4.9-1.el7.x86_64.rpm</span><br><span class="line">innobackupex -v</span><br></pre></td></tr></tbody></table></figure>
+
+<p>测试中使用的版本为：innobackupex version 2.4.9 Linux (x86_64) (revision id: a467167cdd4)</p>
+<h4 id="数据库授权" class="article-heading"><a href="#数据库授权" class="headerlink" title="数据库授权"></a>数据库授权<a class="article-anchor" href="#数据库授权" aria-hidden="true"></a></h4><p>遵循最小权限原则，授予如下权限：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">grant lock tables,reload,process,replication client,super on *.* to ro_user@'localhost' identified by '(Uploo00king)';</span><br><span class="line"></span><br><span class="line">flush privileges;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="备份脚本" class="article-heading"><a href="#备份脚本" class="headerlink" title="备份脚本"></a>备份脚本<a class="article-anchor" href="#备份脚本" aria-hidden="true"></a></h4><p>将备份脚本传输到服务器的/alidata/install目录下并解压：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">unzip xtrabackup_cron.zip -d /alidata/</span><br></pre></td></tr></tbody></table></figure>
+
+<p>测试明细</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera install]# ls</span><br><span class="line">mysql5.6.tar  mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz  software  xtrabackup_cron.zip</span><br><span class="line">[root@mastera install]# unzip xtrabackup_cron.zip -d /alidata/</span><br><span class="line">Archive:  xtrabackup_cron.zip</span><br><span class="line">   creating: /alidata/xtrabackup_cron/</span><br><span class="line">   creating: /alidata/xtrabackup_cron/bin/</span><br><span class="line">  inflating: /alidata/xtrabackup_cron/bin/mysql_increment_hot_backup.sh</span><br><span class="line">   creating: /alidata/xtrabackup_cron/conf/</span><br><span class="line">  inflating: /alidata/xtrabackup_cron/conf/.mysql_increment_hot_backup.conf.swp</span><br><span class="line">  inflating: /alidata/xtrabackup_cron/conf/mysql_increment_hot_backup.conf</span><br><span class="line">   creating: /alidata/xtrabackup_cron/log/</span><br><span class="line">   creating: /alidata/xtrabackup_cron/var/</span><br><span class="line"> extracting: /alidata/xtrabackup_cron/var/mysql_increment_hot_backup.err</span><br><span class="line"> extracting: /alidata/xtrabackup_cron/var/mysql_increment_hot_backup.index</span><br><span class="line">[root@mastera install]# ll /alidata/</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x  3 root  root  114 Mar  6 18:38 install</span><br><span class="line">drwxr-xr-x 11 mysql mysql 141 Feb 26 18:15 mysql</span><br><span class="line">drwxr-xr-x  6 root  root   47 Jan  1  2016 xtrabackup_cron</span><br><span class="line"></span><br><span class="line">[root@mastera install]# cd /alidata/xtrabackup_cron/</span><br><span class="line">[root@mastera xtrabackup_cron]# ll</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x 2 root root 42 Jan  1  2016 bin</span><br><span class="line">drwxr-xr-x 2 root root 87 Jan  1  2016 conf</span><br><span class="line">drwxr-xr-x 2 root root  6 Jan  1  2016 log</span><br><span class="line">drwxr-xr-x 2 root root 82 Jan  1  2016 var</span><br></pre></td></tr></tbody></table></figure>
+
+<p>备份脚本结构：</p>
+<ul>
+<li>bin 备份的可执行脚本</li>
+<li>conf 备份的配置文件</li>
+<li>log 备份脚本的日志信息</li>
+<li>var 备份文件的索引信息</li>
+</ul>
+<h4 id="备份测试明细" class="article-heading"><a href="#备份测试明细" class="headerlink" title="备份测试明细"></a>备份测试明细<a class="article-anchor" href="#备份测试明细" aria-hidden="true"></a></h4><p>修改配置文件如下：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera bin]# vim ../conf/mysql_increment_hot_backup.conf</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">mysql 用户名</span></span><br><span class="line">user=ro_user</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">mysql 密码</span></span><br><span class="line">password=(Uploo00king)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">备份路径</span></span><br><span class="line">backup_dir=/alidata/backup</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">percona-xtrabackup 备份软件路径 脚本中将使用该目录与/bin/innobakcupex做拼接</span></span><br><span class="line">xtrabackup_dir=/usr</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">全备是在一周的第几天，1为每周一</span></span><br><span class="line">full_backup_week_day=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">全量备信息名称 前缀</span></span><br><span class="line">full_backup_prefix=full</span><br></pre></td></tr></tbody></table></figure>
+
+<p>关闭数据库的情况下执行备份脚本，查看备份脚本的错误日志情况：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera ~]# cd /alidata/xtrabackup_cron/log/</span><br><span class="line">[root@mastera log]# ll</span><br><span class="line">total 4</span><br><span class="line">-rw-r--r-- 1 root root 742 Mar  7 12:06 full_2018-03-07_12-06-16_3.log</span><br><span class="line">[root@mastera log]# cat full_2018-03-07_12-06-16_3.log</span><br><span class="line">180307 12:06:16 innobackupex: Starting the backup operation</span><br><span class="line"></span><br><span class="line">IMPORTANT: Please check that the backup run completes successfully.</span><br><span class="line">           At the end of a successful backup run innobackupex</span><br><span class="line">           prints "completed OK!".</span><br><span class="line"></span><br><span class="line">180307 12:06:17  version_check Connecting to MySQL server with DSN 'dbi:mysql:;mysql_read_default_group=xtrabackup;port=3306;mysql_socket=/tmp/mysql.sock' as 'ro_user'  (using password: YES).</span><br><span class="line">Failed to connect to MySQL server as DBD::mysql module is not installed at - line 1327.</span><br><span class="line">180307 12:06:17 Connecting to MySQL server host: localhost, user: ro_user, password: set, port: 3306, socket: /tmp/mysql.sock</span><br><span class="line">Failed to connect to MySQL server: Can't connect to local MySQL server through socket '/tmp/mysql.sock' (2).</span><br></pre></td></tr></tbody></table></figure>
+
+<p>手动修改系统时间测试脚本执行情况</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera ~]# date -s "2018-03-07 12:03:00" &amp;&amp; bash /alidata/xtrabackup_cron/bin/mysql_increment_hot_backup.sh</span><br><span class="line">[root@mastera ~]# date -s "2018-03-08 12:03:00" &amp;&amp; bash /alidata/xtrabackup_cron/bin/mysql_increment_hot_backup.sh</span><br><span class="line">[root@mastera ~]# date -s "2018-03-09 12:03:00" &amp;&amp; bash /alidata/xtrabackup_cron/bin/mysql_increment_hot_backup.sh</span><br><span class="line">[root@mastera ~]# date -s "2018-03-10 12:03:00" &amp;&amp; bash /alidata/xtrabackup_cron/bin/mysql_increment_hot_backup.sh</span><br><span class="line">[root@mastera ~]# date -s "2018-03-11 12:03:00" &amp;&amp; bash /alidata/xtrabackup_cron/bin/mysql_increment_hot_backup.sh</span><br><span class="line">[root@mastera ~]# date -s "2018-03-12 12:03:00" &amp;&amp; bash /alidata/xtrabackup_cron/bin/mysql_increment_hot_backup.sh</span><br><span class="line">[root@mastera ~]# date -s "2018-03-13 12:03:00" &amp;&amp; bash /alidata/xtrabackup_cron/bin/mysql_increment_hot_backup.sh</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@mastera backup]# ll</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x 6 root root 4096 Mar  7 12:08 full_2018-03-07_12-07-53_3</span><br><span class="line">drwxr-xr-x 5 root root   83 Mar 12 12:03 full_2018-03-12_12-03-00_1</span><br><span class="line">drwxr-xr-x 6 root root 4096 Mar  8 12:03 incr_2018-03-08_12-03-02_4</span><br><span class="line">drwxr-xr-x 6 root root 4096 Mar  9 12:03 incr_2018-03-09_12-03-05_5</span><br><span class="line">drwxr-xr-x 6 root root 4096 Mar 10 12:03 incr_2018-03-10_12-03-00_6</span><br><span class="line">drwxr-xr-x 6 root root 4096 Mar 11 12:03 incr_2018-03-11_12-03-00_7</span><br><span class="line">[root@mastera backup]# ll</span><br><span class="line">total 8</span><br><span class="line">drwxr-xr-x 6 root root 4096 Mar 12 12:03 full_2018-03-12_12-03-00_1</span><br><span class="line">drwxr-xr-x 6 root root 4096 Mar 13 12:03 incr_2018-03-13_12-03-00_2</span><br><span class="line">[root@mastera var]# cat mysql_increment_hot_backup.index</span><br><span class="line">{week_day:1,          dir:full_2018-03-12_12-03-00_1,          type:full,          date:2018-03-12}</span><br><span class="line">{week_day:2,          dir:incr_2018-03-13_12-03-00_2,          type:incr,          date:2018-03-13}</span><br><span class="line">[root@mastera var]# cat mysql_increment_hot_backup.index_2018-03-11</span><br><span class="line">{week_day:3,          dir:full_2018-03-07_12-07-53_3,          type:full,          date:2018-03-07}</span><br><span class="line">{week_day:4,          dir:incr_2018-03-08_12-03-02_4,          type:incr,          date:2018-03-08}</span><br><span class="line">{week_day:5,          dir:incr_2018-03-09_12-03-05_5,          type:incr,          date:2018-03-09}</span><br><span class="line">{week_day:6,          dir:incr_2018-03-10_12-03-00_6,          type:incr,          date:2018-03-10}</span><br><span class="line">{week_day:7,          dir:incr_2018-03-11_12-03-00_7,          type:incr,          date:2018-03-11}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>测试时间从周三开始执行第一次备份，生成全备份<code>full_2018-03-07_12-07-53_3</code>，后续到周日，都是增量备份。</p>
+<p>测试第二周的周一，生成全备份<code>full_2018-03-12_12-03-00_1</code>;</p>
+<p>测试第二周的周二，生成增量备份<code>incr_2018-03-13_12-03-00_2</code>，并删除了前一周所有的备份。</p>
+<h3 id="ECS快照备份脚本" class="article-heading"><a href="#ECS快照备份脚本" class="headerlink" title="ECS快照备份脚本"></a>ECS快照备份脚本<a class="article-anchor" href="#ECS快照备份脚本" aria-hidden="true"></a></h3><figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># coding:utf8</span></span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">Created on:</span></span><br><span class="line"><span class="string">@author: BoobooWei</span></span><br><span class="line"><span class="string">Email: rgweiyaping@hotmail.com</span></span><br><span class="line"><span class="string">Version: V.18.09.04.0</span></span><br><span class="line"><span class="string">Description:</span></span><br><span class="line"><span class="string">    ECS自建MySQL数据库通过阿里快照方式进行数据库自动备份</span></span><br><span class="line"><span class="string">Help:</span></span><br><span class="line"><span class="string">pip install --upgrade pip</span></span><br><span class="line"><span class="string">hash -r</span></span><br><span class="line"><span class="string">pip install aliyun-python-sdk-core</span></span><br><span class="line"><span class="string">pip install aliyun-python-sdk-ecr</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> OrderedDict</span><br><span class="line"><span class="keyword">from</span> aliyunsdkcore.client <span class="keyword">import</span> AcsClient</span><br><span class="line"><span class="keyword">from</span> aliyunsdkecs.request.v20140526 <span class="keyword">import</span> DescribeDisksRequest, CreateSnapshotRequest</span><br><span class="line"><span class="keyword">from</span> subprocess <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">reload(sys)</span><br><span class="line">sys.setdefaultencoding(<span class="string">'utf8'</span>)</span><br><span class="line"></span><br><span class="line">data = {</span><br><span class="line">    <span class="string">'data'</span>: [],</span><br><span class="line">    <span class="string">'code'</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">'msg'</span>: <span class="string">''</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">backup_start_time = datetime.datetime.now()</span><br><span class="line">year_time = backup_start_time.strftime(<span class="string">'%y'</span>)</span><br><span class="line">month_time = backup_start_time.strftime(<span class="string">'%m'</span>)</span><br><span class="line">day_time = backup_start_time.strftime(<span class="string">'%d'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">logging.basicConfig(level=logging.DEBUG,</span><br><span class="line">                <span class="built_in">format</span>=<span class="string">'%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s'</span>,</span><br><span class="line">                datefmt=<span class="string">'%a, %d %b %Y %H:%M:%S'</span>,</span><br><span class="line">                filename=<span class="string">'/alidata/python_sc/MySQLAutoSnapshotBackup.log'</span>,</span><br><span class="line">                filemode=<span class="string">'a+'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Do_Cmd</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, cmd</span>):</span><br><span class="line">        output = Popen(cmd, shell=<span class="literal">True</span>, stdout=PIPE, stderr=PIPE)</span><br><span class="line">        <span class="variable language_">self</span>.out, <span class="variable language_">self</span>.err = output.communicate()</span><br><span class="line">        returncode = output.poll()</span><br><span class="line">        <span class="keyword">if</span> returncode != <span class="number">0</span>:</span><br><span class="line">            data[<span class="string">'code'</span>] = <span class="number">1</span></span><br><span class="line">            data[<span class="string">'msg'</span>] = <span class="variable language_">self</span>.err</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">case_a</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.out.strip()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">case_b</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.out.strip().split(<span class="string">'\n'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">case_c</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.out.strip().split()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">case_d</span>(<span class="params">self</span>):</span><br><span class="line">        line_list = []</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> <span class="variable language_">self</span>.out.strip().split(<span class="string">'\n'</span>):</span><br><span class="line">            line_list.append(line.strip().split(<span class="string">'\t'</span>))</span><br><span class="line">        <span class="keyword">return</span> line_list</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">case_e</span>(<span class="params">self</span>):</span><br><span class="line">        line_list = []</span><br><span class="line">        a = []</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> <span class="variable language_">self</span>.out.strip().split(<span class="string">'\n'</span>):</span><br><span class="line">            line_list.append(line.strip().split(<span class="string">'\t'</span>))</span><br><span class="line">        key = line_list[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">for</span> value <span class="keyword">in</span> line_list[<span class="number">1</span>:]:</span><br><span class="line">            a.append(OrderedDict(<span class="built_in">zip</span>(key, value)))</span><br><span class="line">        <span class="keyword">return</span> a</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Do_Server</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, cmd</span>):</span><br><span class="line">        output = Popen(cmd, shell=<span class="literal">True</span>, stdout=PIPE, stderr=PIPE)</span><br><span class="line">        returncode = output.wait()</span><br><span class="line">        <span class="keyword">if</span> returncode != <span class="number">0</span>:</span><br><span class="line">            data[<span class="string">'code'</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MySQLAPI</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, <span class="built_in">bin</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.<span class="built_in">bin</span> = <span class="built_in">bin</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">stop_mysql</span>(<span class="params">self</span>):</span><br><span class="line">        logging.info(<span class="string">'{}\t开始停止数据库'</span>.<span class="built_in">format</span>(datetime.datetime.now().strftime(<span class="string">'%Y-%m-%dT%H:%MZ'</span>)))</span><br><span class="line">        shell = <span class="string">'{} stop'</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.<span class="built_in">bin</span>)</span><br><span class="line">        <span class="keyword">return</span> Do_Cmd(shell).case_a()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">start_mysql</span>(<span class="params">self</span>):</span><br><span class="line">        logging.info(<span class="string">'{}\t开始启动数据库'</span>.<span class="built_in">format</span>(datetime.datetime.now().strftime(<span class="string">'%Y-%m-%dT%H:%MZ'</span>)))</span><br><span class="line">        shell = <span class="string">'{} start'</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.<span class="built_in">bin</span>)</span><br><span class="line">        <span class="keyword">return</span> Do_Server(shell)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">check_mysql_status</span>(<span class="params">self</span>):</span><br><span class="line">        shell = <span class="string">'{} status'</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.<span class="built_in">bin</span>)</span><br><span class="line">        result = Do_Cmd(shell).case_a()</span><br><span class="line">        <span class="keyword">if</span> <span class="string">"not running"</span> <span class="keyword">in</span> result:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AliYunEcsAPI</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, access_key, access_secret, region</span>):</span><br><span class="line">        <span class="variable language_">self</span>.client = AcsClient(access_key, access_secret, region)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_DescribeSnapshots</span>(<span class="params">self, DiskId, SnapshotId</span>):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            request = DescribeDisksRequest.DescribeDisksRequest()</span><br><span class="line">            request.set_accept_format(<span class="string">'json'</span>)</span><br><span class="line">            request.set_action_name(<span class="string">'DescribeSnapshots'</span>)</span><br><span class="line">            request.set_DiskIds(DiskId)</span><br><span class="line">            request.set_SnapshotId(SnapshotId)</span><br><span class="line">            results = json.loads(<span class="variable language_">self</span>.client.do_action_with_exception(request))</span><br><span class="line">            <span class="keyword">return</span> results[<span class="string">'Snapshots'</span>][<span class="string">'Snapshot'</span>]</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            logging.info(e)</span><br><span class="line">            <span class="keyword">return</span> {}</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">create_Snapshots</span>(<span class="params">self, DiskId, SnapshotName</span>):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            request = CreateSnapshotRequest.CreateSnapshotRequest()</span><br><span class="line">            request.set_accept_format(<span class="string">'json'</span>)</span><br><span class="line">            request.set_action_name(<span class="string">'CreateSnapshot'</span>)</span><br><span class="line">            request.set_DiskId(DiskId)</span><br><span class="line">            request.set_SnapshotName(SnapshotName)</span><br><span class="line">            results = json.loads(<span class="variable language_">self</span>.client.do_action_with_exception(request))</span><br><span class="line">            <span class="keyword">return</span> results[<span class="string">'SnapshotId'</span>]</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            logging.info(e)</span><br><span class="line">            <span class="keyword">return</span> {}</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">check_snapshot_status</span>(<span class="params">self, status</span>):</span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        快照状态。取值范围：</span></span><br><span class="line"><span class="string">        progressing：正在创建的快照</span></span><br><span class="line"><span class="string">        accomplished：创建成功的快照</span></span><br><span class="line"><span class="string">        failed：创建失败的快照</span></span><br><span class="line"><span class="string">        all：所有快照状态</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">if</span> status == <span class="string">'accomplished'</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">MySQLAutoSnapshotBackup</span>():</span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    # 停服务</span></span><br><span class="line"><span class="string">    # 创建快照</span></span><br><span class="line"><span class="string">    # 判断快照是否完成</span></span><br><span class="line"><span class="string">    # 启动服务</span></span><br><span class="line"><span class="string">    # 邮件发送</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    logging.info(<span class="string">'{}\t开始快照备份数据库'</span>.<span class="built_in">format</span>(datetime.datetime.now().strftime(<span class="string">'%Y-%m-%dT%H:%MZ'</span>)))</span><br><span class="line">    <span class="built_in">bin</span> = <span class="string">'/alidata/mysql/support-files/mysql.server'</span></span><br><span class="line">    a = <span class="string">'xxx'</span></span><br><span class="line">    k = <span class="string">'xxx'</span></span><br><span class="line">    r = <span class="string">'cn-shanghai'</span></span><br><span class="line">    DiskId = <span class="string">'d-uf6dnfbgdn5v2uah2gca'</span></span><br><span class="line">    <span class="comment"># 停服务</span></span><br><span class="line">    mysql = MySQLAPI(<span class="built_in">bin</span>)</span><br><span class="line">    api = AliYunEcsAPI(a, k, r)</span><br><span class="line">    mysql.stop_mysql()</span><br><span class="line">    <span class="keyword">if</span> mysql.check_mysql_status() == <span class="number">1</span>:</span><br><span class="line">        logging.info(<span class="string">'{}\t停止数据库服务 OK'</span>.<span class="built_in">format</span>(datetime.datetime.now().strftime(<span class="string">'%Y-%m-%dT%H:%MZ'</span>)))</span><br><span class="line">        <span class="comment"># 创建快照</span></span><br><span class="line">        SnapshotName = <span class="string">'boobootest{}'</span>.<span class="built_in">format</span>(datetime.datetime.now().strftime(<span class="string">'%Y-%m-%dT%H:%MZ'</span>))</span><br><span class="line">        SnapshotId = api.create_Snapshots(DiskId, SnapshotName)</span><br><span class="line">        <span class="comment">#SnapshotId = 's-uf63bcx7adgua90e1rym'</span></span><br><span class="line">        logging.info(<span class="string">'{0}\t开始创建快照{1}'</span>.<span class="built_in">format</span>(datetime.datetime.now().strftime(<span class="string">'%Y-%m-%dT%H:%MZ'</span>), SnapshotId))</span><br><span class="line">        <span class="comment"># 判断快照是否完成</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            result = api.get_DescribeSnapshots(DiskId, SnapshotId)</span><br><span class="line">            status = result[<span class="number">0</span>][<span class="string">'Status'</span>]</span><br><span class="line">            <span class="keyword">if</span> api.check_snapshot_status(status) == <span class="number">0</span>:</span><br><span class="line">                <span class="comment"># 快照已完成</span></span><br><span class="line">                logging.info(<span class="string">'{}\t快照创建成功  OK'</span>.<span class="built_in">format</span>(datetime.datetime.now().strftime(<span class="string">'%Y-%m-%dT%H:%MZ'</span>)))</span><br><span class="line">                <span class="comment"># 启动数据库</span></span><br><span class="line">                mysql.start_mysql()</span><br><span class="line">                <span class="keyword">if</span> mysql.check_mysql_status() == <span class="number">0</span>:</span><br><span class="line">                    logging.info(<span class="string">'{}\t启动数据库 OK'</span>.<span class="built_in">format</span>(datetime.datetime.now().strftime(<span class="string">'%Y-%m-%dT%H:%MZ'</span>)))</span><br><span class="line">                    <span class="comment"># 发送邮件</span></span><br><span class="line">                    logging.info(<span class="string">'{}\tsend email'</span>.<span class="built_in">format</span>(datetime.datetime.now().strftime(<span class="string">'%Y-%m-%dT%H:%MZ'</span>)))</span><br><span class="line">                <span class="comment"># 退出循环</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                time.sleep(<span class="number">10</span>)</span><br><span class="line">                logging.info(<span class="string">'{}\t快照创建中...'</span>.<span class="built_in">format</span>(datetime.datetime.now().strftime(<span class="string">'%Y-%m-%dT%H:%MZ'</span>)))</span><br><span class="line">        logging.info(<span class="string">'{}\t结束快照备份数据库'</span>.<span class="built_in">format</span>(datetime.datetime.now().strftime(<span class="string">'%Y-%m-%dT%H:%MZ'</span>)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    MySQLAutoSnapshotBackup()</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Oracle备份方案" class="article-heading"><a href="#Oracle备份方案" class="headerlink" title="Oracle备份方案"></a>Oracle备份方案<a class="article-anchor" href="#Oracle备份方案" aria-hidden="true"></a></h2><h3 id="Oracle在线热备" class="article-heading"><a href="#Oracle在线热备" class="headerlink" title="Oracle在线热备"></a>Oracle在线热备<a class="article-anchor" href="#Oracle在线热备" aria-hidden="true"></a></h3><h4 id="概念" class="article-heading"><a href="#概念" class="headerlink" title="概念"></a>概念<a class="article-anchor" href="#概念" aria-hidden="true"></a></h4><blockquote>
+<p>注意：增量备份（通用）=差异增量（Oracle） 差异备份（通用）=累计增量（Oracle） 增量备份（通用）:相对于上一次的备份 差异备份（通用）:相对于上一次的全备</p>
+</blockquote>
+<ul>
+<li>包含从最近一次备份以来被修改或添加的数据块.可以分为差异增量备份和累计增量备份</li>
+<li>差异增量备份：仅仅包含n级或n级以下被修改过的数据块。备份数据量小，恢复时间长。</li>
+<li>累计增量备份：仅仅包含n-1级或n-1级以下被修改过的数据块。备份数据量大，恢复时间短。</li>
+<li>0级增量备份相当于一个完整备份,该备份包含所有已用的数据块文件,与完整备份的差异是完整备份不能用作级增量备份的基础</li>
+</ul>
+<h4 id="冷备计划" class="article-heading"><a href="#冷备计划" class="headerlink" title="冷备计划"></a>冷备计划<a class="article-anchor" href="#冷备计划" aria-hidden="true"></a></h4><ul>
+<li>备份周期：一周一全备，每天一增备</li>
+<li>备份数据保留策略：保留近14天的备份</li>
+</ul>
+<h5 id="RMAN备份周期" class="article-heading"><a href="#RMAN备份周期" class="headerlink" title="RMAN备份周期"></a>RMAN备份周期<a class="article-anchor" href="#RMAN备份周期" aria-hidden="true"></a></h5><p>一周一全备，每天一增备</p>
+<p>[<img src="demo/pic/rman01.png" alt="img"></p>
+<p><img src="demo/pic/rman02.png" alt="img"></p>
+<ul>
+<li><p>每周日晚做 0 级备份,就是备份所有使用过的数据块.</p>
+</li>
+<li><p>周一做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 0 级备份.所以备份当天的变化.</p>
+</li>
+<li><p>周二做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 1 级备份.所以备份当天的变化.</p>
+</li>
+<li><p>周三做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 1 级备份.所以备份当天的变化.</p>
+</li>
+<li><p>周四做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 1 级备份.所以备份当天的变化.</p>
+</li>
+<li><p>周五做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 1 级备份.所以备份当天的变化.</p>
+</li>
+<li><p>周六做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 1 级备份.所以备份当天的变化.</p>
+</li>
+<li><p>周日做 0 级增量, 备份所有使用过的数据块.</p>
+</li>
+</ul>
+<h5 id="RMAN备份保留策略" class="article-heading"><a href="#RMAN备份保留策略" class="headerlink" title="RMAN备份保留策略"></a>RMAN备份保留策略<a class="article-anchor" href="#RMAN备份保留策略" aria-hidden="true"></a></h5><p>保留近14天的备份</p>
+<p>[<img src="demo/pic/rman03.png" alt="img"></p>
+<p>[<img src="demo/pic/rman04.png" alt="img"></p>
+<ol>
+<li>Linux计划任务<code>crontab</code></li>
+<li>RMAN自带的<code>retention policy</code></li>
+</ol>
+<h6 id="Linux计划任务crontab" class="article-heading"><a href="#Linux计划任务crontab" class="headerlink" title="Linux计划任务crontab"></a>Linux计划任务<code>crontab</code><a class="article-anchor" href="#Linux计划任务crontab" aria-hidden="true"></a></h6><p>保留14天的备份数据，当今天是周一时，会保留 近14天的数据，删除两周前的周一的数据。</p>
+<table>
+<thead>
+<tr>
+<th align="left">周日</th>
+<th align="left">周一</th>
+<th align="left">周二</th>
+<th align="left">周三</th>
+<th align="left">周四</th>
+<th align="left">周五</th>
+<th align="left">周六</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">周日</td>
+<td align="left">周一</td>
+<td align="left">周二</td>
+<td align="left">周三</td>
+<td align="left">周四</td>
+<td align="left">周五</td>
+<td align="left">周六</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">清除</td>
+<td align="left">保留</td>
+<td align="left">保留</td>
+<td align="left">保留</td>
+<td align="left">保留</td>
+<td align="left">保留</td>
+</tr>
+<tr>
+<td align="left">保留</td>
+<td align="left">保留</td>
+<td align="left">保留</td>
+<td align="left">保留</td>
+<td align="left">保留</td>
+<td align="left">保留</td>
+<td align="left">保留</td>
+</tr>
+<tr>
+<td align="left">保留</td>
+<td align="left">Now</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>因此保留14天的备份数据，可以将数据恢复的时间范围为：<code>上周周日~本周当前</code></p>
+<h6 id="RMAN自带的retention-policy" class="article-heading"><a href="#RMAN自带的retention-policy" class="headerlink" title="RMAN自带的retention policy"></a>RMAN自带的<code>retention policy</code><a class="article-anchor" href="#RMAN自带的retention-policy" aria-hidden="true"></a></h6><p>保留14天的备份数据，即每份备份数据的冗余备份数量为14</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">configure retention policy to redundancy 14;</span><br><span class="line">configure retention policy to recovery window of 14 days;</span><br><span class="line">report obsolete;</span><br><span class="line">delete obsolete</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="备份恢复脚本" class="article-heading"><a href="#备份恢复脚本" class="headerlink" title="备份恢复脚本"></a>备份恢复脚本<a class="article-anchor" href="#备份恢复脚本" aria-hidden="true"></a></h4><h5 id="备份生成脚本" class="article-heading"><a href="#备份生成脚本" class="headerlink" title="备份生成脚本"></a>备份生成脚本<a class="article-anchor" href="#备份生成脚本" aria-hidden="true"></a></h5><p>通过备份生成脚本，根据不通的生产环境生成备份脚本。</p>
+<p><strong>AutoGetRmanBackupScripts.sh</strong></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在线热备-RMAN备份脚本生成器</span></span><br><span class="line"><span class="comment"># Author: BooBooWei</span></span><br><span class="line"><span class="comment"># Date  : 2020-01-03</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">'指定备份目录 [ default /home/oracle/rmbk ]:'</span> rmbk_dir</span><br><span class="line"><span class="keyword">if</span> [ -z <span class="variable">${rmbk_dir}</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    rmbk_dir=<span class="string">"/home/oracle/rmbk"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"备份目录为：<span class="variable">${rmbk_dir}</span>"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"备份目录为：<span class="variable">${rmbk_dir}</span>"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">'执行备份文件子目录 [ default YYYYMMDD ]:'</span> <span class="built_in">dirname</span></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="variable">${dirname}</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">dirname</span>=<span class="string">"date +'%Y%m%d'"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"备份子目录为：<span class="variable">${dirname}</span>"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"备份子目录为：<span class="variable">${dirname}</span>"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">'开始生成脚本，请按回车键'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建目录</span></span><br><span class="line"><span class="built_in">mkdir</span> -p <span class="variable">${rmbk_dir}</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"<span class="variable">${rmbk_dir}</span>目录创建  OK"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 准备备份脚本</span></span><br><span class="line"><span class="comment">## 1. 获取环境变量导入脚本</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'获取 oracle 用户环境变量  OK'</span></span><br><span class="line"><span class="built_in">env</span> | sed -n <span class="string">'/oracle/p;/ORACLE/p'</span> &gt;&gt; <span class="variable">${rmbk_dir}</span>/rmbk.sh</span><br><span class="line"></span><br><span class="line"><span class="comment">## 2. 导入其他内容</span></span><br><span class="line"><span class="built_in">echo</span>  <span class="string">'生成备份脚本rmbk.sh  OK'</span></span><br><span class="line"><span class="built_in">cat</span> &gt;&gt; <span class="variable">${rmbk_dir}</span>/rmbk.sh &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">rmbk_dir=${rmbk_dir}</span></span><br><span class="line"><span class="string">dirname=\`${dirname}\`</span></span><br><span class="line"><span class="string">mkdir -p \${rmbk_dir}/\${dirname}</span></span><br><span class="line"><span class="string">week=\`date +'%w'\`</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">if [[ \${week} == 0 ]]</span></span><br><span class="line"><span class="string">then</span></span><br><span class="line"><span class="string">    level=0</span></span><br><span class="line"><span class="string">else</span></span><br><span class="line"><span class="string">    level=1</span></span><br><span class="line"><span class="string">fi</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">rman target / log=${rmbk_dir}/bak_inc\${level}.log append cmdfile=${rmbk_dir}/rmanbk_inc\${level}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">#del old folders</span></span><br><span class="line"><span class="string">find ${rmbk_dir} -type d -mtime +13 -exec ls -d {} \\;</span></span><br><span class="line"><span class="string">find ${rmbk_dir} -mtime +13 -exec rm -rf {} \\;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ENDF</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'生成RMAN level0脚本  OK'</span></span><br><span class="line"><span class="comment"># rman level0</span></span><br><span class="line"><span class="built_in">cat</span> &gt;&gt; <span class="variable">${rmbk_dir}</span>/rmanbk_inc0 &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">run {</span></span><br><span class="line"><span class="string">configure retention policy to recovery window of 14 days;</span></span><br><span class="line"><span class="string">configure controlfile autobackup on;</span></span><br><span class="line"><span class="string">allocate channel ch1 type disk;</span></span><br><span class="line"><span class="string">backup as compressed backupset  incremental level 0</span></span><br><span class="line"><span class="string">format '${rmbk_dir}/%T/incr0_%d_%U'</span></span><br><span class="line"><span class="string">tag 'day_incr0'</span></span><br><span class="line"><span class="string">database plus archivelog delete input;</span></span><br><span class="line"><span class="string">crosscheck backup;</span></span><br><span class="line"><span class="string">crosscheck archivelog all;</span></span><br><span class="line"><span class="string">delete noprompt obsolete;</span></span><br><span class="line"><span class="string">delete noprompt  expired backup;</span></span><br><span class="line"><span class="string">delete noprompt  expired archivelog all;</span></span><br><span class="line"><span class="string">release channel ch1;</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string">ENDF</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'生成RMAN level1脚本  OK'</span></span><br><span class="line"><span class="comment"># rman level1</span></span><br><span class="line"><span class="built_in">cat</span> &gt;&gt; <span class="variable">${rmbk_dir}</span>/rmanbk_inc1 &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">run {</span></span><br><span class="line"><span class="string">configure retention policy to recovery window of 14 days;</span></span><br><span class="line"><span class="string">configure controlfile autobackup on;</span></span><br><span class="line"><span class="string">allocate channel ch1 type disk;</span></span><br><span class="line"><span class="string">backup as compressed backupset  incremental level 1</span></span><br><span class="line"><span class="string">format '${rmbk_dir}/%T/incr1_%d_%U'</span></span><br><span class="line"><span class="string">tag 'day_incr1'</span></span><br><span class="line"><span class="string">database plus archivelog delete input;</span></span><br><span class="line"><span class="string">crosscheck backup;</span></span><br><span class="line"><span class="string">crosscheck archivelog all;</span></span><br><span class="line"><span class="string">delete noprompt obsolete;</span></span><br><span class="line"><span class="string">delete noprompt  expired backup;</span></span><br><span class="line"><span class="string">delete noprompt  expired archivelog all;</span></span><br><span class="line"><span class="string">release channel ch1;</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string">ENDF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># configure crontab</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'配置Crontab  OK'</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"30 22 * * * /bin/bash <span class="variable">${rmbk_dir}</span>/rmbk.sh"</span> | crontab</span><br></pre></td></tr></tbody></table></figure>
+
+<h5 id="Rman全库恢复" class="article-heading"><a href="#Rman全库恢复" class="headerlink" title="Rman全库恢复"></a>Rman全库恢复<a class="article-anchor" href="#Rman全库恢复" aria-hidden="true"></a></h5><blockquote>
+<p>不修改路径的恢复</p>
+</blockquote>
+<p><strong>rman_recover_full_database.sh</strong></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># auth:booboowei</span></span><br><span class="line"><span class="comment"># date:20191215</span></span><br><span class="line"><span class="comment"># script_name:rman_recover_full_database.sh</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定全备份路径</span></span><br><span class="line">rmanbk=/home/oracle/rmanbk/</span><br><span class="line"><span class="comment"># 指定SID的bash启动参数文件</span></span><br><span class="line">sid_file=/home/oracle/.bash_profile</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">get_variables</span></span>(){</span><br><span class="line"><span class="comment"># 通过RMAN恢复</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Get SID and RMAN backup file of spfile and controlfile."</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$rmanbk</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> `<span class="built_in">ls</span>`;<span class="keyword">do</span> db_name=`strings <span class="variable">$i</span> | grep db_name`; <span class="keyword">if</span> [[ <span class="variable">$db_name</span> != <span class="string">''</span> ]];<span class="keyword">then</span> file=<span class="variable">$i</span>;sid=`<span class="built_in">echo</span> <span class="variable">$db_name</span> | awk -F <span class="string">'='</span> <span class="string">'{print $2}'</span> |awk -F <span class="string">"'"</span> <span class="string">'{print $2}'</span>`;<span class="keyword">fi</span>;<span class="keyword">done</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"SID       :"</span><span class="variable">$sid</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"RMAN FILE :"</span><span class="variable">$file</span></span><br><span class="line"><span class="built_in">echo</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">clean_database</span></span>(){</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Set SID and Clean up database."</span></span><br><span class="line"><span class="comment"># 设置SID</span></span><br><span class="line">sed -i <span class="string">"s/.*ORACLE_SID.*/export ORACLE_SID=<span class="variable">${sid}</span>/"</span> <span class="variable">${sid_file}</span></span><br><span class="line"><span class="built_in">source</span> <span class="variable">${sid_file}</span></span><br><span class="line"><span class="comment"># 清空数据库</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">"shutdown immediate;\nstartup restrict exclusive force mount;\ndrop database;\nexit;"</span> &gt; /tmp/clean_database.sql</span><br><span class="line">sqlplus / as sysdba @/tmp/clean_database.sql</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">recover_database</span></span>(){</span><br><span class="line"><span class="built_in">cat</span> &gt; /tmp/rman_recover_database.sql &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">run{</span></span><br><span class="line"><span class="string">startup nomount;</span></span><br><span class="line"><span class="string">restore spfile from "${rmanbk}/${file}";</span></span><br><span class="line"><span class="string">startup force nomount;</span></span><br><span class="line"><span class="string">restore controlfile from "${rmanbk}/${file}";</span></span><br><span class="line"><span class="string">alter database mount;</span></span><br><span class="line"><span class="string">catalog start with "${rmanbk}";</span></span><br><span class="line"><span class="string">restore database;</span></span><br><span class="line"><span class="string">recover database;</span></span><br><span class="line"><span class="string">alter database open resetlogs;</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string">ENDF</span></span><br><span class="line"></span><br><span class="line">rman target / @/tmp/rman_recover_database.sql</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"alter database open resetlogs;"</span> | sqlplus / as sysdba</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">get_variables</span><br><span class="line">clean_database</span><br><span class="line">recover_database</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>修改路径的恢复</p>
+</blockquote>
+<p>待补充</p>
+<h3 id="Oracle离线冷备" class="article-heading"><a href="#Oracle离线冷备" class="headerlink" title="Oracle离线冷备"></a>Oracle离线冷备<a class="article-anchor" href="#Oracle离线冷备" aria-hidden="true"></a></h3><h4 id="一般步骤" class="article-heading"><a href="#一般步骤" class="headerlink" title="一般步骤"></a>一般步骤<a class="article-anchor" href="#一般步骤" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">一停二拷三启动</span><br></pre></td></tr></tbody></table></figure>
+
+<p>由于备份时需要停库，所以数据库服务不可用，属于离线冷备份：<code>offline backup</code></p>
+<h4 id="有哪些待备份的数据库物理文件？" class="article-heading"><a href="#有哪些待备份的数据库物理文件？" class="headerlink" title="有哪些待备份的数据库物理文件？"></a>有哪些待备份的数据库物理文件？<a class="article-anchor" href="#有哪些待备份的数据库物理文件？" aria-hidden="true"></a></h4><ul>
+<li>口令文件<code>$ORACLE_HOME/dbs/orapw$ORACLE_SID</code></li>
+<li>参数文件<code>$ORACLE_HOME/dbs/init$ORACLE_SID.ora</code>和<code>$ORACLE_HOME/dbs/spfile$ORACLE_SID.ora</code></li>
+<li>控制文件<code>select name from v$controlfile</code></li>
+<li>数据文件<code>select name from v$datafile;</code></li>
+<li>日志文件<code>select member from v$logfile</code>;</li>
+</ul>
+<h4 id="备份生成脚本-1" class="article-heading"><a href="#备份生成脚本-1" class="headerlink" title="备份生成脚本"></a>备份生成脚本<a class="article-anchor" href="#备份生成脚本-1" aria-hidden="true"></a></h4><p>通过备份生成脚本，根据不通的生产环境生成备份脚本。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># AutoGetColdBackupScripts.sh</span></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 离线冷备-物理文件备份脚本生成器</span></span><br><span class="line"><span class="comment"># Author: BooBooWei</span></span><br><span class="line"><span class="comment"># Date  : 2019-11-24</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">'指定备份目录 [ default /home/oracle/coldbk] :'</span> coldbk</span><br><span class="line"><span class="keyword">if</span> [ -z <span class="variable">${coldbk}</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    coldbk=/home/oracle/coldbk</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"备份目录为：<span class="variable">${coldbk}</span>"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"备份目录为：<span class="variable">${coldbk}</span>"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">'指定备份子目录 [默认为当前的年月日时分秒] :'</span> dir_name</span><br><span class="line"><span class="keyword">if</span> [ -z <span class="variable">${dir_name}</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    dir_name=`<span class="built_in">date</span> +<span class="string">'%Y%m%d%H%M%S'</span>`</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"备份子目录为：<span class="variable">${dir_name}</span>"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"备份子目录为：<span class="variable">${dir_name}</span>"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">'开始生成脚本，请按回车键'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建目录</span></span><br><span class="line"><span class="built_in">mkdir</span> -p <span class="variable">${coldbk}</span>/<span class="variable">${dir_name}</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"<span class="variable">${coldbk}</span>/<span class="variable">${dir_name}</span>目录创建 OK"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 准备停库脚本</span></span><br><span class="line"><span class="built_in">cat</span> &gt; <span class="variable">${coldbk}</span>/shut.txt &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">conn / as sysdba</span></span><br><span class="line"><span class="string">shutdown immediate</span></span><br><span class="line"><span class="string">exit</span></span><br><span class="line"><span class="string">ENDF</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 准备启动脚本</span></span><br><span class="line"><span class="built_in">cat</span> &gt; <span class="variable">${coldbk}</span>/start.txt &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">conn / as sysdba</span></span><br><span class="line"><span class="string">startup</span></span><br><span class="line"><span class="string">exit</span></span><br><span class="line"><span class="string">ENDF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 准备拼接语句</span></span><br><span class="line"><span class="built_in">cat</span> &gt; <span class="variable">${coldbk}</span>/get_cmd.txt &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">conn / as sysdba</span></span><br><span class="line"><span class="string">set echo off</span></span><br><span class="line"><span class="string">set feedback off</span></span><br><span class="line"><span class="string">set heading off</span></span><br><span class="line"><span class="string">set pagesize 1000</span></span><br><span class="line"><span class="string">set linesize 100</span></span><br><span class="line"><span class="string">spool ${coldbk}/${dir_name}/tmp_cmd</span></span><br><span class="line"><span class="string">select 'cp -v '||name||' ${coldbk}/${dir_name}/'</span></span><br><span class="line"><span class="string">from</span></span><br><span class="line"><span class="string">(select name from v\$controlfile</span></span><br><span class="line"><span class="string">union all</span></span><br><span class="line"><span class="string">select name from v\$datafile</span></span><br><span class="line"><span class="string">union all</span></span><br><span class="line"><span class="string">select member from v\$logfile);</span></span><br><span class="line"><span class="string">spool off</span></span><br><span class="line"><span class="string">exit</span></span><br><span class="line"><span class="string">ENDF</span></span><br><span class="line"></span><br><span class="line">sqlplus /nolog @<span class="variable">${coldbk}</span>/get_cmd.txt $&gt; /dev/null</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编写冷备脚本</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> &gt; <span class="variable">${coldbk}</span>/bk.sh &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">sqlplus /nolog @${coldbk}/shut.txt</span></span><br><span class="line"><span class="string">cp -v $ORACLE_HOME/dbs/orapw$ORACLE_SID ${coldbk}/${dir_name}/</span></span><br><span class="line"><span class="string">cp -v $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora ${coldbk}/${dir_name}/</span></span><br><span class="line"><span class="string">cp -v $ORACLE_HOME/dbs/init.ora ${coldbk}/${dir_name}/</span></span><br><span class="line"><span class="string">ENDF</span></span><br><span class="line"></span><br><span class="line">grep -v <span class="string">'^$'</span> <span class="variable">${coldbk}</span>/<span class="variable">${dir_name}</span>/tmp_cmd.lst &gt;&gt; <span class="variable">${coldbk}</span>/bk.sh</span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> &gt;&gt; <span class="variable">${coldbk}</span>/bk.sh &lt;&lt; <span class="string">ENDF</span></span><br><span class="line"><span class="string">sqlplus /nolog @${coldbk}/start.txt</span></span><br><span class="line"><span class="string">ENDF</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"离线冷备-物理文件备份脚本生成   OK"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"查看脚本：ll <span class="variable">${coldbk}</span>/bk.sh"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#自动恢复脚本</span></span><br><span class="line"><span class="comment">#sed -n '1p' bk.sh &gt; rt.sh</span></span><br><span class="line"><span class="comment">#grep -v 'sqlplus' bk.sh | awk '{split($3,i,"/");print $1,$2,$4i[length(i)],$3}' &gt;&gt; rt.sh</span></span><br><span class="line"><span class="comment">#sed -n '$p' bk.sh &gt;&gt; rt.sh</span></span><br><span class="line"><span class="comment">#chmod a+x rt.sh</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="云数据库RDS" class="article-heading"><a href="#云数据库RDS" class="headerlink" title="云数据库RDS"></a>云数据库RDS<a class="article-anchor" href="#云数据库RDS" aria-hidden="true"></a></h1><ul>
+<li>登录 RDS 管理控制台，定位目标实例。</li>
+<li>点击实例 ID 或者管理进入基本信息页面。</li>
+<li>在左侧导航栏中，选择备份与恢复。</li>
+<li>点击备份设置。</li>
+<li>点击编辑，自定义自动备份的周期和时间。 注意：默认备份数据的保留时间是7天，不可修改。</li>
+<li>点击确定，完成自动备份设置。</li>
+</ul>
+<p><strong>详情信息见下图：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">MySQL</th>
+<th align="left">Redis</th>
+<th align="left">SQLserver</th>
+<th align="left">PostgreSQL</th>
+<th align="left">MongDB</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">数据备份保留</td>
+<td align="left">7天</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">备份周期</td>
+<td align="left">星期一,星期二,星期三,星期四,星期五,星期六,星期日</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">备份时间</td>
+<td align="left">01:00-02:00</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">日志备份</td>
+<td align="left">开启</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">日志备份保留</td>
+<td align="left">7天</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>注意点：支持日志备份的数据库，建议开启日志备份。云产品迭代较快，具体配置建议实时参考官方文档。</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:07.846Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%AA%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">自建数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#MySQL%E5%A4%87%E4%BB%BD%E6%96%B9%E6%A1%88"><span class="toc-text">MySQL备份方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC"><span class="toc-text">MySQL逻辑备份脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E5%BA%93%E5%90%8C%E6%AD%A5%E6%B5%8B%E8%AF%95%E5%BA%93"><span class="toc-text">生成库同步测试库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E5%85%A8%E5%BA%93"><span class="toc-text">备份全库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E9%99%A4%E7%B3%BB%E7%BB%9F%E5%BA%93%E5%A4%96%E7%9A%84%E6%89%80%E6%9C%89%E5%BA%93"><span class="toc-text">备份除系统库外的所有库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E5%8D%95%E5%BA%93%E7%BB%93%E6%9E%84%E5%92%8C%E6%95%B0%E6%8D%AE"><span class="toc-text">备份单库结构和数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E5%8D%95%E8%A1%A8%E7%9A%84%E7%BB%93%E6%9E%84%E5%92%8C%E6%95%B0%E6%8D%AE"><span class="toc-text">备份单表的结构和数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-text">备份数据库的表结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%BC%E5%87%BA%E5%8D%95%E8%A1%A8%E4%B8%BA%E8%A1%A8%E6%A0%BC"><span class="toc-text">导出单表为表格</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98"><span class="toc-text">关于权限问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D%E9%97%AE%E9%A2%98"><span class="toc-text">逻辑备份恢复问题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF"><span class="toc-text">错误信息</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%87%BA%E7%8E%B0%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="toc-text">错误出现的场景</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%8E%9F%E5%9B%A0"><span class="toc-text">错误原因</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3"><span class="toc-text">解决</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XtraBackup%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC"><span class="toc-text">XtraBackup物理备份脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E6%A6%82%E8%BF%B0"><span class="toc-text">功能概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85percona-xtrabackupex"><span class="toc-text">安装percona-xtrabackupex</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8E%88%E6%9D%83"><span class="toc-text">数据库授权</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC"><span class="toc-text">备份脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E6%B5%8B%E8%AF%95%E6%98%8E%E7%BB%86"><span class="toc-text">备份测试明细</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ECS%E5%BF%AB%E7%85%A7%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC"><span class="toc-text">ECS快照备份脚本</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Oracle%E5%A4%87%E4%BB%BD%E6%96%B9%E6%A1%88"><span class="toc-text">Oracle备份方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Oracle%E5%9C%A8%E7%BA%BF%E7%83%AD%E5%A4%87"><span class="toc-text">Oracle在线热备</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%B7%E5%A4%87%E8%AE%A1%E5%88%92"><span class="toc-text">冷备计划</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#RMAN%E5%A4%87%E4%BB%BD%E5%91%A8%E6%9C%9F"><span class="toc-text">RMAN备份周期</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#RMAN%E5%A4%87%E4%BB%BD%E4%BF%9D%E7%95%99%E7%AD%96%E7%95%A5"><span class="toc-text">RMAN备份保留策略</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#Linux%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1crontab"><span class="toc-text">Linux计划任务crontab</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#RMAN%E8%87%AA%E5%B8%A6%E7%9A%84retention-policy"><span class="toc-text">RMAN自带的retention policy</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D%E8%84%9A%E6%9C%AC"><span class="toc-text">备份恢复脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E7%94%9F%E6%88%90%E8%84%9A%E6%9C%AC"><span class="toc-text">备份生成脚本</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Rman%E5%85%A8%E5%BA%93%E6%81%A2%E5%A4%8D"><span class="toc-text">Rman全库恢复</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Oracle%E7%A6%BB%E7%BA%BF%E5%86%B7%E5%A4%87"><span class="toc-text">Oracle离线冷备</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E8%88%AC%E6%AD%A5%E9%AA%A4"><span class="toc-text">一般步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%89%E5%93%AA%E4%BA%9B%E5%BE%85%E5%A4%87%E4%BB%BD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93%E7%89%A9%E7%90%86%E6%96%87%E4%BB%B6%EF%BC%9F"><span class="toc-text">有哪些待备份的数据库物理文件？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E7%94%9F%E6%88%90%E8%84%9A%E6%9C%AC-1"><span class="toc-text">备份生成脚本</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%91%E6%95%B0%E6%8D%AE%E5%BA%93RDS"><span class="toc-text">云数据库RDS</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

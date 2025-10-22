@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>SQL语句-查询语句-单行函数 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-01-%E5%8D%95%E8%A1%8C%E5%87%BD%E6%95%B0">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-01-%E5%8D%95%E8%A1%8C%E5%87%BD%E6%95%B0" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="SQL语句-查询语句-单行函数 查询语句DQL简介 简单的sql查询 限制和排列数据 单行函数 字符函数 字符函数示例   数值函数 日期函数 转换函数 隐式数据类型转换 显式数据类型转换 RR和YY年份   嵌套函数 常规函数 条件表达式   与MySQL的区别 MySQL数据库名、表名、列名、别名大小写规则 MySQL字符串大小写        查询语句DQL简介select * | &amp;">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SQL语句-查询语句-单行函数">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-01-%E5%8D%95%E8%A1%8C%E5%87%BD%E6%95%B0">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="SQL语句-查询语句-单行函数 查询语句DQL简介 简单的sql查询 限制和排列数据 单行函数 字符函数 字符函数示例   数值函数 日期函数 转换函数 隐式数据类型转换 显式数据类型转换 RR和YY年份   嵌套函数 常规函数 条件表达式   与MySQL的区别 MySQL数据库名、表名、列名、别名大小写规则 MySQL字符串大小写        查询语句DQL简介select * | &amp;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.767Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:42.305Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">SQL语句-查询语句-单行函数</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/B-SQL语句-01-单行函数.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --><html><head></head><body><ul>
+<li><a href="#sql%E8%AF%AD%E5%8F%A5-%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5-%E5%8D%95%E8%A1%8C%E5%87%BD%E6%95%B0">SQL语句-查询语句-单行函数</a><ul>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5dql%E7%AE%80%E4%BB%8B">查询语句DQL简介</a></li>
+<li><a href="#%E7%AE%80%E5%8D%95%E7%9A%84sql%E6%9F%A5%E8%AF%A2">简单的sql查询</a></li>
+<li><a href="#%E9%99%90%E5%88%B6%E5%92%8C%E6%8E%92%E5%88%97%E6%95%B0%E6%8D%AE">限制和排列数据</a></li>
+<li><a href="#%E5%8D%95%E8%A1%8C%E5%87%BD%E6%95%B0">单行函数</a><ul>
+<li><a href="#%E5%AD%97%E7%AC%A6%E5%87%BD%E6%95%B0">字符函数</a><ul>
+<li><a href="#%E5%AD%97%E7%AC%A6%E5%87%BD%E6%95%B0%E7%A4%BA%E4%BE%8B">字符函数示例</a></li>
+</ul>
+</li>
+<li><a href="#%E6%95%B0%E5%80%BC%E5%87%BD%E6%95%B0">数值函数</a></li>
+<li><a href="#%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0">日期函数</a></li>
+<li><a href="#%E8%BD%AC%E6%8D%A2%E5%87%BD%E6%95%B0">转换函数</a><ul>
+<li><a href="#%E9%9A%90%E5%BC%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">隐式数据类型转换</a></li>
+<li><a href="#%E6%98%BE%E5%BC%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">显式数据类型转换</a></li>
+<li><a href="#rr%E5%92%8Cyy%E5%B9%B4%E4%BB%BD">RR和YY年份</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B5%8C%E5%A5%97%E5%87%BD%E6%95%B0">嵌套函数</a></li>
+<li><a href="#%E5%B8%B8%E8%A7%84%E5%87%BD%E6%95%B0">常规函数</a></li>
+<li><a href="#%E6%9D%A1%E4%BB%B6%E8%A1%A8%E8%BE%BE%E5%BC%8F">条件表达式</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%8Emysql%E7%9A%84%E5%8C%BA%E5%88%AB">与MySQL的区别</a><ul>
+<li><a href="#mysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D%E8%A1%A8%E5%90%8D%E5%88%97%E5%90%8D%E5%88%AB%E5%90%8D%E5%A4%A7%E5%B0%8F%E5%86%99%E8%A7%84%E5%88%99">MySQL数据库名、表名、列名、别名大小写规则</a></li>
+<li><a href="#mysql%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%A4%A7%E5%B0%8F%E5%86%99">MySQL字符串大小写</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h2 id="查询语句DQL简介" class="article-heading"><a href="#查询语句DQL简介" class="headerlink" title="查询语句DQL简介"></a>查询语句DQL简介<a class="article-anchor" href="#查询语句DQL简介" aria-hidden="true"></a></h2><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="operator">|</span> {[<span class="keyword">distinct</span>] <span class="keyword">column</span> <span class="operator">|</span> expression [alias] , ...}</span><br><span class="line"><span class="keyword">from</span> <span class="keyword">table</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<ol>
+<li><code>select</code> 后面跟 <code>通配符|关键字|表达式  别名</code> 或者一些计算</li>
+<li><code>from</code> 后面跟 <code>表名 或者 结果集</code> ，这就是oracle对国标扩展的部分，能够对结果集进行二次查询</li>
+<li>必须要有结束符号 <code>;</code>有结束符，sql才会被运行</li>
+<li>大小写不区分</li>
+<li>可以多行书写</li>
+</ol>
+<h2 id="简单的sql查询" class="article-heading"><a href="#简单的sql查询" class="headerlink" title="简单的sql查询"></a>简单的sql查询<a class="article-anchor" href="#简单的sql查询" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th align="left">简单的sql查询</th>
+<th align="left">语句</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">查看scott用户下有哪些表和视图</td>
+<td align="left">SQL&gt; select * from tab;</td>
+</tr>
+<tr>
+<td align="left">描述一张表的结构，不看表中的数据</td>
+<td align="left">SQL&gt; desc dept</td>
+</tr>
+<tr>
+<td align="left">查看雇员表中的所有数据</td>
+<td align="left">select * from dept;</td>
+</tr>
+<tr>
+<td align="left">描述雇员表的结构</td>
+<td align="left">SQL&gt; desc emp</td>
+</tr>
+<tr>
+<td align="left">查看emp表中感兴趣的列</td>
+<td align="left">SQL&gt; select ename,sal from emp;</td>
+</tr>
+<tr>
+<td align="left">在select中使用四则运算:null不能参与四则运算</td>
+<td align="left">select ename,(sal+100)*12 from emp;</td>
+</tr>
+<tr>
+<td align="left">为列定义别名</td>
+<td align="left">select ename AS first_name,sal*12 “Annual Salary” from emp;</td>
+</tr>
+<tr>
+<td align="left">连接操作符</td>
+<td align="left">select ename,job,ename||’ is a ‘||job detail from emp;</td>
+</tr>
+<tr>
+<td align="left">压缩重复行</td>
+<td align="left">select distinct deptno,job from emp;</td>
+</tr>
+<tr>
+<td align="left">将缓冲区中的命令保存为脚本</td>
+<td align="left">SQL&gt; save p1_1.sql</td>
+</tr>
+<tr>
+<td align="left">查看sql脚本内容</td>
+<td align="left">SQL&gt; get p1_1.sql</td>
+</tr>
+<tr>
+<td align="left">运行sql脚本</td>
+<td align="left">SQL&gt; @p1_1.sql</td>
+</tr>
+</tbody></table>
+<p>sqlplus结果集的显示风格为:</p>
+<ul>
+<li>字符串和日期类型左对齐</li>
+<li>数字类型右对齐</li>
+<li>缺省显示为大写</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> TAB;</span><br><span class="line"></span><br><span class="line">TNAME			       TABTYPE	CLUSTERID</span><br><span class="line"><span class="comment">------------------------------ ------- ----------</span></span><br><span class="line">BONUS			       <span class="keyword">TABLE</span></span><br><span class="line">DEPT			       <span class="keyword">TABLE</span></span><br><span class="line">EMP			       <span class="keyword">TABLE</span></span><br><span class="line">SALGRADE		       <span class="keyword">TABLE</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">desc</span> dept;</span><br><span class="line"> Name					   <span class="keyword">Null</span>?    Type</span><br><span class="line"> <span class="comment">----------------------------------------- -------- ----------------------------</span></span><br><span class="line"> DEPTNO 				   <span class="keyword">NOT NULL</span> NUMBER(<span class="number">2</span>)</span><br><span class="line"> DNAME						    VARCHAR2(<span class="number">14</span>)</span><br><span class="line"> LOC						    VARCHAR2(<span class="number">13</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> dept;</span><br><span class="line"></span><br><span class="line">    DEPTNO DNAME	  LOC</span><br><span class="line"><span class="comment">---------- -------------- -------------</span></span><br><span class="line">	<span class="number">10</span> ACCOUNTING	  <span class="keyword">NEW</span> YORK</span><br><span class="line">	<span class="number">20</span> RESEARCH	  DALLAS</span><br><span class="line">	<span class="number">30</span> SALES	  CHICAGO</span><br><span class="line">	<span class="number">40</span> OPERATIONS	  BOSTON</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> ename,sal <span class="keyword">from</span> emp;</span><br><span class="line"></span><br><span class="line">ENAME		  SAL</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">SMITH		  <span class="number">800</span></span><br><span class="line">ALLEN		 <span class="number">1600</span></span><br><span class="line">WARD		 <span class="number">1250</span></span><br><span class="line">JONES		 <span class="number">2975</span></span><br><span class="line">MARTIN		 <span class="number">1250</span></span><br><span class="line">BLAKE		 <span class="number">2850</span></span><br><span class="line">CLARK		 <span class="number">2450</span></span><br><span class="line">SCOTT		 <span class="number">3000</span></span><br><span class="line">KING		 <span class="number">5000</span></span><br><span class="line">TURNER		 <span class="number">1500</span></span><br><span class="line">ADAMS		 <span class="number">1100</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">JAMES		  <span class="number">950</span></span><br><span class="line">FORD		 <span class="number">3000</span></span><br><span class="line">MILLER		 <span class="number">1300</span></span><br><span class="line"></span><br><span class="line"><span class="number">14</span> <span class="keyword">rows</span> selected.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> ename,(sal<span class="operator">+</span><span class="number">100</span>)<span class="operator">*</span><span class="number">12</span> <span class="keyword">from</span> emp;</span><br><span class="line"></span><br><span class="line">ENAME	   (SAL<span class="operator">+</span><span class="number">100</span>)<span class="operator">*</span><span class="number">12</span></span><br><span class="line"><span class="comment">---------- ------------</span></span><br><span class="line">SMITH		  <span class="number">10800</span></span><br><span class="line">ALLEN		  <span class="number">20400</span></span><br><span class="line">WARD		  <span class="number">16200</span></span><br><span class="line">JONES		  <span class="number">36900</span></span><br><span class="line">MARTIN		  <span class="number">16200</span></span><br><span class="line">BLAKE		  <span class="number">35400</span></span><br><span class="line">CLARK		  <span class="number">30600</span></span><br><span class="line">SCOTT		  <span class="number">37200</span></span><br><span class="line">KING		  <span class="number">61200</span></span><br><span class="line">TURNER		  <span class="number">19200</span></span><br><span class="line">ADAMS		  <span class="number">14400</span></span><br><span class="line"></span><br><span class="line">ENAME	   (SAL<span class="operator">+</span><span class="number">100</span>)<span class="operator">*</span><span class="number">12</span></span><br><span class="line"><span class="comment">---------- ------------</span></span><br><span class="line">JAMES		  <span class="number">12600</span></span><br><span class="line">FORD		  <span class="number">37200</span></span><br><span class="line">MILLER		  <span class="number">16800</span></span><br><span class="line"></span><br><span class="line"><span class="number">14</span> <span class="keyword">rows</span> selected.</span><br><span class="line"></span><br><span class="line"><span class="comment">-- (SAL+100)*12列在磁盘上并没有保存，我们称其为计算表达式所生成的伪列</span></span><br><span class="line"><span class="comment">-- 空值不能参与运算</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> ename,sal,comm,sal<span class="operator">+</span>comm <span class="keyword">from</span> emp;</span><br><span class="line"></span><br><span class="line">ENAME		  SAL	    COMM   SAL<span class="operator">+</span>COMM</span><br><span class="line"><span class="comment">---------- ---------- ---------- ----------</span></span><br><span class="line">SMITH		  <span class="number">800</span></span><br><span class="line">ALLEN		 <span class="number">1600</span>	     <span class="number">300</span>       <span class="number">1900</span></span><br><span class="line">WARD		 <span class="number">1250</span>	     <span class="number">500</span>       <span class="number">1750</span></span><br><span class="line">JONES		 <span class="number">2975</span></span><br><span class="line">MARTIN		 <span class="number">1250</span>	    <span class="number">1400</span>       <span class="number">2650</span></span><br><span class="line">BLAKE		 <span class="number">2850</span></span><br><span class="line">CLARK		 <span class="number">2450</span></span><br><span class="line">SCOTT		 <span class="number">3000</span></span><br><span class="line">KING		 <span class="number">5000</span></span><br><span class="line">TURNER		 <span class="number">1500</span>	       <span class="number">0</span>       <span class="number">1500</span></span><br><span class="line">ADAMS		 <span class="number">1100</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL	    COMM   SAL<span class="operator">+</span>COMM</span><br><span class="line"><span class="comment">---------- ---------- ---------- ----------</span></span><br><span class="line">JAMES		  <span class="number">950</span></span><br><span class="line">FORD		 <span class="number">3000</span></span><br><span class="line">MILLER		 <span class="number">1300</span></span><br><span class="line"></span><br><span class="line"><span class="number">14</span> <span class="keyword">rows</span> selected.</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 将工资和奖金求和，结果发现奖金comm列为null的员工不用发工资了！这是错误的</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> ename <span class="keyword">as</span> first_name , sal<span class="operator">*</span><span class="number">12</span> "Annual Salary" <span class="keyword">from</span> emp;</span><br><span class="line"></span><br><span class="line">FIRST_NAME Annual Salary</span><br><span class="line"><span class="comment">---------- -------------</span></span><br><span class="line">SMITH		    <span class="number">9600</span></span><br><span class="line">ALLEN		   <span class="number">19200</span></span><br><span class="line">WARD		   <span class="number">15000</span></span><br><span class="line">JONES		   <span class="number">35700</span></span><br><span class="line">MARTIN		   <span class="number">15000</span></span><br><span class="line">BLAKE		   <span class="number">34200</span></span><br><span class="line">CLARK		   <span class="number">29400</span></span><br><span class="line">SCOTT		   <span class="number">36000</span></span><br><span class="line">KING		   <span class="number">60000</span></span><br><span class="line">TURNER		   <span class="number">18000</span></span><br><span class="line">ADAMS		   <span class="number">13200</span></span><br><span class="line"></span><br><span class="line">FIRST_NAME Annual Salary</span><br><span class="line"><span class="comment">---------- -------------</span></span><br><span class="line">JAMES		   <span class="number">11400</span></span><br><span class="line">FORD		   <span class="number">36000</span></span><br><span class="line">MILLER		   <span class="number">15600</span></span><br><span class="line"></span><br><span class="line"><span class="number">14</span> <span class="keyword">rows</span> selected.</span><br><span class="line"></span><br><span class="line"><span class="comment">-- as可以省略，如果别名加了引号，则显示指定的字符，而不会使用缺省的大写</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> ename,job,ename <span class="operator">||</span> <span class="string">' is a '</span> <span class="operator">||</span> job detail <span class="keyword">from</span> emp;</span><br><span class="line"></span><br><span class="line">ENAME	   JOB	     DETAIL</span><br><span class="line"><span class="comment">---------- --------- -------------------------</span></span><br><span class="line">SMITH	   CLERK     SMITH <span class="keyword">is</span> a CLERK</span><br><span class="line">ALLEN	   SALESMAN  ALLEN <span class="keyword">is</span> a SALESMAN</span><br><span class="line">WARD	   SALESMAN  WARD <span class="keyword">is</span> a SALESMAN</span><br><span class="line">JONES	   MANAGER   JONES <span class="keyword">is</span> a MANAGER</span><br><span class="line">MARTIN	   SALESMAN  MARTIN <span class="keyword">is</span> a SALESMAN</span><br><span class="line">BLAKE	   MANAGER   BLAKE <span class="keyword">is</span> a MANAGER</span><br><span class="line">CLARK	   MANAGER   CLARK <span class="keyword">is</span> a MANAGER</span><br><span class="line">SCOTT	   ANALYST   SCOTT <span class="keyword">is</span> a ANALYST</span><br><span class="line">KING	   PRESIDENT KING <span class="keyword">is</span> a PRESIDENT</span><br><span class="line">TURNER	   SALESMAN  TURNER <span class="keyword">is</span> a SALESMAN</span><br><span class="line">ADAMS	   CLERK     ADAMS <span class="keyword">is</span> a CLERK</span><br><span class="line"></span><br><span class="line">ENAME	   JOB	     DETAIL</span><br><span class="line"><span class="comment">---------- --------- -------------------------</span></span><br><span class="line">JAMES	   CLERK     JAMES <span class="keyword">is</span> a CLERK</span><br><span class="line">FORD	   ANALYST   FORD <span class="keyword">is</span> a ANALYST</span><br><span class="line">MILLER	   CLERK     MILLER <span class="keyword">is</span> a CLERK</span><br><span class="line"></span><br><span class="line"><span class="number">14</span> <span class="keyword">rows</span> selected.</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ||是字符连接符 detail是别名</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="keyword">distinct</span> deptno,job <span class="keyword">from</span> emp;</span><br><span class="line"></span><br><span class="line">    DEPTNO JOB</span><br><span class="line"><span class="comment">---------- ---------</span></span><br><span class="line">	<span class="number">20</span> CLERK</span><br><span class="line">	<span class="number">30</span> SALESMAN</span><br><span class="line">	<span class="number">20</span> MANAGER</span><br><span class="line">	<span class="number">30</span> CLERK</span><br><span class="line">	<span class="number">10</span> PRESIDENT</span><br><span class="line">	<span class="number">30</span> MANAGER</span><br><span class="line">	<span class="number">10</span> CLERK</span><br><span class="line">	<span class="number">10</span> MANAGER</span><br><span class="line">	<span class="number">20</span> ANALYST</span><br><span class="line"></span><br><span class="line"><span class="number">9</span> <span class="keyword">rows</span> selected.</span><br><span class="line"></span><br><span class="line"><span class="comment">-- distinct 去除重复</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> save p1_1.sql</span><br><span class="line">Created file p1_1.sql</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">get</span> p1_1.sql</span><br><span class="line">  <span class="number">1</span><span class="operator">*</span> <span class="keyword">select</span> <span class="keyword">distinct</span> deptno,job <span class="keyword">from</span> emp</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="variable">@p1_1</span>.<span class="keyword">sql</span></span><br><span class="line"></span><br><span class="line">    DEPTNO JOB</span><br><span class="line"><span class="comment">---------- ---------</span></span><br><span class="line">	<span class="number">20</span> CLERK</span><br><span class="line">	<span class="number">30</span> SALESMAN</span><br><span class="line">	<span class="number">20</span> MANAGER</span><br><span class="line">	<span class="number">30</span> CLERK</span><br><span class="line">	<span class="number">10</span> PRESIDENT</span><br><span class="line">	<span class="number">30</span> MANAGER</span><br><span class="line">	<span class="number">10</span> CLERK</span><br><span class="line">	<span class="number">10</span> MANAGER</span><br><span class="line">	<span class="number">20</span> ANALYST</span><br><span class="line"></span><br><span class="line"><span class="number">9</span> <span class="keyword">rows</span> selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="限制和排列数据" class="article-heading"><a href="#限制和排列数据" class="headerlink" title="限制和排列数据"></a>限制和排列数据<a class="article-anchor" href="#限制和排列数据" aria-hidden="true"></a></h2><ol>
+<li>工资高于1500的销售员？</li>
+<li>查询10部门的雇员和20部门工资小与2000的雇员？</li>
+<li>查询有奖金的雇员？</li>
+<li>使用rownum伪列限制查询返回的行的数量</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> ename,sal <span class="keyword">from</span> emp <span class="keyword">where</span> sal<span class="operator">&gt;</span><span class="number">1500</span>;</span><br><span class="line"></span><br><span class="line">ENAME		  SAL</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">ALLEN		 <span class="number">1600</span></span><br><span class="line">JONES		 <span class="number">2975</span></span><br><span class="line">BLAKE		 <span class="number">2850</span></span><br><span class="line">CLARK		 <span class="number">2450</span></span><br><span class="line">SCOTT		 <span class="number">3000</span></span><br><span class="line">KING		 <span class="number">5000</span></span><br><span class="line">FORD		 <span class="number">3000</span></span><br><span class="line"></span><br><span class="line"><span class="number">7</span> <span class="keyword">rows</span> selected.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> deptno,ename,sal <span class="keyword">from</span> emp <span class="keyword">where</span> (deptno<span class="operator">=</span><span class="number">10</span> <span class="keyword">or</span> deptno<span class="operator">=</span><span class="number">20</span>) <span class="keyword">and</span> sal <span class="operator">&lt;</span> <span class="number">2000</span>;</span><br><span class="line"></span><br><span class="line">    DEPTNO ENAME	     SAL</span><br><span class="line"><span class="comment">---------- ---------- ----------</span></span><br><span class="line">	<span class="number">20</span> SMITH	     <span class="number">800</span></span><br><span class="line">	<span class="number">20</span> ADAMS	    <span class="number">1100</span></span><br><span class="line">	<span class="number">10</span> MILLER	    <span class="number">1300</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> deptno,ename,sal <span class="keyword">from</span> emp <span class="keyword">where</span> deptno <span class="keyword">in</span> (<span class="number">10</span>,<span class="number">20</span>) <span class="keyword">and</span> sal <span class="operator">&lt;</span> <span class="number">2000</span>;</span><br><span class="line"></span><br><span class="line">    DEPTNO ENAME	     SAL</span><br><span class="line"><span class="comment">---------- ---------- ----------</span></span><br><span class="line">	<span class="number">20</span> SMITH	     <span class="number">800</span></span><br><span class="line">	<span class="number">20</span> ADAMS	    <span class="number">1100</span></span><br><span class="line">	<span class="number">10</span> MILLER	    <span class="number">1300</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> ename,comm <span class="keyword">from</span> emp <span class="keyword">where</span> comm <span class="keyword">is</span> <span class="keyword">not null</span>;</span><br><span class="line"></span><br><span class="line">ENAME		 COMM</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">ALLEN		  <span class="number">300</span></span><br><span class="line">WARD		  <span class="number">500</span></span><br><span class="line">MARTIN		 <span class="number">1400</span></span><br><span class="line">TURNER		    <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> ename <span class="keyword">from</span> emp <span class="keyword">where</span> rownum <span class="operator">&lt;</span> <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line">ENAME</span><br><span class="line"><span class="comment">----------</span></span><br><span class="line">SMITH</span><br><span class="line">ALLEN</span><br><span class="line">WARD</span><br><span class="line">JONES</span><br><span class="line">MARTIN</span><br><span class="line"></span><br><span class="line"><span class="comment">-- mysql中限制行是用limit，而oracle用rownum</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="单行函数" class="article-heading"><a href="#单行函数" class="headerlink" title="单行函数"></a>单行函数<a class="article-anchor" href="#单行函数" aria-hidden="true"></a></h2><blockquote>
+<p>五种：字符函数、数值函数、日期函数、转换函数、其他函数</p>
+</blockquote>
+<h3 id="字符函数" class="article-heading"><a href="#字符函数" class="headerlink" title="字符函数"></a>字符函数<a class="article-anchor" href="#字符函数" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th align="left">字符串函数</th>
+<th align="left">函数名</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">大小写转换</td>
+<td align="left">LOWER(column or expression)</td>
+<td align="left">小写</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">UPPER(column or expression)</td>
+<td align="left">把字母全部变成大写</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">INITCAP(column or expression)</td>
+<td align="left">首字母大写</td>
+</tr>
+<tr>
+<td align="left">字符处理</td>
+<td align="left">CONCAT(column1 or expression1,column2|expression2)</td>
+<td align="left">连接字符</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">SUBSTR(column or expression,m[,n])</td>
+<td align="left">截取从索引位m的字符开始的数量为n个的字符，索引从1开始</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">LENGTH(column or expression)</td>
+<td align="left">返回字符串长度</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">INSTR(column or expression,‘string’, [,m], [n] )</td>
+<td align="left">返回字符串的位置。你可以随机地指定从第 m 个字母开始搜索第 n 个要查找的字符串。m 和 n 缺省为 1, 意思是从第一个字母开始查找第一次出现要查找的字符串的位置。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">LPAD(column or expression, n,’string’)</td>
+<td align="left">右对齐字符串,左面用指定字符填充至 n位;</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">RPAD(column or expression, n,’string’)</td>
+<td align="left">左对齐字符串,右边用指定字符填充至 n位</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">TRIM(leading or trailing or both, trim_character FROM trim_source)</td>
+<td align="left">删除头尾字符，默认为空白，类似于python中strim</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">REPLACE(text,search_string,replacement_string)</td>
+<td align="left">查找并替换字符串</td>
+</tr>
+</tbody></table>
+<h4 id="字符函数示例" class="article-heading"><a href="#字符函数示例" class="headerlink" title="字符函数示例"></a>字符函数示例<a class="article-anchor" href="#字符函数示例" aria-hidden="true"></a></h4><ol>
+<li>记录中的字符串是区分大小写，如果想从海量数据中搜索scott用户，该如何去做呢？</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">select * from emp where lower(ename)='scott';</span><br></pre></td></tr></tbody></table></figure>
+
+<p>究竟用lower还是upper，需要规范前端应用程序，如果小写就都小写，要大写就都大写，函数的选择影响索引的创建，代码的书写规则影响后面索引的创建。</p>
+<ol start="2">
+<li>instr和substr的区别<br>instr为指定一个字符获取该字符在目标字符串的位置<br>substr为截取制定索引位的字符串<br>将两者结合在一起用，比如打印字符串中第一个a和第二个a之间的字符串，包含第一个a</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> instr(<span class="string">'abca'</span>,<span class="string">'a'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">INSTR('ABCA','A')</span><br><span class="line">-----------------</span><br><span class="line">		1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> instr(<span class="string">'abca'</span>,<span class="string">'a'</span>,2) from dual;</span></span><br><span class="line"></span><br><span class="line">INSTR('ABCA','A',2)</span><br><span class="line">-------------------</span><br><span class="line">		  4</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> substr(<span class="string">'abca'</span>,1,4-1) from dual;</span></span><br><span class="line"></span><br><span class="line">SUB</span><br><span class="line">---</span><br><span class="line">abc</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> instr(<span class="string">'superman batman wonderwoman'</span>,<span class="string">'batman'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">INSTR('SUPERMANBATMANWONDERWOMAN','BATMAN')</span><br><span class="line">-------------------------------------------</span><br><span class="line">					 10</span><br><span class="line">-- 截取字符串'superman batman wonderwoman'中从batman开始到最后</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> substr(<span class="string">'superman batman wonderwoman'</span>,instr(<span class="string">'superman batman wonderwoman'</span>,<span class="string">'batman'</span>)) from dual;</span></span><br><span class="line"></span><br><span class="line">SUBSTR('SUPERMANBA</span><br><span class="line">------------------</span><br><span class="line">batman wonderwoman</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li>填充，打印固定字符，实现左右对齐</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> lpad(<span class="string">'abc'</span>,6,<span class="string">'*'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">LPAD('</span><br><span class="line">------</span><br><span class="line">***abc</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> rpad(<span class="string">'abc'</span>,6,<span class="string">'*'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">RPAD('</span><br><span class="line">------</span><br><span class="line">abc***</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>删除字符串<code> ab </code>前后空白</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> trim(<span class="string">'  abc  '</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TRI</span><br><span class="line">---</span><br><span class="line">abc</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> <span class="string">'  abc  '</span> from dual;</span></span><br><span class="line"></span><br><span class="line">'ABC'</span><br><span class="line">-------</span><br><span class="line">  abc</span><br></pre></td></tr></tbody></table></figure>
+
+<p>一般空格在左边容易发现，空格在右边不容易发现，默认取出的半角的，所以最好再来一次全角的空格。</p>
+<p>例如，从emp中查找雇员名为scott的详细信息</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash">insert into emp values (1111,<span class="string">'SCoTT '</span>,<span class="string">'ANALYST'</span>,7566,<span class="string">'19-APR-87'</span>,3000,20,NULL);</span></span><br><span class="line"></span><br><span class="line">1 row created.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from emp <span class="built_in">where</span> lower(ename)=<span class="string">'scott'</span>;</span></span><br><span class="line"></span><br><span class="line">     EMPNO ENAME      JOB	       MGR HIREDATE	    SAL       COMM     DEPTNO</span><br><span class="line">---------- ---------- --------- ---------- --------- ---------- ---------- ----------</span><br><span class="line">      7788 SCOTT      ANALYST	      7566 19-APR-87	   3000 		   20</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from emp <span class="built_in">where</span> trim(lower(ename))=<span class="string">'scott'</span>;</span></span><br><span class="line"></span><br><span class="line">     EMPNO ENAME      JOB	       MGR HIREDATE	    SAL       COMM     DEPTNO</span><br><span class="line">---------- ---------- --------- ---------- --------- ---------- ---------- ----------</span><br><span class="line">      1111 SCoTT      ANALYST	      7566 19-APR-87	   3000 	20</span><br><span class="line">      7788 SCOTT      ANALYST	      7566 19-APR-87	   3000 		   20</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> * from emp <span class="built_in">where</span> trim(<span class="string">' '</span> from trim(lower(ename)))=<span class="string">'scott'</span>;</span></span><br><span class="line"></span><br><span class="line">     EMPNO ENAME      JOB	       MGR HIREDATE	    SAL       COMM     DEPTNO</span><br><span class="line">---------- ---------- --------- ---------- --------- ---------- ---------- ----------</span><br><span class="line">      1111 SCoTT      ANALYST	      7566 19-APR-87	   3000 	20</span><br><span class="line">      7788 SCOTT      ANALYST	      7566 19-APR-87	   3000 		   20</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>trim只能带一个字符</p>
+<ol start="5">
+<li>替换字符串</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> replace(<span class="string">'superman batman wonderwoman'</span>,<span class="string">'batman'</span>,<span class="string">'booboo'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">REPLACE('SUPERMANBATMANWOND</span><br><span class="line">---------------------------</span><br><span class="line">superman booboo wonderwoman</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="6">
+<li>显示姓氏的最后一个字母是n的那些雇员的相应资料:</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename from emp <span class="built_in">where</span> substr(lower(ename),instr(lower(ename),<span class="string">'n'</span>,-1)) = <span class="string">'n'</span> ;</span></span><br><span class="line"></span><br><span class="line">ENAME</span><br><span class="line">----------</span><br><span class="line">ALLEN</span><br><span class="line">MARTIN</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename from emp <span class="built_in">where</span> lower(ename) like <span class="string">'%n'</span>;</span></span><br><span class="line"></span><br><span class="line">ENAME</span><br><span class="line">----------</span><br><span class="line">ALLEN</span><br><span class="line">MARTIN</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="7">
+<li>执行以下sql并解释的含义</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">select concat('Hello','World') from dual;</span><br><span class="line">select concat(ename,job) from emp;</span><br><span class="line">select substr('Helloworld',1,2) from dual;</span><br><span class="line">select substr('Helloworld',5) from dual;</span><br><span class="line">select substr('Helloworld',-5,2) from dual;</span><br><span class="line">select length('Helloworld') from dual;</span><br><span class="line">select instr('Helloworld','l') from dual;</span><br><span class="line">select instr('Helloworld','l',1,2) from dual;</span><br><span class="line">select instr('Helloworld','l',-1,2) from dual;</span><br><span class="line">select instr('Helloworld','l',-1) from dual;</span><br><span class="line">select lpad('Hello',10,'*') from dual;</span><br><span class="line">select rpad('Hello',10,'*') from dual;</span><br><span class="line">select trim('H' from 'HelloHhHH') from dual;</span><br><span class="line">select * from emp where trim(' ' from UPPER(ename))='SCOTT';</span><br><span class="line">select replace('Helloworld','owo','xxoo') from dual;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="数值函数" class="article-heading"><a href="#数值函数" class="headerlink" title="数值函数"></a>数值函数<a class="article-anchor" href="#数值函数" aria-hidden="true"></a></h3><ul>
+<li>ROUND :将值舍入到指定的小数位</li>
+<li>TRUNC :将值截断到指定的小数位</li>
+<li>MOD :返回除法运算的余数</li>
+</ul>
+<p>DUAL 是可用于查看函数和计算结果的公用表。</p>
+<p>执行以下sql并解释的含义</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">select round(45.926,2) from dual;</span><br><span class="line">select round(45.926,0) from dual;</span><br><span class="line">select round(45.926) from dual;</span><br><span class="line">select round(45.926,-1) from dual;</span><br><span class="line"></span><br><span class="line">select trunc(45.926,2) from dual;</span><br><span class="line">select trunc(45.926,0) from dual;</span><br><span class="line">select trunc(45.926) from dual;</span><br><span class="line">select trunc(45.926,-1) from dual;</span><br><span class="line"></span><br><span class="line">select mod(15,4) from dual;</span><br><span class="line">select power(3,3) from dual;</span><br><span class="line">select ceil(1.00001) from dual;</span><br><span class="line">select abs(-190) from dual;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="日期函数" class="article-heading"><a href="#日期函数" class="headerlink" title="日期函数"></a>日期函数<a class="article-anchor" href="#日期函数" aria-hidden="true"></a></h3><p>日期是以数字保存的，可以进行加减运算</p>
+<table>
+<thead>
+<tr>
+<th align="left">函数</th>
+<th align="left">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">MONTHS_BETWEEN</td>
+<td align="left">两个日期之间的月数</td>
+</tr>
+<tr>
+<td align="left">ADD_MONTHS</td>
+<td align="left">将指定的月数添加到日期</td>
+</tr>
+<tr>
+<td align="left">NEXT_DAY</td>
+<td align="left">指定日期之后的下一个日期</td>
+</tr>
+<tr>
+<td align="left">LAST_DAY</td>
+<td align="left">当月最后一天</td>
+</tr>
+<tr>
+<td align="left">ROUND</td>
+<td align="left">舍入日期</td>
+</tr>
+<tr>
+<td align="left">TRUNC</td>
+<td align="left">截断日期</td>
+</tr>
+<tr>
+<td align="left">MONTHS_BETWEEN(‘01-SEP-95’,’11-JAN-94’)</td>
+<td align="left">19.6774194</td>
+</tr>
+<tr>
+<td align="left">ADD_MONTHS (‘31-JAN-96’,1)</td>
+<td align="left">‘29-FEB-96’</td>
+</tr>
+<tr>
+<td align="left">NEXT_DAY (‘01-SEP-95’,’FRIDAY’)</td>
+<td align="left">‘08-SEP-95’</td>
+</tr>
+<tr>
+<td align="left">LAST_DAY (‘01-FEB-95’)</td>
+<td align="left">‘28-FEB-95’</td>
+</tr>
+</tbody></table>
+<ol>
+<li>计算每一个雇员工作的时间（天）</li>
+</ol>
+<ul>
+<li>sysdate返回当前时间</li>
+<li>hiredate雇员入职时间</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> sysdate from dual;</span></span><br><span class="line"></span><br><span class="line">SYSDATE</span><br><span class="line">---------</span><br><span class="line">29-JUN-17</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> sysdate - hiredate from emp;</span></span><br><span class="line"></span><br><span class="line">SYSDATE-HIREDATE</span><br><span class="line">----------------</span><br><span class="line">      11029.7991</span><br><span class="line">      13343.7991</span><br><span class="line">      13278.7991</span><br><span class="line">      13276.7991</span><br><span class="line">      13237.7991</span><br><span class="line">      13058.7991</span><br><span class="line">      13208.7991</span><br><span class="line">      13169.7991</span><br><span class="line">      11029.7991</span><br><span class="line">      13008.7991</span><br><span class="line">      13078.7991</span><br><span class="line">      10995.7991</span><br><span class="line">      12992.7991</span><br><span class="line">      12992.7991</span><br><span class="line">      12941.7991</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里计算的结果为天数</p>
+<ol start="2">
+<li>计算每个雇员工作的时间，单位为月</li>
+</ol>
+<ul>
+<li>months_between() 计算两个时间点间的月数</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,months_between(sysdate,hiredate) from emp;</span></span><br><span class="line"></span><br><span class="line">ENAME	   MONTHS_BETWEEN(SYSDATE,HIREDATE)</span><br><span class="line">---------- --------------------------------</span><br><span class="line">SCoTT				 362.348474</span><br><span class="line">SMITH				  438.41299</span><br><span class="line">ALLEN				 436.316216</span><br><span class="line">WARD				   436.2517</span><br><span class="line">JONES				 434.896861</span><br><span class="line">MARTIN				 429.058152</span><br><span class="line">BLAKE				 433.929119</span><br><span class="line">CLARK				 432.671055</span><br><span class="line">SCOTT				 362.348474</span><br><span class="line">KING				  427.41299</span><br><span class="line">TURNER				 429.703313</span><br><span class="line">ADAMS				 361.219442</span><br><span class="line">JAMES				 426.864603</span><br><span class="line">FORD				 426.864603</span><br><span class="line">MILLER				 425.219442</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li>假设员工使用期都是三个月，查看员工专正日期</li>
+</ol>
+<ul>
+<li>add_months() 在制定时间点上加多少个月份</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,hiredate,add_months(hiredate,3)  from emp;</span></span><br><span class="line"></span><br><span class="line">ENAME	   HIREDATE  ADD_MONTH</span><br><span class="line">---------- --------- ---------</span><br><span class="line">SCoTT	   19-APR-87 19-JUL-87</span><br><span class="line">SMITH	   17-DEC-80 17-MAR-81</span><br><span class="line">ALLEN	   20-FEB-81 20-MAY-81</span><br><span class="line">WARD	   22-FEB-81 22-MAY-81</span><br><span class="line">JONES	   02-APR-81 02-JUL-81</span><br><span class="line">MARTIN	   28-SEP-81 28-DEC-81</span><br><span class="line">BLAKE	   01-MAY-81 01-AUG-81</span><br><span class="line">CLARK	   09-JUN-81 09-SEP-81</span><br><span class="line">SCOTT	   19-APR-87 19-JUL-87</span><br><span class="line">KING	   17-NOV-81 17-FEB-82</span><br><span class="line">TURNER	   08-SEP-81 08-DEC-81</span><br><span class="line">ADAMS	   23-MAY-87 23-AUG-87</span><br><span class="line">JAMES	   03-DEC-81 03-MAR-82</span><br><span class="line">FORD	   03-DEC-81 03-MAR-82</span><br><span class="line">MILLER	   23-JAN-82 23-APR-82</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>这周六是哪一天？本月最后一天是那一天？</li>
+</ol>
+<ul>
+<li>next_day() 用周几的方式来表示将来的某一天</li>
+<li>last_day() 指定时间点所在月份的最后一天，返回自然月的最后一天</li>
+</ul>
+<blockquote>
+<p>Last_day()快速定位自然月最后一天，还有什么用？可以计算期末量。</p>
+<p>例如：每个月月底库存还剩下多少？月底销售员的销售额是多少？</p>
+<p>同比：今年二月份比去年二月份有什么变化？</p>
+<p>环比：今年二月份和今年一月份有什么变化？</p>
+<p>分析出淡季旺季</p>
+<p>同期比：</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> sysdate from dual;</span></span><br><span class="line"></span><br><span class="line">SYSDATE</span><br><span class="line">---------</span><br><span class="line">29-JUN-17</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> next_day(sysdate,<span class="string">'sun'</span>) as SUN ,last_day(sysdate) Last from dual;</span></span><br><span class="line"></span><br><span class="line">SUN	  LAST</span><br><span class="line">--------- ---------</span><br><span class="line">02-JUL-17 30-JUN-17</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="5">
+<li>生日所在那个月的最后一天</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> last_day(to_date(<span class="string">'1990-04-15'</span>,<span class="string">'yyyy-mm-dd'</span>)) from dual;</span></span><br><span class="line"></span><br><span class="line">LAST_DAY(</span><br><span class="line">---------</span><br><span class="line">30-APR-90</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> last_day(to_date(<span class="string">'1900-02-15'</span>,<span class="string">'yyyy-mm-dd'</span>)) from dual;</span></span><br><span class="line"></span><br><span class="line">LAST_DAY(</span><br><span class="line">---------</span><br><span class="line">28-FEB-00</span><br></pre></td></tr></tbody></table></figure>
+
+<p>每四年会多23小时48分钟xx秒，差了十几分钟，这样累计400年我们就丢了一天，这一天算到哪里去呢？</p>
+<p>就在1900年就不算闰年，（能被100整除，还能被400整除）</p>
+<p>还可以用来计算自然月的月底销售人员的销售额</p>
+<p>期末量、期初量、同比、环比</p>
+<ol start="6">
+<li>日期只显示年或者月</li>
+</ol>
+<p>round() 四舍五入<br>trunc() 截断日期</p>
+<p>‘year’: &lt;=6月 舍弃，&gt; 6月 进</p>
+<p>‘month’: &lt;=15天 舍弃，&gt; 15天 进</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> sysdate from dual;</span></span><br><span class="line"></span><br><span class="line">SYSDATE</span><br><span class="line">---------</span><br><span class="line">29-JUN-17</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> round(sysdate,<span class="string">'year'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">ROUND(SYS</span><br><span class="line">---------</span><br><span class="line">01-JAN-17</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> round(sysdate+30,<span class="string">'year'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">ROUND(SYS</span><br><span class="line">---------</span><br><span class="line">01-JAN-18</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> round(sysdate,<span class="string">'month'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">ROUND(SYS</span><br><span class="line">---------</span><br><span class="line">01-JUL-17</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> round(sysdate-15,<span class="string">'month'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">ROUND(SYS</span><br><span class="line">---------</span><br><span class="line">01-JUN-17</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> round(sysdate-15,<span class="string">'month'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">ROUND(SYS</span><br><span class="line">---------</span><br><span class="line">01-JUN-17</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_date(<span class="string">'2017-07-16'</span>,<span class="string">'yyyy-mm-dd'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TO_DATE(</span><br><span class="line">---------</span><br><span class="line">16-JUL-17</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> round(to_date(<span class="string">'2017-07-16'</span>,<span class="string">'yyyy-mm-dd'</span>),<span class="string">'year'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">ROUND(TO_</span><br><span class="line">---------</span><br><span class="line">01-JAN-18</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> trunc(to_date(<span class="string">'2017-07-16'</span>,<span class="string">'yyyy-mm-dd'</span>),<span class="string">'year'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TRUNC(TO_</span><br><span class="line">---------</span><br><span class="line">16-JAN-17</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> round(to_date(<span class="string">'2017-07-16'</span>,<span class="string">'yyyy-mm-dd'</span>),<span class="string">'month'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">ROUND(TO_</span><br><span class="line">---------</span><br><span class="line">01-AUG-17</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> trunc(to_date(<span class="string">'2017-07-16'</span>,<span class="string">'yyyy-mm-dd'</span>),<span class="string">'month'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TRUNC(TO_</span><br><span class="line">---------</span><br><span class="line">01-JUL-17</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="8">
+<li>执行以下sql并解释的含义</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">select sysdate from dual;</span><br><span class="line">select sysdate,sysdate+1/1440 from dual;</span><br><span class="line">select months_between(sysdate,hiredate),ename from emp;</span><br><span class="line">select sysdate,add_months(sysdate,6) from dual;</span><br><span class="line">select sysdate,next_day(sysdate,'wed') from dual;</span><br><span class="line">select sysdate,last_day(to_date('01-feb-1900','dd-mon-yyyy')) from dual;</span><br><span class="line">select round(sysdate,'month') from dual;</span><br><span class="line">select round(sysdate,'year') from dual;</span><br><span class="line">select trunc(sysdate,'month') from dual;</span><br><span class="line">select trunc(sysdate,'year') from dual;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="转换函数" class="article-heading"><a href="#转换函数" class="headerlink" title="转换函数"></a>转换函数<a class="article-anchor" href="#转换函数" aria-hidden="true"></a></h3><p>数据类型转化分为两种：</p>
+<ol>
+<li>隐式数据类型转换 系统自己能作的比较简单的，例如数字变字符串之类的</li>
+<li>显示数据类型转换 必须通过函数，你来制定规则</li>
+</ol>
+<h4 id="隐式数据类型转换" class="article-heading"><a href="#隐式数据类型转换" class="headerlink" title="隐式数据类型转换"></a>隐式数据类型转换<a class="article-anchor" href="#隐式数据类型转换" aria-hidden="true"></a></h4><p>Oracle服务器可以自动转换下面的数据类型</p>
+<ul>
+<li>number&lt;—&gt;varchar2|char&lt;—-&gt;date</li>
+</ul>
+<h4 id="显式数据类型转换" class="article-heading"><a href="#显式数据类型转换" class="headerlink" title="显式数据类型转换"></a>显式数据类型转换<a class="article-anchor" href="#显式数据类型转换" aria-hidden="true"></a></h4><p>num—————————–&gt;char—————————-&gt;date</p>
+<pre><code>			to_char(num,'$9.00')		to_date(char,'YYYY-MM-DD')
+</code></pre>
+<p>num&lt;—————————–char&lt;—————————–date</p>
+<p><code>to_number(char,'L99.00')	to_char(date,'YYYY-MM-DD')</code></p>
+<ol>
+<li>date to_char</li>
+</ol>
+<p>TO_CHAR(date, ‘format_model’)</p>
+<p>日期格式样式的元素</p>
+<table>
+<thead>
+<tr>
+<th align="left">元素</th>
+<th align="left">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">YYYY</td>
+<td align="left">用数字表示的完整年份</td>
+</tr>
+<tr>
+<td align="left">YEAR</td>
+<td align="left">拼写出的年份(用英文表示)</td>
+</tr>
+<tr>
+<td align="left">MM</td>
+<td align="left">月份的两位数值</td>
+</tr>
+<tr>
+<td align="left">MONTH</td>
+<td align="left">月份的完整名称</td>
+</tr>
+<tr>
+<td align="left">MON</td>
+<td align="left">月份的三个字母缩写</td>
+</tr>
+<tr>
+<td align="left">DY</td>
+<td align="left">一周中某日的三个字母缩写</td>
+</tr>
+<tr>
+<td align="left">DAY</td>
+<td align="left">一周中某日的完整名称</td>
+</tr>
+<tr>
+<td align="left">DD</td>
+<td align="left">用数字表示的月份中某日</td>
+</tr>
+<tr>
+<td align="left">W</td>
+<td align="left">星期几</td>
+</tr>
+<tr>
+<td align="left">HH</td>
+<td align="left">小时</td>
+</tr>
+<tr>
+<td align="left">MI</td>
+<td align="left">分钟</td>
+</tr>
+<tr>
+<td align="left">SS</td>
+<td align="left">秒</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_char(sysdate,<span class="string">'YYYY-MM-DD'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TO_CHAR(SY</span><br><span class="line">----------</span><br><span class="line">2017-07-03</span><br><span class="line"></span><br><span class="line">select to_char(sysdate,'YYYYMMDD W HH24:MI:SS') from dual;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_char(sysdate,<span class="string">'year-month-day'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TO_CHAR(SYSDATE,'YEAR-MONTH-DAY')</span><br><span class="line">--------------------------------------------------------------</span><br><span class="line">twenty seventeen-july	  -monday</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_char(sysdate,<span class="string">'year-month-dy'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TO_CHAR(SYSDATE,'YEAR-MONTH-DY')</span><br><span class="line">--------------------------------------------------------</span><br><span class="line">twenty seventeen-july	  -mon</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_char(sysdate,<span class="string">'dd-mon-rr'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TO_CHAR(S</span><br><span class="line">---------</span><br><span class="line">03-jul-17</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_char(hiredate,<span class="string">'yyyy-mm-dd'</span>) from emp;</span></span><br><span class="line"></span><br><span class="line">TO_CHAR(HI</span><br><span class="line">----------</span><br><span class="line">1987-04-19</span><br><span class="line">1980-12-17</span><br><span class="line">1981-02-20</span><br><span class="line">1981-02-22</span><br><span class="line">1981-04-02</span><br><span class="line">1981-09-28</span><br><span class="line">1981-05-01</span><br><span class="line">1981-06-09</span><br><span class="line">1987-04-19</span><br><span class="line">1981-11-17</span><br><span class="line">1981-09-08</span><br><span class="line">1987-05-23</span><br><span class="line">1981-12-03</span><br><span class="line">1981-12-03</span><br><span class="line">1982-01-23</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_char(hiredate,<span class="string">'dd-mm-yy'</span>) from emp;</span></span><br><span class="line"></span><br><span class="line">TO_CHAR(</span><br><span class="line">--------</span><br><span class="line">19-04-87</span><br><span class="line">17-12-80</span><br><span class="line">20-02-81</span><br><span class="line">22-02-81</span><br><span class="line">02-04-81</span><br><span class="line">28-09-81</span><br><span class="line">01-05-81</span><br><span class="line">09-06-81</span><br><span class="line">19-04-87</span><br><span class="line">17-11-81</span><br><span class="line">08-09-81</span><br><span class="line">23-05-87</span><br><span class="line">03-12-81</span><br><span class="line">03-12-81</span><br><span class="line">23-01-82</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> hiredate from emp;</span></span><br><span class="line"></span><br><span class="line">HIREDATE</span><br><span class="line">---------</span><br><span class="line">19-APR-87</span><br><span class="line">17-DEC-80</span><br><span class="line">20-FEB-81</span><br><span class="line">22-FEB-81</span><br><span class="line">02-APR-81</span><br><span class="line">28-SEP-81</span><br><span class="line">01-MAY-81</span><br><span class="line">09-JUN-81</span><br><span class="line">19-APR-87</span><br><span class="line">17-NOV-81</span><br><span class="line">08-SEP-81</span><br><span class="line">23-MAY-87</span><br><span class="line">03-DEC-81</span><br><span class="line">03-DEC-81</span><br><span class="line">23-JAN-82</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>日期的后台保存是，前置0+世纪+年+月+日</p>
+<ol start="2">
+<li>number to_char</li>
+</ol>
+<p>TO_CHAR(number, ‘format_model’)</p>
+<p>下面列出了一些格式元素,可以将其与 TO_CHAR 函数配合使用,以便将数字值显示为字符:</p>
+<table>
+<thead>
+<tr>
+<th align="left">元素</th>
+<th align="left">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">9</td>
+<td align="left">代表一个数字</td>
+</tr>
+<tr>
+<td align="left">0</td>
+<td align="left">强制显示零</td>
+</tr>
+<tr>
+<td align="left">$</td>
+<td align="left">放置一个浮动的美元符号</td>
+</tr>
+<tr>
+<td align="left">L</td>
+<td align="left">使用浮动的本地货币符号</td>
+</tr>
+<tr>
+<td align="left">.</td>
+<td align="left">显示小数点</td>
+</tr>
+<tr>
+<td align="left">,</td>
+<td align="left">显示作为千位指示符的逗号</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"></span><br><span class="line">-- 将数字以指定格式打印出来</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,to_char(sal,<span class="string">'L99,999.99'</span>) as sal from emp;</span></span><br><span class="line"></span><br><span class="line">ENAME	   SAL</span><br><span class="line">---------- --------------------</span><br><span class="line">SCoTT		      $3,000.00</span><br><span class="line">SMITH			$800.00</span><br><span class="line">ALLEN		      $1,600.00</span><br><span class="line">WARD		      $1,250.00</span><br><span class="line">JONES		      $2,975.00</span><br><span class="line">MARTIN		      $1,250.00</span><br><span class="line">BLAKE		      $2,850.00</span><br><span class="line">CLARK		      $2,450.00</span><br><span class="line">SCOTT		      $3,000.00</span><br><span class="line">KING		      $5,000.00</span><br><span class="line">TURNER		      $1,500.00</span><br><span class="line">ADAMS		      $1,100.00</span><br><span class="line">JAMES			$950.00</span><br><span class="line">FORD		      $3,000.00</span><br><span class="line">MILLER		      $1,300.00</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"></span><br><span class="line">-- 00和99的区别在整数会前置0补满指定位数</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,to_char(sal,<span class="string">'L00,000.00'</span>) as sal from emp;</span></span><br><span class="line"></span><br><span class="line">ENAME	   SAL</span><br><span class="line">---------- --------------------</span><br><span class="line">SCoTT		     $03,000.00</span><br><span class="line">SMITH		     $00,800.00</span><br><span class="line">ALLEN		     $01,600.00</span><br><span class="line">WARD		     $01,250.00</span><br><span class="line">JONES		     $02,975.00</span><br><span class="line">MARTIN		     $01,250.00</span><br><span class="line">BLAKE		     $02,850.00</span><br><span class="line">CLARK		     $02,450.00</span><br><span class="line">SCOTT		     $03,000.00</span><br><span class="line">KING		     $05,000.00</span><br><span class="line">TURNER		     $01,500.00</span><br><span class="line">ADAMS		     $01,100.00</span><br><span class="line">JAMES		     $00,950.00</span><br><span class="line">FORD		     $03,000.00</span><br><span class="line">MILLER		     $01,300.00</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li>char to_number</li>
+</ol>
+<p>TO_NUMBER(char[, ‘format_model’])</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_number(<span class="string">' $00,800.00'</span>,<span class="string">'L99999.00'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TO_NUMBER('$00,800.00','L99999.00')</span><br><span class="line">-----------------------------------</span><br><span class="line">				800</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_number(<span class="string">' $00,800.00'</span>,<span class="string">'$99999.00'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TO_NUMBER('$00,800.00','$99999.00')</span><br><span class="line">-----------------------------------</span><br><span class="line">				800</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_number(<span class="string">' $00,800.00'</span>,<span class="string">'$9999.00'</span>) from dual;</span></span><br><span class="line">select to_number(' $00,800.00','$9999.00') from dual</span><br><span class="line">                 *</span><br><span class="line">ERROR at line 1:</span><br><span class="line">ORA-01722: invalid number</span><br></pre></td></tr></tbody></table></figure>
+
+<p>第二参数指定的数字位数不能小于第一个参数的位数，否则会报错。</p>
+<ol start="4">
+<li>char to_date</li>
+</ol>
+<p>TO_DATE(char[, ‘format_model’])</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_date(<span class="string">'1997-10-1'</span>,<span class="string">'yyyy-mm-dd'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TO_DATE('</span><br><span class="line">---------</span><br><span class="line">01-OCT-97</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_char(to_date(<span class="string">'1997-10-1'</span>,<span class="string">'yyyy-mm-dd'</span>),<span class="string">'yyyy-mm-dd'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TO_CHAR(TO</span><br><span class="line">----------</span><br><span class="line">1997-10-01</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="RR和YY年份" class="article-heading"><a href="#RR和YY年份" class="headerlink" title="RR和YY年份"></a>RR和YY年份<a class="article-anchor" href="#RR和YY年份" aria-hidden="true"></a></h4><p>yy年份表示法，当前系统时间所在的世纪</p>
+<blockquote>
+<p>场景重现</p>
+</blockquote>
+<p>1997年10月1日 记录在数据库中用dd-mon-yy表示为 01-OCT-97</p>
+<ol>
+<li>1998年，用户读取该数据，读 yyyy-mm-dd 为 1997-10-01</li>
+<li>2008年，用户读取该数据，读 yyyy-mm-dd 为 2007-10-01</li>
+</ol>
+<p>此时就出错了，因为数据库内部使用yy的方式记录年，读取世纪时是根据当前世纪来取的，于是无法跨越千年。</p>
+<p>rr年份表示法，以50年为分界，已经取代了yy方式</p>
+<table>
+<thead>
+<tr>
+<th align="left">当前日期</th>
+<th align="left">日期范围</th>
+<th align="left">记录时间</th>
+<th align="left">日期范围</th>
+<th align="left">显示世纪</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">now</td>
+<td align="left">0-49</td>
+<td align="left">date</td>
+<td align="left">0-49</td>
+<td align="left">本世纪</td>
+</tr>
+<tr>
+<td align="left">now</td>
+<td align="left">50-99</td>
+<td align="left">date</td>
+<td align="left">50-99</td>
+<td align="left">本世纪</td>
+</tr>
+<tr>
+<td align="left">now</td>
+<td align="left">0-49</td>
+<td align="left">date</td>
+<td align="left">50-99</td>
+<td align="left">上个世纪</td>
+</tr>
+<tr>
+<td align="left">now</td>
+<td align="left">50-99</td>
+<td align="left">date</td>
+<td align="left">0-49</td>
+<td align="left">下个世纪</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span></span></span><br><span class="line">  2  to_char(sysdate,'yyyy') curr_year,</span><br><span class="line">  3  to_char(to_date('07','yy'),'yyyy') yy07,</span><br><span class="line">  4  to_char(to_date('97','yy'),'yyyy') yy97,</span><br><span class="line">  5  to_char(to_date('07','rr'),'yyyy') rr07,</span><br><span class="line">  6  to_char(to_date('97','rr'),'yyyy') rr97</span><br><span class="line">  7  from dual;</span><br><span class="line"></span><br><span class="line">CURR YY07 YY97 RR07 RR97</span><br><span class="line">---- ---- ---- ---- ----</span><br><span class="line">2017 2007 2097 2007 1997</span><br><span class="line"></span><br><span class="line">-- 将字符串97转换为日期时，一定注意rr和yy，建议不要用两位表示年份。</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_char(to_date(<span class="string">'97-2-1'</span>,<span class="string">'rr-mm-dd'</span>),<span class="string">'yyyy-mm-dd'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TO_CHAR(TO</span><br><span class="line">----------</span><br><span class="line">1997-02-01</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_char(to_date(<span class="string">'97-2-1'</span>,<span class="string">'yy-mm-dd'</span>),<span class="string">'yyyy-mm-dd'</span>) from dual;</span></span><br><span class="line"></span><br><span class="line">TO_CHAR(TO</span><br><span class="line">----------</span><br><span class="line">2097-02-01</span><br></pre></td></tr></tbody></table></figure>
+
+<p>练习以下sql：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">select sysdate,to_char(sysdate,'yyyy-mm-dd hh24:mi:ss') from dual;</span><br><span class="line">select ename,sal,to_char(sal,'L999,999.99') from emp;</span><br><span class="line">select to_number('$800.00','L999.99') from dual;</span><br><span class="line">select to_date('2016-09-15','yyyy-mm-dd') from dual;</span><br><span class="line">select</span><br><span class="line">to_char(sysdate,'yyyy') curr_year,</span><br><span class="line">to_char(to_date('05','yy'),'yyyy') yy05,</span><br><span class="line">to_char(to_date('99','yy'),'yyyy') yy99,</span><br><span class="line">to_char(to_date('05','rr'),'yyyy') rr05,</span><br><span class="line">to_char(to_date('99','rr'),'yyyy') rr99</span><br><span class="line">from dual;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="嵌套函数" class="article-heading"><a href="#嵌套函数" class="headerlink" title="嵌套函数"></a>嵌套函数<a class="article-anchor" href="#嵌套函数" aria-hidden="true"></a></h3><ul>
+<li>单行函数可以嵌套到任意层。</li>
+<li>嵌套函数的计算顺序是从最内层到最外层。</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">-- 打印出大写的雇员名字从第一位开始的8个字符，并加上'_china'</span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,upper(concat(substr(ename,1,8),<span class="string">'_china'</span>)) from emp;</span></span><br><span class="line"></span><br><span class="line">ENAME	   UPPER(CONCAT(S</span><br><span class="line">---------- --------------</span><br><span class="line">SCoTT	   SCOTT _CHINA</span><br><span class="line">SMITH	   SMITH_CHINA</span><br><span class="line">ALLEN	   ALLEN_CHINA</span><br><span class="line">WARD	   WARD_CHINA</span><br><span class="line">JONES	   JONES_CHINA</span><br><span class="line">MARTIN	   MARTIN_CHINA</span><br><span class="line">BLAKE	   BLAKE_CHINA</span><br><span class="line">CLARK	   CLARK_CHINA</span><br><span class="line">SCOTT	   SCOTT_CHINA</span><br><span class="line">KING	   KING_CHINA</span><br><span class="line">TURNER	   TURNER_CHINA</span><br><span class="line">ADAMS	   ADAMS_CHINA</span><br><span class="line">JAMES	   JAMES_CHINA</span><br><span class="line">FORD	   FORD_CHINA</span><br><span class="line">MILLER	   MILLER_CHINA</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"></span><br><span class="line">-- 打印大写雇员的姓名，去除头尾空白并加上'_china'</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,upper(concat(trim(<span class="string">' '</span> from ename),<span class="string">'_china'</span>)) from emp;</span></span><br><span class="line"></span><br><span class="line">ENAME	   UPPER(CONCAT(TRI</span><br><span class="line">---------- ----------------</span><br><span class="line">SCoTT	   SCOTT_CHINA</span><br><span class="line">SMITH	   SMITH_CHINA</span><br><span class="line">ALLEN	   ALLEN_CHINA</span><br><span class="line">WARD	   WARD_CHINA</span><br><span class="line">JONES	   JONES_CHINA</span><br><span class="line">MARTIN	   MARTIN_CHINA</span><br><span class="line">BLAKE	   BLAKE_CHINA</span><br><span class="line">CLARK	   CLARK_CHINA</span><br><span class="line">SCOTT	   SCOTT_CHINA</span><br><span class="line">KING	   KING_CHINA</span><br><span class="line">TURNER	   TURNER_CHINA</span><br><span class="line">ADAMS	   ADAMS_CHINA</span><br><span class="line">JAMES	   JAMES_CHINA</span><br><span class="line">FORD	   FORD_CHINA</span><br><span class="line">MILLER	   MILLER_CHINA</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> to_char(round((sal/<span class="number">7</span>),<span class="number">2</span>),'<span class="number">9</span>G99D99') from emp;</span></span><br><span class="line"></span><br><span class="line">TO_CHAR(</span><br><span class="line">--------</span><br><span class="line"> 4,28.57</span><br><span class="line"> 1,14.29</span><br><span class="line"> 2,28.57</span><br><span class="line"> 1,78.57</span><br><span class="line"> 4,25.00</span><br><span class="line"> 1,78.57</span><br><span class="line"> 4,07.14</span><br><span class="line"> 3,50.00</span><br><span class="line"> 4,28.57</span><br><span class="line"> 7,14.29</span><br><span class="line"> 2,14.29</span><br><span class="line"> 1,57.14</span><br><span class="line"> 1,35.71</span><br><span class="line"> 4,28.57</span><br><span class="line"> 1,85.71</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash">select to_char(round((sal/<span class="number">7</span>),<span class="number">2</span>),'<span class="number">999</span>D99') from emp;</span></span><br><span class="line"></span><br><span class="line">TO_CHAR</span><br><span class="line">-------</span><br><span class="line"> 428.57</span><br><span class="line"> 114.29</span><br><span class="line"> 228.57</span><br><span class="line"> 178.57</span><br><span class="line"> 425.00</span><br><span class="line"> 178.57</span><br><span class="line"> 407.14</span><br><span class="line"> 350.00</span><br><span class="line"> 428.57</span><br><span class="line"> 714.29</span><br><span class="line"> 214.29</span><br><span class="line"> 157.14</span><br><span class="line"> 135.71</span><br><span class="line"> 428.57</span><br><span class="line"> 185.71</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="常规函数" class="article-heading"><a href="#常规函数" class="headerlink" title="常规函数"></a>常规函数<a class="article-anchor" href="#常规函数" aria-hidden="true"></a></h3><blockquote>
+<p>主要是用来修改空值的；可用于任何数据类型</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">函数名</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">NVL (expr1, expr2)</td>
+<td align="left">1空为2，1不空则1</td>
+</tr>
+<tr>
+<td align="left">NVL2 (expr1, expr2, expr3)</td>
+<td align="left">1空为3，1不空为2</td>
+</tr>
+<tr>
+<td align="left">NULLIF (expr1, expr2)</td>
+<td align="left">1和2相等则输出null，否则输出1</td>
+</tr>
+<tr>
+<td align="left">COALESCE (expr1, expr2, …, exprn)</td>
+<td align="left">返回枚举中的第一个非空表达式</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">-- 计算员工工资和奖金的和</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,sal,<span class="built_in">comm</span>,sal+<span class="built_in">comm</span> from emp;</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL	    COMM   SAL+COMM</span><br><span class="line">---------- ---------- ---------- ----------</span><br><span class="line">SCoTT		 3000	      20       3020</span><br><span class="line">SMITH		  800</span><br><span class="line">ALLEN		 1600	     300       1900</span><br><span class="line">WARD		 1250	     500       1750</span><br><span class="line">JONES		 2975</span><br><span class="line">MARTIN		 1250	    1400       2650</span><br><span class="line">BLAKE		 2850</span><br><span class="line">CLARK		 2450</span><br><span class="line">SCOTT		 3000</span><br><span class="line">KING		 5000</span><br><span class="line">TURNER		 1500	       0       1500</span><br><span class="line">ADAMS		 1100</span><br><span class="line">JAMES		  950</span><br><span class="line">FORD		 3000</span><br><span class="line">MILLER		 1300</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,sal,<span class="built_in">comm</span>,sal+nvl(<span class="built_in">comm</span>,0) from emp;</span></span><br><span class="line"></span><br><span class="line">ENAME		  SAL	    COMM SAL+NVL(COMM,0)</span><br><span class="line">---------- ---------- ---------- ---------------</span><br><span class="line">SCoTT		 3000	      20	    3020</span><br><span class="line">SMITH		  800			     800</span><br><span class="line">ALLEN		 1600	     300	    1900</span><br><span class="line">WARD		 1250	     500	    1750</span><br><span class="line">JONES		 2975			    2975</span><br><span class="line">MARTIN		 1250	    1400	    2650</span><br><span class="line">BLAKE		 2850			    2850</span><br><span class="line">CLARK		 2450			    2450</span><br><span class="line">SCOTT		 3000			    3000</span><br><span class="line">KING		 5000			    5000</span><br><span class="line">TURNER		 1500	       0	    1500</span><br><span class="line">ADAMS		 1100			    1100</span><br><span class="line">JAMES		  950			     950</span><br><span class="line">FORD		 3000			    3000</span><br><span class="line">MILLER		 1300			    1300</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> nvl2(null,1,2) from dual;</span></span><br><span class="line"></span><br><span class="line">NVL2(NULL,1,2)</span><br><span class="line">--------------</span><br><span class="line">	     2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> nvl2(<span class="string">'a'</span>,1,2) from dual;</span></span><br><span class="line"></span><br><span class="line">NVL2('A',1,2)</span><br><span class="line">-------------</span><br><span class="line">	    1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> nullif(1,1) from dual;</span></span><br><span class="line"></span><br><span class="line">NULLIF(1,1)</span><br><span class="line">-----------</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> nullif(1,2) from dual;</span></span><br><span class="line"></span><br><span class="line">NULLIF(1,2)</span><br><span class="line">-----------</span><br><span class="line">	  1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> nullif(3,2) from dual;</span></span><br><span class="line"></span><br><span class="line">NULLIF(3,2)</span><br><span class="line">-----------</span><br><span class="line">	  3</span><br><span class="line"></span><br><span class="line">-- 有奖金返回奖金，没有奖金返回工资</span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> coalesce(<span class="built_in">comm</span>,sal)from emp;</span></span><br><span class="line"></span><br><span class="line">COALESCE(COMM,SAL)</span><br><span class="line">------------------</span><br><span class="line">		20</span><br><span class="line">	       800</span><br><span class="line">	       300</span><br><span class="line">	       500</span><br><span class="line">	      2975</span><br><span class="line">	      1400</span><br><span class="line">	      2850</span><br><span class="line">	      2450</span><br><span class="line">	      3000</span><br><span class="line">	      5000</span><br><span class="line">		 0</span><br><span class="line">	      1100</span><br><span class="line">	       950</span><br><span class="line">	      3000</span><br><span class="line">	      1300</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="条件表达式" class="article-heading"><a href="#条件表达式" class="headerlink" title="条件表达式"></a>条件表达式<a class="article-anchor" href="#条件表达式" aria-hidden="true"></a></h3><p>可以在 SQL 语句中使用 IF-THEN-ELSE 逻辑。</p>
+<table>
+<thead>
+<tr>
+<th align="left">条件判断</th>
+<th align="left">语法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">CASE表达式</td>
+<td align="left">case exp when 1 then e1 when 2 then e2 end</td>
+</tr>
+<tr>
+<td align="left">DECODE函数</td>
+<td align="left">decode(exp,1,e1,2,e2,defaulte3)</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">-- 职员工资上涨百分之10，销售工资上涨百分之15，其他人不变</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,job,sal,</span></span><br><span class="line">  2  case job when 'CLERK' then sal*1.1</span><br><span class="line">  3  when 'SALESMAN' then sal*1.15</span><br><span class="line">  4  else sal end rev_sal</span><br><span class="line">  5  from emp;</span><br><span class="line"></span><br><span class="line">ENAME	   JOB		    SAL    REV_SAL</span><br><span class="line">---------- --------- ---------- ----------</span><br><span class="line">SCoTT	   ANALYST	   3000       3000</span><br><span class="line">SMITH	   CLERK	    800        880</span><br><span class="line">ALLEN	   SALESMAN	   1600       1840</span><br><span class="line">WARD	   SALESMAN	   1250     1437.5</span><br><span class="line">JONES	   MANAGER	   2975       2975</span><br><span class="line">MARTIN	   SALESMAN	   1250     1437.5</span><br><span class="line">BLAKE	   MANAGER	   2850       2850</span><br><span class="line">CLARK	   MANAGER	   2450       2450</span><br><span class="line">SCOTT	   ANALYST	   3000       3000</span><br><span class="line">KING	   PRESIDENT	   5000       5000</span><br><span class="line">TURNER	   SALESMAN	   1500       1725</span><br><span class="line">ADAMS	   CLERK	   1100       1210</span><br><span class="line">JAMES	   CLERK	    950       1045</span><br><span class="line">FORD	   ANALYST	   3000       3000</span><br><span class="line">MILLER	   CLERK	   1300       1430</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,job,sal,decode(sal,<span class="string">'CLERK'</span>,sal*1.1,<span class="string">'SALESMAN'</span>,sal*1.1,sal) rev_sal from emp;</span></span><br><span class="line"></span><br><span class="line">ENAME	   JOB		    SAL    REV_SAL</span><br><span class="line">---------- --------- ---------- ----------</span><br><span class="line">SCoTT	   ANALYST	   3000       3000</span><br><span class="line">SMITH	   CLERK	    800        800</span><br><span class="line">ALLEN	   SALESMAN	   1600       1600</span><br><span class="line">WARD	   SALESMAN	   1250       1250</span><br><span class="line">JONES	   MANAGER	   2975       2975</span><br><span class="line">MARTIN	   SALESMAN	   1250       1250</span><br><span class="line">BLAKE	   MANAGER	   2850       2850</span><br><span class="line">CLARK	   MANAGER	   2450       2450</span><br><span class="line">SCOTT	   ANALYST	   3000       3000</span><br><span class="line">KING	   PRESIDENT	   5000       5000</span><br><span class="line">TURNER	   SALESMAN	   1500       1500</span><br><span class="line">ADAMS	   CLERK	   1100       1100</span><br><span class="line">JAMES	   CLERK	    950        950</span><br><span class="line">FORD	   ANALYST	   3000       3000</span><br><span class="line">MILLER	   CLERK	   1300       1300</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"></span><br><span class="line">-- 工资低于1000并且job为雇员的员工薪资涨百分之15，其他人不涨</span><br><span class="line">-- 非标准的case when，不能转化为decode()</span><br><span class="line">-- 任何条件满足则break</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">SQL&gt; </span><span class="language-bash"><span class="keyword">select</span> ename,job,sal,<span class="keyword">case</span> when sal&gt;1000 <span class="keyword">then</span> sal when job=<span class="string">'CLERK'</span> <span class="keyword">then</span> sal*1.15  <span class="keyword">else</span> sal end as rev_sal from emp;</span></span><br><span class="line"></span><br><span class="line">ENAME	   JOB		    SAL    REV_SAL</span><br><span class="line">---------- --------- ---------- ----------</span><br><span class="line">SCoTT	   ANALYST	   3000       3000</span><br><span class="line">SMITH	   CLERK	    800        920</span><br><span class="line">ALLEN	   SALESMAN	   1600       1600</span><br><span class="line">WARD	   SALESMAN	   1250       1250</span><br><span class="line">JONES	   MANAGER	   2975       2975</span><br><span class="line">MARTIN	   SALESMAN	   1250       1250</span><br><span class="line">BLAKE	   MANAGER	   2850       2850</span><br><span class="line">CLARK	   MANAGER	   2450       2450</span><br><span class="line">SCOTT	   ANALYST	   3000       3000</span><br><span class="line">KING	   PRESIDENT	   5000       5000</span><br><span class="line">TURNER	   SALESMAN	   1500       1500</span><br><span class="line">ADAMS	   CLERK	   1100       1100</span><br><span class="line">JAMES	   CLERK	    950     1092.5</span><br><span class="line">FORD	   ANALYST	   3000       3000</span><br><span class="line">MILLER	   CLERK	   1300       1300</span><br><span class="line"></span><br><span class="line">15 rows selected.</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>练习以下语句</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">select ename,sal,comm,sal+nvl(comm,0) from emp;</span><br><span class="line">select ename,sal,comm,nvl2(comm,sal+comm,sal) from emp;</span><br><span class="line">select ename,sal,comm,coalesce(comm,sal,0) from emp;</span><br><span class="line"></span><br><span class="line">select ename,</span><br><span class="line">       job,</span><br><span class="line">       sal,</span><br><span class="line">case job when 'CLERK' then sal*1.1</span><br><span class="line">         when 'ANALYST' then sal*1.20</span><br><span class="line">else sal end raise_sal</span><br><span class="line">from emp</span><br><span class="line">order by job;</span><br><span class="line"></span><br><span class="line">select ename,</span><br><span class="line">       job,</span><br><span class="line">       sal,</span><br><span class="line">decode(job,</span><br><span class="line">      'CLERK',sal*1.1,</span><br><span class="line">      'ANALYST',sal*1.2,</span><br><span class="line">      sal) raise_sal</span><br><span class="line">from emp order by job;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="与MySQL的区别" class="article-heading"><a href="#与MySQL的区别" class="headerlink" title="与MySQL的区别"></a>与MySQL的区别<a class="article-anchor" href="#与MySQL的区别" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th align="left">sql</th>
+<th align="left">mysql</th>
+<th align="left">oracle</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">查看用户的表</td>
+<td align="left">use dbname;show tables;</td>
+<td align="left">conn user/password;select * from tab;</td>
+</tr>
+<tr>
+<td align="left">限制行数</td>
+<td align="left">select * from emp limit 5;</td>
+<td align="left">select * from emp where rownum &lt; 6;</td>
+</tr>
+</tbody></table>
+<h3 id="MySQL数据库名、表名、列名、别名大小写规则" class="article-heading"><a href="#MySQL数据库名、表名、列名、别名大小写规则" class="headerlink" title="MySQL数据库名、表名、列名、别名大小写规则"></a>MySQL数据库名、表名、列名、别名大小写规则<a class="article-anchor" href="#MySQL数据库名、表名、列名、别名大小写规则" aria-hidden="true"></a></h3><p><code>lower_case_table_names = 0 </code><br>其中</p>
+<ul>
+<li>0：区分大小写</li>
+<li>1：不区分大小写</li>
+</ul>
+<p>MySQL在Linux下数据库名、表名、列名、别名大小写规则是这样的：</p>
+<ul>
+<li>数据库名与表名是严格区分大小写的；</li>
+<li>表的别名是严格区分大小写的；</li>
+<li>列名与列的别名在所有的情况下均是忽略大小写的；</li>
+<li>变量名也是严格区分大小写的；</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@SH_MySQL-01 17:02:  [(none)]&gt; select @@lower_case_table_names;</span><br><span class="line">+--------------------------+</span><br><span class="line">| @@lower_case_table_names |</span><br><span class="line">+--------------------------+</span><br><span class="line">|                        0 |</span><br><span class="line">+--------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">root@SH_MySQL-01 17:03:  [(none)]&gt; use test;</span><br><span class="line">Database changed</span><br><span class="line">root@SH_MySQL-01 17:03:  [test]&gt; select * from T1;</span><br><span class="line">ERROR 1146 (42S02): Table 'test.T1' doesn't exist</span><br><span class="line">root@SH_MySQL-01 17:03:  [test]&gt; select * from t1;</span><br><span class="line">+----+------+</span><br><span class="line">| id | num  |</span><br><span class="line">+----+------+</span><br><span class="line">|  1 |  100 |</span><br><span class="line">|  2 |  200 |</span><br><span class="line">+----+------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="MySQL字符串大小写" class="article-heading"><a href="#MySQL字符串大小写" class="headerlink" title="MySQL字符串大小写"></a>MySQL字符串大小写<a class="article-anchor" href="#MySQL字符串大小写" aria-hidden="true"></a></h3><p>校对规则以其相关的字符集名开始，通常包括一个语言名，并且以_ci（大小写不敏感）、_cs（大小写敏感）或_bin（二元）结束 。</p>
+<p>比如 utf8字符集，</p>
+<ul>
+<li>utf8_general_ci,表示不区分大小写，这个是utf8字符集默认的校对规则；</li>
+<li>utf8_general_cs表示区分大小写；</li>
+<li>utf8_bin表示二进制比较，同样也区分大小写。</li>
+</ul>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:42.305Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5DQL%E7%AE%80%E4%BB%8B"><span class="toc-text">查询语句DQL简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84sql%E6%9F%A5%E8%AF%A2"><span class="toc-text">简单的sql查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%90%E5%88%B6%E5%92%8C%E6%8E%92%E5%88%97%E6%95%B0%E6%8D%AE"><span class="toc-text">限制和排列数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E8%A1%8C%E5%87%BD%E6%95%B0"><span class="toc-text">单行函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E5%87%BD%E6%95%B0"><span class="toc-text">字符函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E5%87%BD%E6%95%B0%E7%A4%BA%E4%BE%8B"><span class="toc-text">字符函数示例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-text">数值函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0"><span class="toc-text">日期函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AC%E6%8D%A2%E5%87%BD%E6%95%B0"><span class="toc-text">转换函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9A%90%E5%BC%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="toc-text">隐式数据类型转换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%98%BE%E5%BC%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="toc-text">显式数据类型转换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RR%E5%92%8CYY%E5%B9%B4%E4%BB%BD"><span class="toc-text">RR和YY年份</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B5%8C%E5%A5%97%E5%87%BD%E6%95%B0"><span class="toc-text">嵌套函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%84%E5%87%BD%E6%95%B0"><span class="toc-text">常规函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">条件表达式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8EMySQL%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">与MySQL的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D%E3%80%81%E8%A1%A8%E5%90%8D%E3%80%81%E5%88%97%E5%90%8D%E3%80%81%E5%88%AB%E5%90%8D%E5%A4%A7%E5%B0%8F%E5%86%99%E8%A7%84%E5%88%99"><span class="toc-text">MySQL数据库名、表名、列名、别名大小写规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%A4%A7%E5%B0%8F%E5%86%99"><span class="toc-text">MySQL字符串大小写</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>云上RDS与本地IDC自建mysql同步方案测试 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/cloud/aliyun/dts/sync/test01">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/cloud/aliyun/dts/sync/test01" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2017-08-17 BoobooWei  同步搭建思路 DTS迁移服务实现云上RDS与本地IDC自建mysql  网络的问题？外网或者内网 内网（速度快）需要打通，vpc+vpn（不稳定）或者高速通道（稳定费用贵）来打通 外网（速度慢）  搭建主从？手动或者DTS 手动——1.数据初始化一致（量大物理xtrabackup和量小逻辑）；2.配置主从 DTS——迁移服务（限制不能执行ddl操作）">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云上RDS与本地IDC自建mysql同步方案测试">
+<meta property="og:url" content="http://www.toberoot.com/cloud/aliyun/dts/sync/test01">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2017-08-17 BoobooWei  同步搭建思路 DTS迁移服务实现云上RDS与本地IDC自建mysql  网络的问题？外网或者内网 内网（速度快）需要打通，vpc+vpn（不稳定）或者高速通道（稳定费用贵）来打通 外网（速度慢）  搭建主从？手动或者DTS 手动——1.数据初始化一致（量大物理xtrabackup和量小逻辑）；2.配置主从 DTS——迁移服务（限制不能执行ddl操作）">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.082Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:49.911Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">云上RDS与本地IDC自建mysql同步方案测试</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/cloud/aliyun/dts/sync/test01.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2017-08-17 BoobooWei</p>
+</blockquote>
+<h2 id="同步搭建思路" class="article-heading"><a href="#同步搭建思路" class="headerlink" title="同步搭建思路"></a>同步搭建思路<a class="article-anchor" href="#同步搭建思路" aria-hidden="true"></a></h2><blockquote>
+<p>DTS迁移服务实现云上RDS与本地IDC自建mysql</p>
+</blockquote>
+<h3 id="网络的问题？外网或者内网" class="article-heading"><a href="#网络的问题？外网或者内网" class="headerlink" title="网络的问题？外网或者内网"></a>网络的问题？外网或者内网<a class="article-anchor" href="#网络的问题？外网或者内网" aria-hidden="true"></a></h3><ul>
+<li>内网（速度快）需要打通，vpc+vpn（不稳定）或者高速通道（稳定费用贵）来打通</li>
+<li>外网（速度慢）</li>
+</ul>
+<h3 id="搭建主从？手动或者DTS" class="article-heading"><a href="#搭建主从？手动或者DTS" class="headerlink" title="搭建主从？手动或者DTS"></a>搭建主从？手动或者DTS<a class="article-anchor" href="#搭建主从？手动或者DTS" aria-hidden="true"></a></h3><ul>
+<li>手动——1.数据初始化一致（量大物理xtrabackup和量小逻辑）；2.配置主从</li>
+<li>DTS——迁移服务（限制不能执行ddl操作）</li>
+<li>DTS——同步服务（不支持该场景的）</li>
+</ul>
+<hr>
+<h2 id="同步搭建测试" class="article-heading"><a href="#同步搭建测试" class="headerlink" title="同步搭建测试"></a>同步搭建测试<a class="article-anchor" href="#同步搭建测试" aria-hidden="true"></a></h2><ol>
+<li>DTS迁移功能对ddl的限制（结构迁移和全量迁移中不支持ddl操作；增量迁移中可以）</li>
+<li>手动配置的实现细节</li>
+</ol>
+<h3 id="测试1——DTS迁移服务" class="article-heading"><a href="#测试1——DTS迁移服务" class="headerlink" title="测试1——DTS迁移服务"></a>测试1——DTS迁移服务<a class="article-anchor" href="#测试1——DTS迁移服务" aria-hidden="true"></a></h3><h4 id="测试结果" class="article-heading"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果<a class="article-anchor" href="#测试结果" aria-hidden="true"></a></h4><ol>
+<li>DTS迁移功能可以实现云上到云下的MySQL同步</li>
+<li>迁移过程分为：结构化；全量；增量</li>
+<li>只要在进入增量迁移后才能执行DDL，否则很有可能导致数据不一致</li>
+<li>该功能费用比较贵（1.04/h 1.88/h 3.03/h）</li>
+</ol>
+<h4 id="测试过程" class="article-heading"><a href="#测试过程" class="headerlink" title="测试过程"></a>测试过程<a class="article-anchor" href="#测试过程" aria-hidden="true"></a></h4><ul>
+<li>华东2的rds一台；华东1的ecs一台（eip：121.40.162.80），通过外网做DTS迁移</li>
+</ul>
+<p><img src="pic/01.png"> <img src="pic/02.png"> <img src="pic/03.png"></p>
+<ul>
+<li>将自建mysql所在服务器ip添加至rds白名单</li>
+</ul>
+<p><img src="pic/04.png"> <img src="pic/05.png"></p>
+<ul>
+<li>开通外网地址</li>
+</ul>
+<p><img src="pic/06.png"></p>
+<ul>
+<li>RDS中写入数据做测试用</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">CREATE TABLE t1(</span></span><br><span class="line">id int primary key auto_increment,</span><br><span class="line">uname  varchar(20) ,</span><br><span class="line">ucreatetime  datetime  ,</span><br><span class="line">age  int(11)) DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;</span><br><span class="line">执行成功,花费 4 ms.</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">delimiter $$</span></span><br><span class="line">sql分隔符设置为[$$]</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">create  procedure test1()</span></span><br><span class="line">begin</span><br><span class="line"></span><br><span class="line">declare v_cnt decimal (10)  default 0 ;</span><br><span class="line">start transaction;</span><br><span class="line">dd:loop</span><br><span class="line">        insert  into t1 values</span><br><span class="line">        (null,'用户1','2010-01-01 00:00:00',20),</span><br><span class="line">        (null,'用户2','2010-01-01 00:00:00',20),</span><br><span class="line">        (null,'用户3','2010-01-01 00:00:00',20),</span><br><span class="line">        (null,'用户4','2010-01-01 00:00:00',20),</span><br><span class="line">        (null,'用户5','2011-01-01 00:00:00',20),</span><br><span class="line">        (null,'用户6','2011-01-01 00:00:00',20),</span><br><span class="line">        (null,'用户7','2011-01-01 00:00:00',20),</span><br><span class="line">        (null,'用户8','2012-01-01 00:00:00',20),</span><br><span class="line">        (null,'用户9','2012-01-01 00:00:00',20),</span><br><span class="line">        (null,'用户0','2012-01-01 00:00:00',20)</span><br><span class="line">                ;</span><br><span class="line">        set v_cnt = v_cnt+10 ;</span><br><span class="line">            if  v_cnt = 1000 then leave dd;</span><br><span class="line">            end if;</span><br><span class="line">        end loop dd ;</span><br><span class="line">commit;</span><br><span class="line">end;</span><br><span class="line">执行成功,花费 1 ms.</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">delimiter ;</span></span><br><span class="line">sql分隔符设置为[;]</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">call test1();</span></span><br><span class="line">执行成功,花费 9 ms.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash"><span class="keyword">select</span> * from t1 <span class="built_in">limit</span> 2;</span></span><br><span class="line">+--------------+-----------------+-----------------------+---------------+</span><br><span class="line">| id           | uname           | ucreatetime           | age           |</span><br><span class="line">+--------------+-----------------+-----------------------+---------------+</span><br><span class="line">|            1 | 用户1           | 2010-01-01 00:00:00   |            20 |</span><br><span class="line">|            2 | 用户2           | 2010-01-01 00:00:00   |            20 |</span><br><span class="line">+--------------+-----------------+-----------------------+---------------+</span><br><span class="line">共返回 2 行记录,花费 1 ms.</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">show variables like <span class="string">'gtid%'</span>;</span></span><br><span class="line">+-------------------------+-----------------+</span><br><span class="line">| Variable_name           | Value           |</span><br><span class="line">+-------------------------+-----------------+</span><br><span class="line">| gtid_executed           |                 |</span><br><span class="line">| gtid_mode               | ON              |</span><br><span class="line">| gtid_next               | AUTOMATIC       |</span><br><span class="line">| gtid_owned              |                 |</span><br><span class="line">| gtid_purged             |                 |</span><br><span class="line">+-------------------------+-----------------+</span><br><span class="line">共返回 5 行记录,花费 1 ms.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">show variables like <span class="string">'%sync%'</span>;</span></span><br><span class="line">+-------------------------------------------+-----------------+</span><br><span class="line">| Variable_name                             | Value           |</span><br><span class="line">+-------------------------------------------+-----------------+</span><br><span class="line">| innodb_sync_array_size                    | 1               |</span><br><span class="line">| innodb_sync_spin_loops                    | 100             |</span><br><span class="line">| rds_rpl_consistency_sync_enabled          | OFF             |</span><br><span class="line">| rpl_semi_sync_master_enabled              | ON              |</span><br><span class="line">| rpl_semi_sync_master_timeout              | 1000            |</span><br><span class="line">| rpl_semi_sync_master_trace_level          | 1               |</span><br><span class="line">| rpl_semi_sync_master_wait_for_slave_count | 1               |</span><br><span class="line">| rpl_semi_sync_master_wait_no_slave        | ON              |</span><br><span class="line">| rpl_semi_sync_master_wait_point           | after_commit    |</span><br><span class="line">| rpl_semi_sync_slave_delay_master          | OFF             |</span><br><span class="line">| rpl_semi_sync_slave_enabled               | OFF             |</span><br><span class="line">| rpl_semi_sync_slave_kill_conn_timeout     | 5               |</span><br><span class="line">| rpl_semi_sync_slave_trace_level           | 1               |</span><br><span class="line">| sync_binlog                               | 1               |</span><br><span class="line">| sync_frm                                  | ON              |</span><br><span class="line">| sync_master_info                          | 10000           |</span><br><span class="line">| sync_relay_log                            | 10000           |</span><br><span class="line">| sync_relay_log_info                       | 10000           |</span><br><span class="line">| tokudb_commit_sync                        | ON              |</span><br><span class="line">| tokudb_fsync_log_period                   | 0               |</span><br><span class="line">+-------------------------------------------+-----------------+</span><br><span class="line">共返回 20 行记录,花费 1 ms.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">show master status\G;</span></span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">             File: mysql-bin.000004</span><br><span class="line">         Position: 4197491</span><br><span class="line">     Binlog_Do_DB:</span><br><span class="line"> Binlog_Ignore_DB:</span><br><span class="line">Executed_Gtid_Set: 905e45fd-82fb-11e7-ae4e-7cd30abc989e:1-6953</span><br><span class="line">共返回 1 行记录,花费 1 ms.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">show variables like <span class="string">'server%'</span>;</span></span><br><span class="line">+-------------------------+--------------------------------------+</span><br><span class="line">| Variable_name           | Value                                |</span><br><span class="line">+-------------------------+--------------------------------------+</span><br><span class="line">| server_id               | 1516718431                           |</span><br><span class="line">| server_id_bits          | 32                                   |</span><br><span class="line">| server_uuid             | 905e45fd-82fb-11e7-ae4e-7cd30abc989e |</span><br><span class="line">+-------------------------+--------------------------------------+</span><br><span class="line">共返回 3 行记录,花费 1 ms.</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">show variables like <span class="string">'lower%'</span>;</span></span><br><span class="line">+-------------------------+-----------------+</span><br><span class="line">| Variable_name           | Value           |</span><br><span class="line">+-------------------------+-----------------+</span><br><span class="line">| lower_case_file_system  | OFF             |</span><br><span class="line">| lower_case_table_names  | 1               |</span><br><span class="line">+-------------------------+-----------------+</span><br><span class="line">共返回 2 行记录,花费 9 ms.</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>从机安装数据库并配置</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装使用脚本一键执行即可</span></span><br><span class="line">[root@test mysql]# cat /etc/my.cnf</span><br><span class="line">[client]</span><br><span class="line">port            = 3306</span><br><span class="line">socket          = /tmp/mysql.sock</span><br><span class="line">[mysqld]</span><br><span class="line">port            = 3306</span><br><span class="line">socket          = /tmp/mysql.sock</span><br><span class="line">skip-external-locking</span><br><span class="line">log-error=/alidata/mysql/log/error.log</span><br><span class="line">key_buffer_size = 16M</span><br><span class="line">max_allowed_packet = 1M</span><br><span class="line">table_open_cache = 64</span><br><span class="line">sort_buffer_size = 512K</span><br><span class="line">net_buffer_length = 8K</span><br><span class="line">read_buffer_size = 256K</span><br><span class="line">read_rnd_buffer_size = 512K</span><br><span class="line">myisam_sort_buffer_size = 8M</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">AB replication</span></span><br><span class="line">server-id=1</span><br><span class="line">log-bin=/alidata/mysql/log-bin/booboo</span><br><span class="line">gtid_mode=on</span><br><span class="line">enforce_gtid_consistency=1</span><br><span class="line">replicate_wild_do_table=zyadmintest.%</span><br><span class="line">replicate_wild_ignore_table=mysql.%</span><br><span class="line">replicate_wild_ignore_table=information_schema.%</span><br><span class="line">replicate_wild_ignore_table=performance_schema.%</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">binlog</span></span><br><span class="line">binlog_format=row</span><br><span class="line">log-slave-updates=1</span><br><span class="line">expire_logs_days        =  10</span><br><span class="line">max_binlog_size         =  100M</span><br><span class="line"></span><br><span class="line">lower_case_table_names=1</span><br><span class="line">skip-name-resolve</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[mysqldump]</span><br><span class="line">quick</span><br><span class="line">max_allowed_packet = 16M</span><br><span class="line"></span><br><span class="line">[mysql]</span><br><span class="line">no-auto-rehash</span><br><span class="line"></span><br><span class="line">[myisamchk]</span><br><span class="line">key_buffer_size = 20M</span><br><span class="line">sort_buffer_size = 20M</span><br><span class="line">read_buffer = 2M</span><br><span class="line">write_buffer = 2M</span><br><span class="line"></span><br><span class="line">[mysqlhotcopy]</span><br><span class="line">interactive-timeout</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>从机给DTS授权</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">grant all on *.* to <span class="string">'dtstest'</span>@<span class="string">'%'</span> identified by <span class="string">'uplooking'</span>;</span></span><br><span class="line">Query OK, 0 rows affected (0.02 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">flush privileges;</span></span><br><span class="line">Query OK, 0 rows affected (0.03 sec)</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>新建DTS迁移任务</li>
+</ul>
+<p><img src="pic/07.png"></p>
+<p><img src="pic/08.png"> <img src="pic/09.png"> <img src="pic/10.png"> <img src="pic/11.png"></p>
+<ul>
+<li>不同规格的配置费用不同</li>
+</ul>
+<p><img src="pic/12.png"> <img src="pic/13.png"> <img src="pic/14.png"> <img src="pic/15.png"></p>
+<ul>
+<li>若rds在开启迁移任务后没有增量写入，则会报错，如下图所示。</li>
+</ul>
+<p><img src="pic/16.png"></p>
+<ul>
+<li>若有增量则不会报错，顺利完成迁移任务，并同步到无延迟状态</li>
+</ul>
+<p><img src="pic/17.png"> <img src="pic/18.png"></p>
+<ul>
+<li>若在迁移过程中，已经进入增量迁移，此时在RDS中执行DDL操作，不影响数据一致性</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">RDS</span></span><br><span class="line">alter table t1 add column new default 0;</span><br><span class="line">alter table t1 add column new2 default 0;</span><br><span class="line">alter table t1 add column new3 default 0;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">slave</span></span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">desc t1;</span></span><br><span class="line">+-----------------+----------------+----------------+---------------+-------------------+-----------------+</span><br><span class="line">| Field           | Type           | Null           | Key           | Default           | Extra           |</span><br><span class="line">+-----------------+----------------+----------------+---------------+-------------------+-----------------+</span><br><span class="line">| id              | int(11)        | NO             | PRI           |                   | auto_increment  |</span><br><span class="line">| uname           | varchar(20)    | YES            |               |                   |                 |</span><br><span class="line">| ucreatetime     | datetime       | YES            |               |                   |                 |</span><br><span class="line">| age             | int(11)        | YES            |               |                   |                 |</span><br><span class="line">| new             | int(11)        | YES            |               | 0                 |                 |</span><br><span class="line">| new2            | int(11)        | YES            |               | 0                 |                 |</span><br><span class="line">| new3            | int(11)        | YES            |               | 0                 |                 |</span><br><span class="line">+-----------------+----------------+----------------+---------------+-------------------+-----------------+</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>若在迁移过程中，还在结构迁移或全量迁移中，此时在RDS中执行DDL操作，会影响数据一致性</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">RDS</span></span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">desc t1;</span></span><br><span class="line">+-----------------+----------------+----------------+---------------+-------------------+-----------------+</span><br><span class="line">| Field           | Type           | Null           | Key           | Default           | Extra           |</span><br><span class="line">+-----------------+----------------+----------------+---------------+-------------------+-----------------+</span><br><span class="line">| id              | int(11)        | NO             | PRI           |                   | auto_increment  |</span><br><span class="line">| uname           | varchar(20)    | YES            |               |                   |                 |</span><br><span class="line">| ucreatetime     | datetime       | YES            |               |                   |                 |</span><br><span class="line">| age             | int(11)        | YES            |               |                   |                 |</span><br><span class="line">| new             | int(11)        | YES            |               | 0                 |                 |</span><br><span class="line">| new2            | int(11)        | YES            |               | 0                 |                 |</span><br><span class="line">| new3            | int(11)        | YES            |               | 0                 |                 |</span><br><span class="line">+-----------------+----------------+----------------+---------------+-------------------+-----------------+</span><br><span class="line">共返回 7 行记录,花费 1 ms.</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">alter table t1 drop  column new ;</span></span><br><span class="line">执行成功,花费 162 ms.</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">alter table t1 drop  column new2 ;</span></span><br><span class="line">执行成功,花费 161 ms.</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">alter table t1 drop  column new3 ;</span></span><br><span class="line">执行成功,花费 155 ms.</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">call test1();</span></span><br><span class="line">执行成功,花费 17 ms.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">alter table t1 add column new int default 0;</span></span><br><span class="line">执行成功,花费 430 ms.</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">desc t1;</span></span><br><span class="line">+-----------------+----------------+----------------+---------------+-------------------+-----------------+</span><br><span class="line">| Field           | Type           | Null           | Key           | Default           | Extra           |</span><br><span class="line">+-----------------+----------------+----------------+---------------+-------------------+-----------------+</span><br><span class="line">| id              | int(11)        | NO             | PRI           |                   | auto_increment  |</span><br><span class="line">| uname           | varchar(20)    | YES            |               |                   |                 |</span><br><span class="line">| ucreatetime     | datetime       | YES            |               |                   |                 |</span><br><span class="line">| age             | int(11)        | YES            |               |                   |                 |</span><br><span class="line">| new             | int(11)        | YES            |               | 0                 |                 |</span><br><span class="line">+-----------------+----------------+----------------+---------------+-------------------+-----------------+</span><br><span class="line">共返回 5 行记录,花费 1 ms.</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">insert into t1 <span class="built_in">set</span> <span class="built_in">uname</span>=<span class="string">'mm'</span>,age=10;</span></span><br><span class="line">共影响 1 行记录,花费 2 ms.</span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash"><span class="keyword">select</span> * from t1 <span class="built_in">where</span> <span class="built_in">uname</span>=<span class="string">'mm'</span>;</span></span><br><span class="line">+--------------+-----------------+-----------------------+---------------+---------------+</span><br><span class="line">| id           | uname           | ucreatetime           | age           | new           |</span><br><span class="line">+--------------+-----------------+-----------------------+---------------+---------------+</span><br><span class="line">|       137003 | mm              |                       |            10 |             0 |</span><br><span class="line">+--------------+-----------------+-----------------------+---------------+---------------+</span><br><span class="line">共返回 1 行记录,花费 44 ms.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">slave</span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">desc t1;</span></span><br><span class="line">+-------------+-------------+------+-----+---------+----------------+</span><br><span class="line">| Field       | Type        | Null | Key | Default | Extra          |</span><br><span class="line">+-------------+-------------+------+-----+---------+----------------+</span><br><span class="line">| id          | int(11)     | NO   | PRI | NULL    | auto_increment |</span><br><span class="line">| uname       | varchar(20) | YES  |     | NULL    |                |</span><br><span class="line">| ucreatetime | datetime    | YES  |     | NULL    |                |</span><br><span class="line">| age         | int(11)     | YES  |     | NULL    |                |</span><br><span class="line">| new2        | int(11)     | YES  |     | 0       |                |</span><br><span class="line">| new         | int(11)     | YES  |     | 0       |                |</span><br><span class="line">+-------------+-------------+------+-----+---------+----------------+</span><br><span class="line">6 rows in set (0.14 sec)</span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash"><span class="keyword">select</span> * from t1 <span class="built_in">where</span> <span class="built_in">uname</span>=<span class="string">'mm'</span>;</span></span><br><span class="line">+--------+-------+-------------+------+------+------+</span><br><span class="line">| id     | uname | ucreatetime | age  | new2 | new  |</span><br><span class="line">+--------+-------+-------------+------+------+------+</span><br><span class="line">| 137003 | mm    | NULL        |   10 |    0 |    0 |</span><br><span class="line">+--------+-------+-------------+------+------+------+</span><br><span class="line">1 row in set (0.07 sec)</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>此时发现slave中的表结构与RDS中不同，slave中多了new2列。</li>
+</ul>
+<hr>
+<h3 id="测试2——手动" class="article-heading"><a href="#测试2——手动" class="headerlink" title="测试2——手动"></a>测试2——手动<a class="article-anchor" href="#测试2——手动" aria-hidden="true"></a></h3><p><img src="pic/19.png"></p>
+<h4 id="配置RDS主实例" class="article-heading"><a href="#配置RDS主实例" class="headerlink" title="配置RDS主实例"></a>配置RDS主实例<a class="article-anchor" href="#配置RDS主实例" aria-hidden="true"></a></h4><ol>
+<li>配置从实例读取数据使用的只读账号和授权数据库</li>
+<li>将从实例的IP地址加入主实例的IP白名单</li>
+<li>查询主实例的server_id</li>
+</ol>
+<h4 id="配置本地MySQL从实例" class="article-heading"><a href="#配置本地MySQL从实例" class="headerlink" title="配置本地MySQL从实例"></a>配置本地MySQL从实例<a class="article-anchor" href="#配置本地MySQL从实例" aria-hidden="true"></a></h4><ol>
+<li>安装MySQL数据库软件<blockquote>
+<p>本地安装的版本与RDS For MySQL版本一致即可</p>
+</blockquote>
+</li>
+<li>修改从MySQL配置文件<br>&nbsp;&gt; 根据不同的数据库版本以及客户的需求选择合适的参数，例如是否开启gtid模式，是否开启半同步模式等。</li>
+<li>RDS物理备份文件恢复到本地MySQL<blockquote>
+<p>RDS Linux 平台使用 wget 工具下载备份与日志文件<br>参考：<a target="_blank" rel="noopener" href="https://help.aliyun.com/knowledge_detail/41710.html">https://help.aliyun.com/knowledge_detail/41710.html</a><br>恢复云数据库MySQL的备份文件到自建数据库<br>参考：<a target="_blank" rel="noopener" href="https://help.aliyun.com/knowledge_detail/41817.html">https://help.aliyun.com/knowledge_detail/41817.html</a></p>
+</blockquote>
+</li>
+<li>配置主从<blockquote>
+<ol>
+<li>通过xtrabackup_slave_info文件，获取主库在备份结束时刻RDS当前GTID值</li>
+<li>设置@@GLOBAL.GTID_PURGED变量的值为1中获取的gtid值</li>
+<li>配置同步选项宣告主库的相关信息，执行change master to命令</li>
+<li>启动slave执行start slave</li>
+<li>执行show slave status\G查看同步状态</li>
+<li>至此RDS for MySQL + 本地自建数据库的主从复制配置完成</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:49.911Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/cloud/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E6%90%AD%E5%BB%BA%E6%80%9D%E8%B7%AF"><span class="toc-text">同步搭建思路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9F%E5%A4%96%E7%BD%91%E6%88%96%E8%80%85%E5%86%85%E7%BD%91"><span class="toc-text">网络的问题？外网或者内网</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E4%B8%BB%E4%BB%8E%EF%BC%9F%E6%89%8B%E5%8A%A8%E6%88%96%E8%80%85DTS"><span class="toc-text">搭建主从？手动或者DTS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E6%90%AD%E5%BB%BA%E6%B5%8B%E8%AF%95"><span class="toc-text">同步搭建测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%951%E2%80%94%E2%80%94DTS%E8%BF%81%E7%A7%BB%E6%9C%8D%E5%8A%A1"><span class="toc-text">测试1——DTS迁移服务</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="toc-text">测试结果</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E8%BF%87%E7%A8%8B"><span class="toc-text">测试过程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%952%E2%80%94%E2%80%94%E6%89%8B%E5%8A%A8"><span class="toc-text">测试2——手动</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AERDS%E4%B8%BB%E5%AE%9E%E4%BE%8B"><span class="toc-text">配置RDS主实例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%9C%AC%E5%9C%B0MySQL%E4%BB%8E%E5%AE%9E%E4%BE%8B"><span class="toc-text">配置本地MySQL从实例</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">开始使用</strong><a href="/cloud/index.html" class="sidebar-link">概览</a><a href="/cloud/aliyun/index.html" class="sidebar-link">阿里云</a><a href="/cloud/tencent/index.html" class="sidebar-link">腾讯云</a><a href="/cloud/aws/index.html" class="sidebar-link">亚马逊云</a><a href="/cloud/azure/index.html" class="sidebar-link">微软云</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">开始使用</strong><a href="/cloud/index.html" class="mobile-nav-link">概览</a><a href="/cloud/aliyun/index.html" class="mobile-nav-link">阿里云</a><a href="/cloud/tencent/index.html" class="mobile-nav-link">腾讯云</a><a href="/cloud/aws/index.html" class="mobile-nav-link">亚马逊云</a><a href="/cloud/azure/index.html" class="mobile-nav-link">微软云</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

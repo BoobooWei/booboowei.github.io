@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库SQL优化_索引缺失 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/news/2018/05/29/tec-oracle/">
+  <!-- Alternate links -->
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="摘要：Oracle数据库做了迁移，从原来的DG迁移到新库RAC，小版本不同；老库中相同的SQL执行只需要11秒，而新库需要360秒甚至800多秒，如何进行复杂查询的SQL优化，本文提供通用的一个思路。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Oracle数据库SQL优化_索引缺失">
+<meta property="og:url" content="http://www.toberoot.com/news/2018/05/29/tec-oracle/">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="摘要：Oracle数据库做了迁移，从原来的DG迁移到新库RAC，小版本不同；老库中相同的SQL执行只需要11秒，而新库需要360秒甚至800多秒，如何进行复杂查询的SQL优化，本文提供通用的一个思路。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2018-05-28T18:09:32.000Z">
+<meta property="article:modified_time" content="2025-10-20T17:00:01.362Z">
+<meta property="article:author" content="魏亚萍">
+<meta property="article:tag" content="SQL优化">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <div class="article-content" itemprop="articleBody">
+                <article class="article post" itemscope itemtype="http://schema.org/Article">
+  <header class="article-header">
+    
+      <h1 class="article-title" itemprop="name">Oracle数据库SQL优化_索引缺失</h1>
+    
+    <a href="" class="article-date"><time datetime="2018-05-28T18:09:32.000Z">2018-05-28</time></a>
+  </header>
+  <div class="article-content" itemprop="articleBody">
+    <html><head></head><body><p>摘要：Oracle数据库做了迁移，从原来的DG迁移到新库RAC，小版本不同；老库中相同的SQL执行只需要11秒，而新库需要360秒甚至800多秒，如何进行复杂查询的SQL优化，本文提供通用的一个思路。</p>
+<span id="more"></span>
+
+<h2 id="问题描述" class="article-heading"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述<a class="article-anchor" href="#问题描述" aria-hidden="true"></a></h2><p>oracle数据库做了迁移，从原来的DG迁移到新库RAC，小版本不同；</p>
+<p>老库中相同的SQL执行只需要11秒，而新库需要360秒甚至800多秒。</p>
+<table>
+<thead>
+<tr>
+<th>库</th>
+<th>原查询时间</th>
+<th>优化后的查询时间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>老库</td>
+<td>11秒</td>
+<td>1.4秒 缓存后 0.4秒</td>
+</tr>
+<tr>
+<td>新库RAC</td>
+<td>360秒</td>
+<td>1.4秒 缓存后0.4秒排查思路</td>
+</tr>
+</tbody></table>
+<h2 id="待优化SQL" class="article-heading"><a href="#待优化SQL" class="headerlink" title="待优化SQL"></a>待优化SQL<a class="article-anchor" href="#待优化SQL" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	prj.PROVINCE_AD_NAME,</span><br><span class="line">	prj.CITY_AD_NAME,</span><br><span class="line">	prj.AD_NAME,</span><br><span class="line">	prj.CHANNEL_SYS_CAT,</span><br><span class="line">	prj.EXCUTE_EL,</span><br><span class="line">	prj.PRJ_CODE AS PRJ_CODE,</span><br><span class="line">	prj.PRJ_NAME AS PRJ_NAME,</span><br><span class="line">	prj.POS_CODE AS POS_CODE,</span><br><span class="line">	prj.POS_NAME AS POS_NAME,</span><br><span class="line">	prj.CUST_CHANNEL_CODE,</span><br><span class="line">	prj.CUST_CHANNEL_NAME,</span><br><span class="line">	prj.EMP_CODE AS EMP_CODE,</span><br><span class="line">	prj.NAME AS EMP_NAME,</span><br><span class="line">	prj.ATT_DATE AS APPLY_DATE,</span><br><span class="line">	prj.EMP_PK AS EMP_PK,</span><br><span class="line">	prj.ATT_START_TIME AS START_TIME,</span><br><span class="line">	prj.ATT_END_TIME AS END_TIME,</span><br><span class="line">	prj.ATT_ISWORK AS ISWORK,</span><br><span class="line">	prj.ATT_UNWORK AS ATTTYPE,</span><br><span class="line">	prj.START_XPOS AS ON_WORK_POSITION_LON,</span><br><span class="line">	prj.START_YPOS AS ON_WORK_POSITION_LAT,</span><br><span class="line">	prj.START_ISEXCEP AS ON_WORK_POSITION_STAUS,</span><br><span class="line">	prj.END_XPOS AS OFF_WORK_POSITION_LAT,</span><br><span class="line">	prj.END_YPOS AS OFF_WORK_POSITION_LON,</span><br><span class="line">	prj.END_ISEXCEP AS OFF_WORK_POSITION_STAUS,</span><br><span class="line">	ifcl1Staus.COMPARE_TYPE AS FACE_ATT_TYPE,</span><br><span class="line">	ifcl1.STATUS AS FACE_ATT_STATUS,</span><br><span class="line">	NVL( ifaceCount.faceCount, 0 ) AS FACE_ATT_COUNT,</span><br><span class="line">	NVL( levLeave.LEAVECount, 0 ) AS LEAVE_WORK_COUNT,</span><br><span class="line">	NVL( levRtn.RETURNCount, 0 ) AS RETURN_WORK_COUNT,</span><br><span class="line">	wq.STATUS AS PRJ_QUESTION_TYPE,</span><br><span class="line">	iface2.FACE_ATT_IMG AS FACE_ATT_IMG,</span><br><span class="line">	prj.SA_TYPE</span><br><span class="line">FROM</span><br><span class="line">	(</span><br><span class="line">		SELECT</span><br><span class="line">			dpsi.ID AS ID,</span><br><span class="line">			P.ID AS PRJ_ID,</span><br><span class="line">			mad.AD_CODE,</span><br><span class="line">			mad.PROVINCE_AD_NAME,</span><br><span class="line">			mad.CITY_AD_NAME,</span><br><span class="line">			mad.AD_NAME,</span><br><span class="line">			mpk.POS_KIND_CODE,</span><br><span class="line">			mpk.POS_KIND_NAME,</span><br><span class="line">			P.CODE AS PRJ_CODE,</span><br><span class="line">			P.NAME AS PRJ_NAME,</span><br><span class="line">			P.START_DATE,</span><br><span class="line">			p.END_DATE,</span><br><span class="line">			dpsi.CUST_CHANNEL,</span><br><span class="line">			dpsi.CUST_SYS,</span><br><span class="line">			dpsi.CUST_CHANNEL_CODE,</span><br><span class="line">			dpsi.CUST_CHANNEL_NAME,</span><br><span class="line">			dcs.CHANNEL_SYS_CAT,</span><br><span class="line">			dcs.CHANNEL_CAT_CODE,</span><br><span class="line">			dcs.CHANNEL_AD_CODE,</span><br><span class="line">			dcs.CHANNEL_PROVINCE_AD_CODE,</span><br><span class="line">			dcs.CHANNEL_CITY_AD_CODE,</span><br><span class="line">			dcs.ID AS POS_ID,</span><br><span class="line">			dcs.CHANNEL_CODE AS POS_CODE,</span><br><span class="line">			dcs.CHANNEL_NAME AS POS_NAME,</span><br><span class="line">			dcs.LONGITUDE AS LONGITUDE,</span><br><span class="line">			dcs.LATITUDE AS LATITUDE,</span><br><span class="line">			dss.id AS SALES_ID,</span><br><span class="line">			TO_CHAR( cal.sc_schedule_date, 'yyyy-mm-dd' ) AS sc_schedule_date,</span><br><span class="line">			wor.SW_BEGIN_TIME AS SALES_WORK_START,</span><br><span class="line">			wor.SW_END_TIME AS SALES_WORK_END,</span><br><span class="line">			dss.SALES_EAT_START,</span><br><span class="line">			dss.SALES_EAT_END,</span><br><span class="line">			memp.EMP_PK,</span><br><span class="line">			memp.EMP_CODE,</span><br><span class="line">			dss.SALES_NAME AS NAME,</span><br><span class="line">			dss.SALES_PHONE AS TEL,</span><br><span class="line">			dss.SALES_CARD_ID AS ID_CARD,</span><br><span class="line">			spp.PRJ_ATT_CHECK_TYPE,</span><br><span class="line">			spp.ALLOW_LEAVE_TIME,</span><br><span class="line">			e1.EMP_CODE AS EXCUTE_CODE,</span><br><span class="line">			e1.emp_name AS EXCUTE_EL,</span><br><span class="line">			e2.EMP_CODE AS CITY_CODE,</span><br><span class="line">			e2.emp_name AS CITY_EL,</span><br><span class="line">			e3.EMP_CODE AS AREA_CODE,</span><br><span class="line">			e3.EMP_NAME AS AREA_NAME,</span><br><span class="line">			dpsi.SCHEDULE_TYPE,</span><br><span class="line">			sac.ATT_START_TIME,</span><br><span class="line">			sac.ATT_END_TIME,</span><br><span class="line">			sac.ATT_ISWORK,</span><br><span class="line">			sac.ATT_UNWORK,</span><br><span class="line">			sac.START_XPOS,</span><br><span class="line">			sac.START_YPOS,</span><br><span class="line">			DECODE( sac.START_ISEXCEP, 0, 2201, 1, 2202, 2, 2203, 3, 2204, 4, 2205, 2206 ) AS START_ISEXCEP,</span><br><span class="line">			sac.END_XPOS,</span><br><span class="line">			sac.END_YPOS,</span><br><span class="line">			sac.END_ISEXCEP,</span><br><span class="line">			sac.ATT_SCH_PK,</span><br><span class="line">			sac.ATT_DATE,</span><br><span class="line">			CASE</span><br><span class="line">				WHEN sac.ATT_START_TIME IS NOT NULL</span><br><span class="line">				AND sac.ATT_END_TIME IS NOT NULL THEN '1'</span><br><span class="line">				WHEN sac.ATT_START_TIME IS NOT NULL</span><br><span class="line">				OR sac.ATT_END_TIME IS NOT NULL THEN '2'</span><br><span class="line">				ELSE '2'</span><br><span class="line">			END AS SA_TYPE</span><br><span class="line">		FROM</span><br><span class="line">			DM_PROJECT_SELLIN_INFO dpsi</span><br><span class="line">		LEFT JOIN MD_EMP e1 ON</span><br><span class="line">			dpsi.EMP_CODE = e1.EMP_CODE</span><br><span class="line">		LEFT JOIN MD_EMP e2 ON</span><br><span class="line">			dpsi.CITY_EMP_CODE = e2.EMP_CODE</span><br><span class="line">		LEFT JOIN MD_EMP e3 ON</span><br><span class="line">			dpsi.AREA_MANAGER_CODE = e3.EMP_CODE,</span><br><span class="line">			DM_PROJECT P,</span><br><span class="line">			DM_PROJECT_SELLIN_SALES dss,</span><br><span class="line">			DM_CHANNEL_SYNC dcs,</span><br><span class="line">			MD_EMP memp,</span><br><span class="line">			SP_PRJ_PARM spp,</span><br><span class="line">			Md_Admin_Div mad,</span><br><span class="line">			MD_POS_KIND mpk,</span><br><span class="line">			dm_sales_schedule_calendar cal,</span><br><span class="line">			dm_sales_schedule_work wor,</span><br><span class="line">			SP_ATT_SCH sac</span><br><span class="line">		WHERE</span><br><span class="line">			dpsi.PROJECT_ID = P.ID</span><br><span class="line">			AND dss.id = cal.sales_id</span><br><span class="line">			AND cal.schedule_work_id = wor.id</span><br><span class="line">			AND dcs.CHANNEL_CAT_CODE = mpk.POS_KIND_CODE</span><br><span class="line">			AND dss.PROJECT_SELLIN_INFO_ID = dpsi.ID</span><br><span class="line">			AND dss.DELETE_FLAG = '0'</span><br><span class="line">			AND dpsi.CHANNEL_SYNC_ID = dcs.ID</span><br><span class="line">			AND LOWER( memp.EMP_S_CODE )= LOWER( dss.SALES_CARD_ID )</span><br><span class="line">			AND P.IS_DELETE IS NULL</span><br><span class="line">			AND memp.IS_DEL = '0'</span><br><span class="line">			AND spp.PRJ_CODE = P.CODE</span><br><span class="line">			AND mad.AD_ID = dcs.CHANNEL_ADMIN_DIV_ID</span><br><span class="line">			AND mad.IS_DEL = '0'</span><br><span class="line">			AND memp.EMP_TYPE = '1001'</span><br><span class="line">			AND TO_CHAR( cal.sc_schedule_date, 'yyyy-mm-dd' )&gt;='2018-04-01'</span><br><span class="line">			AND TO_CHAR( cal.sc_schedule_date, 'yyyy-mm-dd' )&lt;='2018-04-30'</span><br><span class="line">			AND sac.PRJ_CODE = p.CODE</span><br><span class="line">			AND sac.POS_CODE = dcs.CHANNEL_CODE</span><br><span class="line">			AND sac.EMP_PK = memp.EMP_PK</span><br><span class="line">			AND sac.ATT_DATE = TO_CHAR( cal.sc_schedule_date, 'yyyy-mm-dd' )</span><br><span class="line">			AND TO_CHAR( sac.CRT_DATE, 'yyyy-mm-dd' )&gt;='2018-04-01'</span><br><span class="line">			AND TO_CHAR( sac.CRT_DATE, 'yyyy-mm-dd' )&lt;='2018-04-30'</span><br><span class="line">	) prj,</span><br><span class="line">	(</span><br><span class="line">		SELECT</span><br><span class="line">			ifcl.EMP_PK,</span><br><span class="line">			ifcl.COMPARE_DATE,</span><br><span class="line">			ifcl.STATUS</span><br><span class="line">		FROM</span><br><span class="line">			IPG_FACE_COMPARE_LOG ifcl</span><br><span class="line">		WHERE</span><br><span class="line">			ifcl.HANDLE_TYPE = 0</span><br><span class="line">			AND ifcl.DELETE_FLAG = '0'</span><br><span class="line">			AND ifcl.COMPARE_TYPE IN(</span><br><span class="line">				'1',</span><br><span class="line">				'3',</span><br><span class="line">				'5'</span><br><span class="line">			)</span><br><span class="line">			AND ifcl.COMPARE_DATE &gt;= TO_CHAR( TO_DATE('2018-04-01', 'yyyy-mm-dd' ), 'yyyymmdd' )</span><br><span class="line">			AND ifcl.COMPARE_DATE &lt;= TO_CHAR( TO_DATE('2018-04-30', 'yyyy-mm-dd' ), 'yyyymmdd' )</span><br><span class="line">		GROUP BY</span><br><span class="line">			ifcl.EMP_PK,</span><br><span class="line">			ifcl.COMPARE_DATE,</span><br><span class="line">			ifcl.STATUS</span><br><span class="line">		HAVING</span><br><span class="line">			AVG( STATUS )&lt; 1</span><br><span class="line">	) ifcl1,</span><br><span class="line">	(</span><br><span class="line">		SELECT</span><br><span class="line">			*</span><br><span class="line">		FROM</span><br><span class="line">			(</span><br><span class="line">				SELECT</span><br><span class="line">					EMP_PK,</span><br><span class="line">					COMPARE_DATE,</span><br><span class="line">					COMPARE_TYPE,</span><br><span class="line">					ROW_NUMBER() OVER(</span><br><span class="line">						PARTITION BY EMP_PK,</span><br><span class="line">						COMPARE_DATE</span><br><span class="line">					ORDER BY</span><br><span class="line">						CREATED DESC</span><br><span class="line">					) rn</span><br><span class="line">				FROM</span><br><span class="line">					IPG_FACE_COMPARE_LOG</span><br><span class="line">				WHERE</span><br><span class="line">					COMPARE_DATE &gt;= TO_CHAR( TO_DATE('2018-04-01', 'yyyy-mm-dd' ), 'yyyymmdd' )</span><br><span class="line">					AND COMPARE_DATE &lt;= TO_CHAR( TO_DATE('2018-04-30', 'yyyy-mm-dd' ), 'yyyymmdd' )</span><br><span class="line">					AND COMPARE_TYPE IN(</span><br><span class="line">						'1',</span><br><span class="line">						'3',</span><br><span class="line">						'5'</span><br><span class="line">					)</span><br><span class="line">			) t</span><br><span class="line">		WHERE</span><br><span class="line">			t.rn &lt;= 1</span><br><span class="line">	) ifcl1Staus,</span><br><span class="line">	(</span><br><span class="line">		SELECT</span><br><span class="line">			SP_LEV_RPT.ATT_SCH_PK,</span><br><span class="line">			COUNT(*) AS LEAVECount</span><br><span class="line">		FROM</span><br><span class="line">			SP_LEV_RPT</span><br><span class="line">		WHERE</span><br><span class="line">			SP_LEV_RPT.START_TIME IS NOT NULL</span><br><span class="line">		GROUP BY</span><br><span class="line">			SP_LEV_RPT.ATT_SCH_PK</span><br><span class="line">	) levLeave,</span><br><span class="line">	(</span><br><span class="line">		SELECT</span><br><span class="line">			SP_LEV_RPT.ATT_SCH_PK,</span><br><span class="line">			COUNT(*) AS RETURNCount</span><br><span class="line">		FROM</span><br><span class="line">			SP_LEV_RPT</span><br><span class="line">		WHERE</span><br><span class="line">			SP_LEV_RPT.END_TIME IS NOT NULL</span><br><span class="line">		GROUP BY</span><br><span class="line">			SP_LEV_RPT.ATT_SCH_PK</span><br><span class="line">	) levRtn,</span><br><span class="line">	(</span><br><span class="line">		SELECT</span><br><span class="line">			WX_QUESTION.PRJ_ID,</span><br><span class="line">			DM_PROJECT.CODE,</span><br><span class="line">			'Y' AS STATUS</span><br><span class="line">		FROM</span><br><span class="line">			WX_QUESTION,</span><br><span class="line">			DM_PROJECT</span><br><span class="line">		WHERE</span><br><span class="line">			DM_PROJECT.ID = WX_QUESTION.PRJ_ID</span><br><span class="line">			AND WX_QUESTION.IS_DEL = '0'</span><br><span class="line">			AND WX_QUESTION.STATUS = '0'</span><br><span class="line">		GROUP BY</span><br><span class="line">			WX_QUESTION.PRJ_ID,</span><br><span class="line">			DM_PROJECT.CODE</span><br><span class="line">	) wq,</span><br><span class="line">	(</span><br><span class="line">		SELECT</span><br><span class="line">			ifcl.EMP_PK,</span><br><span class="line">			ifcl.COMPARE_DATE,</span><br><span class="line">			COUNT(*) AS faceCount</span><br><span class="line">		FROM</span><br><span class="line">			IPG_FACE_COMPARE_LOG ifcl</span><br><span class="line">		WHERE</span><br><span class="line">			ifcl.HANDLE_TYPE = 0</span><br><span class="line">			AND ifcl.COMPARE_TYPE IN(</span><br><span class="line">				'1',</span><br><span class="line">				'3',</span><br><span class="line">				'5'</span><br><span class="line">			)</span><br><span class="line">			AND ifcl.COMPARE_DATE &gt;= TO_CHAR( TO_DATE('2018-04-01', 'yyyy-mm-dd' ), 'yyyymmdd' )</span><br><span class="line">			AND ifcl.COMPARE_DATE &lt;= TO_CHAR( TO_DATE('2018-04-30', 'yyyy-mm-dd' ), 'yyyymmdd' )</span><br><span class="line">		GROUP BY</span><br><span class="line">			ifcl.EMP_PK,</span><br><span class="line">			ifcl.COMPARE_DATE</span><br><span class="line">	) ifaceCount,</span><br><span class="line">	(</span><br><span class="line">		SELECT</span><br><span class="line">			iface.EMP_PK,</span><br><span class="line">			iface.COMPARE_DATE,</span><br><span class="line">			wm_concat(</span><br><span class="line">				(</span><br><span class="line">					SELECT</span><br><span class="line">						NVL( TRIM( T.PAR_VALUE ), TRIM( T.OLD_PAR_VALUE ))</span><br><span class="line">					FROM</span><br><span class="line">						(</span><br><span class="line">							SELECT</span><br><span class="line">								(</span><br><span class="line">									SELECT</span><br><span class="line">										PAR_VALUE</span><br><span class="line">									FROM</span><br><span class="line">										MD_SYS_PARM</span><br><span class="line">									WHERE</span><br><span class="line">										PAR_CODE = 'OLD_PIC_PATH'</span><br><span class="line">								) AS OLD_PAR_VALUE,</span><br><span class="line">								PAR_VALUE</span><br><span class="line">							FROM</span><br><span class="line">								MD_SYS_PARM</span><br><span class="line">							WHERE</span><br><span class="line">								PAR_CODE = 'ATT_COS_PATH'</span><br><span class="line">						) T</span><br><span class="line">				)|| REPLACE( SUBSTR( iface.COMPARE_MSG, INSTR( iface.COMPARE_MSG, 'compare', 1, 1 )), ']', '' )</span><br><span class="line">			) AS FACE_ATT_IMG</span><br><span class="line">		FROM</span><br><span class="line">			(</span><br><span class="line">				SELECT</span><br><span class="line">					ifa.EMP_PK,</span><br><span class="line">					ifa.COMPARE_DATE,</span><br><span class="line">					ifa.COMPARE_MSG,</span><br><span class="line">					RANK() OVER(</span><br><span class="line">						PARTITION BY ifa.EMP_PK,</span><br><span class="line">						ifa.COMPARE_DATE</span><br><span class="line">					ORDER BY</span><br><span class="line">						ifa.created DESC</span><br><span class="line">					) rankno</span><br><span class="line">				FROM</span><br><span class="line">					IPG_FACE_COMPARE_LOG ifa</span><br><span class="line">				WHERE</span><br><span class="line">					ifa.HANDLE_TYPE = 0</span><br><span class="line">					AND ifa.COMPARE_TYPE IN(</span><br><span class="line">						'1',</span><br><span class="line">						'3',</span><br><span class="line">						'5'</span><br><span class="line">					)</span><br><span class="line">					AND INSTR( ifa.COMPARE_MSG, 'compare' )&gt; 0</span><br><span class="line">					AND ifa.COMPARE_DATE &gt;= TO_CHAR( TO_DATE('2018-04-01', 'yyyy-mm-dd' ), 'yyyymmdd' )</span><br><span class="line">					AND ifa.COMPARE_DATE &lt;= TO_CHAR( TO_DATE('2018-04-30', 'yyyy-mm-dd' ), 'yyyymmdd' )</span><br><span class="line">			) iface</span><br><span class="line">		WHERE</span><br><span class="line">			iface.rankno &lt;= 3</span><br><span class="line">		GROUP BY</span><br><span class="line">			iface.EMP_PK,</span><br><span class="line">			iface.COMPARE_DATE</span><br><span class="line">	) iface2</span><br><span class="line">WHERE</span><br><span class="line">	prj.PRJ_NAME ='(2013)行政项目'</span><br><span class="line">	AND prj.ATT_DATE &gt;='2018-04-01'</span><br><span class="line">	AND prj.ATT_DATE &lt;='2018-04-30'</span><br><span class="line">	AND prj.EMP_PK = ifcl1.EMP_PK(+)</span><br><span class="line">	AND TO_CHAR( TO_DATE( prj.ATT_DATE, 'yyyy-mm-dd' ), 'yyyymmdd' )= ifcl1.COMPARE_DATE(+)</span><br><span class="line">	AND prj.EMP_PK = ifcl1Staus.EMP_PK(+)</span><br><span class="line">	AND TO_CHAR( TO_DATE( prj.ATT_DATE, 'yyyy-mm-dd' ), 'yyyymmdd' )= ifcl1Staus.COMPARE_DATE(+)</span><br><span class="line">	AND prj.ATT_SCH_PK = levLeave.ATT_SCH_PK(+)</span><br><span class="line">	AND prj.ATT_SCH_PK = levRtn.ATT_SCH_PK(+)</span><br><span class="line">	AND prj.PRJ_CODE = wq.CODE(+)</span><br><span class="line">	AND prj.EMP_PK = ifaceCount.EMP_PK(+)</span><br><span class="line">	AND TO_CHAR( TO_DATE( prj.ATT_DATE, 'yyyy-mm-dd' ), 'yyyymmdd' )= ifaceCount.COMPARE_DATE(+)</span><br><span class="line">	AND prj.EMP_PK = iface2.EMP_PK(+)</span><br><span class="line">	AND TO_CHAR( TO_DATE( prj.sc_schedule_date, 'yyyy-mm-dd' ), 'yyyymmdd' )= iface2.COMPARE_DATE(+)</span><br><span class="line">ORDER BY</span><br><span class="line">	APPLY_DATE DESC,</span><br><span class="line">	ATTTYPE DESC</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="SQL优化思路" class="article-heading"><a href="#SQL优化思路" class="headerlink" title="SQL优化思路"></a>SQL优化思路<a class="article-anchor" href="#SQL优化思路" aria-hidden="true"></a></h2><p>SQL语句较复杂，8个子查询的left outer join，每个子查询中又有连接。思路如下：</p>
+<ol>
+<li>从外往内拆分子查询</li>
+<li>老旧对比子查询执行计划和执行效率</li>
+<li>子查询连接从1到2到3一直到8个联查对比，寻找瓶颈</li>
+</ol>
+<h3 id="拆分子查询" class="article-heading"><a href="#拆分子查询" class="headerlink" title="拆分子查询"></a>拆分子查询<a class="article-anchor" href="#拆分子查询" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th>子查询</th>
+<th>老库 （秒）</th>
+<th>新库（秒）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>prj</td>
+<td>1.182</td>
+<td>0.318</td>
+</tr>
+<tr>
+<td>ifcl1</td>
+<td>14.229</td>
+<td>13.168</td>
+</tr>
+<tr>
+<td>ifclStatus</td>
+<td>15.739</td>
+<td>16.769</td>
+</tr>
+<tr>
+<td>levLeave</td>
+<td>10.147</td>
+<td>9.813</td>
+</tr>
+<tr>
+<td>levRtn</td>
+<td>9.148</td>
+<td>8.3</td>
+</tr>
+<tr>
+<td>wq</td>
+<td>0.141</td>
+<td>0.165</td>
+</tr>
+<tr>
+<td>ifcl1Count</td>
+<td>3.498</td>
+<td>1.966</td>
+</tr>
+<tr>
+<td>iface2</td>
+<td>49.255</td>
+<td>50.897</td>
+</tr>
+</tbody></table>
+<h3 id="寻找瓶颈" class="article-heading"><a href="#寻找瓶颈" class="headerlink" title="寻找瓶颈"></a>寻找瓶颈<a class="article-anchor" href="#寻找瓶颈" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th>连接</th>
+<th>老库（秒）</th>
+<th>新库（秒）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>prj+ifcl1</td>
+<td>1.522</td>
+<td>1.129</td>
+</tr>
+<tr>
+<td>+ifclStatus</td>
+<td>2.343</td>
+<td>1.957</td>
+</tr>
+<tr>
+<td>+levLeave</td>
+<td>2.525</td>
+<td>1.955</td>
+</tr>
+<tr>
+<td>+levRtn</td>
+<td>2.658</td>
+<td>1.653</td>
+</tr>
+<tr>
+<td>+wq</td>
+<td>2.561</td>
+<td>1.999</td>
+</tr>
+<tr>
+<td>+ifcl1Count</td>
+<td>3.498</td>
+<td>1.966</td>
+</tr>
+<tr>
+<td>+iface2</td>
+<td>11.124</td>
+<td>383</td>
+</tr>
+</tbody></table>
+<p>发现瓶颈出现在<code>iface2</code></p>
+<h2 id="优化iface2" class="article-heading"><a href="#优化iface2" class="headerlink" title="优化iface2"></a>优化iface2<a class="article-anchor" href="#优化iface2" aria-hidden="true"></a></h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">			iface.EMP_PK,</span><br><span class="line">			iface.COMPARE_DATE,</span><br><span class="line">			wm_concat(</span><br><span class="line">				(</span><br><span class="line">					SELECT</span><br><span class="line">						NVL( TRIM( T.PAR_VALUE ), TRIM( T.OLD_PAR_VALUE ))</span><br><span class="line">					FROM</span><br><span class="line">						(</span><br><span class="line">							SELECT</span><br><span class="line">								(</span><br><span class="line">									SELECT</span><br><span class="line">										PAR_VALUE</span><br><span class="line">									FROM</span><br><span class="line">										MD_SYS_PARM</span><br><span class="line">									WHERE</span><br><span class="line">										PAR_CODE = 'OLD_PIC_PATH'</span><br><span class="line">								) AS OLD_PAR_VALUE,</span><br><span class="line">								PAR_VALUE</span><br><span class="line">							FROM</span><br><span class="line">								MD_SYS_PARM</span><br><span class="line">							WHERE</span><br><span class="line">								PAR_CODE = 'ATT_COS_PATH'</span><br><span class="line">						) T</span><br><span class="line">				)|| REPLACE( SUBSTR( iface.COMPARE_MSG, INSTR( iface.COMPARE_MSG, 'compare', 1, 1 )), ']', '' )</span><br><span class="line">			) AS FACE_ATT_IMG</span><br><span class="line">		FROM</span><br><span class="line">			(</span><br><span class="line">				SELECT</span><br><span class="line">					ifa.EMP_PK,</span><br><span class="line">					ifa.COMPARE_DATE,</span><br><span class="line">					ifa.COMPARE_MSG,</span><br><span class="line">					RANK() OVER(</span><br><span class="line">						PARTITION BY ifa.EMP_PK,</span><br><span class="line">						ifa.COMPARE_DATE</span><br><span class="line">					ORDER BY</span><br><span class="line">						ifa.created DESC</span><br><span class="line">					) rankno</span><br><span class="line">				FROM</span><br><span class="line">					IPG_FACE_COMPARE_LOG ifa</span><br><span class="line">				WHERE</span><br><span class="line">					ifa.HANDLE_TYPE = 0</span><br><span class="line">					AND ifa.COMPARE_TYPE IN(</span><br><span class="line">						'1',</span><br><span class="line">						'3',</span><br><span class="line">						'5'</span><br><span class="line">					)</span><br><span class="line">					AND INSTR( ifa.COMPARE_MSG, 'compare' )&gt; 0</span><br><span class="line">					AND ifa.COMPARE_DATE &gt;= TO_CHAR( TO_DATE('2018-04-01', 'yyyy-mm-dd' ), 'yyyymmdd' )</span><br><span class="line">					AND ifa.COMPARE_DATE &lt;= TO_CHAR( TO_DATE('2018-04-30', 'yyyy-mm-dd' ), 'yyyymmdd' )</span><br><span class="line">			) iface</span><br><span class="line">		WHERE</span><br><span class="line">			iface.rankno &lt;= 3</span><br><span class="line">		GROUP BY</span><br><span class="line">			iface.EMP_PK,</span><br><span class="line">			iface.COMPARE_DATE</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>IPG_FACE_COMPARE_LOG</code>表中<code>COMPARE_DATE列</code>需要新增索引。</p>
+<h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><ol>
+<li>oracle小版本不同引起优化器无法获取相同的执行计划</li>
+<li>索引缺失是本次的慢查询的主要原因</li>
+</ol>
+</body></html>
+  </div>
+  
+</article>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-20T17:00:01.362Z" itemprop="dateModified">Last updated: 2025-10-20</time>
+                
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+             <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%85%E4%BC%98%E5%8C%96SQL"><span class="toc-text">待优化SQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF"><span class="toc-text">SQL优化思路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%86%E5%88%86%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-text">拆分子查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BB%E6%89%BE%E7%93%B6%E9%A2%88"><span class="toc-text">寻找瓶颈</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%8C%96iface2"><span class="toc-text">优化iface2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

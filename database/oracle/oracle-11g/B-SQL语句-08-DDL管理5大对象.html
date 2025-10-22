@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>SQL语句-DDL管理5大对象 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-08-DDL%E7%AE%A1%E7%90%865%E5%A4%A7%E5%AF%B9%E8%B1%A1">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-08-DDL%E7%AE%A1%E7%90%865%E5%A4%A7%E5%AF%B9%E8%B1%A1" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="SQL语句-DDL管理5大对象 管理的对象 对象命名规则   管理表 表的分类 数据类型 表操作 创建表 查看表的结构 子查询建表拷贝行 子查询建表拷贝表结构 创建事务级临时表 创建会话级临时表 增加列 修改列 重命名列 删除列 在业务高峰期删除列分为两步 对列添加注释 对表添加注释 重命名表 截断表 将表放入回收站 将回收站对象还原 彻底删除表 清空回收站     管理约束 建表时直接启用">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SQL语句-DDL管理5大对象">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-08-DDL%E7%AE%A1%E7%90%865%E5%A4%A7%E5%AF%B9%E8%B1%A1">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="SQL语句-DDL管理5大对象 管理的对象 对象命名规则   管理表 表的分类 数据类型 表操作 创建表 查看表的结构 子查询建表拷贝行 子查询建表拷贝表结构 创建事务级临时表 创建会话级临时表 增加列 修改列 重命名列 删除列 在业务高峰期删除列分为两步 对列添加注释 对表添加注释 重命名表 截断表 将表放入回收站 将回收站对象还原 彻底删除表 清空回收站     管理约束 建表时直接启用">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.768Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:44.024Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">SQL语句-DDL管理5大对象</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/B-SQL语句-08-DDL管理5大对象.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --><html><head></head><body><ul>
+<li><a href="#sql%E8%AF%AD%E5%8F%A5-ddl%E7%AE%A1%E7%90%865%E5%A4%A7%E5%AF%B9%E8%B1%A1">SQL语句-DDL管理5大对象</a><ul>
+<li><a href="#%E7%AE%A1%E7%90%86%E7%9A%84%E5%AF%B9%E8%B1%A1">管理的对象</a><ul>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99">对象命名规则</a></li>
+</ul>
+</li>
+<li><a href="#%E7%AE%A1%E7%90%86%E8%A1%A8">管理表</a><ul>
+<li><a href="#%E8%A1%A8%E7%9A%84%E5%88%86%E7%B1%BB">表的分类</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">数据类型</a></li>
+<li><a href="#%E8%A1%A8%E6%93%8D%E4%BD%9C">表操作</a><ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%A1%A8">创建表</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E8%A1%A8%E7%9A%84%E7%BB%93%E6%9E%84">查看表的结构</a></li>
+<li><a href="#%E5%AD%90%E6%9F%A5%E8%AF%A2%E5%BB%BA%E8%A1%A8%E6%8B%B7%E8%B4%9D%E8%A1%8C">子查询建表拷贝行</a></li>
+<li><a href="#%E5%AD%90%E6%9F%A5%E8%AF%A2%E5%BB%BA%E8%A1%A8%E6%8B%B7%E8%B4%9D%E8%A1%A8%E7%BB%93%E6%9E%84">子查询建表拷贝表结构</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%BA%8B%E5%8A%A1%E7%BA%A7%E4%B8%B4%E6%97%B6%E8%A1%A8">创建事务级临时表</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%BC%9A%E8%AF%9D%E7%BA%A7%E4%B8%B4%E6%97%B6%E8%A1%A8">创建会话级临时表</a></li>
+<li><a href="#%E5%A2%9E%E5%8A%A0%E5%88%97">增加列</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9%E5%88%97">修改列</a></li>
+<li><a href="#%E9%87%8D%E5%91%BD%E5%90%8D%E5%88%97">重命名列</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E5%88%97">删除列</a></li>
+<li><a href="#%E5%9C%A8%E4%B8%9A%E5%8A%A1%E9%AB%98%E5%B3%B0%E6%9C%9F%E5%88%A0%E9%99%A4%E5%88%97%E5%88%86%E4%B8%BA%E4%B8%A4%E6%AD%A5">在业务高峰期删除列分为两步</a></li>
+<li><a href="#%E5%AF%B9%E5%88%97%E6%B7%BB%E5%8A%A0%E6%B3%A8%E9%87%8A">对列添加注释</a></li>
+<li><a href="#%E5%AF%B9%E8%A1%A8%E6%B7%BB%E5%8A%A0%E6%B3%A8%E9%87%8A">对表添加注释</a></li>
+<li><a href="#%E9%87%8D%E5%91%BD%E5%90%8D%E8%A1%A8">重命名表</a></li>
+<li><a href="#%E6%88%AA%E6%96%AD%E8%A1%A8">截断表</a></li>
+<li><a href="#%E5%B0%86%E8%A1%A8%E6%94%BE%E5%85%A5%E5%9B%9E%E6%94%B6%E7%AB%99">将表放入回收站</a></li>
+<li><a href="#%E5%B0%86%E5%9B%9E%E6%94%B6%E7%AB%99%E5%AF%B9%E8%B1%A1%E8%BF%98%E5%8E%9F">将回收站对象还原</a></li>
+<li><a href="#%E5%BD%BB%E5%BA%95%E5%88%A0%E9%99%A4%E8%A1%A8">彻底删除表</a></li>
+<li><a href="#%E6%B8%85%E7%A9%BA%E5%9B%9E%E6%94%B6%E7%AB%99">清空回收站</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E7%AE%A1%E7%90%86%E7%BA%A6%E6%9D%9F">管理约束</a><ul>
+<li><a href="#%E5%BB%BA%E8%A1%A8%E6%97%B6%E7%9B%B4%E6%8E%A5%E5%90%AF%E7%94%A8%E7%BA%A6%E6%9D%9F%E5%88%97%E7%BA%A7%E5%88%AB%E5%90%AF%E7%94%A8%E7%BA%A6%E6%9D%9F%E7%BA%A6%E6%9D%9F%E4%BA%A7%E7%94%A8%E7%B3%BB%E7%BB%9F%E5%91%BD%E5%90%8D">建表时直接启用约束，列级别启用约束，约束产用系统命名</a></li>
+<li><a href="#%E5%BB%BA%E8%A1%A8%E6%97%B6%E7%9B%B4%E6%8E%A5%E5%90%AF%E7%94%A8%E7%BA%A6%E6%9D%9F%E5%88%97%E7%BA%A7%E5%88%AB%E5%90%AF%E7%94%A8%E7%BA%A6%E6%9D%9F%E7%BA%A6%E6%9D%9F%E4%BA%A7%E7%94%A8%E6%88%B7%E5%91%BD%E5%90%8D">建表时直接启用约束，列级别启用约束，约束产用户命名</a></li>
+<li><a href="#%E5%90%AF%E7%94%A8%E5%94%AF%E4%B8%80%E9%94%AE%E7%BA%A6%E6%9D%9F">启用唯一键约束</a></li>
+<li><a href="#%E5%90%AF%E7%94%A8%E4%B8%BB%E9%94%AE%E7%BA%A6%E6%9D%9F">启用主键约束</a></li>
+<li><a href="#%E5%90%AF%E7%94%A8%E5%A4%96%E9%94%AE%E7%BA%A6%E6%9D%9F">启用外键约束</a></li>
+<li><a href="#%E5%90%AF%E7%94%A8check%E7%BA%A6%E6%9D%9F">启用check约束</a></li>
+<li><a href="#%E5%A4%96%E9%94%AE%E7%9A%84%E7%BA%A7%E8%81%94%E6%93%8D%E4%BD%9C">外键的级联操作</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E7%BA%A6%E6%9D%9F%E7%8A%B6%E6%80%81">查看约束状态</a></li>
+<li><a href="#%E5%90%AF%E7%94%A8%E5%85%B3%E9%97%AD%E7%BA%A6%E6%9D%9F">启用|关闭约束</a></li>
+<li><a href="#%E5%85%B6%E5%AE%83%E6%93%8D%E4%BD%9C">其它操作</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E7%BA%A6%E6%9D%9F">删除约束</a></li>
+</ul>
+</li>
+<li><a href="#%E7%AE%A1%E7%90%86%E8%A7%86%E5%9B%BE">管理视图</a><ul>
+<li><a href="#%E8%A7%86%E5%9B%BE%E7%9A%84%E4%BC%98%E7%82%B9">视图的优点</a></li>
+<li><a href="#%E8%A7%86%E5%9B%BE%E7%9A%84%E5%88%86%E7%B1%BB%E7%AE%80%E5%8D%95%E8%A7%86%E5%9B%BE%E5%92%8C%E5%A4%8D%E6%9D%82%E8%A7%86%E5%9B%BE">视图的分类—简单视图和复杂视图</a></li>
+<li><a href="#%E7%AE%A1%E7%90%86%E8%A7%86%E5%9B%BE%E7%9A%84%E6%9D%83%E9%99%90">管理视图的权限</a><ul>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E7%94%A8%E6%88%B7%E7%9B%AE%E5%89%8D%E6%98%AF%E5%90%A6%E6%B2%A1%E6%9C%89%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE%E7%9A%84%E6%9D%83%E9%99%90">查看用户目前是否没有创建视图的权限</a></li>
+<li><a href="#%E6%8E%88%E4%BA%88%E7%94%A8%E6%88%B7%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE%E7%9A%84%E6%9D%83%E9%99%90">授予用户创建视图的权限</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE">创建视图</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE">创建视图</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E8%A7%86%E5%9B%BE">删除视图</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E7%AE%A1%E7%90%86%E5%BA%8F%E5%88%97">管理序列</a><ul>
+<li><a href="#%E5%BA%8F%E5%88%97%E4%B8%A4%E4%B8%AA%E4%BC%AA%E5%88%97">序列两个伪列</a></li>
+<li><a href="#%E5%BA%8F%E5%88%97%E7%9A%84%E5%88%9D%E5%A7%8B%E5%80%BC%E4%B8%8D%E5%8F%AF%E4%BB%A5%E4%BF%AE%E6%94%B9%E5%85%B6%E4%BB%96%E5%B1%9E%E6%80%A7%E9%83%BD%E5%8F%AF%E4%BB%A5%E4%BF%AE%E6%94%B9">序列的初始值不可以修改，其他属性都可以修改</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E5%BA%8F%E5%88%97">使用序列</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E5%BA%8F%E5%88%97">删除序列</a></li>
+</ul>
+</li>
+<li><a href="#%E7%AE%A1%E7%90%86%E7%B4%A2%E5%BC%95">管理索引</a><ul>
+<li><a href="#%E4%BD%95%E6%97%B6%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95">何时创建索引</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%97%E5%85%B8">索引的数据字典</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E7%9A%84%E6%93%8D%E4%BD%9C">索引的操作</a><ul>
+<li><a href="#%E6%89%8B%E5%B7%A5%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95">手工创建索引</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E7%B4%A2%E5%BC%95%E6%98%AF%E5%90%A6%E8%A2%AB%E4%BD%BF%E7%94%A8">查看索引是否被使用</a></li>
+<li><a href="#%E5%9F%BA%E4%BA%8E%E5%87%BD%E6%95%B0%E7%9A%84%E7%B4%A2%E5%BC%95">基于函数的索引</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95">删除索引</a></li>
+</ul>
+</li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E6%B5%8B%E8%AF%95">索引测试</a><ul>
+<li><a href="#indexstats%E8%A1%A8%E5%88%86%E6%9E%90">index_stats表分析</a></li>
+<li><a href="#rowid%E7%9A%84%E6%A0%BC%E5%BC%8F">rowid的格式</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E7%AE%A1%E7%90%86%E5%90%8C%E4%B9%89%E8%AF%8D">管理同义词</a><ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%A7%81%E6%9C%89%E5%90%8C%E4%B9%89%E8%AF%8D">创建私有同义词</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E5%85%AC%E6%9C%89%E5%90%8C%E4%B9%89%E8%AF%8D">创建公有同义词</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E5%90%8C%E4%B9%89%E8%AF%8D">删除同义词</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h2 id="管理的对象" class="article-heading"><a href="#管理的对象" class="headerlink" title="管理的对象"></a>管理的对象<a class="article-anchor" href="#管理的对象" aria-hidden="true"></a></h2><ul>
+<li>表：存储数据</li>
+<li>视图：一张或多张表的数据子集</li>
+<li>序列</li>
+<li>索引</li>
+<li>同义词</li>
+</ul>
+<h3 id="对象命名规则" class="article-heading"><a href="#对象命名规则" class="headerlink" title="对象命名规则"></a>对象命名规则<a class="article-anchor" href="#对象命名规则" aria-hidden="true"></a></h3><ul>
+<li>由<code>数字、字母</code>、<code>_</code>、<code>$</code>、<code>#</code>组成</li>
+<li>表名和列名必须以字母开头，长度为1-30个字符</li>
+<li>同一个用户不能拥有两个同名的对象</li>
+<li>名字中不能使用Oracle服务器的保留字</li>
+<li>不区分大小写</li>
+<li>双引号打破规则</li>
+</ul>
+<h2 id="管理表" class="article-heading"><a href="#管理表" class="headerlink" title="管理表"></a>管理表<a class="article-anchor" href="#管理表" aria-hidden="true"></a></h2><h3 id="表的分类" class="article-heading"><a href="#表的分类" class="headerlink" title="表的分类"></a>表的分类<a class="article-anchor" href="#表的分类" aria-hidden="true"></a></h3><ul>
+<li>用户表:由用户创建和维护的表的集和；包含用户信息</li>
+<li>数据字典:由oracle服务器创建和维护的表的集和；包含数据库信息；用户记录oracle自己工作属性和状态的</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">数据字典分类</th>
+<th align="left">前缀</th>
+<th align="left">描述</th>
+<th align="left">备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">字典表</td>
+<td align="left">user_</td>
+<td align="left">包含有关用户拥有对象的信息</td>
+<td align="left">当前用户所拥有的rw</td>
+</tr>
+<tr>
+<td align="left">字典表</td>
+<td align="left">all_</td>
+<td align="left">包含所有用户可以访问的表的信息（对象表和相关的表）</td>
+<td align="left">当前用户所拥有的rw以及有权力查看ro的对象的信息</td>
+</tr>
+<tr>
+<td align="left">字典表</td>
+<td align="left">dba_</td>
+<td align="left">受限制视图，只能被DBA角色的人访问</td>
+<td align="left">数据库管理员才有权限查看</td>
+</tr>
+<tr>
+<td align="left">动态性能视图</td>
+<td align="left">v$</td>
+<td align="left">动态视图，数据库服务器性能，内存和锁</td>
+<td align="left">初始化在内存中，c语言的结构数组，作为排错和优化的</td>
+</tr>
+</tbody></table>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">--scott/tiger</span></span><br><span class="line"><span class="comment">--scott用户拥有的表rw权限</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> table_name <span class="keyword">from</span> user_tables;</span><br><span class="line"></span><br><span class="line">TABLE_NAME</span><br><span class="line"><span class="comment">------------------------------</span></span><br><span class="line">T01</span><br><span class="line">SALGRADE</span><br><span class="line">BONUS</span><br><span class="line">EMP</span><br><span class="line">DEPT</span><br><span class="line"></span><br><span class="line"><span class="comment">--scott用户拥有的rw以及可查看ro的对象</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> table_name <span class="keyword">from</span> all_tables;</span><br><span class="line"></span><br><span class="line">TABLE_NAME</span><br><span class="line"><span class="comment">------------------------------</span></span><br><span class="line">DUAL</span><br><span class="line">SYSTEM_PRIVILEGE_MAP</span><br><span class="line">TABLE_PRIVILEGE_MAP</span><br><span class="line">STMT_AUDIT_OPTION_MAP</span><br><span class="line">AUDIT_ACTIONS</span><br><span class="line">WRR$_REPLAY_CALL_FILTER</span><br><span class="line">HS_BULKLOAD_VIEW_OBJ</span><br><span class="line">HS$_PARALLEL_METADATA</span><br><span class="line">HS_PARTITION_COL_NAME</span><br><span class="line">HS_PARTITION_COL_TYPE</span><br><span class="line">HELP</span><br><span class="line">...省略</span><br><span class="line"></span><br><span class="line"><span class="comment">--sysdba用户查看所有的对象</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> table_name <span class="keyword">from</span> dba_tables;</span><br><span class="line">...省略</span><br><span class="line">TABLE_NAME</span><br><span class="line"><span class="comment">------------------------------</span></span><br><span class="line">LOGMNRC_DBNAME_UID_MAP</span><br><span class="line">DIMENSION_EXCEPTIONS</span><br><span class="line">AQ$_STREAMS_QUEUE_TABLE_L</span><br><span class="line">AQ$_ORDERS_QUEUETABLE_L</span><br><span class="line"></span><br><span class="line"><span class="number">2864</span> <span class="keyword">rows</span> selected.</span><br><span class="line"></span><br><span class="line"><span class="comment">--sysdba用户查看scn</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> current_scn <span class="keyword">from</span> v$database;</span><br><span class="line"></span><br><span class="line">CURRENT_SCN</span><br><span class="line"><span class="comment">-----------</span></span><br><span class="line">    <span class="number">1134479</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="数据类型" class="article-heading"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型<a class="article-anchor" href="#数据类型" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th align="left">数据类型</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">varchar2(size)</td>
+<td align="left">可变长度字符数据</td>
+</tr>
+<tr>
+<td align="left">char(size)</td>
+<td align="left">固定长度字符数据</td>
+</tr>
+<tr>
+<td align="left">number(p,s)</td>
+<td align="left">可变长度数字数据</td>
+</tr>
+<tr>
+<td align="left">date</td>
+<td align="left">日期和时间数值</td>
+</tr>
+<tr>
+<td align="left">long</td>
+<td align="left">可变长度字符数据，最大2G</td>
+</tr>
+<tr>
+<td align="left">clob</td>
+<td align="left">字符数据，最大到4G</td>
+</tr>
+<tr>
+<td align="left">raw and long raw</td>
+<td align="left">原始二进制数据</td>
+</tr>
+<tr>
+<td align="left">blob</td>
+<td align="left">二进制数，最大到4G</td>
+</tr>
+<tr>
+<td align="left">bfile</td>
+<td align="left">存储到外部文件中的二进制数，最大到4G</td>
+</tr>
+<tr>
+<td align="left">rowid</td>
+<td align="left">表示行在表中的唯一地质</td>
+</tr>
+</tbody></table>
+<h3 id="表操作" class="article-heading"><a href="#表操作" class="headerlink" title="表操作"></a>表操作<a class="article-anchor" href="#表操作" aria-hidden="true"></a></h3><h4 id="创建表" class="article-heading"><a href="#创建表" class="headerlink" title="创建表"></a>创建表<a class="article-anchor" href="#创建表" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create table</span> t01 (id number(<span class="number">3</span>),name varchar2(<span class="number">12</span>));</span><br><span class="line"><span class="keyword">create table</span> t02 (id number,name varchar2(<span class="number">12</span>),salary number(<span class="number">7</span>,<span class="number">2</span>) <span class="keyword">default</span> <span class="number">1000</span>);</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="查看表的结构" class="article-heading"><a href="#查看表的结构" class="headerlink" title="查看表的结构"></a>查看表的结构<a class="article-anchor" href="#查看表的结构" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">desc</span> t01;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="子查询建表拷贝行" class="article-heading"><a href="#子查询建表拷贝行" class="headerlink" title="子查询建表拷贝行"></a>子查询建表拷贝行<a class="article-anchor" href="#子查询建表拷贝行" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create table</span> t03 <span class="keyword">as</span> <span class="keyword">select</span> empno,ename,sal,deptno <span class="keyword">from</span> emp <span class="keyword">where</span> deptno<span class="operator">=</span><span class="number">30</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="子查询建表拷贝表结构" class="article-heading"><a href="#子查询建表拷贝表结构" class="headerlink" title="子查询建表拷贝表结构"></a>子查询建表拷贝表结构<a class="article-anchor" href="#子查询建表拷贝表结构" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create table</span> t03 <span class="keyword">as</span> <span class="keyword">select</span> empno,ename,sal,deptno <span class="keyword">from</span> emp <span class="keyword">where</span> <span class="number">1</span><span class="operator">=</span><span class="number">0</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="创建事务级临时表" class="article-heading"><a href="#创建事务级临时表" class="headerlink" title="创建事务级临时表"></a>创建事务级临时表<a class="article-anchor" href="#创建事务级临时表" aria-hidden="true"></a></h4><p>commit 数据消失,表结构共享，数据是每个会话私有的</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">global</span> temporary <span class="keyword">table</span> temp01 <span class="keyword">as</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="创建会话级临时表" class="article-heading"><a href="#创建会话级临时表" class="headerlink" title="创建会话级临时表"></a>创建会话级临时表<a class="article-anchor" href="#创建会话级临时表" aria-hidden="true"></a></h4><p>connect &amp; disconnect 数据消失</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">global</span> temporary <span class="keyword">table</span> temp02 <span class="keyword">on</span> <span class="keyword">commit</span> preserve <span class="keyword">rows</span> <span class="keyword">as</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="增加列" class="article-heading"><a href="#增加列" class="headerlink" title="增加列"></a>增加列<a class="article-anchor" href="#增加列" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter table</span> t03 <span class="keyword">add</span> (hiredate <span class="type">date</span>);</span><br><span class="line"><span class="keyword">alter table</span> t03 <span class="keyword">add</span> (loc varchar2(<span class="number">10</span>));</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="修改列" class="article-heading"><a href="#修改列" class="headerlink" title="修改列"></a>修改列<a class="article-anchor" href="#修改列" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter table</span> t03 modify (loc varchar2(<span class="number">13</span>));</span><br><span class="line"><span class="keyword">alter table</span> t03 modify (hiredate <span class="type">date</span> <span class="keyword">default</span> sysdate);</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="重命名列" class="article-heading"><a href="#重命名列" class="headerlink" title="重命名列"></a>重命名列<a class="article-anchor" href="#重命名列" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter table</span> t03 rename <span class="keyword">column</span> loc <span class="keyword">to</span> location;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="删除列" class="article-heading"><a href="#删除列" class="headerlink" title="删除列"></a>删除列<a class="article-anchor" href="#删除列" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter table</span> t03 <span class="keyword">drop</span> (hiredate);</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="在业务高峰期删除列分为两步" class="article-heading"><a href="#在业务高峰期删除列分为两步" class="headerlink" title="在业务高峰期删除列分为两步"></a>在业务高峰期删除列分为两步<a class="article-anchor" href="#在业务高峰期删除列分为两步" aria-hidden="true"></a></h4><ol>
+<li>系统繁忙时设置列为未使用状态：（不产生IO，在字典中将该列屏蔽掉）</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter table</span> t03 <span class="keyword">set</span> unused <span class="keyword">column</span> sal;</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li>系统不繁忙时删除未使用状态的列：（产生IO）</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter table</span> t03 <span class="keyword">drop</span> unused columns;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="对列添加注释" class="article-heading"><a href="#对列添加注释" class="headerlink" title="对列添加注释"></a>对列添加注释<a class="article-anchor" href="#对列添加注释" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">comment <span class="keyword">on</span> <span class="keyword">column</span> t03.ename <span class="keyword">is</span> <span class="string">'first name'</span>;</span><br><span class="line"><span class="keyword">select</span> COLUMN_NAME,COMMENTS <span class="keyword">from</span> user_col_comments <span class="keyword">where</span> TABLE_NAME<span class="operator">=</span><span class="string">'T03'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="对表添加注释" class="article-heading"><a href="#对表添加注释" class="headerlink" title="对表添加注释"></a>对表添加注释<a class="article-anchor" href="#对表添加注释" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">comment <span class="keyword">on</span> <span class="keyword">table</span> t03 <span class="keyword">is</span> <span class="string">'employees copy'</span>;</span><br><span class="line"><span class="keyword">select</span> COMMENTS <span class="keyword">from</span> user_tab_comments <span class="keyword">where</span> TABLE_NAME<span class="operator">=</span><span class="string">'T03'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="重命名表" class="article-heading"><a href="#重命名表" class="headerlink" title="重命名表"></a>重命名表<a class="article-anchor" href="#重命名表" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">rename t03 <span class="keyword">to</span> t04;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="截断表" class="article-heading"><a href="#截断表" class="headerlink" title="截断表"></a>截断表<a class="article-anchor" href="#截断表" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">truncate</span> <span class="keyword">table</span> t04;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>清空表中所有数据，不记录数据的老镜像，直接将表变成初始化状态</p>
+<h4 id="将表放入回收站" class="article-heading"><a href="#将表放入回收站" class="headerlink" title="将表放入回收站"></a>将表放入回收站<a class="article-anchor" href="#将表放入回收站" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> t02;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="将回收站对象还原" class="article-heading"><a href="#将回收站对象还原" class="headerlink" title="将回收站对象还原"></a>将回收站对象还原<a class="article-anchor" href="#将回收站对象还原" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> recyclebin</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> flashback <span class="keyword">table</span> t02 <span class="keyword">to</span> before <span class="keyword">drop</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="彻底删除表" class="article-heading"><a href="#彻底删除表" class="headerlink" title="彻底删除表"></a>彻底删除表<a class="article-anchor" href="#彻底删除表" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> t01 purge;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="清空回收站" class="article-heading"><a href="#清空回收站" class="headerlink" title="清空回收站"></a>清空回收站<a class="article-anchor" href="#清空回收站" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">purge recyclebin;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="管理约束" class="article-heading"><a href="#管理约束" class="headerlink" title="管理约束"></a>管理约束<a class="article-anchor" href="#管理约束" aria-hidden="true"></a></h2><ul>
+<li>not null 非空</li>
+<li>unique 唯一键</li>
+<li>primary key 主键（非空和唯一）</li>
+<li>foreign key 外键（基于主键）</li>
+<li>check （指定的一个条件必须为真）</li>
+</ul>
+<h3 id="建表时直接启用约束，列级别启用约束，约束产用系统命名" class="article-heading"><a href="#建表时直接启用约束，列级别启用约束，约束产用系统命名" class="headerlink" title="建表时直接启用约束，列级别启用约束，约束产用系统命名"></a>建表时直接启用约束，列级别启用约束，约束产用系统命名<a class="article-anchor" href="#建表时直接启用约束，列级别启用约束，约束产用系统命名" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create table</span> t01 (id number <span class="keyword">not null</span>);</span><br><span class="line"><span class="keyword">select</span> CONSTRAINT_NAME,CONSTRAINT_TYPE,SEARCH_CONDITION <span class="keyword">from</span> user_constraints <span class="keyword">where</span> TABLE_NAME<span class="operator">=</span><span class="string">'T01'</span>;</span><br><span class="line"><span class="keyword">select</span> constraint_name,column_name <span class="keyword">from</span> user_cons_columns <span class="keyword">where</span> table_name<span class="operator">=</span><span class="string">'T01'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="建表时直接启用约束，列级别启用约束，约束产用户命名" class="article-heading"><a href="#建表时直接启用约束，列级别启用约束，约束产用户命名" class="headerlink" title="建表时直接启用约束，列级别启用约束，约束产用户命名"></a>建表时直接启用约束，列级别启用约束，约束产用户命名<a class="article-anchor" href="#建表时直接启用约束，列级别启用约束，约束产用户命名" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create table</span> t01 (id number <span class="keyword">constraint</span> nn_t01_id <span class="keyword">not null</span>);</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>not null约束只能在列级别启用</li>
+</ul>
+<h3 id="启用唯一键约束" class="article-heading"><a href="#启用唯一键约束" class="headerlink" title="启用唯一键约束"></a>启用唯一键约束<a class="article-anchor" href="#启用唯一键约束" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create table</span> t01 (id number <span class="keyword">constraint</span> uk_t01_id <span class="keyword">unique</span>);</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="启用主键约束" class="article-heading"><a href="#启用主键约束" class="headerlink" title="启用主键约束"></a>启用主键约束<a class="article-anchor" href="#启用主键约束" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create table</span> t01 (id number <span class="keyword">constraint</span> pk_t01_id <span class="keyword">primary key</span>);</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="启用外键约束" class="article-heading"><a href="#启用外键约束" class="headerlink" title="启用外键约束"></a>启用外键约束<a class="article-anchor" href="#启用外键约束" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create table</span> t02 (id number <span class="keyword">constraint</span> fk_t02_id <span class="keyword">references</span> t01);</span><br><span class="line"><span class="keyword">select</span> CONSTRAINT_NAME,CONSTRAINT_TYPE,R_CONSTRAINT_NAME <span class="keyword">from</span> user_constraints <span class="keyword">where</span> TABLE_NAME<span class="operator">=</span><span class="string">'T02'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="启用check约束" class="article-heading"><a href="#启用check约束" class="headerlink" title="启用check约束"></a>启用check约束<a class="article-anchor" href="#启用check约束" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create table</span> t03 (id number,salary number <span class="keyword">constraint</span> ck_t03_sal <span class="keyword">check</span> (salary<span class="operator">&gt;</span><span class="number">1000</span>));</span><br><span class="line"><span class="keyword">select</span> CONSTRAINT_NAME,CONSTRAINT_TYPE,SEARCH_CONDITION <span class="keyword">from</span> user_constraints <span class="keyword">where</span> TABLE_NAME<span class="operator">=</span><span class="string">'T03'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="外键的级联操作" class="article-heading"><a href="#外键的级联操作" class="headerlink" title="外键的级联操作"></a>外键的级联操作<a class="article-anchor" href="#外键的级联操作" aria-hidden="true"></a></h3><p>使用<code>on delete set null</code>有一点需要注意的是，被参参照其他表的那一列必须能够被赋空，不能有not null约束，对于上面的例子来说是emp中dept列一定不能有not null约束，如果已经定义了not null约束，又使用了on delete set null来删除被参照的数据时，将会发生：ORA-01407: 无法更新 (”DD”.”EMP”.”DEPT”) 为 NULL的错误。</p>
+<p>总的来讲<code>on delete cascade</code>和<code>on delete set null</code>的作用是用来处理级联删除问题的，如果你需要删除的数据被其他数据所参照，那么你应该决定到底希望oracle怎么处理那些参照这些即将要删除数据的数据的，你可以有三种方式：</p>
+<ul>
+<li>禁止删除。这也是oracle默认的</li>
+<li>将那些参照本值的数据的对应列赋空，这个需要使用on delete set null关键字</li>
+<li>将那些参照本值的数据一并删除，这个需要使用on delete cascade关键字</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter table</span> t02 <span class="keyword">drop</span> <span class="keyword">constraint</span> FK_T02_ID;</span><br><span class="line"><span class="keyword">alter table</span> t02 <span class="keyword">add constraint</span> FK_T02_ID <span class="keyword">foreign key</span> (id) <span class="keyword">references</span> t01 <span class="keyword">on</span> <span class="keyword">delete</span> <span class="keyword">set</span> <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">alter table</span> t02 <span class="keyword">add constraint</span> FK_T02_ID <span class="keyword">foreign key</span> (id) <span class="keyword">references</span> t01 <span class="keyword">on</span> <span class="keyword">delete</span> cascade;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="查看约束状态" class="article-heading"><a href="#查看约束状态" class="headerlink" title="查看约束状态"></a>查看约束状态<a class="article-anchor" href="#查看约束状态" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> CONSTRAINT_NAME,STATUS,VALIDATED <span class="keyword">from</span> user_constraints <span class="keyword">where</span> table_name<span class="operator">=</span><span class="string">'T01'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="启用-关闭约束" class="article-heading"><a href="#启用-关闭约束" class="headerlink" title="启用|关闭约束"></a>启用|关闭约束<a class="article-anchor" href="#启用-关闭约束" aria-hidden="true"></a></h3><ul>
+<li>ENABLED VALIDATED</li>
+<li>ENABLED NOT VALIDATED</li>
+<li>DISABLED NOT VALIDATED</li>
+<li>DISABLED VALIDATED:不影响子表数据的前提下重建父表</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter table</span> t02 modify <span class="keyword">constraint</span> FK_T02_ID disable;</span><br><span class="line"><span class="keyword">alter table</span> t02 modify <span class="keyword">constraint</span> FK_T02_ID enable;</span><br><span class="line"><span class="keyword">alter table</span> t02 modify <span class="keyword">constraint</span> FK_T02_ID enable novalidate; <span class="comment">--不限制老数据</span></span><br><span class="line"><span class="keyword">alter table</span> t02 modify <span class="keyword">constraint</span> FK_T02_ID disable validate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create table</span> t04 (x <span class="type">int</span> <span class="keyword">constraint</span> u <span class="keyword">unique</span>);</span><br><span class="line"><span class="keyword">insert into</span> t04 <span class="keyword">values</span> (<span class="number">1</span>);</span><br><span class="line"><span class="keyword">alter table</span> t04 mdify <span class="keyword">constraint</span> u disable;</span><br><span class="line"><span class="keyword">insert into</span> t04 <span class="keyword">values</span> (<span class="number">1</span>);</span><br><span class="line"><span class="keyword">alter table</span> t04 mdify <span class="keyword">constraint</span> u enable novalidate;</span><br><span class="line"><span class="keyword">create</span> index i_t04_x <span class="keyword">on</span> t04 (x);</span><br></pre></td></tr></tbody></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/CREATE-TABLE.html#GUID-F9CE0CC3-13AE-4744-A43C-EAC7A71AAAB6">约束的禁用和启用文档</a></p>
+<p>课堂练习题</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">create table emp01 (</span><br><span class="line">    emp_no number(2) constraint emp_emp_no_pk primary key,</span><br><span class="line">    ename varchar2(15),</span><br><span class="line">    salary number(8,2),</span><br><span class="line">    mgr_no number(2)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">新建表emp01，其中emp_no上有一个主键 emp_emp_no_pk</span><br><span class="line">alter table emp01 add constraint emp_mgr_fk</span><br><span class="line">    foreign key (mgr_no)</span><br><span class="line">    references emp01(emp_no)</span><br><span class="line">    on delete set null;</span><br><span class="line">新建一个外键 emp_mgr_fk，`on delete set null` 代表 删除emp_no时，mgr_no不删除变为null；</span><br><span class="line"></span><br><span class="line">alter table emp01 disable constraint emp_emp_no_pk cascade;</span><br><span class="line">禁用主键时，主键和外键都被禁用</span><br><span class="line">为何此处要有参数 cascade ？</span><br><span class="line"></span><br><span class="line">如果FOREIGN KEYs引用a UNIQUE或PRIMARY KEY，则必须在CASCADE CONSTRAINTS语句中包括该子句DROP，否则无法删除该约束。</span><br><span class="line"></span><br><span class="line">alter table emp01 enable constraint emp_emp_no_pk;</span><br><span class="line">启用主键，此时只启用主键，外键还是禁用状态。</span><br><span class="line">select  OWNER,CONSTRAINT_NAME, TABLE_NAME,STATUS from user_constraints where table_name='EMP01';</span><br><span class="line">检查约束状态</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="其它操作" class="article-heading"><a href="#其它操作" class="headerlink" title="其它操作"></a>其它操作<a class="article-anchor" href="#其它操作" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter table</span> emp <span class="keyword">add constraint</span> ck_emp_sal <span class="keyword">check</span> (sal<span class="operator">&gt;</span><span class="number">1000</span> <span class="keyword">and</span> sal <span class="keyword">is</span> <span class="keyword">not null</span>);</span><br><span class="line">@?<span class="operator">/</span>rdbms<span class="operator">/</span>admin<span class="operator">/</span>utlexcpt.sql</span><br><span class="line"><span class="keyword">alter table</span> emp <span class="keyword">add constraint</span> ck_t04_sal <span class="keyword">check</span> (sal<span class="operator">&gt;=</span><span class="number">1000</span> <span class="keyword">and</span> sal <span class="keyword">is</span> <span class="keyword">not null</span>) exceptions <span class="keyword">into</span> exceptions;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="删除约束" class="article-heading"><a href="#删除约束" class="headerlink" title="删除约束"></a>删除约束<a class="article-anchor" href="#删除约束" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">constraint</span>:</span><br><span class="line"><span class="keyword">alter table</span> e <span class="keyword">drop</span> <span class="keyword">constraint</span> XXXXXXXXXX;</span><br><span class="line"><span class="keyword">alter table</span> d <span class="keyword">drop</span> <span class="keyword">constraint</span> PK_D_ID cascade;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="管理视图" class="article-heading"><a href="#管理视图" class="headerlink" title="管理视图"></a>管理视图<a class="article-anchor" href="#管理视图" aria-hidden="true"></a></h2><h3 id="视图的优点" class="article-heading"><a href="#视图的优点" class="headerlink" title="视图的优点"></a>视图的优点<a class="article-anchor" href="#视图的优点" aria-hidden="true"></a></h3><ul>
+<li>限制对数据的访问（主要功能）</li>
+<li>简化复杂的查询</li>
+<li>数据的独立性</li>
+<li>不同的标准给访问数据的用户分组</li>
+<li>往往会降低性能</li>
+</ul>
+<h3 id="视图的分类—简单视图和复杂视图" class="article-heading"><a href="#视图的分类—简单视图和复杂视图" class="headerlink" title="视图的分类—简单视图和复杂视图"></a>视图的分类—简单视图和复杂视图<a class="article-anchor" href="#视图的分类—简单视图和复杂视图" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left">简单视图</th>
+<th align="left">复杂视图</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">表的数量</td>
+<td align="left">1</td>
+<td align="left">多个</td>
+</tr>
+<tr>
+<td align="left">包含函数</td>
+<td align="left">no</td>
+<td align="left">yes</td>
+</tr>
+<tr>
+<td align="left">包含组数据</td>
+<td align="left">no</td>
+<td align="left">yes</td>
+</tr>
+<tr>
+<td align="left">通过视图的dml操作</td>
+<td align="left">yes</td>
+<td align="left">不一定</td>
+</tr>
+</tbody></table>
+<h3 id="管理视图的权限" class="article-heading"><a href="#管理视图的权限" class="headerlink" title="管理视图的权限"></a>管理视图的权限<a class="article-anchor" href="#管理视图的权限" aria-hidden="true"></a></h3><ul>
+<li>CREATE VIEW</li>
+<li>CREATE ANY VIEW</li>
+</ul>
+<h4 id="查看用户目前是否没有创建视图的权限" class="article-heading"><a href="#查看用户目前是否没有创建视图的权限" class="headerlink" title="查看用户目前是否没有创建视图的权限"></a>查看用户目前是否没有创建视图的权限<a class="article-anchor" href="#查看用户目前是否没有创建视图的权限" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn scott<span class="operator">/</span>tiger;</span><br><span class="line">Connected.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_privs;</span><br><span class="line"></span><br><span class="line">PRIVILEGE</span><br><span class="line"><span class="comment">----------------------------------------</span></span><br><span class="line"><span class="keyword">CREATE</span> SESSION</span><br><span class="line">UNLIMITED TABLESPACE</span><br><span class="line"><span class="keyword">CREATE TABLE</span></span><br><span class="line"><span class="keyword">CREATE</span> CLUSTER</span><br><span class="line"><span class="keyword">CREATE</span> SEQUENCE</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PROCEDURE</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span></span><br><span class="line"><span class="keyword">CREATE</span> TYPE</span><br><span class="line"><span class="keyword">CREATE</span> OPERATOR</span><br><span class="line"><span class="keyword">CREATE</span> INDEXTYPE</span><br><span class="line"></span><br><span class="line"><span class="number">10</span> <span class="keyword">rows</span> selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="授予用户创建视图的权限" class="article-heading"><a href="#授予用户创建视图的权限" class="headerlink" title="授予用户创建视图的权限"></a>授予用户创建视图的权限<a class="article-anchor" href="#授予用户创建视图的权限" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">CREATE</span> <span class="keyword">VIEW</span> <span class="keyword">to</span> scott;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn scott<span class="operator">/</span>tiger;</span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_privs;</span><br><span class="line"></span><br><span class="line">PRIVILEGE</span><br><span class="line"><span class="comment">----------------------------------------</span></span><br><span class="line"><span class="keyword">CREATE</span> SESSION</span><br><span class="line">UNLIMITED TABLESPACE</span><br><span class="line"><span class="keyword">CREATE TABLE</span></span><br><span class="line"><span class="keyword">CREATE</span> CLUSTER</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span></span><br><span class="line"><span class="keyword">CREATE</span> SEQUENCE</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PROCEDURE</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span></span><br><span class="line"><span class="keyword">CREATE</span> TYPE</span><br><span class="line"><span class="keyword">CREATE</span> OPERATOR</span><br><span class="line"><span class="keyword">CREATE</span> INDEXTYPE</span><br><span class="line"></span><br><span class="line"><span class="number">11</span> <span class="keyword">rows</span> selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="创建视图" class="article-heading"><a href="#创建视图" class="headerlink" title="创建视图"></a>创建视图<a class="article-anchor" href="#创建视图" aria-hidden="true"></a></h4><p>vu10为10部门的所有信息集和</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">view</span> vu10 <span class="keyword">as</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> deptno<span class="operator">=</span><span class="number">10</span>;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">or</span> replace <span class="keyword">view</span> vu10 <span class="keyword">as</span> <span class="keyword">select</span> empno,ename,sal,deptno <span class="keyword">from</span> emp <span class="keyword">where</span> deptno<span class="operator">=</span><span class="number">10</span>;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">or</span> replace <span class="keyword">view</span> vu10 (employee_id,first_name,salary,department_id)</span><br><span class="line"><span class="keyword">as</span> <span class="keyword">select</span> empno,ename,sal,deptno <span class="keyword">from</span> emp <span class="keyword">where</span> deptno<span class="operator">=</span><span class="number">10</span>;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">or</span> replace <span class="keyword">view</span> vu10 <span class="keyword">as</span> <span class="keyword">select</span> empno employee_id,ename,sal salary,deptno department_id <span class="keyword">from</span> emp <span class="keyword">where</span> deptno<span class="operator">=</span><span class="number">10</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="创建视图-1" class="article-heading"><a href="#创建视图-1" class="headerlink" title="创建视图"></a>创建视图<a class="article-anchor" href="#创建视图-1" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">or</span> replace force <span class="keyword">view</span> vu30 <span class="keyword">as</span> <span class="keyword">select</span> empno,ename,sal,deptno <span class="keyword">from</span> e01 <span class="keyword">where</span> deptno<span class="operator">=</span><span class="number">30</span>;</span><br><span class="line"><span class="keyword">select</span> object_name,status <span class="keyword">from</span> user_objects <span class="keyword">where</span> object_name<span class="operator">=</span><span class="string">'VU30'</span>;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">or</span> replace force <span class="keyword">view</span> vu30 <span class="keyword">as</span> <span class="keyword">select</span> empno,ename,sal,deptno <span class="keyword">from</span> e01 <span class="keyword">where</span> deptno<span class="operator">=</span><span class="number">30</span> <span class="keyword">with</span> <span class="keyword">check</span> option;</span><br><span class="line"><span class="keyword">select</span> text <span class="keyword">from</span> user_views <span class="keyword">where</span> view_name<span class="operator">=</span><span class="string">'VU30'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">create</span> <span class="keyword">or</span> replace force <span class="keyword">view</span> vu30 <span class="keyword">as</span> <span class="keyword">select</span> empno,ename,sal,deptno <span class="keyword">from</span> e01 <span class="keyword">where</span> deptno<span class="operator">=</span><span class="number">30</span>;</span><br><span class="line"><span class="keyword">select</span> object_name,status <span class="keyword">from</span> user_objects <span class="keyword">where</span> object_name<span class="operator">=</span><span class="string">'VU30'</span>;</span><br><span class="line">Warning: <span class="keyword">View</span> created <span class="keyword">with</span> compilation errors.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">create</span> <span class="keyword">or</span> replace force <span class="keyword">view</span> vu30 <span class="keyword">as</span> <span class="keyword">select</span> empno,ename,sal,deptno <span class="keyword">from</span> e01 <span class="keyword">where</span> deptno<span class="operator">=</span><span class="number">30</span> <span class="keyword">with</span> <span class="keyword">check</span> option;</span><br><span class="line"></span><br><span class="line">Warning: <span class="keyword">View</span> created <span class="keyword">with</span> compilation errors.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> view_name ,text <span class="keyword">from</span> user_views;</span><br><span class="line"></span><br><span class="line">VIEW_NAME</span><br><span class="line"><span class="comment">------------------------------</span></span><br><span class="line">TEXT</span><br><span class="line"><span class="comment">--------------------------------------------------------------------------------</span></span><br><span class="line">BOOBOO01</span><br><span class="line"><span class="keyword">select</span> ename,sal,deptno <span class="keyword">from</span> emp <span class="keyword">where</span> deptno<span class="operator">=</span><span class="number">10</span></span><br><span class="line"></span><br><span class="line">VU30</span><br><span class="line"><span class="keyword">select</span> empno,ename,sal,deptno <span class="keyword">from</span> e01 <span class="keyword">where</span> deptno<span class="operator">=</span><span class="number">30</span> <span class="keyword">with</span> <span class="keyword">check</span> option</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="删除视图" class="article-heading"><a href="#删除视图" class="headerlink" title="删除视图"></a>删除视图<a class="article-anchor" href="#删除视图" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">view</span> vu30;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="管理序列" class="article-heading"><a href="#管理序列" class="headerlink" title="管理序列"></a>管理序列<a class="article-anchor" href="#管理序列" aria-hidden="true"></a></h2><blockquote>
+<p>oracle和mysql不同，mysql中可以直接在列中声明自增长auto_increment</p>
+</blockquote>
+<ul>
+<li>自动生成的唯一序列号</li>
+<li>是可分享的对象</li>
+<li>通常用来创建主键值</li>
+<li>替代应用程序代码</li>
+<li>当缓冲在内存中时，加速访问序列的小略</li>
+</ul>
+<p>数字产生器，只增不降，不可回退，为数字主键填充数据</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> sequence seq_empno</span><br><span class="line"><span class="keyword">start</span> <span class="keyword">with</span> <span class="number">7935</span></span><br><span class="line">increment <span class="keyword">by</span> <span class="number">1</span></span><br><span class="line">minvalue <span class="number">7935</span></span><br><span class="line">maxvalue <span class="number">9999</span></span><br><span class="line">cache <span class="number">50</span></span><br><span class="line">nocycle;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">create</span> sequence seq_empno</span><br><span class="line">  <span class="number">2</span>  <span class="keyword">start</span> <span class="keyword">with</span> <span class="number">7935</span></span><br><span class="line">  <span class="number">3</span>  increment <span class="keyword">by</span> <span class="number">1</span></span><br><span class="line">  <span class="number">4</span>  minvalue <span class="number">7935</span></span><br><span class="line">  <span class="number">5</span>  maxvalue <span class="number">9999</span></span><br><span class="line">  <span class="number">6</span>  cache <span class="number">50</span></span><br><span class="line">  <span class="number">7</span>  nocycle;</span><br><span class="line"></span><br><span class="line">Sequence created.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> user_sequences;</span><br><span class="line"></span><br><span class="line">SEQUENCE_NAME			MIN_VALUE  MAX_VALUE INCREMENT_BY C O CACHE_SIZE</span><br><span class="line"><span class="comment">------------------------------ ---------- ---------- ------------ - - ----------</span></span><br><span class="line">LAST_NUMBER</span><br><span class="line"><span class="comment">-----------</span></span><br><span class="line">SEQ_EMPNO			     <span class="number">7935</span>	<span class="number">9999</span>		<span class="number">1</span> N N	      <span class="number">50</span></span><br><span class="line">       <span class="number">7935</span></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="序列两个伪列" class="article-heading"><a href="#序列两个伪列" class="headerlink" title="序列两个伪列"></a>序列两个伪列<a class="article-anchor" href="#序列两个伪列" aria-hidden="true"></a></h3><p>与序列相关的两个伪列，currval &amp; nextval，崭新的序列没有初始化的序列没有currval只有nextval</p>
+<ul>
+<li>currval 当前值</li>
+<li>nextval 下一个值</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> seq_empno.currval,seq_empno.nextval <span class="keyword">from</span> dual;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="序列的初始值不可以修改，其他属性都可以修改" class="article-heading"><a href="#序列的初始值不可以修改，其他属性都可以修改" class="headerlink" title="序列的初始值不可以修改，其他属性都可以修改"></a>序列的初始值不可以修改，其他属性都可以修改<a class="article-anchor" href="#序列的初始值不可以修改，其他属性都可以修改" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> sequence seq_empno increment <span class="keyword">by</span> <span class="number">5</span>;</span><br><span class="line"><span class="keyword">alter</span> sequence seq_empno minvalue <span class="number">7936</span>;</span><br><span class="line"><span class="keyword">alter</span> sequence seq_empno maxvalue <span class="number">8888</span>;</span><br><span class="line"><span class="keyword">alter</span> sequence seq_empno cache <span class="number">100</span>;</span><br><span class="line"><span class="keyword">alter</span> sequence seq_empno <span class="keyword">cycle</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="使用序列" class="article-heading"><a href="#使用序列" class="headerlink" title="使用序列"></a>使用序列<a class="article-anchor" href="#使用序列" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">insert into</span> emp (empno) <span class="keyword">values</span> (seq_empno.nextval);</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="删除序列" class="article-heading"><a href="#删除序列" class="headerlink" title="删除序列"></a>删除序列<a class="article-anchor" href="#删除序列" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">drop</span> sequence seq_empno;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="管理索引" class="article-heading"><a href="#管理索引" class="headerlink" title="管理索引"></a>管理索引<a class="article-anchor" href="#管理索引" aria-hidden="true"></a></h2><blockquote>
+<p>相当于目录，记录表中的关键字和rowid的对应关系，加速查找数据的速度。</p>
+</blockquote>
+<h3 id="何时创建索引" class="article-heading"><a href="#何时创建索引" class="headerlink" title="何时创建索引"></a>何时创建索引<a class="article-anchor" href="#何时创建索引" aria-hidden="true"></a></h3><ul>
+<li>一列包含有大范围值</li>
+<li>一列包含有大量空值</li>
+<li>多于一列经常在where字句或者联合条件下被一起使用</li>
+<li>表很大并且大部分的查询预期检索少于2%或%4的行数</li>
+<li>多不一定好</li>
+</ul>
+<h3 id="索引的数据字典" class="article-heading"><a href="#索引的数据字典" class="headerlink" title="索引的数据字典"></a>索引的数据字典<a class="article-anchor" href="#索引的数据字典" aria-hidden="true"></a></h3><ul>
+<li><code>user_indexes</code> 数据字典视图包含索引的名字和唯一性</li>
+<li><code>user_ind_columns</code> 视图包含索引名称，表名称和列名称</li>
+<li><code>index_stats</code> 索引的详细信息</li>
+</ul>
+<h3 id="索引的操作" class="article-heading"><a href="#索引的操作" class="headerlink" title="索引的操作"></a>索引的操作<a class="article-anchor" href="#索引的操作" aria-hidden="true"></a></h3><h4 id="手工创建索引" class="article-heading"><a href="#手工创建索引" class="headerlink" title="手工创建索引"></a>手工创建索引<a class="article-anchor" href="#手工创建索引" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">create index i_emp_ename on emp (ename);</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="查看索引是否被使用" class="article-heading"><a href="#查看索引是否被使用" class="headerlink" title="查看索引是否被使用"></a>查看索引是否被使用<a class="article-anchor" href="#查看索引是否被使用" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">set autotrace traceonly explain</span><br><span class="line">select * from emp where ename='SCOTT';</span><br><span class="line">set autotrace off</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="基于函数的索引" class="article-heading"><a href="#基于函数的索引" class="headerlink" title="基于函数的索引"></a>基于函数的索引<a class="article-anchor" href="#基于函数的索引" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">create index i_emp_ename_f on emp (upper(ename));</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="删除索引" class="article-heading"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引<a class="article-anchor" href="#删除索引" aria-hidden="true"></a></h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">drop index I_EMP_NAME_F;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="索引测试" class="article-heading"><a href="#索引测试" class="headerlink" title="索引测试"></a>索引测试<a class="article-anchor" href="#索引测试" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">--新建测试表e01</span></span><br><span class="line"><span class="keyword">create table</span> e01 <span class="keyword">as</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp;</span><br><span class="line"><span class="comment">--扩充数据</span></span><br><span class="line"><span class="keyword">insert into</span> e01 <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> e01;</span><br><span class="line"><span class="comment">--将该语句多执行几次</span></span><br><span class="line"><span class="operator">/</span></span><br><span class="line"><span class="comment">--修改empno的属性</span></span><br><span class="line"><span class="keyword">alter table</span> e01 modify (empno number);</span><br><span class="line"><span class="comment">--将empno的值改为rownum</span></span><br><span class="line"><span class="keyword">update</span> e01 <span class="keyword">set</span> empno<span class="operator">=</span>rownum</span><br><span class="line"><span class="comment">--开启sqlplus中的时间记录器</span></span><br><span class="line"><span class="keyword">set</span> timing <span class="keyword">on</span></span><br><span class="line"><span class="comment">--查看当前该表的大小</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> blocks<span class="operator">/</span><span class="number">128</span> <span class="keyword">from</span> user_segments <span class="keyword">where</span> segment_name<span class="operator">=</span><span class="string">'E01'</span>;</span><br><span class="line"></span><br><span class="line">BLOCKS<span class="operator">/</span><span class="number">128</span></span><br><span class="line"><span class="comment">----------</span></span><br><span class="line">	<span class="number">39</span></span><br><span class="line"><span class="comment">--39M</span></span><br><span class="line"><span class="comment">--看执行时间</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> e01 <span class="keyword">where</span> empno<span class="operator">=</span><span class="number">1500</span>;</span><br><span class="line"></span><br><span class="line">     EMPNO ENAME      JOB	       MGR HIREDATE	    SAL       COMM</span><br><span class="line"><span class="comment">---------- ---------- --------- ---------- --------- ---------- ----------</span></span><br><span class="line">    DEPTNO</span><br><span class="line"><span class="comment">----------</span></span><br><span class="line">      <span class="number">1500</span> ALLEN      SALESMAN	      <span class="number">7698</span> <span class="number">20</span><span class="operator">-</span>FEB<span class="number">-81</span>	   <span class="number">1600</span>        <span class="number">300</span></span><br><span class="line">	<span class="number">30</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Elapsed: <span class="number">00</span>:<span class="number">00</span>:<span class="number">00.02</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--看执行成本</span></span><br><span class="line"><span class="keyword">set</span> autot trace exp</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">set</span> autot trace exp</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> e01 <span class="keyword">where</span> empno<span class="operator">=</span><span class="number">1500</span>;</span><br><span class="line">Elapsed: <span class="number">00</span>:<span class="number">00</span>:<span class="number">00.00</span></span><br><span class="line"></span><br><span class="line">Execution Plan</span><br><span class="line"><span class="comment">----------------------------------------------------------</span></span><br><span class="line">Plan hash <span class="keyword">value</span>: <span class="number">3036185917</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--------------------------------------------------------------------------</span></span><br><span class="line"><span class="operator">|</span> Id  <span class="operator">|</span> Operation	  <span class="operator">|</span> Name <span class="operator">|</span> <span class="keyword">Rows</span>  <span class="operator">|</span> Bytes <span class="operator">|</span> Cost (<span class="operator">%</span>CPU)<span class="operator">|</span> <span class="type">Time</span>	 <span class="operator">|</span></span><br><span class="line"><span class="comment">--------------------------------------------------------------------------</span></span><br><span class="line"><span class="operator">|</span>   <span class="number">0</span> <span class="operator">|</span> <span class="keyword">SELECT</span> STATEMENT  <span class="operator">|</span>	 <span class="operator">|</span>    <span class="number">54</span> <span class="operator">|</span>  <span class="number">4698</span> <span class="operator">|</span>  <span class="number">1338</span>   (<span class="number">1</span>)<span class="operator">|</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">17</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span><span class="operator">*</span>  <span class="number">1</span> <span class="operator">|</span>  <span class="keyword">TABLE</span> ACCESS <span class="keyword">FULL</span><span class="operator">|</span> E01  <span class="operator">|</span>    <span class="number">54</span> <span class="operator">|</span>  <span class="number">4698</span> <span class="operator">|</span>  <span class="number">1338</span>   (<span class="number">1</span>)<span class="operator">|</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">17</span> <span class="operator">|</span></span><br><span class="line"><span class="comment">--------------------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">Predicate Information (identified <span class="keyword">by</span> operation id):</span><br><span class="line"><span class="comment">---------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">   <span class="number">1</span> <span class="operator">-</span> <span class="keyword">filter</span>("EMPNO"<span class="operator">=</span><span class="number">1500</span>)</span><br><span class="line"></span><br><span class="line">Note</span><br><span class="line"><span class="comment">-----</span></span><br><span class="line">   <span class="operator">-</span> <span class="keyword">dynamic</span> sampling used <span class="keyword">for</span> this statement (level<span class="operator">=</span><span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">--查看e01表有4992个block块，每个block大小为8KB</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> segment_name,blocks <span class="keyword">from</span> user_segments <span class="keyword">where</span> segment_name<span class="operator">=</span><span class="built_in">upper</span>(<span class="string">'e01'</span>);</span><br><span class="line"></span><br><span class="line">SEGMENT_NAME</span><br><span class="line"><span class="comment">--------------------------------------------------------------------------------</span></span><br><span class="line">    BLOCKS</span><br><span class="line"><span class="comment">----------</span></span><br><span class="line">E01</span><br><span class="line">      <span class="number">4992</span></span><br><span class="line"><span class="comment">--当前为了找到empno为1500的行，会读取4992个block</span></span><br><span class="line"><span class="comment">--新建索引</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">create</span> index i_e01_empno <span class="keyword">on</span> e01 (empno);</span><br><span class="line"></span><br><span class="line">Index created.</span><br><span class="line"><span class="comment">--重新查看相同的sql，对比执行成本的对比</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">set</span> linesize <span class="number">150</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> e01 <span class="keyword">where</span> empno<span class="operator">=</span><span class="number">1500</span>;</span><br><span class="line">Elapsed: <span class="number">00</span>:<span class="number">00</span>:<span class="number">00.00</span></span><br><span class="line"></span><br><span class="line">Execution Plan</span><br><span class="line"><span class="comment">----------------------------------------------------------</span></span><br><span class="line">Plan hash <span class="keyword">value</span>: <span class="number">2767643581</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="operator">|</span> Id  <span class="operator">|</span> Operation		    <span class="operator">|</span> Name	  <span class="operator">|</span> <span class="keyword">Rows</span>  <span class="operator">|</span> Bytes <span class="operator">|</span> Cost (<span class="operator">%</span>CPU)<span class="operator">|</span> <span class="type">Time</span>	  <span class="operator">|</span></span><br><span class="line"><span class="comment">-------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="operator">|</span>   <span class="number">0</span> <span class="operator">|</span> <span class="keyword">SELECT</span> STATEMENT	    <span class="operator">|</span>		  <span class="operator">|</span>	<span class="number">1</span> <span class="operator">|</span>    <span class="number">87</span> <span class="operator">|</span>	<span class="number">2</span>   (<span class="number">0</span>)<span class="operator">|</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>   <span class="number">1</span> <span class="operator">|</span>  <span class="keyword">TABLE</span> ACCESS <span class="keyword">BY</span> INDEX ROWID<span class="operator">|</span> E01	  <span class="operator">|</span>	<span class="number">1</span> <span class="operator">|</span>    <span class="number">87</span> <span class="operator">|</span>	<span class="number">2</span>   (<span class="number">0</span>)<span class="operator">|</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span><span class="operator">*</span>  <span class="number">2</span> <span class="operator">|</span>   INDEX <span class="keyword">RANGE</span> SCAN	    <span class="operator">|</span> I_E01_EMPNO <span class="operator">|</span>	<span class="number">1</span> <span class="operator">|</span>	  <span class="operator">|</span>	<span class="number">2</span>   (<span class="number">0</span>)<span class="operator">|</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> <span class="operator">|</span></span><br><span class="line"><span class="comment">-------------------------------------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">Predicate Information (identified <span class="keyword">by</span> operation id):</span><br><span class="line"><span class="comment">---------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">   <span class="number">2</span> <span class="operator">-</span> access("EMPNO"<span class="operator">=</span><span class="number">1500</span>)</span><br><span class="line"></span><br><span class="line">Note</span><br><span class="line"><span class="comment">-----</span></span><br><span class="line">   <span class="operator">-</span> <span class="keyword">dynamic</span> sampling used <span class="keyword">for</span> this statement (level<span class="operator">=</span><span class="number">2</span>)</span><br><span class="line"><span class="comment">--可以看到执行成本从1338降低到2</span></span><br><span class="line"><span class="comment">--索引的详细信息</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">desc</span> index_stats</span><br><span class="line"> Name										     <span class="keyword">Null</span>?    Type</span><br><span class="line"> <span class="comment">----------------------------------------------------------------------------------- -------- --------------------------------------------------------</span></span><br><span class="line"> HEIGHT 										      NUMBER</span><br><span class="line"> BLOCKS 										      NUMBER</span><br><span class="line"> NAME											      VARCHAR2(<span class="number">30</span>)</span><br><span class="line"> PARTITION_NAME 									      VARCHAR2(<span class="number">30</span>)</span><br><span class="line"> LF_ROWS										      NUMBER</span><br><span class="line"> LF_BLKS										      NUMBER</span><br><span class="line"> LF_ROWS_LEN										      NUMBER</span><br><span class="line"> LF_BLK_LEN										      NUMBER</span><br><span class="line"> BR_ROWS										      NUMBER</span><br><span class="line"> BR_BLKS										      NUMBER</span><br><span class="line"> BR_ROWS_LEN										      NUMBER</span><br><span class="line"> BR_BLK_LEN										      NUMBER</span><br><span class="line"> DEL_LF_ROWS										      NUMBER</span><br><span class="line"> DEL_LF_ROWS_LEN									      NUMBER</span><br><span class="line"> DISTINCT_KEYS										      NUMBER</span><br><span class="line"> MOST_REPEATED_KEY									      NUMBER</span><br><span class="line"> BTREE_SPACE										      NUMBER</span><br><span class="line"> USED_SPACE										      NUMBER</span><br><span class="line"> PCT_USED										      NUMBER</span><br><span class="line"> ROWS_PER_KEY										      NUMBER</span><br><span class="line"> BLKS_GETS_PER_ACCESS									      NUMBER</span><br><span class="line"> PRE_ROWS										      NUMBER</span><br><span class="line"> PRE_ROWS_LEN										      NUMBER</span><br><span class="line"> OPT_CMPR_COUNT 									      NUMBER</span><br><span class="line"> OPT_CMPR_PCTSAVE									      NUMBER</span><br><span class="line"></span><br><span class="line"><span class="comment">--打开scott用户的信息搜集</span></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">dbms_stats.gather_schema_stats(ownname<span class="operator">=</span><span class="operator">&gt;</span><span class="string">'scott'</span>,</span><br><span class="line">estimate_percent<span class="operator">=</span><span class="operator">&gt;</span>DBMS_STATS.AUTO_SAMPLE_SIZE,</span><br><span class="line">options<span class="operator">=</span><span class="operator">&gt;</span><span class="string">'gather'</span>,</span><br><span class="line">degree<span class="operator">=</span><span class="operator">&gt;</span>DBMS_STATS.AUTO_DEGREE,</span><br><span class="line">method_opt<span class="operator">=</span><span class="operator">&gt;</span><span class="string">'for all columns size repeat'</span>,</span><br><span class="line">cascade<span class="operator">=</span><span class="operator">&gt;</span><span class="literal">TRUE</span>);</span><br><span class="line"><span class="keyword">END</span>;</span><br><span class="line"><span class="operator">/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--查看表的情况</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> num_rows,blocks <span class="keyword">from</span> user_tab_statistics;</span><br><span class="line"></span><br><span class="line">  NUM_ROWS     BLOCKS</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">	 <span class="number">4</span>	    <span class="number">5</span></span><br><span class="line">	<span class="number">15</span>	    <span class="number">5</span></span><br><span class="line">	 <span class="number">0</span>	    <span class="number">0</span></span><br><span class="line">	 <span class="number">5</span>	    <span class="number">5</span></span><br><span class="line">	 <span class="number">0</span>	    <span class="number">0</span></span><br><span class="line">    <span class="number">860160</span>	 <span class="number">4909</span></span><br><span class="line"></span><br><span class="line"><span class="number">6</span> <span class="keyword">rows</span> selected.</span><br><span class="line"></span><br><span class="line">Elapsed: <span class="number">00</span>:<span class="number">00</span>:<span class="number">00.06</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> table_name,blocks <span class="keyword">from</span> user_tables;</span><br><span class="line"></span><br><span class="line">TABLE_NAME			   BLOCKS</span><br><span class="line"><span class="comment">------------------------------ ----------</span></span><br><span class="line">E01				     <span class="number">4909</span></span><br><span class="line">T01					<span class="number">0</span></span><br><span class="line">SALGRADE				<span class="number">5</span></span><br><span class="line">BONUS					<span class="number">0</span></span><br><span class="line">EMP					<span class="number">5</span></span><br><span class="line">DEPT					<span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="number">6</span> <span class="keyword">rows</span> selected.</span><br><span class="line"><span class="comment">--查看索引情况</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> index_name,blevel,num_rows <span class="keyword">from</span> user_ind_statistics;</span><br><span class="line"></span><br><span class="line">INDEX_NAME			   BLEVEL   NUM_ROWS</span><br><span class="line"><span class="comment">------------------------------ ---------- ----------</span></span><br><span class="line">PK_DEPT 				<span class="number">0</span>	   <span class="number">4</span></span><br><span class="line">PK_EMP					<span class="number">0</span>	  <span class="number">15</span></span><br><span class="line">I_E01_EMPNO				<span class="number">2</span>     <span class="number">860160</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">--分析索引结构有效性</span></span><br><span class="line"><span class="comment">--index_stats记录的时当前会话中最近一次的分析索引情况</span></span><br><span class="line"><span class="keyword">select</span> name,height,blocks,br_blks,br_rows,lf_blks,lf_rows <span class="keyword">from</span> index_stats;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> index i_e01 <span class="keyword">on</span> e01 (deptno);</span><br><span class="line"><span class="keyword">select</span> name,height,blocks,br_blks,br_rows,lf_blks,lf_rows <span class="keyword">from</span> index_stats;</span><br><span class="line">analyze index i_e01 validate structure;</span><br><span class="line"><span class="keyword">select</span> name,height,blocks,br_blks,br_rows,lf_blks,lf_rows <span class="keyword">from</span> index_stats;</span><br><span class="line"></span><br><span class="line">NAME				   HEIGHT     BLOCKS	BR_BLKS    BR_ROWS    LF_BLKS	 LF_ROWS</span><br><span class="line"><span class="comment">------------------------------ ---------- ---------- ---------- ---------- ---------- ----------</span></span><br><span class="line">I_E01					<span class="number">3</span>	<span class="number">1664</span>	      <span class="number">5</span>       <span class="number">1567</span>	 <span class="number">1568</span>	  <span class="number">802816</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> analyze index i_e01_empno validate structure;</span><br><span class="line"></span><br><span class="line">Index analyzed.</span><br><span class="line"></span><br><span class="line">Elapsed: <span class="number">00</span>:<span class="number">00</span>:<span class="number">00.37</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> name,height,blocks,br_blks,br_rows,lf_blks,lf_rows <span class="keyword">from</span> index_stats;</span><br><span class="line"></span><br><span class="line">NAME				   HEIGHT     BLOCKS	BR_BLKS    BR_ROWS    LF_BLKS	 LF_ROWS</span><br><span class="line"><span class="comment">------------------------------ ---------- ---------- ---------- ---------- ---------- ----------</span></span><br><span class="line">I_E01_EMPNO				<span class="number">3</span>	<span class="number">1920</span>	      <span class="number">5</span>       <span class="number">1791</span>	 <span class="number">1792</span>	  <span class="number">860160</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="index-stats表分析" class="article-heading"><a href="#index-stats表分析" class="headerlink" title="index_stats表分析"></a>index_stats表分析<a class="article-anchor" href="#index-stats表分析" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th align="left">属性</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">height</td>
+<td align="left">索引的高度，层级从0开始</td>
+</tr>
+<tr>
+<td align="left">blocks</td>
+<td align="left">索引在后台占用多少块</td>
+</tr>
+<tr>
+<td align="left">br_blks</td>
+<td align="left">索引分支有多少块</td>
+</tr>
+<tr>
+<td align="left">br_rows</td>
+<td align="left">索引分支有多少行</td>
+</tr>
+<tr>
+<td align="left">lf_blks</td>
+<td align="left">叶子有多少块</td>
+</tr>
+<tr>
+<td align="left">lf_rows</td>
+<td align="left">叶子有多少行</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">st=&gt;start: 查找empno为450的行</span><br><span class="line">i_br=&gt;inputoutpu: 索引分支(1-480的行在xx叶子节点上)</span><br><span class="line">i_lf=&gt;inputoutput: 索引叶子(450的行对应的rowid为xxx)</span><br><span class="line">data_b=&gt;inputoutput: 数据块</span><br><span class="line">e=&gt;end</span><br><span class="line"></span><br><span class="line">st-&gt;i_br-&gt;i_lf-&gt;data_b-&gt;e</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>所有的数据都是放在叶子节点上</li>
+<li>分支记录的是“范围+地址”</li>
+<li>叶子记录的时“关键字+rowid的一个组合”</li>
+<li>rowid是记录数据的物理地址</li>
+</ul>
+<p>通过rowid来查找数据是最快的</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> rowid,ename,empno <span class="keyword">from</span> e01 <span class="keyword">where</span> rownum <span class="operator">&lt;</span> <span class="number">11</span>;</span><br><span class="line"></span><br><span class="line">ROWID		   ENAME	   EMPNO</span><br><span class="line"><span class="comment">------------------ ---------- ----------</span></span><br><span class="line">AAAVo9AAEAAAAILAAA		       <span class="number">1</span></span><br><span class="line">AAAVo9AAEAAAAILAAB SMITH	       <span class="number">2</span></span><br><span class="line">AAAVo9AAEAAAAILAAC ALLEN	       <span class="number">3</span></span><br><span class="line">AAAVo9AAEAAAAILAAD WARD 	       <span class="number">4</span></span><br><span class="line">AAAVo9AAEAAAAILAAE JONES	       <span class="number">5</span></span><br><span class="line">AAAVo9AAEAAAAILAAF MARTIN	       <span class="number">6</span></span><br><span class="line">AAAVo9AAEAAAAILAAG BLAKE	       <span class="number">7</span></span><br><span class="line">AAAVo9AAEAAAAILAAH CLARK	       <span class="number">8</span></span><br><span class="line">AAAVo9AAEAAAAILAAI SCOTT	       <span class="number">9</span></span><br><span class="line">AAAVo9AAEAAAAILAAJ KING 	      <span class="number">10</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> rowid,empno,ename <span class="keyword">from</span> e01 <span class="keyword">where</span> rowid<span class="operator">=</span><span class="string">'AAAVo9AAEAAAAILAAI'</span>;</span><br><span class="line"></span><br><span class="line">Execution Plan</span><br><span class="line"><span class="comment">----------------------------------------------------------</span></span><br><span class="line">Plan hash <span class="keyword">value</span>: <span class="number">3699198527</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-----------------------------------------------------------------------------------</span></span><br><span class="line"><span class="operator">|</span> Id  <span class="operator">|</span> Operation		   <span class="operator">|</span> Name <span class="operator">|</span> <span class="keyword">Rows</span>  <span class="operator">|</span> Bytes <span class="operator">|</span> Cost (<span class="operator">%</span>CPU)<span class="operator">|</span> <span class="type">Time</span>	  <span class="operator">|</span></span><br><span class="line"><span class="comment">-----------------------------------------------------------------------------------</span></span><br><span class="line"><span class="operator">|</span>   <span class="number">0</span> <span class="operator">|</span> <span class="keyword">SELECT</span> STATEMENT	   <span class="operator">|</span>	  <span class="operator">|</span>	<span class="number">1</span> <span class="operator">|</span>    <span class="number">22</span> <span class="operator">|</span>	<span class="number">1</span>   (<span class="number">0</span>)<span class="operator">|</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>   <span class="number">1</span> <span class="operator">|</span>  <span class="keyword">TABLE</span> ACCESS <span class="keyword">BY</span> <span class="keyword">USER</span> ROWID<span class="operator">|</span> E01  <span class="operator">|</span>	<span class="number">1</span> <span class="operator">|</span>    <span class="number">22</span> <span class="operator">|</span>	<span class="number">1</span>   (<span class="number">0</span>)<span class="operator">|</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> <span class="operator">|</span></span><br><span class="line"><span class="comment">-----------------------------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> rowid,empno,ename <span class="keyword">from</span> e01 <span class="keyword">where</span> empno<span class="operator">=</span><span class="number">9</span>;</span><br><span class="line"></span><br><span class="line">Execution Plan</span><br><span class="line"><span class="comment">----------------------------------------------------------</span></span><br><span class="line">Plan hash <span class="keyword">value</span>: <span class="number">2767643581</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="operator">|</span> Id  <span class="operator">|</span> Operation		    <span class="operator">|</span> Name	  <span class="operator">|</span> <span class="keyword">Rows</span>  <span class="operator">|</span> Bytes <span class="operator">|</span> Cost (<span class="operator">%</span>CPU)<span class="operator">|</span> <span class="type">Time</span>	  <span class="operator">|</span></span><br><span class="line"><span class="comment">-------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="operator">|</span>   <span class="number">0</span> <span class="operator">|</span> <span class="keyword">SELECT</span> STATEMENT	    <span class="operator">|</span>		  <span class="operator">|</span>	<span class="number">1</span> <span class="operator">|</span>    <span class="number">22</span> <span class="operator">|</span>	<span class="number">4</span>   (<span class="number">0</span>)<span class="operator">|</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>   <span class="number">1</span> <span class="operator">|</span>  <span class="keyword">TABLE</span> ACCESS <span class="keyword">BY</span> INDEX ROWID<span class="operator">|</span> E01	  <span class="operator">|</span>	<span class="number">1</span> <span class="operator">|</span>    <span class="number">22</span> <span class="operator">|</span>	<span class="number">4</span>   (<span class="number">0</span>)<span class="operator">|</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span><span class="operator">*</span>  <span class="number">2</span> <span class="operator">|</span>   INDEX <span class="keyword">RANGE</span> SCAN	    <span class="operator">|</span> I_E01_EMPNO <span class="operator">|</span>	<span class="number">1</span> <span class="operator">|</span>	  <span class="operator">|</span>	<span class="number">3</span>   (<span class="number">0</span>)<span class="operator">|</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> <span class="operator">|</span></span><br><span class="line"><span class="comment">-------------------------------------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">Predicate Information (identified <span class="keyword">by</span> operation id):</span><br><span class="line"><span class="comment">---------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">   <span class="number">2</span> <span class="operator">-</span> access("EMPNO"<span class="operator">=</span><span class="number">9</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">--可以看到通过rowid来查找数据的消耗是1</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="rowid的格式" class="article-heading"><a href="#rowid的格式" class="headerlink" title="rowid的格式"></a>rowid的格式<a class="article-anchor" href="#rowid的格式" aria-hidden="true"></a></h4><p>rowid是64进制的</p>
+<p>例如<code>AAAVREAAEAAAACXAAI</code></p>
+<table>
+<thead>
+<tr>
+<th align="left">对象id</th>
+<th align="left">文件id</th>
+<th align="left">块id</th>
+<th align="left">row number</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">AAAVRE</td>
+<td align="left">AAE</td>
+<td align="left">AAAACX</td>
+<td align="left">AAI</td>
+</tr>
+<tr>
+<td align="left">6位</td>
+<td align="left">3位</td>
+<td align="left">6位</td>
+<td align="left">3位</td>
+</tr>
+<tr>
+<td align="left">object_id</td>
+<td align="left">file_id</td>
+<td align="left">block_id</td>
+<td align="left">row number</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注意：在rowid中过的最后三位记录的row number是计算机记录的从0开始的，而我们在读表的时候使用的rownum是从1开始的。</p>
+</blockquote>
+<p>64位换算</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">A  <span class="operator">-</span>   Z    a    <span class="operator">-</span>   z   <span class="number">0</span>   <span class="operator">-</span>   <span class="number">9</span>   <span class="operator">+</span>   <span class="operator">/</span></span><br><span class="line"><span class="number">0</span>  <span class="operator">-</span>   <span class="number">25</span>   <span class="number">26</span>   <span class="operator">-</span>   <span class="number">51</span>  <span class="number">52</span>  <span class="operator">-</span>   <span class="number">61</span>  <span class="number">62</span>  <span class="number">63</span></span><br><span class="line">VRE <span class="operator">=</span> <span class="number">21</span><span class="operator">*</span><span class="number">64</span><span class="operator">*</span><span class="number">64</span><span class="operator">+</span><span class="number">17</span><span class="operator">*</span><span class="number">64</span><span class="operator">+</span><span class="number">4</span> <span class="operator">=</span> <span class="number">87108</span></span><br><span class="line"><span class="number">2</span><span class="operator">*</span><span class="number">64</span><span class="operator">+</span><span class="number">23</span> <span class="operator">=</span> <span class="number">151</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--AAAVo9AAEAAAAILAAI 代表的含义</span></span><br><span class="line">AAAVo9<span class="operator">=</span><span class="number">21</span><span class="operator">*</span><span class="number">64</span><span class="operator">*</span><span class="number">64</span><span class="operator">+</span><span class="number">40</span><span class="operator">*</span><span class="number">64</span><span class="operator">+</span><span class="number">61</span><span class="operator">*</span><span class="number">1</span><span class="operator">=</span><span class="number">88637</span></span><br><span class="line">AAE<span class="operator">=</span><span class="number">4</span></span><br><span class="line">AAAAIL<span class="operator">=</span><span class="number">8</span><span class="operator">*</span><span class="number">64</span><span class="operator">+</span><span class="number">11</span><span class="operator">=</span><span class="number">523</span></span><br><span class="line">AAI<span class="operator">=</span><span class="number">8</span></span><br><span class="line"></span><br><span class="line">对象id为<span class="number">88637</span></span><br><span class="line">文件id为<span class="number">4</span></span><br><span class="line">块id为<span class="number">523</span></span><br><span class="line">rownum为<span class="number">8</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--通过rowid来手动读取数据</span></span><br><span class="line">conn <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">system</span> dump datafile <span class="number">4</span> block <span class="number">523</span>;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">parameter</span> background;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">parameter</span> background</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">background_core_dump		     string	 partial</span><br><span class="line">background_dump_dest		     string	 <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>diag<span class="operator">/</span>rdbms<span class="operator">/</span>orc</span><br><span class="line">						 l<span class="operator">/</span>orcl<span class="operator">/</span>trace</span><br><span class="line">[oracle<span class="variable">@oracle0</span> <span class="operator">~</span>]$ cd <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>diag<span class="operator">/</span>rdbms<span class="operator">/</span>orcl<span class="operator">/</span>orcl<span class="operator">/</span>trace</span><br><span class="line">[oracle<span class="variable">@oracle0</span> trace]$ ll</span><br><span class="line">total <span class="number">3280</span></span><br><span class="line"><span class="operator">-</span>rw<span class="operator">-</span>r<span class="comment">----- 1 oracle oinstall   87570 Oct 12 13:20 alert_orcl.log</span></span><br><span class="line">drwxr<span class="operator">-</span>xr<span class="operator">-</span>x <span class="number">2</span> oracle oinstall    <span class="number">4096</span> Oct <span class="number">12</span> <span class="number">13</span>:<span class="number">11</span> cdmp_20171012131154</span><br><span class="line"><span class="operator">-</span>rw<span class="operator">-</span>r<span class="comment">----- 1 oracle oinstall    3105 Oct  9 12:45 orcl_ckpt_2709.trc</span></span><br><span class="line"><span class="operator">-</span>rw<span class="operator">-</span>r<span class="comment">----- 1 oracle oinstall      98 Oct  9 12:45 orcl_ckpt_2709.trm</span></span><br><span class="line"><span class="operator">-</span>rw<span class="operator">-</span>r<span class="comment">----- 1 oracle oinstall    4431 Oct 12 13:32 orcl_ckpt_2711.trc</span></span><br><span class="line">[oracle<span class="variable">@oracle0</span> trace]$ <span class="keyword">for</span> i <span class="keyword">in</span> `ls`;do grep <span class="operator">-</span>l data_block $i ;done</span><br><span class="line">orcl_diag_2717_20171012131154.trc</span><br><span class="line">orcl_ora_3395.trc</span><br><span class="line"></span><br><span class="line">Trace file <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>diag<span class="operator">/</span>rdbms<span class="operator">/</span>orcl<span class="operator">/</span>orcl<span class="operator">/</span>trace<span class="operator">/</span>orcl_ora_3395.trc</span><br><span class="line">Oracle Database <span class="number">11</span>g Enterprise Edition <span class="keyword">Release</span> <span class="number">11.2</span><span class="number">.0</span><span class="number">.4</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"><span class="keyword">With</span> the Partitioning, OLAP, Data Mining <span class="keyword">and</span> <span class="type">Real</span> Application Testing options</span><br><span class="line">ORACLE_HOME <span class="operator">=</span> <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle<span class="operator">/</span>product<span class="operator">/</span><span class="number">11.2</span><span class="number">.0</span><span class="operator">/</span>db_1</span><br><span class="line"><span class="keyword">System</span> name:    Linux</span><br><span class="line">Node name:      oracle0.example.com</span><br><span class="line"><span class="keyword">Release</span>:        <span class="number">2.6</span><span class="number">.18</span><span class="number">-398.</span>el5</span><br><span class="line">Version:        #<span class="number">1</span> SMP Tue Aug <span class="number">12</span> <span class="number">06</span>:<span class="number">26</span>:<span class="number">17</span> EDT <span class="number">2014</span></span><br><span class="line">Machine:        x86_64</span><br><span class="line">Instance name: orcl</span><br><span class="line">Redo thread mounted <span class="keyword">by</span> this instance: <span class="number">1</span></span><br><span class="line">Oracle process number: <span class="number">19</span></span><br><span class="line">Unix process pid: <span class="number">3395</span>, image: oracle<span class="variable">@oracle0</span>.example.com (TNS V1<span class="operator">-</span>V3)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">2017</span><span class="number">-10</span><span class="number">-12</span> <span class="number">14</span>:<span class="number">53</span>:<span class="number">12.908</span></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> SESSION ID:(<span class="number">138.11</span>) <span class="number">2017</span><span class="number">-10</span><span class="number">-12</span> <span class="number">14</span>:<span class="number">53</span>:<span class="number">12.908</span></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> CLIENT ID:() <span class="number">2017</span><span class="number">-10</span><span class="number">-12</span> <span class="number">14</span>:<span class="number">53</span>:<span class="number">12.908</span></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> SERVICE NAME:(SYS$USERS) <span class="number">2017</span><span class="number">-10</span><span class="number">-12</span> <span class="number">14</span>:<span class="number">53</span>:<span class="number">12.908</span></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="keyword">MODULE</span> NAME:(sqlplus<span class="variable">@oracle0</span>.example.com (TNS V1<span class="operator">-</span>V3)) <span class="number">2017</span><span class="number">-10</span><span class="number">-12</span> <span class="number">14</span>:<span class="number">53</span>:<span class="number">12.908</span></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> ACTION NAME:() <span class="number">2017</span><span class="number">-10</span><span class="number">-12</span> <span class="number">14</span>:<span class="number">53</span>:<span class="number">12.908</span></span><br><span class="line">...此处省略</span><br><span class="line">tab <span class="number">0</span>, <span class="type">row</span> <span class="number">8</span>, <span class="variable">@0xb6e</span></span><br><span class="line">tl: <span class="number">39</span> fb: <span class="comment">--H-FL-- lb: 0x2  cc: 8</span></span><br><span class="line">col  <span class="number">0</span>: [ <span class="number">2</span>]  c1 <span class="number">0</span>a</span><br><span class="line">col  <span class="number">1</span>: [ <span class="number">5</span>]  <span class="number">53</span> <span class="number">43</span> <span class="number">4</span>f <span class="number">54</span> <span class="number">54</span></span><br><span class="line">col  <span class="number">2</span>: [ <span class="number">7</span>]  <span class="number">41</span> <span class="number">4</span>e <span class="number">41</span> <span class="number">4</span>c <span class="number">59</span> <span class="number">53</span> <span class="number">54</span></span><br><span class="line">col  <span class="number">3</span>: [ <span class="number">3</span>]  c2 <span class="number">4</span>c <span class="number">43</span></span><br><span class="line">col  <span class="number">4</span>: [ <span class="number">7</span>]  <span class="number">77</span> bb <span class="number">04</span> <span class="number">13</span> <span class="number">01</span> <span class="number">01</span> <span class="number">01</span></span><br><span class="line">col  <span class="number">5</span>: [ <span class="number">2</span>]  c2 <span class="number">1</span>f</span><br><span class="line">col  <span class="number">6</span>: <span class="operator">*</span><span class="keyword">NULL</span><span class="operator">*</span></span><br><span class="line">col  <span class="number">7</span>: [ <span class="number">2</span>]  c1 <span class="number">15</span></span><br><span class="line"><span class="comment">--找到rownum=8的行，找到ename列的值为“53 43 4f 54 54”16进制</span></span><br><span class="line"><span class="keyword">select</span> chr(to_number(<span class="string">'53'</span>,<span class="string">'xx'</span>))<span class="operator">||</span>chr(to_number(<span class="string">'43'</span>,<span class="string">'xx'</span>))<span class="operator">||</span>chr(to_number(<span class="string">'4f'</span>,<span class="string">'xx'</span>))<span class="operator">||</span>chr(to_number(<span class="string">'54'</span>,<span class="string">'xx'</span>))<span class="operator">||</span>chr(to_number(<span class="string">'54'</span>,<span class="string">'xx'</span>)) <span class="keyword">from</span> dual;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> chr(to_number(<span class="string">'53'</span>,<span class="string">'xx'</span>))<span class="operator">||</span>chr(to_number(<span class="string">'43'</span>,<span class="string">'xx'</span>))<span class="operator">||</span>chr(to_number(<span class="string">'4f'</span>,<span class="string">'xx'</span>))<span class="operator">||</span>chr(to_number(<span class="string">'54'</span>,<span class="string">'xx'</span>))<span class="operator">||</span>chr(to_number(<span class="string">'54'</span>,<span class="string">'xx'</span>)) <span class="keyword">from</span> dual;</span><br><span class="line"></span><br><span class="line">CHR(T</span><br><span class="line"><span class="comment">-----</span></span><br><span class="line">SCOTT</span><br></pre></td></tr></tbody></table></figure>
+
+<p>oracle中可以通过<code>chr(to_number('43','xx'))</code>将16进制转字符串</p>
+<h2 id="管理同义词" class="article-heading"><a href="#管理同义词" class="headerlink" title="管理同义词"></a>管理同义词<a class="article-anchor" href="#管理同义词" aria-hidden="true"></a></h2><blockquote>
+<p>对象的别名</p>
+</blockquote>
+<h3 id="创建私有同义词" class="article-heading"><a href="#创建私有同义词" class="headerlink" title="创建私有同义词"></a>创建私有同义词<a class="article-anchor" href="#创建私有同义词" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> synonym e01 <span class="keyword">for</span> scott.e01;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="创建公有同义词" class="article-heading"><a href="#创建公有同义词" class="headerlink" title="创建公有同义词"></a>创建公有同义词<a class="article-anchor" href="#创建公有同义词" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> public synonym e01 <span class="keyword">for</span> scott.e01;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="删除同义词" class="article-heading"><a href="#删除同义词" class="headerlink" title="删除同义词"></a>删除同义词<a class="article-anchor" href="#删除同义词" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">drop</span> synonym e01;</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:44.024Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E7%9A%84%E5%AF%B9%E8%B1%A1"><span class="toc-text">管理的对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99"><span class="toc-text">对象命名规则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E8%A1%A8"><span class="toc-text">管理表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-text">表的分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8%E6%93%8D%E4%BD%9C"><span class="toc-text">表操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%A1%A8"><span class="toc-text">创建表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%A1%A8%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-text">查看表的结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%90%E6%9F%A5%E8%AF%A2%E5%BB%BA%E8%A1%A8%E6%8B%B7%E8%B4%9D%E8%A1%8C"><span class="toc-text">子查询建表拷贝行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%90%E6%9F%A5%E8%AF%A2%E5%BB%BA%E8%A1%A8%E6%8B%B7%E8%B4%9D%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-text">子查询建表拷贝表结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%BA%8B%E5%8A%A1%E7%BA%A7%E4%B8%B4%E6%97%B6%E8%A1%A8"><span class="toc-text">创建事务级临时表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%BC%9A%E8%AF%9D%E7%BA%A7%E4%B8%B4%E6%97%B6%E8%A1%A8"><span class="toc-text">创建会话级临时表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A2%9E%E5%8A%A0%E5%88%97"><span class="toc-text">增加列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%88%97"><span class="toc-text">修改列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E5%91%BD%E5%90%8D%E5%88%97"><span class="toc-text">重命名列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%88%97"><span class="toc-text">删除列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8%E4%B8%9A%E5%8A%A1%E9%AB%98%E5%B3%B0%E6%9C%9F%E5%88%A0%E9%99%A4%E5%88%97%E5%88%86%E4%B8%BA%E4%B8%A4%E6%AD%A5"><span class="toc-text">在业务高峰期删除列分为两步</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E5%88%97%E6%B7%BB%E5%8A%A0%E6%B3%A8%E9%87%8A"><span class="toc-text">对列添加注释</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E8%A1%A8%E6%B7%BB%E5%8A%A0%E6%B3%A8%E9%87%8A"><span class="toc-text">对表添加注释</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E5%91%BD%E5%90%8D%E8%A1%A8"><span class="toc-text">重命名表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%88%AA%E6%96%AD%E8%A1%A8"><span class="toc-text">截断表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%86%E8%A1%A8%E6%94%BE%E5%85%A5%E5%9B%9E%E6%94%B6%E7%AB%99"><span class="toc-text">将表放入回收站</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%86%E5%9B%9E%E6%94%B6%E7%AB%99%E5%AF%B9%E8%B1%A1%E8%BF%98%E5%8E%9F"><span class="toc-text">将回收站对象还原</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%BB%E5%BA%95%E5%88%A0%E9%99%A4%E8%A1%A8"><span class="toc-text">彻底删除表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%85%E7%A9%BA%E5%9B%9E%E6%94%B6%E7%AB%99"><span class="toc-text">清空回收站</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E7%BA%A6%E6%9D%9F"><span class="toc-text">管理约束</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E8%A1%A8%E6%97%B6%E7%9B%B4%E6%8E%A5%E5%90%AF%E7%94%A8%E7%BA%A6%E6%9D%9F%EF%BC%8C%E5%88%97%E7%BA%A7%E5%88%AB%E5%90%AF%E7%94%A8%E7%BA%A6%E6%9D%9F%EF%BC%8C%E7%BA%A6%E6%9D%9F%E4%BA%A7%E7%94%A8%E7%B3%BB%E7%BB%9F%E5%91%BD%E5%90%8D"><span class="toc-text">建表时直接启用约束，列级别启用约束，约束产用系统命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E8%A1%A8%E6%97%B6%E7%9B%B4%E6%8E%A5%E5%90%AF%E7%94%A8%E7%BA%A6%E6%9D%9F%EF%BC%8C%E5%88%97%E7%BA%A7%E5%88%AB%E5%90%AF%E7%94%A8%E7%BA%A6%E6%9D%9F%EF%BC%8C%E7%BA%A6%E6%9D%9F%E4%BA%A7%E7%94%A8%E6%88%B7%E5%91%BD%E5%90%8D"><span class="toc-text">建表时直接启用约束，列级别启用约束，约束产用户命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E7%94%A8%E5%94%AF%E4%B8%80%E9%94%AE%E7%BA%A6%E6%9D%9F"><span class="toc-text">启用唯一键约束</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E7%94%A8%E4%B8%BB%E9%94%AE%E7%BA%A6%E6%9D%9F"><span class="toc-text">启用主键约束</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E7%94%A8%E5%A4%96%E9%94%AE%E7%BA%A6%E6%9D%9F"><span class="toc-text">启用外键约束</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E7%94%A8check%E7%BA%A6%E6%9D%9F"><span class="toc-text">启用check约束</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E9%94%AE%E7%9A%84%E7%BA%A7%E8%81%94%E6%93%8D%E4%BD%9C"><span class="toc-text">外键的级联操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%BA%A6%E6%9D%9F%E7%8A%B6%E6%80%81"><span class="toc-text">查看约束状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E7%94%A8-%E5%85%B3%E9%97%AD%E7%BA%A6%E6%9D%9F"><span class="toc-text">启用|关闭约束</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E5%AE%83%E6%93%8D%E4%BD%9C"><span class="toc-text">其它操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E7%BA%A6%E6%9D%9F"><span class="toc-text">删除约束</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E8%A7%86%E5%9B%BE"><span class="toc-text">管理视图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%86%E5%9B%BE%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-text">视图的优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%86%E5%9B%BE%E7%9A%84%E5%88%86%E7%B1%BB%E2%80%94%E7%AE%80%E5%8D%95%E8%A7%86%E5%9B%BE%E5%92%8C%E5%A4%8D%E6%9D%82%E8%A7%86%E5%9B%BE"><span class="toc-text">视图的分类—简单视图和复杂视图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E8%A7%86%E5%9B%BE%E7%9A%84%E6%9D%83%E9%99%90"><span class="toc-text">管理视图的权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%94%A8%E6%88%B7%E7%9B%AE%E5%89%8D%E6%98%AF%E5%90%A6%E6%B2%A1%E6%9C%89%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE%E7%9A%84%E6%9D%83%E9%99%90"><span class="toc-text">查看用户目前是否没有创建视图的权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%88%E4%BA%88%E7%94%A8%E6%88%B7%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE%E7%9A%84%E6%9D%83%E9%99%90"><span class="toc-text">授予用户创建视图的权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE"><span class="toc-text">创建视图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE-1"><span class="toc-text">创建视图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E8%A7%86%E5%9B%BE"><span class="toc-text">删除视图</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E5%BA%8F%E5%88%97"><span class="toc-text">管理序列</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%8F%E5%88%97%E4%B8%A4%E4%B8%AA%E4%BC%AA%E5%88%97"><span class="toc-text">序列两个伪列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%8F%E5%88%97%E7%9A%84%E5%88%9D%E5%A7%8B%E5%80%BC%E4%B8%8D%E5%8F%AF%E4%BB%A5%E4%BF%AE%E6%94%B9%EF%BC%8C%E5%85%B6%E4%BB%96%E5%B1%9E%E6%80%A7%E9%83%BD%E5%8F%AF%E4%BB%A5%E4%BF%AE%E6%94%B9"><span class="toc-text">序列的初始值不可以修改，其他属性都可以修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%BA%8F%E5%88%97"><span class="toc-text">使用序列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%BA%8F%E5%88%97"><span class="toc-text">删除序列</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E7%B4%A2%E5%BC%95"><span class="toc-text">管理索引</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%95%E6%97%B6%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95"><span class="toc-text">何时创建索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%97%E5%85%B8"><span class="toc-text">索引的数据字典</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="toc-text">索引的操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%8B%E5%B7%A5%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95"><span class="toc-text">手工创建索引</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%B4%A2%E5%BC%95%E6%98%AF%E5%90%A6%E8%A2%AB%E4%BD%BF%E7%94%A8"><span class="toc-text">查看索引是否被使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%87%BD%E6%95%B0%E7%9A%84%E7%B4%A2%E5%BC%95"><span class="toc-text">基于函数的索引</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95"><span class="toc-text">删除索引</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E6%B5%8B%E8%AF%95"><span class="toc-text">索引测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#index-stats%E8%A1%A8%E5%88%86%E6%9E%90"><span class="toc-text">index_stats表分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rowid%E7%9A%84%E6%A0%BC%E5%BC%8F"><span class="toc-text">rowid的格式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E5%90%8C%E4%B9%89%E8%AF%8D"><span class="toc-text">管理同义词</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%A7%81%E6%9C%89%E5%90%8C%E4%B9%89%E8%AF%8D"><span class="toc-text">创建私有同义词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%85%AC%E6%9C%89%E5%90%8C%E4%B9%89%E8%AF%8D"><span class="toc-text">创建公有同义词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%90%8C%E4%B9%89%E8%AF%8D"><span class="toc-text">删除同义词</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

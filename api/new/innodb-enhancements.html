@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>MySQL 8.0的新增功能探索-InnoDB增强功能 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/api/new/innodb-enhancements">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/api/new/innodb-enhancements" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="InnoDB增强功能。 这些InnoDB增强功能已添加：- 每次值更改时，当前最大自动增量计数器值都会写入重做日志，并保存到每个检查点的引擎专用系统表中。这些更改使当前的最大自动增量计数器值在服务器重新启动期间保持不变。另外：  重新启动服务器不再取消 AUTO_INCREMENT &#x3D; Ntable选项的作用。如果将自动递增计数器初始化为特定值，或者将自动递增计数器值更改为较大的值，则新值将在服务">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MySQL 8.0的新增功能探索-InnoDB增强功能">
+<meta property="og:url" content="http://www.toberoot.com/api/new/innodb-enhancements">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="InnoDB增强功能。 这些InnoDB增强功能已添加：- 每次值更改时，当前最大自动增量计数器值都会写入重做日志，并保存到每个检查点的引擎专用系统表中。这些更改使当前的最大自动增量计数器值在服务器重新启动期间保持不变。另外：  重新启动服务器不再取消 AUTO_INCREMENT &#x3D; Ntable选项的作用。如果将自动递增计数器初始化为特定值，或者将自动递增计数器值更改为较大的值，则新值将在服务">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2020-05-26T17:58:00.000Z">
+<meta property="article:modified_time" content="2025-10-21T09:49:48.519Z">
+<meta property="article:author" content="魏亚萍">
+<meta property="article:tag" content="MySQL新特性">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../docs/" class="main-nav-link">Hexo</a><a href="../../news/" class="main-nav-link">News</a><a href="../../api/" class="main-nav-link">MySQL8.0</a><a href="../../database/" class="main-nav-link">Database</a><a href="../../linux/" class="main-nav-link">Linux</a><a href="../../cloud/" class="main-nav-link">Cloud</a><a href="../../singapore/" class="main-nav-link">Singapore</a><a href="../../amy/" class="main-nav-link">AMY</a><a href="../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">MySQL 8.0的新增功能探索-InnoDB增强功能</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/api/new/innodb-enhancements.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <p><strong>InnoDB增强功能。</strong> 这些<code>InnoDB</code>增强功能已添加：- 每次值更改时，当前最大自动增量计数器值都会写入重做日志，并保存到每个检查点的引擎专用系统表中。这些更改使当前的最大自动增量计数器值在服务器重新启动期间保持不变。另外：</p>
+<ul>
+<li><p>重新启动服务器不再取消 <code>AUTO_INCREMENT = N</code>table选项的作用。如果将自动递增计数器初始化为特定值，或者将自动递增计数器值更改为较大的值，则新值将在服务器重新启动后保留。</p>
+</li>
+<li><p>在<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/commit.html"><code>ROLLBACK</code></a> 操作之后立即重新启动服务器 不再导致重用分配给回滚事务的自动增量值。</p>
+</li>
+<li><p>如果将<code>AUTO_INCREMENT</code> 列值修改为大于当前最大自动增量值的值（<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/update.html"><code>UPDATE</code></a>例如，在一个 操作中），则将保留新值，并且后续 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html"><code>INSERT</code></a>操作将从较大的新值开始分配自动增量值。</p>
+<p>有关更多信息，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-auto-increment-handling.html">第15.6.1.6节” InnoDB中的AUTO_INCREMENT处理”</a>和 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-auto-increment-handling.html#innodb-auto-increment-initialization">InnoDB AUTO_INCREMENT计数器初始化</a>。</p>
+</li>
+<li><p>遇到索引树损坏时， <code>InnoDB</code>将损坏标志写入重做日志，这会使损坏标志崩溃。<code>InnoDB</code>还将内存损坏标志数据写入每个检查点上的引擎专用系统表。在恢复期间， <code>InnoDB</code>在将内存表和索引对象标记为已损坏之前，从两个位置读取损坏标志并合并结果。</p>
+</li>
+<li><p>的<code>InnoDB</code> <strong>memcached的</strong>插件支持多个 <code>get</code>操作（读取在一个单一的多键-值对<strong>分布式缓存</strong> 查询）和范围查询。请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-memcached-multiple-get-range-query.html">第15.20.4节” InnoDB memcached多重获取和范围查询支持”</a>。</p>
+</li>
+<li><p>新的动态变量 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_deadlock_detect"><code>innodb_deadlock_detect</code></a>可以用于禁用死锁检测。在高并发系统上，当多个线程等待相同的锁时，死锁检测会导致速度变慢。有时，禁用死锁检测并在<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_lock_wait_timeout"><code>innodb_lock_wait_timeout</code></a> 发生死锁时依靠设置进行事务回滚可能会更有效 。- 新 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-cached-indexes-table.html"><code>INFORMATION_SCHEMA.INNODB_CACHED_INDEXES</code></a> 表报告<code>InnoDB</code>每个索引在缓冲池中缓存的索引页数 。</p>
+</li>
+<li><p><code>InnoDB</code>现在在共享临时表空间中创建临时表 <code>ibtmp1</code>。</p>
+</li>
+<li><p>该<code>InnoDB</code> <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-data-encryption.html">表空间加密功能</a>重做日志和撤销日志数据的支持加密。请参阅 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-data-encryption.html#innodb-data-encryption-redo-log">重做日志加密</a>和 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-data-encryption.html#innodb-data-encryption-undo-log">撤消日志加密</a>。</p>
+</li>
+<li><p><code>InnoDB</code>支持 <code>NOWAIT</code>和<code>SKIP LOCKED</code>选项<code>SELECT ... FOR SHARE</code>以及<code>SELECT ... FOR UPDATE</code>锁定读取语句。 <code>NOWAIT</code>如果请求的行被另一个事务锁定，则导致该语句立即返回。<code>SKIP LOCKED</code>从结果集中删除锁定的行。请参阅 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-locking-reads.html#innodb-locking-reads-nowait-skip-locked">使用NOWAIT和SKIP LOCKED锁定读取并发</a>。</p>
+<p><code>SELECT ... FOR SHARE</code>replaces <code>SELECT ... LOCK IN SHARE MODE</code>，但 <code>LOCK IN SHARE MODE</code>仍可用于向后兼容。这些语句是等效的。然而，<code>FOR UPDATE</code>和 <code>FOR SHARE</code>支持 <code>NOWAIT</code>，<code>SKIP LOCKED</code>和选项。请参见<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/select.html">第13.2.10节” SELECT语句”</a>。 <code>OF *</code>tbl_name<code>*</code></p>
+<p><code>OF *</code>tbl_name<code>*</code> 将锁定查询应用于命名表。</p>
+</li>
+<li><p><code>ADD PARTITION</code>，<code>DROP PARTITION</code>，<code>COALESCE PARTITION</code>，<code>REORGANIZE PARTITION</code>，和<code>REBUILD PARTITION</code> <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/alter-table.html"><code>ALTER TABLE</code></a>选项由本地分区就地API的支持，可能与使用 <code>ALGORITHM={COPY|INPLACE}</code>和 <code>LOCK</code>条款。</p>
+<p><code>DROP PARTITION</code>与一起 <code>ALGORITHM=INPLACE</code>删除分区中存储的数据并删除分区。但是， <code>DROP PARTITION</code>使用 <code>ALGORITHM=COPY</code>或 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_old_alter_table"><code>old_alter_table=ON</code></a> 重建分区表，并尝试将数据从删除的分区移动到具有兼容<code>PARTITION ... VALUES</code> 定义的另一个分区。无法删除的数据将被删除。</p>
+</li>
+<li><p><code>InnoDB</code>现在 ，存储引擎使用MySQL数据字典，而不是其自己的特定于存储引擎的数据字典。有关数据字典的信息，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/data-dictionary.html">第14章，<em>MySQL数据字典</em></a>。</p>
+</li>
+<li><p><code>mysql</code>现在，在MySQL数据目录中<code>InnoDB</code>命名的单个表空间文件中 创建系统表和数据字典表 <code>mysql.ibd</code>。以前，这些表是<code>InnoDB</code>在<code>mysql</code>数据库目录中的单个表空间文件中创建的。</p>
+</li>
+<li><p>MySQL 8.0中引入了以下撤消表空间更改：</p>
+<ul>
+<li><p>默认情况下，撤消日志现在位于初始化MySQL实例时创建的两个撤消表空间中。撤消日志不再在系统表空间中创建。</p>
+</li>
+<li><p>从MySQL 8.0.14开始，可以在运行时使用<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/create-tablespace.html"><code>CREATE UNDO TABLESPACE</code></a>语法在选定位置创建其他撤消表空间 。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> UNDO TABLESPACE tablespace_name <span class="keyword">ADD</span> DATAFILE <span class="string">&#x27;file_name.ibu&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>使用<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/create-tablespace.html"><code>CREATE UNDO TABLESPACE</code></a>语法创建的撤消表空间 可以在运行时使用<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/drop-tablespace.html"><code>DROP UNDO TABLESPACE</code></a>语法删除 。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">DROP</span> UNDO TABLESPACE tablespace_name;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/alter-tablespace.html"><code>ALTER UNDO TABLESPACE</code></a> 语法可用于将撤消表空间标记为活动或不活动。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> UNDO TABLESPACE tablespace_name <span class="keyword">SET</span> &#123;ACTIVE<span class="operator">|</span>INACTIVE&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>甲<code>STATE</code>，显示了表空间的状态列被添加到 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-tablespaces-table.html"><code>INFORMATION_SCHEMA.INNODB_TABLESPACES</code></a> 表中。撤消表空间必须处于 <code>empty</code>状态才能被删除。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_undo_log_truncate"><code>innodb_undo_log_truncate</code></a> 默认情况下启用 该 变量。</p>
+</li>
+<li><p>该 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_rollback_segments"><code>innodb_rollback_segments</code></a> 变量定义每个撤消表空间的回滚段数。以前， <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_rollback_segments"><code>innodb_rollback_segments</code></a> 指定了MySQL实例的回滚段总数。此更改增加了可用于并发事务的回滚段的数量。更多的回滚段会增加并发事务将单独的回滚段用于撤消日志的可能性，从而减少资源争用。</p>
+</li>
+</ul>
+</li>
+<li><p>修改了影响缓冲池预刷新和刷新行为的变量的默认值：</p>
+<ul>
+<li>现在 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_max_dirty_pages_pct_lwm"><code>innodb_max_dirty_pages_pct_lwm</code></a> 默认值为10。先前的默认值0禁用缓冲池预刷新。当缓冲池中的脏页百分比超过10％时，值为10启用预刷新。启用预冲洗可提高性能一致性。</li>
+<li>将 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_max_dirty_pages_pct"><code>innodb_max_dirty_pages_pct</code></a> 默认值从75到90。增加 <code>InnoDB</code>尝试刷新的数据从缓冲池，使脏页的百分比不超过这个值。增加的默认值允许缓冲池中脏页的百分比更高。</li>
+</ul>
+</li>
+<li><p>现在默认 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_autoinc_lock_mode"><code>innodb_autoinc_lock_mode</code></a> 设置为2（交错）。交错锁定模式允许并行执行多行插入，从而提高了并发性和可伸缩性。新的 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_autoinc_lock_mode"><code>innodb_autoinc_lock_mode</code></a> 默认设置反映了从基于语句的复制到基于行的复制的更改，这是MySQL 5.7中的默认复制类型。基于语句的复制需要连续的自动增量锁定模式（以前的默认设置），以确保按照给定的SQL语句序列以可预测和可重复的顺序分配自动增量值，而基于行的复制对SQL语句不敏感。 SQL语句的执行顺序。有关更多信息，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-auto-increment-handling.html#innodb-auto-increment-lock-modes">InnoDB AUTO_INCREMENT锁定模式</a>。</p>
+<p>对于使用基于语句的复制的系统，新的 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_autoinc_lock_mode"><code>innodb_autoinc_lock_mode</code></a> 默认设置可能会破坏依赖于顺序自动增量值的应用程序。要恢复以前的默认设置，请设置 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_autoinc_lock_mode"><code>innodb_autoinc_lock_mode</code></a> 为1。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/alter-tablespace.html"><code>ALTER TABLESPACE ... RENAME TO</code></a>语法 支持重命名常规表空间 。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_dedicated_server"><code>innodb_dedicated_server</code></a> 默认情况下禁用 的新 变量可用于<code>InnoDB</code>根据服务器上检测到的内存量自动配置以下选项：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_buffer_pool_size"><code>innodb_buffer_pool_size</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_log_file_size"><code>innodb_log_file_size</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_flush_method"><code>innodb_flush_method</code></a></li>
+</ul>
+<p>此选项适用于在专用服务器上运行的MySQL服务器实例。有关更多信息，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-dedicated-server.html">第15.8.12节”为专用的MySQL服务器启用自动配置”</a>。</p>
+</li>
+<li><p>新 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-tablespaces-brief-table.html"><code>INFORMATION_SCHEMA.INNODB_TABLESPACES_BRIEF</code></a> 视图为表空间提供空间，名称，路径，标志和空间类型数据<code>InnoDB</code>。</p>
+</li>
+<li><p>与MySQL捆绑在一起 的<a target="_blank" rel="noopener" href="http://www.zlib.net/">zlib库</a>版本从1.2.3版本提高到1.2.11版本。MySQL在zlib库的帮助下实现了压缩。</p>
+<p>如果使用<code>InnoDB</code>压缩表，请参见<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html">第2.11.4节” MySQL 8.0中的更改”</a>以获取相关的升级含义。</p>
+</li>
+<li><p><code>InnoDB</code>除全局临时表空间和撤消表空间文件外 ，所有表空间文件中都存在序列化字典信息（SDI）。SDI是表和表空间对象的序列化元数据。SDI数据的存在提供了元数据冗余。例如，如果数据字典变得不可用，则可以从表空间文件中提取字典对象元数据。使用<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/ibd2sdi.html"><strong>ibd2sdi</strong></a>工具执行SDI提取。SDI数据以<code>JSON</code>格式存储。</p>
+<p>在表空间文件中包含SDI数据会增加表空间文件的大小。SDI记录需要一个索引页，默认情况下大小为16KB。但是，在存储SDI数据时会对其进行压缩，以减少存储空间。</p>
+</li>
+<li><p><code>InnoDB</code>现在 ，存储引擎支持原子DDL，即使服务器在操作期间停止运行，它也可以确保DDL操作完全提交或回退。有关更多信息，请参见<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/atomic-ddl.html">第13.1.1节”原子数据定义语句支持”</a>。</p>
+</li>
+<li><p>使用该<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_directories"><code>innodb_directories</code></a> 选项，在服务器脱机时，可以将表空间文件移动或还原到新位置 。有关更多信息，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-moving-data-files-offline.html">第15.6.3.6节”在服务器脱机时移动表空间文件”</a>。</p>
+</li>
+<li><p>实现了以下重做日志优化：</p>
+<ul>
+<li><p>用户线程现在可以并发写入日志缓冲区，而无需同步写入。</p>
+</li>
+<li><p>用户线程现在可以按轻松的顺序将脏页添加到刷新列表中。</p>
+</li>
+<li><p>现在，专用的日志线程负责将日志缓冲区写入系统缓冲区，将系统缓冲区刷新到磁盘，通知用户线程有关已写入和已刷新的重做，保持松弛的刷新列表顺序所需的滞后时间，以及写入检查点。</p>
+</li>
+<li><p>添加了系统变量，用于配置等待刷新重做的用户线程使用旋转延迟的方法：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_log_wait_for_flush_spin_hwm"><code>innodb_log_wait_for_flush_spin_hwm</code></a>：定义最大平均日志刷新时间，超过该时间后，用户线程将在等待刷新重做时不再旋转。</li>
+<li><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_log_spin_cpu_abs_lwm"><code>innodb_log_spin_cpu_abs_lwm</code></a>：定义最小CPU使用量，在该最小使用量之下，用户线程在等待刷新重做时不再旋转。</li>
+<li><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_log_spin_cpu_pct_hwm"><code>innodb_log_spin_cpu_pct_hwm</code></a>：定义最大CPU使用量，在该最大CPU使用量之上，用户线程在等待刷新重做时不再旋转。</li>
+</ul>
+</li>
+<li><p>的 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_log_buffer_size"><code>innodb_log_buffer_size</code></a> 变量是现在动态的，服务器运行时其允许调整大小日志缓冲区的。</p>
+</li>
+</ul>
+<p>有关更多信息，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/optimizing-innodb-logging.html">第8.5.4节”优化InnoDB重做日志”</a>。</p>
+</li>
+<li><p>从MySQL 8.0.12开始，对大对象（LOB）数据的小更新支持撤消日志记录，从而提高了大小为100字节或更小的LOB更新的性能。以前，LOB更新的大小至少为一个LOB页，对于可能只修改几个字节的更新而言，这不是最佳的。此增强功能基于MySQL 8.0.4中添加的对LOB数据的部分更新的支持。</p>
+</li>
+<li><p>从MySQL 8.0.12开始，<code>ALGORITHM=INSTANT</code> 以下<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/alter-table.html"><code>ALTER TABLE</code></a>操作受支持 ：</p>
+<ul>
+<li>添加一列。此功能也称为 “ 即时<code>ADD COLUMN</code> “。有限制条件。请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-online-ddl-operations.html">第15.12.1节”在线DDL操作”</a>。</li>
+<li>添加或删除虚拟列。</li>
+<li>添加或删除列默认值。</li>
+<li>修改<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/enum.html"><code>ENUM</code></a>或 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/set.html"><code>SET</code></a>列的定义 。</li>
+<li>更改索引类型。</li>
+<li>重命名表。</li>
+</ul>
+<p><code>ALGORITHM=INSTANT</code>仅 支持的操作会 修改数据字典中的元数据。在表上没有采取任何元数据锁，并且表数据不受影响，从而使操作立即进行。如果未明确指定，<code>ALGORITHM=INSTANT</code>则默认情况下由支持它的操作使用。如果 <code>ALGORITHM=INSTANT</code>指定但不支持，则操作立即失败并显示错误。</p>
+<p>有关支持的操作的更多信息 <code>ALGORITHM=INSTANT</code>，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-online-ddl-operations.html">第15.12.1节”在线DDL操作”</a>。</p>
+</li>
+<li><p>从MySQL 8.0.13开始，<code>TempTable</code> 存储引擎支持二进制大对象（BLOB）类型列的存储。此增强功能提高了使用包含BLOB数据的临时表的查询的性能。以前，包含BLOB数据的临时表存储在定义的磁盘存储引擎中 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_internal_tmp_disk_storage_engine"><code>internal_tmp_disk_storage_engine</code></a>。有关更多信息，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/internal-temporary-tables.html">第8.4.4节” MySQL中的内部临时表使用”</a>。</p>
+</li>
+<li><p>从MySQL 8.0.13开始，静态<code>InnoDB</code> 数据加密功能支持常规表空间。以前，只能加密每表文件表空间。一般的表空间支持加密，<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/create-tablespace.html"><code>CREATE TABLESPACE</code></a>和<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/alter-tablespace.html"><code>ALTER TABLESPACE</code></a>语法扩展到包括 <code>ENCRYPTION</code>条款。</p>
+<p>该 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-tablespaces-table.html"><code>INFORMATION_SCHEMA.INNODB_TABLESPACES</code></a> 表现在包括一<code>ENCRYPTION</code> 列，该列指示表空间是否已加密。</p>
+<p>在<code>stage/innodb/alter tablespace (encryption)</code>加入绩效模式阶段仪器允许监测一般表的加密操作。</p>
+</li>
+<li><p>禁用该 <code>innodb_buffer_pool_in_core_file</code> 变量可通过排除<code>InnoDB</code>缓冲池页面来减少核心文件的大小 。要使用此变量，<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_core_file"><code>core_file</code></a> 必须启用该变量，并且操作系统必须支持Linux 3.4及更高版本支持的的<code>MADV_DONTDUMP</code>非POSIX扩展<code>madvise()</code>。有关更多信息，请参见<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-buffer-pool-in-core-file.html">第15.8.3.7节”从核心文件中排除缓冲池页面”</a>。</p>
+</li>
+<li><p>从MySQL 8.0.13开始，由用户创建的临时表和由优化程序创建的内部临时表存储在会话临时表空间中，该会话临时表空间是从临时表空间池中分配给会话的。当会话断开连接时，其临时表空间将被截断并释放回池中。在以前的版本中，临时表是在全局临时表空间（<code>ibtmp1</code>）中创建的，在删除临时表后，该临时表不会将磁盘空间返回给操作系统。</p>
+<p>该 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_temp_tablespaces_dir"><code>innodb_temp_tablespaces_dir</code></a> 变量定义创建会话临时表空间的位置。默认位置是 <code>#innodb_temp</code>数据目录中的目录。</p>
+<p>该 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-session-temp-tablespaces-table.html"><code>INNODB_SESSION_TEMP_TABLESPACES</code></a> 表提供有关会话临时表空间的元数据。</p>
+<p>现在，全局临时表空间（<code>ibtmp1</code>）存储了回滚段，用于对用户创建的临时表所做的更改。</p>
+</li>
+<li><p>从MySQL 8.0.14开始，<code>InnoDB</code>支持并行聚集索引读取，这可以提高 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/check-table.html"><code>CHECK TABLE</code></a>性能。此功能不适用于二级索引扫描。的 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_parallel_read_threads"><code>innodb_parallel_read_threads</code></a> 并行聚簇索引读取发生会话变量必须被设置为一个大于1的值。默认值为4。用于执行并行聚集索引读取的实际线程数取决于 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_parallel_read_threads"><code>innodb_parallel_read_threads</code></a> 设置或要扫描的索引子树的数量，以较小者为准。</p>
+</li>
+<li><p>从8.0.14开始，<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_dedicated_server"><code>innodb_dedicated_server</code></a> 启用该 变量后，将根据自动配置的缓冲池大小来配置日志文件的大小和数量。以前，日志文件的大小是根据在服务器上检测到的内存量来配置的，而日志文件的数量不是自动配置的。</p>
+</li>
+<li><p>从8.0.14开始，该 语句的<code>ADD DATAFILE</code>子句<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/create-tablespace.html"><code>CREATE TABLESPACE</code></a>是可选的，它允许没有<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_file"><code>FILE</code></a>特权的用户 创建表空间。一个<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/create-tablespace.html"><code>CREATE TABLESPACE</code></a>没有执行的语句 <code>ADD DATAFILE</code>子句隐式地创建一个独特的文件名的表空间的数据文件。</p>
+</li>
+<li><p>默认情况下，当TempTable存储引擎占用的内存量超过该<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_temptable_max_ram"><code>temptable_max_ram</code></a> 变量定义的内存限制时 ，TempTable存储引擎将开始从磁盘分配内存映射的临时文件。从MySQL 8.0.16开始，此行为由<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_temptable_use_mmap"><code>temptable_use_mmap</code></a> 变量控制 。禁用 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_temptable_use_mmap"><code>temptable_use_mmap</code></a> 会导致TempTable存储引擎将 <code>InnoDB</code>磁盘内部临时表而不是内存映射文件用作其溢出机制。有关更多信息，请参阅 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/internal-temporary-tables.html#internal-temporary-tables-engines">内部临时表存储引擎</a>。</p>
+</li>
+<li><p>从MySQL 8.0.16开始，静态<code>InnoDB</code> 数据加密功能支持对<code>mysql</code>系统表空间的加密。该 <code>mysql</code>系统表空间包含 <code>mysql</code>系统数据库和MySQL数据字典表。有关更多信息，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-data-encryption.html">第15.13节” InnoDB静态数据加密”</a>。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_spin_wait_pause_multiplier"><code>innodb_spin_wait_pause_multiplier</code></a> MySQL 8.0.16中引入 的 变量提供了对自旋锁轮询延迟持续时间的更好控制，自旋锁轮询延迟是在线程等待获取互斥量或rw锁时发生的。可以对延迟进行更精细的调整，以解决不同处理器体系结构上PAUSE指令持续时间的差异。有关更多信息，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-performance-spin_lock_polling.html">第15.8.8节”配置自旋锁定轮询”</a>。</p>
+</li>
+<li><p><code>InnoDB</code> 在MySQL 8.0.17中，通过更好地利用读取线程，减少了并行扫描期间发生的预取活动的读取线程I &#x2F; O来改善了大型数据集的并行读取线程性能，并支持了分区的并行扫描。</p>
+<p>并行读取线程功能由<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_parallel_read_threads"><code>innodb_parallel_read_threads</code></a> 变量控制 。现在，最大设置为256，这是所有客户端连接的线程总数。如果达到线程限制，连接将退回到使用单个线程。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_idle_flush_pct"><code>innodb_idle_flush_pct</code></a> MySQL 8.0.18中引入 的 变量允许限制空闲期间的页面刷新，这可以帮助延长固态存储设备的寿命。请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-buffer-pool-flushing.html#innodb-limit-flushing-rate">在空闲期间限制缓冲区刷新</a>。</p>
+</li>
+<li><p><code>InnoDB</code>从MySQL 8.0.19开始，为了生成直方图统计数据，已经 对数据进行了有效采样。请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/analyze-table.html#analyze-table-histogram-statistics-analysis">直方图统计分析</a>。</p>
+</li>
+<li><p>从MySQL 8.0.20开始，doublewrite缓冲区存储区位于doublewrite文件中。在以前的版本中，存储区位于系统表空间中。将存储区域移出系统表空间可减少写延迟，增加吞吐量并提供关于双写缓冲区页放置的灵活性。为高级双写缓冲区配置引入了以下系统变量：</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_doublewrite_dir"><code>innodb_doublewrite_dir</code></a></p>
+<p>定义双写缓冲区文件目录。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_doublewrite_files"><code>innodb_doublewrite_files</code></a></p>
+<p>定义双写文件的数量。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_doublewrite_pages"><code>innodb_doublewrite_pages</code></a></p>
+<p>定义批量写入时每个线程的最大双写页数。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_doublewrite_batch_size"><code>innodb_doublewrite_batch_size</code></a></p>
+<p>定义要批量写入的双写页面数。</p>
+</li>
+</ul>
+<p>有关更多信息，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-doublewrite-buffer.html">第15.6.4节” Doublewrite缓冲区”</a>。</p>
+</li>
+<li><p>MySQL 8.0.20中改进了竞争感知事务调度（CATS）算法，该算法优先考虑等待锁的事务。现在，事务调度权重计算完全在单独的线程中执行，从而提高了计算性能和准确性。</p>
+<p>删除了也用于事务调度的先进先出（FIFO）算法。CATS算法的增强使FIFO算法变得多余。以前由FIFO算法执行的事务调度现在由CATS算法执行。</p>
+<p><code>TRX_SCHEDULE_WEIGHT</code>在<code>INFORMATION_SCHEMA.INNODB_TRX</code>表中添加了 一个列 ，该列允许查询由CATS算法分配的事务调度权重。</p>
+<p><code>INNODB_METRICS</code>添加了 以下计数器来监视代码级事务调度事件：</p>
+<ul>
+<li><p><code>lock_rec_release_attempts</code></p>
+<p>尝试释放记录锁定的次数。</p>
+</li>
+<li><p><code>lock_rec_grant_attempts</code></p>
+<p>授予记录锁定的尝试次数。</p>
+</li>
+<li><p><code>lock_schedule_refreshes</code></p>
+<p>分析等待图表以更新交易计划权重的次数。</p>
+</li>
+</ul>
+<p>有关更多信息，请参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-transaction-scheduling.html">第15.7.6节”事务调度”</a>。</p>
+</li>
+</ul>
+
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-21T09:49:48.519Z" itemprop="dateModified">Last updated: 2025-10-21</time>
+                <a href="/api/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL 8.0 企业管理</strong><a href="/api/index.html" class="sidebar-link">概览</a><a href="/api/mysql_8.0_reference_manual/01-MySQL-Secure-Deployment-Guide/index.html" class="sidebar-link">安全部署指南</a><a href="/api/mysql_8.0_reference_manual/02-Starting-and-Stopping-MySQL/index.html" class="sidebar-link">启动和关闭</a><a href="/api/mysql_8.0_reference_manual/03-MySQL-Tutorial/index.html" class="sidebar-link">基础入门</a><a href="/api/mysql_8.0_reference_manual/04-MySQL-Globalization/index.html" class="sidebar-link">全球化</a><a href="/api/mysql_8.0_reference_manual/05-MySQL-Restrictions-and-Limitations/index.html" class="sidebar-link">限制和局限</a><a href="/api/mysql_8.0_reference_manual/06-MySQL-Partitioning/index.html" class="sidebar-link">分区</a><a href="/api/mysql_8.0_reference_manual/07-MySQL-Backup-and-Recovery/index.html" class="sidebar-link">备份和恢复</a><a href="/api/mysql_8.0_reference_manual/08-MySQL-Information-Schema/index.html" class="sidebar-link">Information Schema</a><a href="/api/mysql_8.0_reference_manual/09-MySQL-Performance-Schema/index.html" class="sidebar-link">Performance Schema</a><a href="/api/mysql_8.0_reference_manual/10-MySQL-SYS-Schema/index.html" class="sidebar-link">SYS Schema</a><a href="/api/mysql_8.0_reference_manual/11-MySQL-Replication/index.html" class="sidebar-link">Replication 复制</a><a href="/api/mysql_8.0_reference_manual/12-MySQL-Group-Replication/index.html" class="sidebar-link">MGR 组复制</a><a href="/api/mysql_8.0_reference_manual/13-MySQL-Shell/index.html" class="sidebar-link">MySQL Shell</a><a href="/api/mysql_8.0_reference_manual/14-MySQL-InnoDB-Storage-Engine/index.html" class="sidebar-link">InnoDB 存储引擎</a><a href="/api/mysql_8.0_reference_manual/15-MySQL-Optimization/index.html" class="sidebar-link">MySQL 优化</a><a href="/api/mysql_8.0_reference_manual/16-MySQL-Utilities/index.html" class="sidebar-link">MySQL Utilities</a><a href="/api/mysql_8.0_reference_manual/00-others/index.html" class="sidebar-link">MySQL 其他</a><strong class="sidebar-title">添加的功能</strong><a href="/api/new/index.html" class="sidebar-link">概览</a><a href="/api/new/additional-target-types-for-casts.html" class="sidebar-link">CAST() 和 CONVERT()</a><a href="/api/new/aliases-in-single-table-delete-statements.html" class="sidebar-link">Single-Table DELETE</a><a href="/api/new/atomic-ddl.html" class="sidebar-link">Atomic DDL</a><a href="/api/new/backup-lock.html" class="sidebar-link">Backup Lock</a><a href="/api/new/c-api.html" class="sidebar-link">C API</a><a href="/api/new/character-set-support.html" class="sidebar-link">字符集支持</a><a href="/api/new/common-table-expressions.html" class="sidebar-link">常用表表达式</a><a href="/api/new/configuration.html" class="sidebar-link">配置</a><a href="/api/new/connection-management.html" class="sidebar-link">连接管理</a><a href="/api/new/data-dictionary.html" class="sidebar-link">数据字典</a><a href="/api/new/data-type-support.html" class="sidebar-link">数据类型支持</a><a href="/api/new/explain-analyze-statement.html" class="sidebar-link">EXPLAIN ANALYZE语句</a><a href="/api/new/hash-join-optimization.html" class="sidebar-link">哈希联接优化</a><a href="/api/new/hintable-time-zone.html" class="sidebar-link">提示时区</a><a href="/api/new/innodb-enhancements.html" class="sidebar-link">InnoDB增强功能</a><a href="/api/new/internal-tempoary-tables.html" class="sidebar-link">内部临时表</a><a href="/api/new/json-enhancements.html" class="sidebar-link">Json增强功能</a><a href="/api/new/json-schema-validation.html" class="sidebar-link">JSON模式验证</a><a href="/api/new/json-value-function.html" class="sidebar-link">JSON_VALUE函数</a><a href="/api/new/lateral-derived-tables.html" class="sidebar-link">横向派生表</a><a href="/api/new/multi-valued-indexes.html" class="sidebar-link">多值索引</a><a href="/api/new/mysql-upgrade.html" class="sidebar-link">升级程序</a><a href="/api/new/new-optimizer-switch-flags.html" class="sidebar-link">新的optimizer_switch标志</a><a href="/api/new/optimizer-hints-for-force-index-ignore-index.html" class="sidebar-link">FORCE INDEX，IGNORE INDEX的优化程序提示</a><a href="/api/new/optimizer.html" class="sidebar-link">优化器</a><a href="/api/new/plugins.html" class="sidebar-link">插件</a><a href="/api/new/precise-information-for-json-schema-check-constraint.html" class="sidebar-link">有关JSON模式CHECK约束失败的精确信息</a><a href="/api/new/query-cast-injection.html" class="sidebar-link">强制转换操作</a><a href="/api/new/redo-log-archiving.html" class="sidebar-link">重做日志归档</a><a href="/api/new/regular-expression-support.html" class="sidebar-link">正则表达式支持</a><a href="/api/new/replication.html" class="sidebar-link">复制</a><a href="/api/new/resource-management.html" class="sidebar-link">资源管理</a><a href="/api/new/row-and-columns-aliases-with-on-duplicate-key-update.html" class="sidebar-link">行和列别名具有ON DUPLICATE KEY UPDATE</a><a href="/api/new/security-and-account-management.html" class="sidebar-link">安全性和帐户管理</a><a href="/api/new/sql-standard-explicit-table-clause-and-table-value-constructor.html" class="sidebar-link">SQL标准的显式表子句和表值构造函数</a><a href="/api/new/table-encryption-management.html" class="sidebar-link">表加密管理</a><a href="/api/new/the-clone-plugin.html" class="sidebar-link">克隆插件</a><a href="/api/new/time-zone-support-for-timestamp-and-datatime.html" class="sidebar-link">TIMESTAMP和DATETIME的时区支持</a><a href="/api/new/user-comments-and-user-attributes.html" class="sidebar-link">用户注释和用户属性</a><a href="/api/new/window-functions.html" class="sidebar-link">窗口函数</a><a href="/api/new/xml-enhancements.html" class="sidebar-link">XML增强功能</a><strong class="sidebar-title">不推荐使用的功能</strong><a href="/api/new/window-functions.html" class="sidebar-link">窗口函数</a><strong class="sidebar-title">删除的功能</strong><a href="/api/new/xml-enhancements.html" class="sidebar-link">XML增强功能</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../docs/" class="mobile-nav-link">Hexo</a><a href="../../news/" class="mobile-nav-link">News</a><a href="../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../database/" class="mobile-nav-link">Database</a><a href="../../linux/" class="mobile-nav-link">Linux</a><a href="../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../amy/" class="mobile-nav-link">AMY</a><a href="../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL 8.0 企业管理</strong><a href="/api/index.html" class="mobile-nav-link">概览</a><a href="/api/mysql_8.0_reference_manual/01-MySQL-Secure-Deployment-Guide/index.html" class="mobile-nav-link">安全部署指南</a><a href="/api/mysql_8.0_reference_manual/02-Starting-and-Stopping-MySQL/index.html" class="mobile-nav-link">启动和关闭</a><a href="/api/mysql_8.0_reference_manual/03-MySQL-Tutorial/index.html" class="mobile-nav-link">基础入门</a><a href="/api/mysql_8.0_reference_manual/04-MySQL-Globalization/index.html" class="mobile-nav-link">全球化</a><a href="/api/mysql_8.0_reference_manual/05-MySQL-Restrictions-and-Limitations/index.html" class="mobile-nav-link">限制和局限</a><a href="/api/mysql_8.0_reference_manual/06-MySQL-Partitioning/index.html" class="mobile-nav-link">分区</a><a href="/api/mysql_8.0_reference_manual/07-MySQL-Backup-and-Recovery/index.html" class="mobile-nav-link">备份和恢复</a><a href="/api/mysql_8.0_reference_manual/08-MySQL-Information-Schema/index.html" class="mobile-nav-link">Information Schema</a><a href="/api/mysql_8.0_reference_manual/09-MySQL-Performance-Schema/index.html" class="mobile-nav-link">Performance Schema</a><a href="/api/mysql_8.0_reference_manual/10-MySQL-SYS-Schema/index.html" class="mobile-nav-link">SYS Schema</a><a href="/api/mysql_8.0_reference_manual/11-MySQL-Replication/index.html" class="mobile-nav-link">Replication 复制</a><a href="/api/mysql_8.0_reference_manual/12-MySQL-Group-Replication/index.html" class="mobile-nav-link">MGR 组复制</a><a href="/api/mysql_8.0_reference_manual/13-MySQL-Shell/index.html" class="mobile-nav-link">MySQL Shell</a><a href="/api/mysql_8.0_reference_manual/14-MySQL-InnoDB-Storage-Engine/index.html" class="mobile-nav-link">InnoDB 存储引擎</a><a href="/api/mysql_8.0_reference_manual/15-MySQL-Optimization/index.html" class="mobile-nav-link">MySQL 优化</a><a href="/api/mysql_8.0_reference_manual/16-MySQL-Utilities/index.html" class="mobile-nav-link">MySQL Utilities</a><a href="/api/mysql_8.0_reference_manual/00-others/index.html" class="mobile-nav-link">MySQL 其他</a><strong class="mobile-nav-title">添加的功能</strong><a href="/api/new/index.html" class="mobile-nav-link">概览</a><a href="/api/new/additional-target-types-for-casts.html" class="mobile-nav-link">CAST() 和 CONVERT()</a><a href="/api/new/aliases-in-single-table-delete-statements.html" class="mobile-nav-link">Single-Table DELETE</a><a href="/api/new/atomic-ddl.html" class="mobile-nav-link">Atomic DDL</a><a href="/api/new/backup-lock.html" class="mobile-nav-link">Backup Lock</a><a href="/api/new/c-api.html" class="mobile-nav-link">C API</a><a href="/api/new/character-set-support.html" class="mobile-nav-link">字符集支持</a><a href="/api/new/common-table-expressions.html" class="mobile-nav-link">常用表表达式</a><a href="/api/new/configuration.html" class="mobile-nav-link">配置</a><a href="/api/new/connection-management.html" class="mobile-nav-link">连接管理</a><a href="/api/new/data-dictionary.html" class="mobile-nav-link">数据字典</a><a href="/api/new/data-type-support.html" class="mobile-nav-link">数据类型支持</a><a href="/api/new/explain-analyze-statement.html" class="mobile-nav-link">EXPLAIN ANALYZE语句</a><a href="/api/new/hash-join-optimization.html" class="mobile-nav-link">哈希联接优化</a><a href="/api/new/hintable-time-zone.html" class="mobile-nav-link">提示时区</a><a href="/api/new/innodb-enhancements.html" class="mobile-nav-link">InnoDB增强功能</a><a href="/api/new/internal-tempoary-tables.html" class="mobile-nav-link">内部临时表</a><a href="/api/new/json-enhancements.html" class="mobile-nav-link">Json增强功能</a><a href="/api/new/json-schema-validation.html" class="mobile-nav-link">JSON模式验证</a><a href="/api/new/json-value-function.html" class="mobile-nav-link">JSON_VALUE函数</a><a href="/api/new/lateral-derived-tables.html" class="mobile-nav-link">横向派生表</a><a href="/api/new/multi-valued-indexes.html" class="mobile-nav-link">多值索引</a><a href="/api/new/mysql-upgrade.html" class="mobile-nav-link">升级程序</a><a href="/api/new/new-optimizer-switch-flags.html" class="mobile-nav-link">新的optimizer_switch标志</a><a href="/api/new/optimizer-hints-for-force-index-ignore-index.html" class="mobile-nav-link">FORCE INDEX，IGNORE INDEX的优化程序提示</a><a href="/api/new/optimizer.html" class="mobile-nav-link">优化器</a><a href="/api/new/plugins.html" class="mobile-nav-link">插件</a><a href="/api/new/precise-information-for-json-schema-check-constraint.html" class="mobile-nav-link">有关JSON模式CHECK约束失败的精确信息</a><a href="/api/new/query-cast-injection.html" class="mobile-nav-link">强制转换操作</a><a href="/api/new/redo-log-archiving.html" class="mobile-nav-link">重做日志归档</a><a href="/api/new/regular-expression-support.html" class="mobile-nav-link">正则表达式支持</a><a href="/api/new/replication.html" class="mobile-nav-link">复制</a><a href="/api/new/resource-management.html" class="mobile-nav-link">资源管理</a><a href="/api/new/row-and-columns-aliases-with-on-duplicate-key-update.html" class="mobile-nav-link">行和列别名具有ON DUPLICATE KEY UPDATE</a><a href="/api/new/security-and-account-management.html" class="mobile-nav-link">安全性和帐户管理</a><a href="/api/new/sql-standard-explicit-table-clause-and-table-value-constructor.html" class="mobile-nav-link">SQL标准的显式表子句和表值构造函数</a><a href="/api/new/table-encryption-management.html" class="mobile-nav-link">表加密管理</a><a href="/api/new/the-clone-plugin.html" class="mobile-nav-link">克隆插件</a><a href="/api/new/time-zone-support-for-timestamp-and-datatime.html" class="mobile-nav-link">TIMESTAMP和DATETIME的时区支持</a><a href="/api/new/user-comments-and-user-attributes.html" class="mobile-nav-link">用户注释和用户属性</a><a href="/api/new/window-functions.html" class="mobile-nav-link">窗口函数</a><a href="/api/new/xml-enhancements.html" class="mobile-nav-link">XML增强功能</a><strong class="mobile-nav-title">不推荐使用的功能</strong><a href="/api/new/window-functions.html" class="mobile-nav-link">窗口函数</a><strong class="mobile-nav-title">删除的功能</strong><a href="/api/new/xml-enhancements.html" class="mobile-nav-link">XML增强功能</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="api/new/innodb-enhancements.html">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../js/lang_select.js"></script>
+
+
+<script src="../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

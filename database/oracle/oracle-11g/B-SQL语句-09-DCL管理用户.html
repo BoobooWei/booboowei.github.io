@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>SQL语句-DCL管理用户 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-09-DCL%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-09-DCL%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="SQL语句-DCL管理用户 权限的分类 系统权限 典型的DBA权限 典型用户权限   对象权限   角色 什么是角色？ 创建和分配角色 步骤   语法 实践   数据字典-与角色和权限相关 实践1-查看用户的权限   级联授权 系统权限级联授权：with admin option 权限回收无级联 对象权限级联授权：with grant option 权限回收有级联 实践1-系统用户只能用wi">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SQL语句-DCL管理用户">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/B-SQL%E8%AF%AD%E5%8F%A5-09-DCL%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="SQL语句-DCL管理用户 权限的分类 系统权限 典型的DBA权限 典型用户权限   对象权限   角色 什么是角色？ 创建和分配角色 步骤   语法 实践   数据字典-与角色和权限相关 实践1-查看用户的权限   级联授权 系统权限级联授权：with admin option 权限回收无级联 对象权限级联授权：with grant option 权限回收有级联 实践1-系统用户只能用wi">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.779Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:44.063Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">SQL语句-DCL管理用户</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/B-SQL语句-09-DCL管理用户.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --><html><head></head><body><ul>
+<li><a href="#sql%E8%AF%AD%E5%8F%A5-dcl%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7">SQL语句-DCL管理用户</a><ul>
+<li><a href="#%E6%9D%83%E9%99%90%E7%9A%84%E5%88%86%E7%B1%BB">权限的分类</a><ul>
+<li><a href="#%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90">系统权限</a><ul>
+<li><a href="#%E5%85%B8%E5%9E%8B%E7%9A%84dba%E6%9D%83%E9%99%90">典型的DBA权限</a></li>
+<li><a href="#%E5%85%B8%E5%9E%8B%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90">典型用户权限</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E6%9D%83%E9%99%90">对象权限</a></li>
+</ul>
+</li>
+<li><a href="#%E8%A7%92%E8%89%B2">角色</a><ul>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%A7%92%E8%89%B2">什么是角色？</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E5%92%8C%E5%88%86%E9%85%8D%E8%A7%92%E8%89%B2">创建和分配角色</a><ul>
+<li><a href="#%E6%AD%A5%E9%AA%A4">步骤</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AF%AD%E6%B3%95">语法</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B5">实践</a></li>
+</ul>
+</li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%AD%97%E5%85%B8-%E4%B8%8E%E8%A7%92%E8%89%B2%E5%92%8C%E6%9D%83%E9%99%90%E7%9B%B8%E5%85%B3">数据字典-与角色和权限相关</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B51-%E6%9F%A5%E7%9C%8B%E7%94%A8%E6%88%B7%E7%9A%84%E6%9D%83%E9%99%90">实践1-查看用户的权限</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BA%A7%E8%81%94%E6%8E%88%E6%9D%83">级联授权</a><ul>
+<li><a href="#%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%BA%A7%E8%81%94%E6%8E%88%E6%9D%83with-admin-option-%E6%9D%83%E9%99%90%E5%9B%9E%E6%94%B6%E6%97%A0%E7%BA%A7%E8%81%94">系统权限级联授权：<code>with admin option</code> 权限回收无级联</a></li>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E6%9D%83%E9%99%90%E7%BA%A7%E8%81%94%E6%8E%88%E6%9D%83with-grant-option-%E6%9D%83%E9%99%90%E5%9B%9E%E6%94%B6%E6%9C%89%E7%BA%A7%E8%81%94">对象权限级联授权：<code>with grant option</code> 权限回收有级联</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B51-%E7%B3%BB%E7%BB%9F%E7%94%A8%E6%88%B7%E5%8F%AA%E8%83%BD%E7%94%A8with-admin-option">实践1-系统用户只能用with admin option</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-%E4%B8%80%E8%88%AC%E7%94%A8%E6%88%B7%E5%8F%AA%E8%83%BD%E4%BD%BF%E7%94%A8with-grant-option">实践2-一般用户只能使用with grant option</a></li>
+</ul>
+</li>
+<li><a href="#%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E6%80%BB%E7%BB%93">用户权限总结</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<blockquote>
+<p>需掌握以下知识点：</p>
+<ul>
+<li>创建用户</li>
+<li>创建角色</li>
+<li>授予权限和回收权限</li>
+<li>创建和访问数据库连接</li>
+</ul>
+</blockquote>
+<h2 id="权限的分类" class="article-heading"><a href="#权限的分类" class="headerlink" title="权限的分类"></a>权限的分类<a class="article-anchor" href="#权限的分类" aria-hidden="true"></a></h2><p>权限分为：</p>
+<ul>
+<li>系统权限：获取访问数据库的权限 （典型的DBA权限；用户系统权限）</li>
+<li>对象权限：操作数据库对象的内容</li>
+</ul>
+<blockquote>
+<p>个人理解：系统权限包括了ddl和dcl语句;对象权限包括了alter和dql和dml</p>
+</blockquote>
+<h3 id="系统权限" class="article-heading"><a href="#系统权限" class="headerlink" title="系统权限"></a>系统权限<a class="article-anchor" href="#系统权限" aria-hidden="true"></a></h3><ul>
+<li>超过100个权限可用</li>
+<li>数据库管理员拥有高级别的系统权限用于进行下列任务：创建、删除用户；删除表；备份表</li>
+</ul>
+<h4 id="典型的DBA权限" class="article-heading"><a href="#典型的DBA权限" class="headerlink" title="典型的DBA权限"></a>典型的DBA权限<a class="article-anchor" href="#典型的DBA权限" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th align="left">系统权限</th>
+<th align="left">操作认证</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">create user</td>
+<td align="left">创建其他数据库用户（需要dba角色）</td>
+</tr>
+<tr>
+<td align="left">drop user</td>
+<td align="left">删除一个用户</td>
+</tr>
+<tr>
+<td align="left">drop any table</td>
+<td align="left">删除任何模式下的表</td>
+</tr>
+<tr>
+<td align="left">backup any table</td>
+<td align="left">使用导出工具备份任何模式中的表</td>
+</tr>
+<tr>
+<td align="left">select andy table</td>
+<td align="left">在模式中查询表，视图或者快照</td>
+</tr>
+<tr>
+<td align="left">create andy table</td>
+<td align="left">在任何模式下可以创建表</td>
+</tr>
+</tbody></table>
+<ul>
+<li>模式是对象的集和，例如表，视图，子查询。</li>
+</ul>
+<h4 id="典型用户权限" class="article-heading"><a href="#典型用户权限" class="headerlink" title="典型用户权限"></a>典型用户权限<a class="article-anchor" href="#典型用户权限" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th align="left">系统权限</th>
+<th align="left">操作认证</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">create session</td>
+<td align="left">连接到数据库</td>
+</tr>
+<tr>
+<td align="left">create table</td>
+<td align="left">在用户的模式中创建表</td>
+</tr>
+<tr>
+<td align="left">create sequence</td>
+<td align="left">在用户的模式中创建序列</td>
+</tr>
+<tr>
+<td align="left">create view</td>
+<td align="left">在用户的模式中创建视图</td>
+</tr>
+<tr>
+<td align="left">create procedure</td>
+<td align="left">在用户的模式中创建一个存储过程，函数或者包</td>
+</tr>
+</tbody></table>
+<h3 id="对象权限" class="article-heading"><a href="#对象权限" class="headerlink" title="对象权限"></a>对象权限<a class="article-anchor" href="#对象权限" aria-hidden="true"></a></h3><p><strong>授予对象权限</strong></p>
+<p>不同的对象权限对不同类型的模式对象是可用的。一个用户自动拥有包含在用户模式里面模式对象的对象权限。</p>
+<blockquote>
+<p>我的理解：拥有该表用户默认就拥有了对该表的所有对象权限（例如DQL\DML和alter），表可以该为其他对象例如视图、序列、过程。</p>
+</blockquote>
+<p>一个用户可以将自己拥有的模式对象上面的所有对象权限授予任何其他的用户和角色。如果授予时使用了WITH GRANT OPTION，那么受让人可以将对象权限进一步授予其他的用户；否则受让人只可以使用权限，但是不可以将它授予其他人。</p>
+<p><strong>WITH GRANT OPTION</strong></p>
+<p>授予的特权可以将特权传递给其他的用户和角色。</p>
+<p><strong>PUBLIC</strong></p>
+<p>授权所有用户访问这张表</p>
+<blockquote>
+<p>我的理解：</p>
+</blockquote>
+<ul>
+<li>我的表可以给别人（B）使用吗？可以的。</li>
+<li>别人（B）可以把我的表再给C使用吗？ 可以的。</li>
+<li>我想把我的表给所有人使用可以吗？ 可以的。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">对象权限</th>
+<th align="left">表</th>
+<th align="left">视图</th>
+<th align="left">序列</th>
+<th align="left">过程</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">alter</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left">*</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">select</td>
+<td align="left">*</td>
+<td align="left">*</td>
+<td align="left">*</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">update</td>
+<td align="left">*</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">delete</td>
+<td align="left">*</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">insert</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">execute</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">*</td>
+</tr>
+<tr>
+<td align="left">index</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">references</td>
+<td align="left">*</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h2 id="角色" class="article-heading"><a href="#角色" class="headerlink" title="角色"></a>角色<a class="article-anchor" href="#角色" aria-hidden="true"></a></h2><h3 id="什么是角色？" class="article-heading"><a href="#什么是角色？" class="headerlink" title="什么是角色？"></a>什么是角色？<a class="article-anchor" href="#什么是角色？" aria-hidden="true"></a></h3><p>角色是命名的组，包含相关的权限可以授予用户。这个方法可以使撤销和维护权限变得简单。一个用户可以拥有几个角色，几个用户可以分配相同的角色。角色通常为数据库的应用程序创建。</p>
+<h3 id="创建和分配角色" class="article-heading"><a href="#创建和分配角色" class="headerlink" title="创建和分配角色"></a>创建和分配角色<a class="article-anchor" href="#创建和分配角色" aria-hidden="true"></a></h3><h4 id="步骤" class="article-heading"><a href="#步骤" class="headerlink" title="步骤"></a>步骤<a class="article-anchor" href="#步骤" aria-hidden="true"></a></h4><ol>
+<li>DBA必须创建角色</li>
+<li>DBA可以分配权利</li>
+<li>DBA给用户授与角色</li>
+</ol>
+<h3 id="语法" class="article-heading"><a href="#语法" class="headerlink" title="语法"></a>语法<a class="article-anchor" href="#语法" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> role x_role;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">create table</span> , <span class="keyword">create</span> <span class="keyword">view</span> <span class="keyword">to</span> x_role;</span><br><span class="line"><span class="keyword">grant</span> x_role <span class="keyword">to</span> batman,superman;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="实践" class="article-heading"><a href="#实践" class="headerlink" title="实践"></a>实践<a class="article-anchor" href="#实践" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> role r1;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">create</span> session,<span class="keyword">create table</span> <span class="keyword">to</span> r1;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> role r2;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">create</span> <span class="keyword">view</span> <span class="keyword">to</span> r2;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">delete</span> <span class="keyword">on</span> scott.emp <span class="keyword">to</span> r2;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> role r3;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">create</span> <span class="keyword">procedure</span> <span class="keyword">to</span> r3;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">update</span> (sal) <span class="keyword">on</span> scott.emp <span class="keyword">to</span> r3;</span><br><span class="line"></span><br><span class="line"><span class="keyword">grant</span> r3 <span class="keyword">to</span> r1;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> tom identified <span class="keyword">by</span> tom;</span><br><span class="line"><span class="keyword">grant</span> r1,r2 <span class="keyword">to</span> tom;</span><br><span class="line"></span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">create</span> sequence <span class="keyword">to</span> tom;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> scott.emp <span class="keyword">to</span> tom;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">insert</span> <span class="keyword">on</span> scott.emp <span class="keyword">to</span> tom;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">update</span> (comm) <span class="keyword">on</span> scott.emp <span class="keyword">to</span> tom;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="数据字典-与角色和权限相关" class="article-heading"><a href="#数据字典-与角色和权限相关" class="headerlink" title="数据字典-与角色和权限相关"></a>数据字典-与角色和权限相关<a class="article-anchor" href="#数据字典-与角色和权限相关" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th align="left">数据字典视图</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">role_sys_privs</td>
+<td align="left">角色被授予的系统权限</td>
+</tr>
+<tr>
+<td align="left">role_tab_privs</td>
+<td align="left">角色被授予的对象权限</td>
+</tr>
+<tr>
+<td align="left">user_role_privs</td>
+<td align="left">用户被授予的角色权限</td>
+</tr>
+<tr>
+<td align="left">user_tab_privs</td>
+<td align="left">用户对象权限</td>
+</tr>
+<tr>
+<td align="left">user_tab_privs_made</td>
+<td align="left">用户的对象被授予的对象权限</td>
+</tr>
+<tr>
+<td align="left">user_tab_privs_recd</td>
+<td align="left">用户被授予的对象权限</td>
+</tr>
+<tr>
+<td align="left">user_col_privs</td>
+<td align="left">用户对象对权限</td>
+</tr>
+<tr>
+<td align="left">user_col_privs_made</td>
+<td align="left">用户对象的列被授予的对象权限</td>
+</tr>
+<tr>
+<td align="left">user_col_privs_recd</td>
+<td align="left">用户指定的列被授予的对象权限</td>
+</tr>
+<tr>
+<td align="left">user_sys_privs</td>
+<td align="left">用户被授予的系统权限</td>
+</tr>
+<tr>
+<td align="left">dba_sys_privs</td>
+<td align="left">用户被授予的系统权限</td>
+</tr>
+<tr>
+<td align="left">dba_tab_privs</td>
+<td align="left">用户被授予的对象权限</td>
+</tr>
+<tr>
+<td align="left">dba_col_privs</td>
+<td align="left">用户被授予的列级别的对象权限</td>
+</tr>
+<tr>
+<td align="left">dba_role_privs</td>
+<td align="left">用户被授予的角色权限</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>我的理解：<br>user_tab_privs | 用户对象权限 | 我给别人的权限和别人给我的权限，对象级别|<br>user_tab_privs_made | 用户的对象被授予的对象权限 | 我给别人的权限，对象级别|<br>user_tab_privs_recd | 用户被授予的对象权限 | 别人给我的权限，对象级别|</p>
+</blockquote>
+<h3 id="实践1-查看用户的权限" class="article-heading"><a href="#实践1-查看用户的权限" class="headerlink" title="实践1-查看用户的权限"></a>实践1-查看用户的权限<a class="article-anchor" href="#实践1-查看用户的权限" aria-hidden="true"></a></h3><p>背景：scott用户给ops$boobo 授权了emp表的select权限</p>
+<ol>
+<li>使用ops$boobo 用户登陆，查看拥有的系统权限</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> user_sys_privs;</span><br><span class="line"></span><br><span class="line">USERNAME		       PRIVILEGE				ADM</span><br><span class="line"><span class="comment">------------------------------ ---------------------------------------- ---</span></span><br><span class="line">OPS$BOOBOO		       <span class="keyword">CREATE</span> SESSION				<span class="keyword">NO</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>从返回结果可知，用户拥有的系统权限为<code>CREATE SESSION</code>。</p>
+<ol start="2">
+<li>使用ops$boobo 用户登陆，查看对象权限</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">set</span> linesize <span class="number">500</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> user_tab_privs;</span><br><span class="line"></span><br><span class="line">GRANTEE 		       OWNER			      TABLE_NAME		     GRANTOR			    PRIVILEGE				     GRA HIE</span><br><span class="line"><span class="comment">------------------------------ ------------------------------ ------------------------------ ------------------------------ ---------------------------------------- --- ---</span></span><br><span class="line">OPS$BOOBOO		       SCOTT			      EMP			     SCOTT			    <span class="keyword">SELECT</span>				     YES <span class="keyword">NO</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> user_tab_privs_recd;</span><br><span class="line"></span><br><span class="line">OWNER			       TABLE_NAME		      GRANTOR			     PRIVILEGE				      GRA HIE</span><br><span class="line"><span class="comment">------------------------------ ------------------------------ ------------------------------ ---------------------------------------- --- ---</span></span><br><span class="line">SCOTT			       EMP			      SCOTT			     <span class="keyword">SELECT</span>				      YES <span class="keyword">NO</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> user_tab_privs_made;</span><br><span class="line"></span><br><span class="line"><span class="keyword">no</span> <span class="keyword">rows</span> selected</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>SCOTT用户 给了 OPS$BOOBOO 用户 SCOTT.EMP 的 SELECT 权限；</li>
+<li>OPS$BOOBOO 用户 没有给 其他用户 授权的对象；</li>
+</ul>
+<ol start="3">
+<li>使用 scott 用户登陆，查看对象权限</li>
+</ol>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> user_tab_privs;</span><br><span class="line"></span><br><span class="line">GRANTEE 		       OWNER			      TABLE_NAME		     GRANTOR			    PRIVILEGE				     GRA HIE</span><br><span class="line"><span class="comment">------------------------------ ------------------------------ ------------------------------ ------------------------------ ---------------------------------------- --- ---</span></span><br><span class="line">OPS$BOOBOO		       SCOTT			      EMP			     SCOTT			    <span class="keyword">SELECT</span>				     YES <span class="keyword">NO</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> user_tab_privs_recd;</span><br><span class="line"></span><br><span class="line"><span class="keyword">no</span> <span class="keyword">rows</span> selected</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> user_tab_privs_made;</span><br><span class="line"></span><br><span class="line">GRANTEE 		       TABLE_NAME		      GRANTOR			     PRIVILEGE				      GRA HIE</span><br><span class="line"><span class="comment">------------------------------ ------------------------------ ------------------------------ ---------------------------------------- --- ---</span></span><br><span class="line">OPS$BOOBOO		       EMP			      SCOTT			     <span class="keyword">SELECT</span>				      YES <span class="keyword">NO</span></span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>其他用户 没有给 SCOTT 用户 授权的对象；</li>
+<li>SCOTT 用户 授予了 OPS$BOOBOO 用户 SCOTT.EMP 的 SELECT 权限；</li>
+</ul>
+<h2 id="级联授权" class="article-heading"><a href="#级联授权" class="headerlink" title="级联授权"></a>级联授权<a class="article-anchor" href="#级联授权" aria-hidden="true"></a></h2><p><code>dba --&gt; user A --&gt; user B</code></p>
+<h3 id="系统权限级联授权：with-admin-option-权限回收无级联" class="article-heading"><a href="#系统权限级联授权：with-admin-option-权限回收无级联" class="headerlink" title="系统权限级联授权：with admin option 权限回收无级联"></a>系统权限级联授权：<code>with admin option</code> 权限回收无级联<a class="article-anchor" href="#系统权限级联授权：with-admin-option-权限回收无级联" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">grant</span> <span class="keyword">CREATE</span> SEQUENCE <span class="keyword">to</span> tom <span class="keyword">with</span> admin option;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="对象权限级联授权：with-grant-option-权限回收有级联" class="article-heading"><a href="#对象权限级联授权：with-grant-option-权限回收有级联" class="headerlink" title="对象权限级联授权：with grant option 权限回收有级联"></a>对象权限级联授权：<code>with grant option</code> 权限回收有级联<a class="article-anchor" href="#对象权限级联授权：with-grant-option-权限回收有级联" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">grant</span> <span class="keyword">insert</span> <span class="keyword">on</span> scott.e01 <span class="keyword">to</span> tom <span class="keyword">with</span> <span class="keyword">grant</span> option;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="实践1-系统用户只能用with-admin-option" class="article-heading"><a href="#实践1-系统用户只能用with-admin-option" class="headerlink" title="实践1-系统用户只能用with admin option"></a>实践1-系统用户只能用with admin option<a class="article-anchor" href="#实践1-系统用户只能用with-admin-option" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line">Connected.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>级联授权</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">create table</span> <span class="keyword">to</span> ops$booboo <span class="keyword">with</span> admin option;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>ops$booboo用户授权给ops$oracle用户create table的权限</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">create table</span> <span class="keyword">to</span> ops$oracle;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>sysdba回收ops$booboo用户的create table权限</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">revoke</span> <span class="keyword">create table</span> <span class="keyword">from</span> ops$booboo;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>测试发现ops$booboo用户的create table权限被回收了，而ops$oracle用户create table的权限没有被回收</p>
+<h3 id="实践2-一般用户只能使用with-grant-option" class="article-heading"><a href="#实践2-一般用户只能使用with-grant-option" class="headerlink" title="实践2-一般用户只能使用with grant option"></a>实践2-一般用户只能使用with grant option<a class="article-anchor" href="#实践2-一般用户只能使用with-grant-option" aria-hidden="true"></a></h3><p>一般用户只能使用with grant option</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> emp <span class="keyword">to</span> ops$booboo <span class="keyword">with</span> admin option;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> emp <span class="keyword">to</span> ops$booboo <span class="keyword">with</span> admin option</span><br><span class="line">                                       <span class="operator">*</span></span><br><span class="line">ERROR <span class="keyword">at</span> line <span class="number">1</span>:</span><br><span class="line">ORA<span class="number">-00993</span>: missing <span class="keyword">GRANT</span> keyword</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> emp <span class="keyword">to</span> ops$booboo <span class="keyword">with</span> <span class="keyword">grant</span> option;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>OPS$BOOBOO再授权给其他用户</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">select</span> <span class="keyword">on</span> scott.emp <span class="keyword">to</span> ops$oracle ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">user</span>;</span><br><span class="line"><span class="keyword">USER</span> <span class="keyword">is</span> "OPS$BOOBOO"</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">set</span> linesize <span class="number">150</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> scott.emp <span class="keyword">where</span> rownum <span class="operator">&lt;</span> <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">     EMPNO ENAME      JOB	       MGR HIREDATE	    SAL       COMM     DEPTNO</span><br><span class="line"><span class="comment">---------- ---------- --------- ---------- --------- ---------- ---------- ----------</span></span><br><span class="line">      <span class="number">7369</span> SMITH      CLERK	      <span class="number">7902</span> <span class="number">17</span><span class="operator">-</span><span class="type">DEC</span><span class="number">-80</span>	    <span class="number">800</span> 		   <span class="number">20</span></span><br><span class="line">      <span class="number">7499</span> ALLEN      SALESMAN	      <span class="number">7698</span> <span class="number">20</span><span class="operator">-</span>FEB<span class="number">-81</span>	   <span class="number">1600</span>        <span class="number">300</span>	   <span class="number">30</span></span><br><span class="line"><span class="comment">--OPS$ORACLE用户</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">user</span>;</span><br><span class="line"><span class="keyword">USER</span> <span class="keyword">is</span> "OPS$ORACLE"</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">set</span> linesize <span class="number">150</span>;</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> scott.emp <span class="keyword">where</span> rownum <span class="operator">&lt;</span> <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">     EMPNO ENAME      JOB	       MGR HIREDATE	    SAL       COMM     DEPTNO</span><br><span class="line"><span class="comment">---------- ---------- --------- ---------- --------- ---------- ---------- ----------</span></span><br><span class="line">      <span class="number">7369</span> SMITH      CLERK	      <span class="number">7902</span> <span class="number">17</span><span class="operator">-</span><span class="type">DEC</span><span class="number">-80</span>	    <span class="number">800</span> 		   <span class="number">20</span></span><br><span class="line">      <span class="number">7499</span> ALLEN      SALESMAN	      <span class="number">7698</span> <span class="number">20</span><span class="operator">-</span>FEB<span class="number">-81</span>	   <span class="number">1600</span>        <span class="number">300</span>	   <span class="number">30</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>scott用户回收对OPS$BOOBOO的授权后，ops$oracle也会失去select权限</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">revoke</span> <span class="keyword">select</span> <span class="keyword">on</span> emp <span class="keyword">from</span> ops$booboo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Revoke</span> succeeded.</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="用户权限总结" class="article-heading"><a href="#用户权限总结" class="headerlink" title="用户权限总结"></a>用户权限总结<a class="article-anchor" href="#用户权限总结" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th align="left">功能</th>
+<th align="left">命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">创建用户的基本命令</td>
+<td align="left">create user smith identified by smith;</td>
+</tr>
+<tr>
+<td align="left">授予权限</td>
+<td align="left">grant create session to smith;</td>
+</tr>
+<tr>
+<td align="left">连接到指定用户下</td>
+<td align="left">conn smith/smith</td>
+</tr>
+<tr>
+<td align="left">查看当前用户是谁</td>
+<td align="left">show user</td>
+</tr>
+<tr>
+<td align="left">查看当前版本下所有的系统权限</td>
+<td align="left">select distinct privilege from dba_sys_privs;</td>
+</tr>
+<tr>
+<td align="left">查看与table有关的权限</td>
+<td align="left">select distinct privilege from dba_sys_privs where privilege like ‘%TABLE%’;</td>
+</tr>
+<tr>
+<td align="left">回收权限</td>
+<td align="left">revoke CREATE ANY TABLE from SMITH;</td>
+</tr>
+<tr>
+<td align="left">查看用户拥有的权限</td>
+<td align="left">select * from session_privs;</td>
+</tr>
+<tr>
+<td align="left">使用角色管理权限</td>
+<td align="left">create role r_clerk;grant create session,create table,create synonym to r_clerk;grant r_clerk to smith;</td>
+</tr>
+<tr>
+<td align="left">角色的嵌套</td>
+<td align="left">create user jones identified by jones password expire;create role r_manager;grant r_clerk,create view to r_manager;grant r_manager to jones;</td>
+</tr>
+<tr>
+<td align="left">使用sql语句修改用户口令</td>
+<td align="left">alter user jones identified by oracle;</td>
+</tr>
+<tr>
+<td align="left">使用sql语句解锁用户</td>
+<td align="left">alter user scott identified by tiger account unlock;</td>
+</tr>
+<tr>
+<td align="left">使用sqlplus命令修改口令</td>
+<td align="left">password</td>
+</tr>
+<tr>
+<td align="left">对象权限</td>
+<td align="left">SQL&gt; grant select on scott.e01 to smith;SQL&gt; grant update (comm) on scott.e01 to smith;SQL&gt; grant delete on scott.e01 to smith;SQL&gt; grant insert on scott.e01 to smith;</td>
+</tr>
+<tr>
+<td align="left">查看用户被授予的系统权限</td>
+<td align="left">SQL&gt; select privilege from dba_sys_privs where GRANTEE=’TOM’;</td>
+</tr>
+<tr>
+<td align="left">查看用户被授予的对象权限</td>
+<td align="left">col GRANTEE for a15；col PRIVILEGE for a20；col owner for a15；SQL&gt; SELECT GRANTEE,PRIVILEGE,OWNER,TABLE_NAME FROM DBA_TAB_PRIVS WHERE GRANTEE=’TOM’；</td>
+</tr>
+<tr>
+<td align="left">查看用户被授予的列级别的对象权限</td>
+<td align="left">SQL&gt; SELECT OWNER,TABLE_NAME,COLUMN_NAME,PRIVILEGE FROM DBA_COL_PRIVS where GRANTEE=’TOM’;</td>
+</tr>
+<tr>
+<td align="left">用户被授予的角色</td>
+<td align="left">SELECT * FROM DBA_ROLE_PRIVS WHERE GRANTEE=’TOM’;</td>
+</tr>
+<tr>
+<td align="left">角色被授予的角色</td>
+<td align="left">SELECT * FROM ROLE_ROLE_PRIVS WHERE ROLE=’R1’;</td>
+</tr>
+<tr>
+<td align="left">角色被授予的系统权限</td>
+<td align="left">select * from ROLE_SYS_PRIVS WHERE ROLE=’R1’;</td>
+</tr>
+<tr>
+<td align="left">角色被授予的对象权限</td>
+<td align="left">select * from ROLE_TAB_PRIVS WHERE ROLE=’R1’;</td>
+</tr>
+</tbody></table>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">--sysdba创建一个用户blake</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">create</span> <span class="keyword">user</span> blake identified <span class="keyword">by</span> blake;</span><br><span class="line"></span><br><span class="line"><span class="keyword">User</span> created.</span><br><span class="line"><span class="comment">--该用户什么都做不了</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn blake<span class="operator">/</span>blake;</span><br><span class="line">ERROR:</span><br><span class="line">ORA<span class="number">-01045</span>: <span class="keyword">user</span> BLAKE lacks <span class="keyword">CREATE</span> SESSION privilege; logon denied</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Warning: You <span class="keyword">are</span> <span class="keyword">no</span> longer connected <span class="keyword">to</span> ORACLE.</span><br><span class="line"><span class="comment">--MySQL创建用户就会默认存在一个usage的权限允许该用户连接上数据库服务器</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--Oracle需要给用户授予create session的权限才能允许连接</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">create</span> session <span class="keyword">to</span> blake;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn blake<span class="operator">/</span>blake;</span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">user</span>;</span><br><span class="line"><span class="keyword">USER</span> <span class="keyword">is</span> "BLAKE"</span><br><span class="line"></span><br><span class="line"><span class="comment">--用户的命名规则</span></span><br><span class="line"><span class="comment">--操作系统审核的用户：安全机制在系统级别，则前缀为ops$，后缀为当前登陆到服务器的操作系统用户名</span></span><br><span class="line"><span class="comment">--os_authent_prefix 变量的值为 ops$</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line">Connected.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">parameter</span> os</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">db_lost_write_protect		     string	 <span class="keyword">NONE</span></span><br><span class="line">diagnostic_dest 		     string	 <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle</span><br><span class="line">optimizer_index_cost_adj	     <span class="type">integer</span>	 <span class="number">100</span></span><br><span class="line">os_authent_prefix		     string	 ops$</span><br><span class="line">os_roles			     <span class="type">boolean</span>	 <span class="literal">FALSE</span></span><br><span class="line">remote_os_authent		     <span class="type">boolean</span>	 <span class="literal">FALSE</span></span><br><span class="line">remote_os_roles 		     <span class="type">boolean</span>	 <span class="literal">FALSE</span></span><br><span class="line">timed_os_statistics		     <span class="type">integer</span>	 <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--后缀为当前登陆到服务器的操作系统用户名</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="keyword">distinct</span> osuser <span class="keyword">from</span> v$session;</span><br><span class="line"></span><br><span class="line">OSUSER</span><br><span class="line"><span class="comment">------------------------------</span></span><br><span class="line">oracle</span><br><span class="line"></span><br><span class="line"><span class="comment">--如何创建操作系统审核的用户</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">create</span> <span class="keyword">user</span> ops$oracle identified <span class="keyword">by</span> oracle;</span><br><span class="line"></span><br><span class="line"><span class="keyword">User</span> created.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">create</span> session <span class="keyword">to</span> ops$oracle;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span></span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">user</span>;</span><br><span class="line"><span class="keyword">USER</span> <span class="keyword">is</span> "OPS$ORACLE"</span><br><span class="line"></span><br><span class="line"><span class="comment">--若目前是booboo用户登陆的服务器如何创建一个对应的操作系统审核用户</span></span><br><span class="line"><span class="comment">--booboo的所属组为oinstall，附加组为dba</span></span><br><span class="line"></span><br><span class="line">[root<span class="variable">@oracle0</span> <span class="operator">~</span>]# id booboo</span><br><span class="line">uid<span class="operator">=</span><span class="number">501</span>(booboo) gid<span class="operator">=</span><span class="number">501</span>(oinstall) <span class="keyword">groups</span><span class="operator">=</span><span class="number">501</span>(oinstall),<span class="number">500</span>(dba)</span><br><span class="line">[root<span class="variable">@oracle0</span> <span class="operator">~</span>]# su <span class="operator">-</span> booboo</span><br><span class="line">[booboo<span class="variable">@oracle0</span> <span class="operator">~</span>]$ sqlplus <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Plus: <span class="keyword">Release</span> <span class="number">11.2</span><span class="number">.0</span><span class="number">.4</span><span class="number">.0</span> Production <span class="keyword">on</span> Fri Oct <span class="number">20</span> <span class="number">17</span>:<span class="number">20</span>:<span class="number">09</span> <span class="number">2017</span></span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">1982</span>, <span class="number">2013</span>, Oracle.  <span class="keyword">All</span> rights reserved.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Connected <span class="keyword">to</span>:</span><br><span class="line">Oracle Database <span class="number">11</span>g Enterprise Edition <span class="keyword">Release</span> <span class="number">11.2</span><span class="number">.0</span><span class="number">.4</span><span class="number">.0</span> <span class="operator">-</span> <span class="number">64</span>bit Production</span><br><span class="line"><span class="keyword">With</span> the Partitioning, OLAP, Data Mining <span class="keyword">and</span> <span class="type">Real</span> Application Testing options</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="keyword">distinct</span> osuser <span class="keyword">from</span> v$session ;</span><br><span class="line"></span><br><span class="line">OSUSER</span><br><span class="line"><span class="comment">------------------------------</span></span><br><span class="line">booboo</span><br><span class="line">oracle</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">parameter</span> os;</span><br><span class="line"></span><br><span class="line">NAME				     TYPE	 <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ----------- ------------------------------</span></span><br><span class="line">db_lost_write_protect		     string	 <span class="keyword">NONE</span></span><br><span class="line">diagnostic_dest 		     string	 <span class="operator">/</span>u01<span class="operator">/</span>app<span class="operator">/</span>oracle</span><br><span class="line">optimizer_index_cost_adj	     <span class="type">integer</span>	 <span class="number">100</span></span><br><span class="line">os_authent_prefix		     string	 ops$</span><br><span class="line">os_roles			     <span class="type">boolean</span>	 <span class="literal">FALSE</span></span><br><span class="line">remote_os_authent		     <span class="type">boolean</span>	 <span class="literal">FALSE</span></span><br><span class="line">remote_os_roles 		     <span class="type">boolean</span>	 <span class="literal">FALSE</span></span><br><span class="line">timed_os_statistics		     <span class="type">integer</span>	 <span class="number">0</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">create</span> session <span class="keyword">to</span> ops$booboo identified <span class="keyword">by</span> booboo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span></span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">user</span></span><br><span class="line"><span class="keyword">USER</span> <span class="keyword">is</span> "OPS$BOOBOO"</span><br><span class="line"></span><br><span class="line"><span class="comment">--查看自己的权限</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_privs;</span><br><span class="line"></span><br><span class="line">PRIVILEGE</span><br><span class="line"><span class="comment">----------------------------------------</span></span><br><span class="line"><span class="keyword">CREATE</span> SESSION</span><br><span class="line"></span><br><span class="line"><span class="comment">--查看sysdba的权限</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_privs;</span><br><span class="line"></span><br><span class="line"><span class="comment">--授予多个系统权限给一个用户</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">create table</span>,<span class="keyword">create</span> sequence <span class="keyword">to</span> ops$booboo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span></span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_privs;</span><br><span class="line"></span><br><span class="line">PRIVILEGE</span><br><span class="line"><span class="comment">----------------------------------------</span></span><br><span class="line"><span class="keyword">CREATE</span> SESSION</span><br><span class="line"><span class="keyword">CREATE TABLE</span></span><br><span class="line"><span class="keyword">CREATE</span> SEQUENCE</span><br><span class="line"><span class="comment">--注意此处的create权限包含了对对象的创建、修改、删除操作</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span></span><br><span class="line">Connected.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">create table</span> t1 (id <span class="type">int</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">Table</span> created.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">insert into</span> t1 <span class="keyword">values</span> (<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert into</span> t1 <span class="keyword">values</span> (<span class="number">1</span>)</span><br><span class="line">            <span class="operator">*</span></span><br><span class="line">ERROR <span class="keyword">at</span> line <span class="number">1</span>:</span><br><span class="line">ORA<span class="number">-01950</span>: <span class="keyword">no</span> privileges <span class="keyword">on</span> tablespace <span class="string">'USERS'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">alter table</span> t1 <span class="keyword">add</span> (name <span class="type">int</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">Table</span> altered.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">desc</span> t1;</span><br><span class="line"> Name					   <span class="keyword">Null</span>?    Type</span><br><span class="line"> <span class="comment">----------------------------------------- -------- ----------------------------</span></span><br><span class="line"> ID						    NUMBER(<span class="number">38</span>)</span><br><span class="line"> NAME						    NUMBER(<span class="number">38</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">drop</span> <span class="keyword">table</span> t1 purge;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Table</span> dropped.</span><br><span class="line"></span><br><span class="line"><span class="comment">--回收权限</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">revoke</span> <span class="keyword">create table</span> ,<span class="keyword">create</span> sequence <span class="keyword">from</span> ops$booboo ;</span><br><span class="line"></span><br><span class="line"><span class="comment">--级联授权</span></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">create table</span> <span class="keyword">to</span> ops$booboo <span class="keyword">with</span> admin option;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> conn <span class="operator">/</span></span><br><span class="line">Connected.</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">user</span>;</span><br><span class="line"><span class="keyword">USER</span> <span class="keyword">is</span> "OPS$BOOBOO"</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> session_privs;</span><br><span class="line"></span><br><span class="line">PRIVILEGE</span><br><span class="line"><span class="comment">----------------------------------------</span></span><br><span class="line"><span class="keyword">CREATE</span> SESSION</span><br><span class="line"><span class="keyword">CREATE TABLE</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">create table</span> <span class="keyword">to</span> tom ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">grant</span> <span class="keyword">create table</span> <span class="keyword">to</span> ops$oracle;</span><br><span class="line"></span><br><span class="line"><span class="keyword">Grant</span> succeeded.</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:44.063Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-text">权限的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90"><span class="toc-text">系统权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E7%9A%84DBA%E6%9D%83%E9%99%90"><span class="toc-text">典型的DBA权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90"><span class="toc-text">典型用户权限</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E6%9D%83%E9%99%90"><span class="toc-text">对象权限</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%92%E8%89%B2"><span class="toc-text">角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%A7%92%E8%89%B2%EF%BC%9F"><span class="toc-text">什么是角色？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%92%8C%E5%88%86%E9%85%8D%E8%A7%92%E8%89%B2"><span class="toc-text">创建和分配角色</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4"><span class="toc-text">步骤</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-text">语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5"><span class="toc-text">实践</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%AD%97%E5%85%B8-%E4%B8%8E%E8%A7%92%E8%89%B2%E5%92%8C%E6%9D%83%E9%99%90%E7%9B%B8%E5%85%B3"><span class="toc-text">数据字典-与角色和权限相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B51-%E6%9F%A5%E7%9C%8B%E7%94%A8%E6%88%B7%E7%9A%84%E6%9D%83%E9%99%90"><span class="toc-text">实践1-查看用户的权限</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%A7%E8%81%94%E6%8E%88%E6%9D%83"><span class="toc-text">级联授权</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%BA%A7%E8%81%94%E6%8E%88%E6%9D%83%EF%BC%9Awith-admin-option-%E6%9D%83%E9%99%90%E5%9B%9E%E6%94%B6%E6%97%A0%E7%BA%A7%E8%81%94"><span class="toc-text">系统权限级联授权：with admin option 权限回收无级联</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E6%9D%83%E9%99%90%E7%BA%A7%E8%81%94%E6%8E%88%E6%9D%83%EF%BC%9Awith-grant-option-%E6%9D%83%E9%99%90%E5%9B%9E%E6%94%B6%E6%9C%89%E7%BA%A7%E8%81%94"><span class="toc-text">对象权限级联授权：with grant option 权限回收有级联</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B51-%E7%B3%BB%E7%BB%9F%E7%94%A8%E6%88%B7%E5%8F%AA%E8%83%BD%E7%94%A8with-admin-option"><span class="toc-text">实践1-系统用户只能用with admin option</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-%E4%B8%80%E8%88%AC%E7%94%A8%E6%88%B7%E5%8F%AA%E8%83%BD%E4%BD%BF%E7%94%A8with-grant-option"><span class="toc-text">实践2-一般用户只能使用with grant option</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E6%80%BB%E7%BB%93"><span class="toc-text">用户权限总结</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>数据库实例_内存和进程 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/D-%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-01-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B_%E5%86%85%E5%AD%98%E5%92%8C%E8%BF%9B%E7%A8%8B">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/D-%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-01-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B_%E5%86%85%E5%AD%98%E5%92%8C%E8%BF%9B%E7%A8%8B" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="今天是祖国母亲的70岁生日，祖国万岁！祖国如此富强，国人更应努力！做好自己的岗位也是为祖国出一份力，为建设社会主义社会出一份力！     数据库实例_内存和进程 内容概览 数据库实例 物理结构 逻辑结构   Oracle 数据库简史 Oracle 版本标识 Oracle 12c 及之前的版本标识 Oracle 18c 之后的版本标识   Oracle数据库实例概述 后台进程 实践——查看后台进程">
+<meta property="og:type" content="website">
+<meta property="og:title" content="数据库实例_内存和进程">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/D-%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-01-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B_%E5%86%85%E5%AD%98%E5%92%8C%E8%BF%9B%E7%A8%8B">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="今天是祖国母亲的70岁生日，祖国万岁！祖国如此富强，国人更应努力！做好自己的岗位也是为祖国出一份力，为建设社会主义社会出一份力！     数据库实例_内存和进程 内容概览 数据库实例 物理结构 逻辑结构   Oracle 数据库简史 Oracle 版本标识 Oracle 12c 及之前的版本标识 Oracle 18c 之后的版本标识   Oracle数据库实例概述 后台进程 实践——查看后台进程">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.781Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:45.920Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">数据库实例_内存和进程</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/D-体系结构和存储引擎-01-数据库实例_内存和进程.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">今天是祖国母亲的70岁生日，祖国万岁！</span><br><span class="line">祖国如此富强，国人更应努力！做好自己的岗位也是为祖国出一份力，为建设社会主义社会出一份力！</span><br></pre></td></tr></tbody></table></figure>
+
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B%E5%86%85%E5%AD%98%E5%92%8C%E8%BF%9B%E7%A8%8B">数据库实例_内存和进程</a><ul>
+<li><a href="#%E5%86%85%E5%AE%B9%E6%A6%82%E8%A7%88">内容概览</a><ul>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B">数据库实例</a></li>
+<li><a href="#%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84">物理结构</a></li>
+<li><a href="#%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84">逻辑结构</a></li>
+</ul>
+</li>
+<li><a href="#oracle-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%80%E5%8F%B2">Oracle 数据库简史</a></li>
+<li><a href="#oracle-%E7%89%88%E6%9C%AC%E6%A0%87%E8%AF%86">Oracle 版本标识</a><ul>
+<li><a href="#oracle-12c-%E5%8F%8A%E4%B9%8B%E5%89%8D%E7%9A%84%E7%89%88%E6%9C%AC%E6%A0%87%E8%AF%86">Oracle 12c 及之前的版本标识</a></li>
+<li><a href="#oracle-18c-%E4%B9%8B%E5%90%8E%E7%9A%84%E7%89%88%E6%9C%AC%E6%A0%87%E8%AF%86">Oracle 18c 之后的版本标识</a></li>
+</ul>
+</li>
+<li><a href="#oracle%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B%E6%A6%82%E8%BF%B0">Oracle数据库实例概述</a><ul>
+<li><a href="#%E5%90%8E%E5%8F%B0%E8%BF%9B%E7%A8%8B">后台进程</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B5%E6%9F%A5%E7%9C%8B%E5%90%8E%E5%8F%B0%E8%BF%9B%E7%A8%8B">实践——查看后台进程</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9E%E4%BE%8B%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84">实例内存结构</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B5%E6%9F%A5%E7%9C%8Bsga">实践——查看SGA</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sqlplus">sqlplus</a> - <a href="#%E5%AE%9E%E8%B7%B5%E6%9F%A5%E7%9C%8Bpga">实践——查看PGA</a></li>
+</ul>
+<!-- /TOC -->
+
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#CNCPT946">Oracle官方帮助</a></p>
+<h2 id="内容概览" class="article-heading"><a href="#内容概览" class="headerlink" title="内容概览"></a>内容概览<a class="article-anchor" href="#内容概览" aria-hidden="true"></a></h2><h3 id="数据库实例" class="article-heading"><a href="#数据库实例" class="headerlink" title="数据库实例"></a>数据库实例<a class="article-anchor" href="#数据库实例" aria-hidden="true"></a></h3><p>Oracle数据库服务器由一个Oracle数据库和一个或多个Oracle数据库实例组成。 每次启动数据库时，都会分配一个称为系统全局区域（SGA）的共享内存区域，并启动Oracle数据库后台进程。<code>后台进程</code>和<code>SGA</code>的组合称为Oracle数据库<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/glossary.htm#CBAFGFCJ">实例</a>。</p>
+<h3 id="物理结构" class="article-heading"><a href="#物理结构" class="headerlink" title="物理结构"></a>物理结构<a class="article-anchor" href="#物理结构" aria-hidden="true"></a></h3><p>Oracle数据库的物理数据库结构，包括数据文件，控制文件，重做日志文件，已归档的重做日志文件，参数文件，警报和跟踪日志文件以及备份文件。</p>
+<p>the physical database structures of an Oracle database, including <code>datafiles</code>,<code>control files</code>, <code>online Redo Log Files</code>, <code>archived redo log files</code>, <code>parameter files</code>, <code>alert and trace log files</code>, and <code>backup files</code>.</p>
+<p>补充<code>password files</code></p>
+<p>包括以下主题：</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/security.htm#CNCPT1568">口令文件</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#BABGABFB">参数文件</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#BABBBJGE">警报和跟踪日志文件</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#i66199">控制文件</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#i60995">联机重做日志文件</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#BABJHFAJ">数据文件</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#BABIDCDB">存档的重做日志文件</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#BABIGDCE">备份文件</a></p>
+</li>
+</ul>
+<h3 id="逻辑结构" class="article-heading"><a href="#逻辑结构" class="headerlink" title="逻辑结构"></a>逻辑结构<a class="article-anchor" href="#逻辑结构" aria-hidden="true"></a></h3><p>逻辑存储结构：数据块，扩展区，段和表空间。这些逻辑存储结构使Oracle数据库可以对磁盘空间使用进行细粒度的控制。</p>
+<p>logical storage structures: <code>data blocks</code>, <code>extents</code>, <code>segments</code>, and <code>tablespaces</code>. These logical storage structures enable Oracle Database to have fine-grained control of disk space use.</p>
+<p>包括以下主题：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#BABBEDEH">数据块</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#BABGGEJC">扩展区</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#BABFJBBC">段</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/intro.htm#BABBGCEH">表空间</a></li>
+</ul>
+<h2 id="Oracle-数据库简史" class="article-heading"><a href="#Oracle-数据库简史" class="headerlink" title="Oracle 数据库简史"></a>Oracle 数据库简史<a class="article-anchor" href="#Oracle-数据库简史" aria-hidden="true"></a></h2><ul>
+<li>1977年 甲骨文成立</li>
+<li>1979年 第一个商业上可用的RDBMS</li>
+<li>1983年 便携式版本的Oracle数据库</li>
+<li>1992年 <code>Oracle 7</code> 引入了PL / SQL存储过程和触发器</li>
+<li>1997年 <code>Oracle 8</code> 作为对象关系数据库发布，支持许多新的数据类型。此外，Oracle8支持大型表的分区<code>(815, 816, 8174)</code></li>
+<li>1999年 <code>Oracle 8i</code> 专为Internet计算而设计，使数据库可以部署在多层环境中</li>
+<li>2001年 <code>Oracle 9i</code> 引入了Oracle RAC，使多个实例可以同时访问一个数据库<code>(9.0, 9.2)</code></li>
+<li>2003年 <code>Oracle 10g</code> 引入了<a target="_blank" rel="noopener" href="https://docs.oracle.com/database/121/CNCPT/glossary.htm#GUID-EF507F26-F59A-415E-8C3E-3B95BFBA2F7C"><strong>网格计算</strong></a> <code>(10.1, 10.2)</code></li>
+<li>2007年 <code>Oracle 11g</code> 引入了许多新功能，使管理员和开发人员能够快速适应不断变化的业务需求<code>(11.1, 11.2)</code></li>
+<li>2013年 <code>Oracle 12c</code> 是专为云，采用了新的多租户架构，内存中的列存储，以及JSON文件的支持<code>(12.1, 12.2)</code></li>
+<li>2018年 <code>Oracle 18c</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Oracle的版本发布和补丁策略一直没有太大的调整，基本保持3-4年一个大版本，两代产品之间会出一个Release 2。</span><br><span class="line">这种策略的好处是能够保证系统的稳定性，一个新的大部分更新到Release 2时，</span><br><span class="line">基本被认为是比较稳定的版本，保守的用户一般会选择这个版本进行升级。</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Oracle-版本标识" class="article-heading"><a href="#Oracle-版本标识" class="headerlink" title="Oracle 版本标识"></a>Oracle 版本标识<a class="article-anchor" href="#Oracle-版本标识" aria-hidden="true"></a></h2><h3 id="Oracle-12c-及之前的版本标识" class="article-heading"><a href="#Oracle-12c-及之前的版本标识" class="headerlink" title="Oracle 12c 及之前的版本标识"></a>Oracle 12c 及之前的版本标识<a class="article-anchor" href="#Oracle-12c-及之前的版本标识" aria-hidden="true"></a></h3><ul>
+<li><p>Major Database Release Number：第一个数字是最一般的标识符。它代表了包含重要新功能的软件的主要新版本</p>
+</li>
+<li><p>Database Maintenance Release Number：第二个数字代表维护版本级别。一些新功能也可能包括在内。</p>
+</li>
+<li><p>Fusion Middleware Release Number：第三个数字反映了Oracle融合中间件的发布级别</p>
+</li>
+<li><p>Component-Specific Release Number：第四个数字标识特定于组件的发布级别。例如，取决于组件补丁集或临时版本，不同的组件在这个位置可以具有不同的编号。</p>
+</li>
+<li><p>Platform-Specific Release Number：第五个数字标识特定于平台的版本。通常这是一个补丁集。当不同的平台需要相同的补丁集时，这个数字在受影响的平台上将是相同的。</p>
+</li>
+</ul>
+<h3 id="Oracle-18c-之后的版本标识" class="article-heading"><a href="#Oracle-18c-之后的版本标识" class="headerlink" title="Oracle 18c 之后的版本标识"></a>Oracle 18c 之后的版本标识<a class="article-anchor" href="#Oracle-18c-之后的版本标识" aria-hidden="true"></a></h3><p>从2017年7月开始，Oracle改变了以往的数据库软件发布流程，采用年度Release和季度更新的策略。</p>
+<ul>
+<li><p>Yearly Release：将之前的N年一发布更改为每年一发布。每年发布的策略能够将更多的新功能更快的提供给用户，同时也大大减少了单次软件变更的数量，避免大的版本升级对系统产生的风险。</p>
+</li>
+<li><p>Quarterly Release Update：Oracle会在每年1/4/7/10月提供季度发布更新。季度更新主要包含查询优化器相关BUG和安全漏洞的修复等。</p>
+</li>
+<li><p>Release Update Revisions：除季度更新之外，发布更新修订也将按季度发布，基于上一个RU的缺陷进行修复，并包含最新的安全漏洞补丁。</p>
+</li>
+</ul>
+<p>每个季度更新发布之后的六个月内，最多有两个独立的更新修订（RUR）。例如，Release.Update.1和Release.Update.2，其中“1”和“2”代表版本迭代。</p>
+<p>新的年度Release发布后的至少两年内，都会提供RU的支持，每个RU又会提供两个独立的RUR支持。因此每个年度Release至少会有3年的更新支持周期。</p>
+<p>基于上述的策略，新的Oracle数据库版本号主要由三位数组成 – release.update.revision。</p>
+<ul>
+<li><p>Release 是发布年份的后两位数字，比如最新发布的18c，表示该版本发布于2018年</p>
+</li>
+<li><p>Update 表示RU或者测试版本，发布于第一个季度为1，之后每个季度加1</p>
+</li>
+<li><p>Revision 表示RUR版本，基于某个RU的修订，每个RU最多两个RUR</p>
+</li>
+</ul>
+<h2 id="Oracle数据库实例概述" class="article-heading"><a href="#Oracle数据库实例概述" class="headerlink" title="Oracle数据库实例概述"></a>Oracle数据库实例概述<a class="article-anchor" href="#Oracle数据库实例概述" aria-hidden="true"></a></h2><p>Oracle数据库服务器由一个数据库和至少一个<strong>数据库实例</strong>（通常简称为<em>实例）组成</em>。由于实例和数据库之间的联系如此紧密，因此有时会使用术语<strong>Oracle数据库</strong>来指代实例和数据库。</p>
+<p>从最严格的意义上讲，这些术语具有以下含义：</p>
+<ul>
+<li><p>数据库</p>
+<p>数据库是位于磁盘上的一组文件，用于存储数据。这些文件可以独立于数据库实例而存在。</p>
+</li>
+<li><p>数据库实例</p>
+<p>实例是一组管理数据库文件的内存结构。该实例由一个共享内存区域（称为<a target="_blank" rel="noopener" href="https://docs.oracle.com/database/121/CNCPT/glossary.htm#GUID-78C0E867-233A-4857-B9FE-A3852A9B7BDF"><strong>系统全局区域 system global area（SGA））</strong></a>和一组后台进程组成。实例可以独立于数据库文件而存在。</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">笔记：</span><br><span class="line">1. 实例由内存和后台进程组成</span><br><span class="line">2. 实例是访问数据库的方法</span><br><span class="line">3. 初始化参数控制实例的行为</span><br><span class="line">4. 一个实例只能连接一个数据库</span><br><span class="line"></span><br><span class="line">启动实例不需要数据库；</span><br><span class="line">产品安装好，有初始化参数文件，就可以启动实例；</span><br><span class="line">与是否存在数据库无关。</span><br><span class="line"></span><br><span class="line">实例内的内存叫做 SGA system global area</span><br><span class="line"></span><br><span class="line">sga是全局共享的，大小有初始化参数文件控制；</span><br><span class="line"></span><br><span class="line">后台进程是实例和数据库的联系纽带，分为：</span><br><span class="line"></span><br><span class="line">- 核心进程</span><br><span class="line">- 非核心进程</span><br><span class="line"></span><br><span class="line">核心进程，必须存在，有一个终止，所有数据库进程全部终止</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="后台进程" class="article-heading"><a href="#后台进程" class="headerlink" title="后台进程"></a>后台进程<a class="article-anchor" href="#后台进程" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/process.htm#i16977">流程体系结构</a></p>
+<p><img src="pic/d-01.jpg"></p>
+<h4 id="实践——查看后台进程" class="article-heading"><a href="#实践——查看后台进程" class="headerlink" title="实践——查看后台进程"></a>实践——查看后台进程<a class="article-anchor" href="#实践——查看后台进程" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> name,description <span class="keyword">from</span> v$bgprocess <span class="keyword">where</span> paddr <span class="operator">&lt;&gt;</span> <span class="string">'00'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>练习明细</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> name,description <span class="keyword">from</span> v$bgprocess <span class="keyword">where</span> paddr <span class="operator">&lt;&gt;</span> <span class="string">'00'</span>;</span><br><span class="line"></span><br><span class="line">NAME	   DESCRIPTION</span><br><span class="line"><span class="comment">---------- --------------------------------------------------------------------------------------------------------------------------------</span></span><br><span class="line">PMON	   process cleanup</span><br><span class="line">VKTM	   Virtual Keeper <span class="keyword">of</span> <span class="type">TiMe</span> process</span><br><span class="line">GEN0	   generic0</span><br><span class="line">DIAG	   diagnosibility process</span><br><span class="line">DBRM	   DataBase Resource Manager</span><br><span class="line">PSP0	   process spawner <span class="number">0</span></span><br><span class="line">DIA0	   diagnosibility process <span class="number">0</span></span><br><span class="line">MMAN	   Memory Manager</span><br><span class="line">DBW0	   db writer process <span class="number">0</span></span><br><span class="line">ARC0	   Archival Process <span class="number">0</span></span><br><span class="line">ARC1	   Archival Process <span class="number">1</span></span><br><span class="line">ARC2	   Archival Process <span class="number">2</span></span><br><span class="line">ARC3	   Archival Process <span class="number">3</span></span><br><span class="line">LGWR	   Redo etc.</span><br><span class="line">CKPT	   checkpoint</span><br><span class="line">SMON	   <span class="keyword">System</span> Monitor Process</span><br><span class="line">RECO	   distributed recovery</span><br><span class="line">CJQ0	   Job Queue Coordinator</span><br><span class="line">QMNC	   AQ Coordinator</span><br><span class="line">MMON	   Manageability Monitor Process</span><br><span class="line">MMNL	   Manageability Monitor Process <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="number">21</span> <span class="keyword">rows</span> selected.</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="实例内存结构" class="article-heading"><a href="#实例内存结构" class="headerlink" title="实例内存结构"></a>实例内存结构<a class="article-anchor" href="#实例内存结构" aria-hidden="true"></a></h3><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28318/memory.htm#g30926">内存体系结构</a></p>
+<p>Oracle数据库创建和使用内存结构有多种用途。例如，内存存储正在运行的程序代码，用户之间共享的数据以及每个已连接用户的私有数据区。Oracle数据库与两个基本的内存结构相关联：</p>
+<ul>
+<li>系统全局区域（SGA）是一组共享内存结构，称为<em>SGA组件</em>，其中包含一个Oracle数据库实例的数据和控制信息。所有服务器和后台进程都共享SGA。SGA中存储的数据示例包括缓存的数据块和共享的SQL区域。</li>
+<li>程序全局区域（PGA）是包含服务器或后台进程的数据和控制信息的内存区域。PGA是启动服务器或后台进程时由Oracle数据库创建的非共享内存。对PGA的访问权限是该过程的专有权限。每个服务器进程和后台进程都有自己的PGA。</li>
+</ul>
+<p><img src="pic/d-02.jpg"></p>
+<h4 id="实践——查看SGA" class="article-heading"><a href="#实践——查看SGA" class="headerlink" title="实践——查看SGA"></a>实践——查看SGA<a class="article-anchor" href="#实践——查看SGA" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># sqlplus</span><br><span class="line">conn <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> v$sga;</span><br><span class="line"><span class="keyword">show</span> sga;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>练习明细</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> v$sga;</span><br><span class="line"></span><br><span class="line">NAME					      <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">---------------------------------------- ----------</span></span><br><span class="line">Fixed Size				    <span class="number">2254664</span></span><br><span class="line">Variable Size				  <span class="number">150997176</span></span><br><span class="line">Database Buffers			  <span class="number">356515840</span></span><br><span class="line">Redo Buffers				    <span class="number">8048640</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="实践——查看PGA" class="article-heading"><a href="#实践——查看PGA" class="headerlink" title="实践——查看PGA"></a>实践——查看PGA<a class="article-anchor" href="#实践——查看PGA" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">parameter</span> pga</span><br></pre></td></tr></tbody></table></figure>
+
+<p>练习明细</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">parameter</span> pga</span><br><span class="line"></span><br><span class="line">NAME				     TYPE		    <span class="keyword">VALUE</span></span><br><span class="line"><span class="comment">------------------------------------ ---------------------- ------------------------------</span></span><br><span class="line">pga_aggregate_target		     big <span class="type">integer</span>	    <span class="number">166</span>M</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:45.920Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AE%B9%E6%A6%82%E8%A7%88"><span class="toc-text">内容概览</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B"><span class="toc-text">数据库实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84"><span class="toc-text">物理结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84"><span class="toc-text">逻辑结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Oracle-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%80%E5%8F%B2"><span class="toc-text">Oracle 数据库简史</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Oracle-%E7%89%88%E6%9C%AC%E6%A0%87%E8%AF%86"><span class="toc-text">Oracle 版本标识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Oracle-12c-%E5%8F%8A%E4%B9%8B%E5%89%8D%E7%9A%84%E7%89%88%E6%9C%AC%E6%A0%87%E8%AF%86"><span class="toc-text">Oracle 12c 及之前的版本标识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Oracle-18c-%E4%B9%8B%E5%90%8E%E7%9A%84%E7%89%88%E6%9C%AC%E6%A0%87%E8%AF%86"><span class="toc-text">Oracle 18c 之后的版本标识</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Oracle%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B%E6%A6%82%E8%BF%B0"><span class="toc-text">Oracle数据库实例概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E5%8F%B0%E8%BF%9B%E7%A8%8B"><span class="toc-text">后台进程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E6%9F%A5%E7%9C%8B%E5%90%8E%E5%8F%B0%E8%BF%9B%E7%A8%8B"><span class="toc-text">实践——查看后台进程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84"><span class="toc-text">实例内存结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E6%9F%A5%E7%9C%8BSGA"><span class="toc-text">实践——查看SGA</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E6%9F%A5%E7%9C%8BPGA"><span class="toc-text">实践——查看PGA</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

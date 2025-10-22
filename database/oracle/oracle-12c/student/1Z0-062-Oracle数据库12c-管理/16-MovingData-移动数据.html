@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践16:移动数据 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/16-MovingData-%E7%A7%BB%E5%8A%A8%E6%95%B0%E6%8D%AE">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/16-MovingData-%E7%A7%BB%E5%8A%A8%E6%95%B0%E6%8D%AE" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 16: Moving Data 2020.02.04 BoobooWei     实践16:移动数据 实践16:概览 实践16-1:使用数据泵移动数据 Overview Task Practice KnowledgePoint   实践16-2:使用SQL*Loader加载数据 Overview Task Practice KnowledgePoint">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践16:移动数据">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/16-MovingData-%E7%A7%BB%E5%8A%A8%E6%95%B0%E6%8D%AE">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 16: Moving Data 2020.02.04 BoobooWei     实践16:移动数据 实践16:概览 实践16-1:使用数据泵移动数据 Overview Task Practice KnowledgePoint   实践16-2:使用SQL*Loader加载数据 Overview Task Practice KnowledgePoint">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.732Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:00.274Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践16:移动数据</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/16-MovingData-移动数据.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p><strong>Practices for Lesson 16: Moving Data</strong></p>
+<p>2020.02.04 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+<ul>
+<li><a href="#%E5%AE%9E%E8%B7%B516%E7%A7%BB%E5%8A%A8%E6%95%B0%E6%8D%AE">实践16:移动数据</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B516%E6%A6%82%E8%A7%88">实践16:概览</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B516-1%E4%BD%BF%E7%94%A8%E6%95%B0%E6%8D%AE%E6%B3%B5%E7%A7%BB%E5%8A%A8%E6%95%B0%E6%8D%AE">实践16-1:使用数据泵移动数据</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#task">Task</a></li>
+<li><a href="#practice">Practice</a></li>
+<li><a href="#knowledgepoint">KnowledgePoint</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9E%E8%B7%B516-2%E4%BD%BF%E7%94%A8sqlloader%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE">实践16-2:使用SQL*Loader加载数据</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#task">Task</a></li>
+<li><a href="#practice">Practice</a></li>
+<li><a href="#knowledgepoint">KnowledgePoint</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9E%E8%B7%B516-3%E6%95%B0%E6%8D%AE%E6%B3%B5%E5%B0%86%E8%A7%86%E5%9B%BE%E5%AF%BC%E5%87%BA%E5%B9%B6%E5%AF%BC%E5%85%A5%E6%88%90%E8%A1%A8">实践16-3:数据泵将视图导出并导入成表</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#task">Task</a></li>
+<li><a href="#practice">Practice</a></li>
+<li><a href="#knowledgepoint">KnowledgePoint</a></li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a><ul>
+<li><a href="#oracle-data-pump%E6%A6%82%E8%BF%B0">Oracle Data Pump概述</a></li>
+<li><a href="#sql-loader">SQL * Loader</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /MDTOC -->
+
+<h2 id="实践16-概览" class="article-heading"><a href="#实践16-概览" class="headerlink" title="实践16:概览"></a>实践16:概览<a class="article-anchor" href="#实践16-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 16: Overview</p>
+<p><strong>Background:</strong> In the recent past, you received a number of questions about the HR schema. To analyze them without interfering in daily activities, you decide to use Data Pump export to export the HR schema to a file. When you perform the export, you are not sure into which database you will be importing this schema.</p>
+<p>In the end, you learn that the only database for which management approves an import is the orcl database. So you perform the import with Data Pump import, remapping the HR schema to the DBA1 schema.</p>
+<p>Then you receive two data load requests for which you decide to use SQL*Loader.</p>
+<p><strong>背景1：</strong></p>
+<p>最近，您收到了许多关于HR schema的问题。为了在不干扰日常活动的情况下分析它们，您决定</p>
+<ol>
+<li><p>使用Data Pump导出将HR schema的数据导出到文件中。</p>
+</li>
+<li><p>执行导出时，不确定要将此模式导入哪个数据库，最后，您了解到管理部门批准导入的惟一数据库是xxx数库。</p>
+</li>
+<li><p>因此使用<strong>数据泵</strong>导入到指定实例中，将HR schema 映射为 DBA1 schema。</p>
+</li>
+</ol>
+<p><strong>背景2:</strong></p>
+<ol>
+<li>您将收到两个数据加载请求，您决定使用<code>SQL*Loader</code>来实现。</li>
+</ol>
+<h2 id="实践16-1-使用数据泵移动数据" class="article-heading"><a href="#实践16-1-使用数据泵移动数据" class="headerlink" title="实践16-1:使用数据泵移动数据"></a>实践16-1:使用数据泵移动数据<a class="article-anchor" href="#实践16-1-使用数据泵移动数据" aria-hidden="true"></a></h2><p>Practice 16-1: Moving Data by Using Data Pump</p>
+<h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><p>In this practice, you first grant the DBA1 user the privileges necessary to provide access to the DATA_PUMP_DIR directory. You then export the HR schema so that you can then import the tables that you want into the DBA1 schema. In the practice, you import only the EMPLOYEES table at this time.</p>
+<p>在此实践中，首先授予DBA1用户访问<code>DATA_PUMP_DIR</code>目录所需的特权。然后导出HR模式，这样就可以将需要的表导入到DBA1模式中。在实践中，只导入EMPLOYEES表。</p>
+<h3 id="Task" class="article-heading"><a href="#Task" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task" aria-hidden="true"></a></h3><ol>
+<li>First, you need to grant to the DBA1 user the appropriate privileges on the DATA_PUMP_DIR directory. Be sure you know the OS directory where the Data Pump import file will be placed.</li>
+<li>Use the Data Pump export utility to export the HR schema. Specify the DBA1 user to execute the export operation.</li>
+<li>Now, import the <strong>EMPLOYEES</strong> table from the exported <strong>HR</strong> schema into the <strong>DBA1</strong> schema.</li>
+</ol>
+<h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><ol>
+<li><p>首先，您需要向DBA1用户授予<code>DATA_PUMP_DIR</code>目录上适当的特权。确保您知道数据泵导入文件将放在哪个OS目录下。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">sqlplus <span class="operator">/</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">from</span> dba_directories <span class="keyword">WHERE</span> directory_name <span class="operator">=</span> <span class="string">'DATA_PUMP_DIR'</span>;</span><br><span class="line"><span class="keyword">alter</span> session <span class="keyword">set</span> container<span class="operator">=</span>emrep;</span><br><span class="line"><span class="keyword">grant</span> read <span class="keyword">on</span> directory data_pump_dir <span class="keyword">to</span> dba1;</span><br><span class="line"><span class="keyword">grant</span> write <span class="keyword">on</span> directory data_pump_dir <span class="keyword">to</span> dba1;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用数据泵导出实用程序导出HR schema。指定DBA1用户来执行导出操作。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">expdp dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span>  dumpfile<span class="operator">=</span>HREXP<span class="operator">%</span>U.dmp directory<span class="operator">=</span>DATA_PUMP_DIR logfile<span class="operator">=</span>hrexp.log SCHEMAS<span class="operator">=</span>HR</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>现在，将<strong>HR.EMPLOYEES</strong>表导入到<strong>DBA1</strong>。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">impdp dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span> DIRECTORY<span class="operator">=</span>data_pump_dir DUMPFILE<span class="operator">=</span>HREXP01.dmp REMAP_SCHEMA<span class="operator">=</span>hr:dba1 TABLES<span class="operator">=</span>hr.REGIONS LOGFILE<span class="operator">=</span>empimport.log</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<p>执行结果</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@ocm ~]$ sqlplus / as sysdba</span><br><span class="line">SQL&gt; <span class="built_in">set</span> serveroutput on</span><br><span class="line">SQL&gt; <span class="built_in">exec</span> print_table(q<span class="string">'[SELECT * from dba_directories WHERE directory_name = '</span>DATA_PUMP_DIR<span class="string">']'</span>)</span><br><span class="line">OWNER			      : SYS</span><br><span class="line">DIRECTORY_NAME		      : DATA_PUMP_DIR</span><br><span class="line">DIRECTORY_PATH		      : /u01/app/oracle/admin/booboo/dpdump/</span><br><span class="line">ORIGIN_CON_ID		      : 1</span><br><span class="line"></span><br><span class="line">SQL&gt; alter session <span class="built_in">set</span> container=emrep;</span><br><span class="line"></span><br><span class="line">Session altered.</span><br><span class="line"></span><br><span class="line">grant <span class="built_in">read</span> on directory data_pump_dir to dba1;</span><br><span class="line"></span><br><span class="line">Grant succeeded.</span><br><span class="line"></span><br><span class="line">SQL&gt; grant write on directory data_pump_dir to dba1;</span><br><span class="line"></span><br><span class="line">Grant succeeded.</span><br><span class="line">SQL&gt; !<span class="built_in">ls</span> -l /u01/app/oracle/admin/booboo/dpdump/</span><br><span class="line">total 4</span><br><span class="line">drwxr-x---  2 oracle oinstall   6 Feb  4 22:15 96710507BCB024C7E0553CE49B3EAF97</span><br><span class="line">-rw-r-----. 1 oracle oinstall 116 Nov  3 19:31 dp.log</span><br><span class="line"></span><br><span class="line">SQL&gt; !<span class="built_in">ls</span> -l /u01/app/oracle/admin/booboo/dpdump/96710507BCB024C7E0553CE49B3EAF97</span><br><span class="line">total 0</span><br><span class="line"></span><br><span class="line">SQL&gt; !expdp dba1/oracle@emrep dumpfile=HREXP%U.dmp directory=DATA_PUMP_DIR logfile=hrexp.log SCHEMAS=HR</span><br><span class="line"></span><br><span class="line">Export: Release 12.2.0.1.0 - Production on Tue Feb 4 22:17:17 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2017, Oracle and/or its affiliates.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Connected to: Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line">Starting <span class="string">"DBA1"</span>.<span class="string">"SYS_EXPORT_SCHEMA_01"</span>:  dba1/********@emrep dumpfile=HREXP%U.dmp directory=DATA_PUMP_DIR logfile=hrexp.log SCHEMAS=HR</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/TABLE_DATA</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/INDEX/STATISTICS/INDEX_STATISTICS</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/STATISTICS/TABLE_STATISTICS</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/STATISTICS/MARKER</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/USER</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/SYSTEM_GRANT</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/ROLE_GRANT</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/DEFAULT_ROLE</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/PRE_SCHEMA/PROCACT_SCHEMA</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/SEQUENCE/SEQUENCE</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/TABLE</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/COMMENT</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/PROCEDURE/PROCEDURE</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/PROCEDURE/ALTER_PROCEDURE</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/VIEW/VIEW</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/INDEX/INDEX</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/CONSTRAINT/CONSTRAINT</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/CONSTRAINT/REF_CONSTRAINT</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/TRIGGER</span><br><span class="line">. . exported <span class="string">"HR"</span>.<span class="string">"EMPLOYEES"</span>                            17.08 KB     107 rows</span><br><span class="line">. . exported <span class="string">"HR"</span>.<span class="string">"LOCATIONS"</span>                            8.437 KB      23 rows</span><br><span class="line">. . exported <span class="string">"HR"</span>.<span class="string">"JOB_HISTORY"</span>                          7.195 KB      10 rows</span><br><span class="line">. . exported <span class="string">"HR"</span>.<span class="string">"JOBS"</span>                                 7.109 KB      19 rows</span><br><span class="line">. . exported <span class="string">"HR"</span>.<span class="string">"DEPARTMENTS"</span>                          7.125 KB      27 rows</span><br><span class="line">. . exported <span class="string">"HR"</span>.<span class="string">"T02"</span>                                  6.734 KB       9 rows</span><br><span class="line">. . exported <span class="string">"HR"</span>.<span class="string">"COUNTRIES"</span>                            6.367 KB      25 rows</span><br><span class="line">. . exported <span class="string">"HR"</span>.<span class="string">"REGIONS"</span>                              5.546 KB       4 rows</span><br><span class="line">. . exported <span class="string">"HR"</span>.<span class="string">"TEST"</span>                                 5.062 KB       1 rows</span><br><span class="line">Master table <span class="string">"DBA1"</span>.<span class="string">"SYS_EXPORT_SCHEMA_01"</span> successfully loaded/unloaded</span><br><span class="line">******************************************************************************</span><br><span class="line">Dump file <span class="built_in">set</span> <span class="keyword">for</span> DBA1.SYS_EXPORT_SCHEMA_01 is:</span><br><span class="line">  /u01/app/oracle/admin/booboo/dpdump/96710507BCB024C7E0553CE49B3EAF97/HREXP01.dmp</span><br><span class="line">Job <span class="string">"DBA1"</span>.<span class="string">"SYS_EXPORT_SCHEMA_01"</span> successfully completed at Tue Feb 4 22:18:24 2020 elapsed 0 00:01:03</span><br><span class="line"></span><br><span class="line">SQL&gt; !<span class="built_in">ls</span> -lh /u01/app/oracle/admin/booboo/dpdump/96710507BCB024C7E0553CE49B3EAF97/HREXP01.dmp</span><br><span class="line">-rw-r----- 1 oracle oinstall 752K Feb  4 22:18 /u01/app/oracle/admin/booboo/dpdump/96710507BCB024C7E0553CE49B3EAF97/HREXP01.dmp</span><br><span class="line"></span><br><span class="line">SQL&gt; !impdp dba1/oracle@emrep DIRECTORY=data_pump_dir DUMPFILE=HREXP01.dmp REMAP_SCHEMA=hr:dba1 TABLES=hr.employees LOGFILE=empimport.log</span><br><span class="line"></span><br><span class="line">Import: Release 12.2.0.1.0 - Production on Tue Feb 4 22:23:55 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2017, Oracle and/or its affiliates.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Connected to: Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line">Master table <span class="string">"DBA1"</span>.<span class="string">"SYS_IMPORT_TABLE_01"</span> successfully loaded/unloaded</span><br><span class="line">Starting <span class="string">"DBA1"</span>.<span class="string">"SYS_IMPORT_TABLE_01"</span>:  dba1/********@emrep DIRECTORY=data_pump_dir DUMPFILE=HREXP01.dmp REMAP_SCHEMA=hr:dba1 TABLES=hr.employees LOGFILE=empimport.log</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/TABLE</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/TABLE_DATA</span><br><span class="line">. . imported <span class="string">"DBA1"</span>.<span class="string">"EMPLOYEES"</span>                          17.08 KB     107 rows</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/COMMENT</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/INDEX/INDEX</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/CONSTRAINT/CONSTRAINT</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/INDEX/STATISTICS/INDEX_STATISTICS</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/CONSTRAINT/REF_CONSTRAINT</span><br><span class="line">ORA-39083: Object <span class="built_in">type</span> REF_CONSTRAINT:<span class="string">"DBA1"</span>.<span class="string">"EMP_DEPT_FK"</span> failed to create with error:</span><br><span class="line">ORA-00942: table or view does not exist</span><br><span class="line"></span><br><span class="line">Failing sql is:</span><br><span class="line">ALTER TABLE <span class="string">"DBA1"</span>.<span class="string">"EMPLOYEES"</span> ADD CONSTRAINT <span class="string">"EMP_DEPT_FK"</span> FOREIGN KEY (<span class="string">"DEPARTMENT_ID"</span>) REFERENCES <span class="string">"DBA1"</span>.<span class="string">"DEPARTMENTS"</span> (<span class="string">"DEPARTMENT_ID"</span>) ENABLE</span><br><span class="line"></span><br><span class="line">ORA-39083: Object <span class="built_in">type</span> REF_CONSTRAINT:<span class="string">"DBA1"</span>.<span class="string">"EMP_JOB_FK"</span> failed to create with error:</span><br><span class="line">ORA-00942: table or view does not exist</span><br><span class="line"></span><br><span class="line">Failing sql is:</span><br><span class="line">ALTER TABLE <span class="string">"DBA1"</span>.<span class="string">"EMPLOYEES"</span> ADD CONSTRAINT <span class="string">"EMP_JOB_FK"</span> FOREIGN KEY (<span class="string">"JOB_ID"</span>) REFERENCES <span class="string">"DBA1"</span>.<span class="string">"JOBS"</span> (<span class="string">"JOB_ID"</span>) ENABLE</span><br><span class="line"></span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/TRIGGER</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/STATISTICS/TABLE_STATISTICS</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/STATISTICS/MARKER</span><br><span class="line">ORA-39082: Object <span class="built_in">type</span> TRIGGER:<span class="string">"DBA1"</span>.<span class="string">"SECURE_EMPLOYEES"</span> created with compilation warnings</span><br><span class="line"></span><br><span class="line">ORA-39082: Object <span class="built_in">type</span> TRIGGER:<span class="string">"DBA1"</span>.<span class="string">"UPDATE_JOB_HISTORY"</span> created with compilation warnings</span><br><span class="line"></span><br><span class="line">Job <span class="string">"DBA1"</span>.<span class="string">"SYS_IMPORT_TABLE_01"</span> completed with 4 error(s) at Tue Feb 4 22:24:18 2020 elapsed 0 00:00:22</span><br><span class="line"></span><br><span class="line">-- 由于给表存在外键，所以不能单独导入该表，换一个没有外键约束的表REGIONS</span><br><span class="line">SQL&gt; !impdp dba1/oracle@emrep DIRECTORY=data_pump_dir DUMPFILE=HREXP01.dmp REMAP_SCHEMA=hr:dba1 TABLES=hr.REGIONS LOGFILE=empimport.log</span><br><span class="line"></span><br><span class="line">Import: Release 12.2.0.1.0 - Production on Tue Feb 4 22:25:53 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2017, Oracle and/or its affiliates.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Connected to: Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line">Master table <span class="string">"DBA1"</span>.<span class="string">"SYS_IMPORT_TABLE_01"</span> successfully loaded/unloaded</span><br><span class="line">Starting <span class="string">"DBA1"</span>.<span class="string">"SYS_IMPORT_TABLE_01"</span>:  dba1/********@emrep DIRECTORY=data_pump_dir DUMPFILE=HREXP01.dmp REMAP_SCHEMA=hr:dba1 TABLES=hr.REGIONS LOGFILE=empimport.log</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/TABLE</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/TABLE_DATA</span><br><span class="line">. . imported <span class="string">"DBA1"</span>.<span class="string">"REGIONS"</span>                            5.546 KB       4 rows</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/INDEX/INDEX</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/CONSTRAINT/CONSTRAINT</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/INDEX/STATISTICS/INDEX_STATISTICS</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/TABLE/STATISTICS/TABLE_STATISTICS</span><br><span class="line">Processing object <span class="built_in">type</span> SCHEMA_EXPORT/STATISTICS/MARKER</span><br><span class="line">Job <span class="string">"DBA1"</span>.<span class="string">"SYS_IMPORT_TABLE_01"</span> successfully completed at Tue Feb 4 22:26:15 2020 elapsed 0 00:00:21</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> tname from tab <span class="built_in">where</span> tname=<span class="string">'REGIONS'</span>;</span><br><span class="line"></span><br><span class="line">TNAME</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">REGIONS</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> * from REGIONS <span class="built_in">where</span> rownum &lt; 3;</span><br><span class="line"></span><br><span class="line"> REGION_ID REGION_NAME</span><br><span class="line">---------- -------------------------</span><br><span class="line">	 1 Europe</span><br><span class="line">	 2 Americas</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3><h2 id="实践16-2-使用SQL-Loader加载数据" class="article-heading"><a href="#实践16-2-使用SQL-Loader加载数据" class="headerlink" title="实践16-2:使用SQL*Loader加载数据"></a>实践16-2:使用SQL*Loader加载数据<a class="article-anchor" href="#实践16-2-使用SQL-Loader加载数据" aria-hidden="true"></a></h2><p>Practice 16-2: Loading Data by Using SQL*Loader</p>
+<h3 id="Overview-1" class="article-heading"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-1" aria-hidden="true"></a></h3><p>In this practice, you load data into the PRODUCT_DESCRIPTIONS table by using SQL*Loader</p>
+<p>Express Mode. Data and control files are provided.</p>
+<p>在这个实践中，您可以使用 SQL * Loader 将数据加载到product_description表中。</p>
+<p>表达模式。提供数据和控制文件。</p>
+<h3 id="Task-1" class="article-heading"><a href="#Task-1" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-1" aria-hidden="true"></a></h3><ol>
+<li><p>As the <strong>OE</strong> user, use SQL<em>Loader to load the PRODUCT_DESCRIPTIONS table from the <strong>product_descriptions.dat</strong> data file in Express Mode.</em></p>
+<p><strong>Warning:</strong> DO NOT execute this SQL*Loader command a second time without first executing the cleanup script in step 3. Duplicate rows will be loaded and the Primary Key Index will become unusable.</p>
+</li>
+<li><p>As the <strong>OE</strong> user, load data into the ****<strong>INVENTORIES</strong> table by using SQL*Loader command line. The <strong>lab_16_02_02.dat</strong> data file contains rows of data for the <strong>PRODUCT_ON_HAND</strong> table. The **lab_16_02_02.ctl** file is the control file for this load.</p>
+<p>Optionally, view the lab_16_02_02.dat and lab_16_02_02.ctl files to learn more about their structure before going further.</p>
+</li>
+<li><p>Execute the <strong>$LABS/P16/lab_16_cleanup.sh</strong> script to remove the rows and files generated by this practice.</p>
+</li>
+</ol>
+<h3 id="Practice-1" class="article-heading"><a href="#Practice-1" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-1" aria-hidden="true"></a></h3><ol>
+<li><p>作为HR用户，使用SQL * Loader 从 <code>product_description.dat</code> 文件导入 product_description 表，dat数据文件在Express模式下。</p>
+<p>警告:如果不首先执行步骤3中的清理脚本，不要重复执行这个SQL * Loader命令。重复的行将被加载，主键索引将变得不可用。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># 创建用户oe</span><br><span class="line">sqlplus dba1<span class="operator">/</span>oracle<span class="variable">@emrep</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> oe identified <span class="keyword">by</span> oracle_4u;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">connect</span> <span class="keyword">to</span> oe;</span><br><span class="line"><span class="keyword">grant</span> unlimited tablespace <span class="keyword">to</span> oe;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">create</span> <span class="keyword">any</span> <span class="keyword">table</span> <span class="keyword">to</span> oe;</span><br><span class="line"></span><br><span class="line"># 使用oe用户登陆后创建表</span><br><span class="line">sqlplus oe<span class="operator">/</span>oracle_4u<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">create table</span> product_descriptions (PRODUCT_ID <span class="type">varchar</span>(<span class="number">255</span>),LANGUAGE_ID <span class="type">varchar</span>(<span class="number">255</span>),TRANSLATED_NAME <span class="type">varchar</span>(<span class="number">255</span>),TRANSLATED_DESCRIPTION <span class="type">varchar</span>(<span class="number">255</span>));</span><br><span class="line"></span><br><span class="line"># 使用sqlldr工具导入数据</span><br><span class="line">sqlldr oe<span class="operator">/</span>oracle_4u<span class="variable">@emrep</span> <span class="keyword">TABLE</span><span class="operator">=</span>product_descriptions</span><br><span class="line"></span><br><span class="line"># 检查导入的数据</span><br><span class="line">sqlplus oe<span class="operator">/</span>oracle_4u<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> product_descriptions;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>product_description.dat文件</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="number">4001</span>,ENG,Door,Outdoor</span><br><span class="line"><span class="number">4002</span>,FRE,Porte,Porte exterieure</span><br><span class="line"><span class="number">4003</span>,SPA,Puerta,Puerta exterior</span><br><span class="line"><span class="number">4004</span>,GER,Tur,Auberliche Tur</span><br><span class="line"><span class="number">5001</span>,ENG,Shutter,Outdoor shutter</span><br><span class="line"><span class="number">5002</span>,FRE,Volet,Volet exterieur</span><br><span class="line"><span class="number">5003</span>,SPA,Obturador,Obturador exterior</span><br><span class="line"><span class="number">5004</span>,GER,Fenster, Fensterladen</span><br></pre></td></tr></tbody></table></figure>
+
+<p>注意：导入前表必须先存在，否则会报错</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">*</span>Loader<span class="number">-941</span>: Error during <span class="keyword">describe</span> <span class="keyword">of</span> <span class="keyword">table</span> PRODUCT_DESCRIPTIONS</span><br><span class="line">ORA<span class="number">-04043</span>: object PRODUCT_DESCRIPTIONS does <span class="keyword">not</span> exist</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>作为OE用户，使用SQL* Loader命令行将数据加载到 INVENTORIES 表中。</p>
+<p><code>lab_16_02_02.dat</code>数据文件包含PRODUCT_ON_HAND表的数据行;</p>
+<p><code>lab_16_02_02.ctl</code>文件是这个加载的控制文件。</p>
+<blockquote>
+<p>可以查看<code>lab_16_02_02.da</code>t和<code>lab_16_02_02.ctl</code>文件，以了解更多关于他们的结构，然后再进一步。</p>
+</blockquote>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"># 使用oe用户登陆后创建表</span><br><span class="line">sqlplus oe<span class="operator">/</span>oracle_4u<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">create table</span> INVENTORIES (warehouse_id  <span class="type">varchar</span>(<span class="number">255</span>),</span><br><span class="line">product_id  <span class="type">varchar</span>(<span class="number">255</span>),</span><br><span class="line">quantity_on_hand  <span class="type">varchar</span>(<span class="number">255</span>), remark <span class="type">varchar</span>(<span class="number">255</span>));</span><br><span class="line"></span><br><span class="line"># 使用sqlldr工具导入数据</span><br><span class="line">sqlldr userid<span class="operator">=</span>oe<span class="operator">/</span>oracle_4u<span class="variable">@emrep</span> control<span class="operator">=</span>lab_16_02_02.ctl log<span class="operator">=</span>lab_16_02_02.log data<span class="operator">=</span>lab_16_02_02.dat</span><br><span class="line"></span><br><span class="line"># 检查</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> inventories <span class="keyword">WHERE</span> quantity_on_hand <span class="operator">=</span> <span class="number">7</span> <span class="keyword">AND</span>	WAREHOUSE_ID<span class="operator">&gt;</span><span class="number">500</span> ;</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>lab_16_02_02.dat</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="number">501</span>,<span class="number">1001</span>,<span class="number">7</span></span><br><span class="line"><span class="number">502</span>,<span class="number">1001</span>,<span class="number">7</span></span><br><span class="line">...省略</span><br></pre></td></tr></tbody></table></figure>
+
+<p>lab_16_02_02.ctl</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">-- Oracle Database 12c: Administration Workshop I</span></span><br><span class="line"><span class="comment">-- Oracle Server Technologies - Curriculum Development</span></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"><span class="comment">-- ***Training purposes only***</span></span><br><span class="line"><span class="comment">-- ***Not appropriate for production use***</span></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"><span class="comment">-- Load data into the INVENTORIES table</span></span><br><span class="line"><span class="comment">--</span></span><br><span class="line">LOAD DATA</span><br><span class="line">infile <span class="string">'/home/oracle$LABS/lab_16_02_02.dat'</span></span><br><span class="line"><span class="keyword">INTO</span> <span class="keyword">TABLE</span> OE.INVENTORIES</span><br><span class="line">APPEND</span><br><span class="line">FIELDS TERMINATED <span class="keyword">BY</span> <span class="string">','</span></span><br><span class="line">(warehouse_id,</span><br><span class="line">product_id,</span><br><span class="line">quantity_on_hand)</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>执行<code>lab_16_cleanup.sh</code>脚本删除由这个实践生成的行和文件。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> lab_16_cleanup.sh</span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="comment">#-- Cleanup after Practice 16</span></span><br><span class="line"><span class="comment">#-- remove *.log files</span></span><br><span class="line"><span class="built_in">rm</span> <span class="variable">$LABS</span>/P16/*.<span class="built_in">log</span></span><br><span class="line"><span class="comment">#-- remove *.bad files</span></span><br><span class="line"><span class="built_in">rm</span> <span class="variable">$LABS</span>/P16/*.bad</span><br><span class="line">sqlplus -s oe/oracle_4U &lt;&lt;-<span class="string">EOF</span></span><br><span class="line"><span class="string">-- delete rows inserted by SQL*Loader</span></span><br><span class="line"><span class="string">DELETE FROM OE.PRODUCT_DESCRIPTIONS WHERE product_id &gt; 4000;</span></span><br><span class="line"><span class="string">Commit;</span></span><br><span class="line"><span class="string">Delete from OE.INVENTORIES</span></span><br><span class="line"><span class="string">  WHERE quantity_on_hand = 7</span></span><br><span class="line"><span class="string">  AND   WAREHOUSE_ID&gt;500 ;</span></span><br><span class="line"><span class="string">COMMIT;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<p>1～3执行结果</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@ocm P16]$ <span class="built_in">pwd</span></span><br><span class="line">/u01/software/labs/P16</span><br><span class="line">[oracle@ocm P16]$ ll</span><br><span class="line">total 24</span><br><span class="line">-rw-r--r-- 1 oracle oinstall  125 Jan 22  2013 afiedt.buf</span><br><span class="line">-rw-r--r-- 1 oracle oinstall  387 Feb  4 22:49 lab_16_02_02.ctl</span><br><span class="line">-rw-r--r-- 1 oracle oinstall  913 Jan 22  2013 lab_16_02_02.dat</span><br><span class="line">-rw-r--r-- 1 oracle oinstall  369 Jan 23  2013 lab_16_cleanup.sh</span><br><span class="line">-rw-r--r-- 1 oracle oinstall  247 Jan 22  2013 product_descriptions.dat</span><br><span class="line">[oracle@ocm P16]$ sqlplus oe/oracle_4u@emrep</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 12.2.0.1.0 Production on Wed Feb 5 00:51:35 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2016, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Last Successful login <span class="keyword">time</span>: Wed Feb 05 2020 00:45:22 +08:00</span><br><span class="line"></span><br><span class="line">Connected to:</span><br><span class="line">Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production</span><br><span class="line"></span><br><span class="line">SQL&gt; create table product_descriptions (PRODUCT_ID varchar(255),LANGUAGE_ID varchar(255),TRANSLATED_NAME varchar(255),TRANSLATED_DESCRIPTION varchar(255));</span><br><span class="line"></span><br><span class="line">Table created.</span><br><span class="line"></span><br><span class="line">SQL&gt; !sqlldr oe/oracle_4u@emrep TABLE=product_descriptions</span><br><span class="line"></span><br><span class="line">SQL*Loader: Release 12.2.0.1.0 - Production on Wed Feb 5 00:52:12 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2017, Oracle and/or its affiliates.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Express Mode Load, Table: PRODUCT_DESCRIPTIONS</span><br><span class="line">Path used:      External Table, DEGREE_OF_PARALLELISM=AUTO</span><br><span class="line">SQL*Loader-816: error creating temporary directory object SYS_SQLLDR_XT_TMPDIR_00000 <span class="keyword">for</span> file product_descriptions.dat</span><br><span class="line">ORA-01031: insufficient privileges</span><br><span class="line">SQL*Loader-579: switching to direct path <span class="keyword">for</span> the load</span><br><span class="line">SQL*Loader-583: ignoring trim setting with direct path, using value of LDRTRIM</span><br><span class="line">SQL*Loader-584: ignoring DEGREE_OF_PARALLELISM setting with direct path, using value of NONE</span><br><span class="line">Express Mode Load, Table: PRODUCT_DESCRIPTIONS</span><br><span class="line">Path used:      Direct</span><br><span class="line"></span><br><span class="line">Load completed - logical record count 8.</span><br><span class="line"></span><br><span class="line">Table PRODUCT_DESCRIPTIONS:</span><br><span class="line">  8 Rows successfully loaded.</span><br><span class="line"></span><br><span class="line">Check the <span class="built_in">log</span> file:</span><br><span class="line">  product_descriptions.log</span><br><span class="line"><span class="keyword">for</span> more information about the load.</span><br><span class="line"></span><br><span class="line">SQL&gt; !<span class="built_in">cat</span> product_descriptions.log</span><br><span class="line"></span><br><span class="line">SQL*Loader: Release 12.2.0.1.0 - Production on Wed Feb 5 00:52:12 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2017, Oracle and/or its affiliates.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Express Mode Load, Table: PRODUCT_DESCRIPTIONS</span><br><span class="line">Data File:      product_descriptions.dat</span><br><span class="line">  Bad File:     product_descriptions_%p.bad</span><br><span class="line">  Discard File:  none specified</span><br><span class="line"></span><br><span class="line"> (Allow all discards)</span><br><span class="line"></span><br><span class="line">Number to load: ALL</span><br><span class="line">Number to skip: 0</span><br><span class="line">Errors allowed: 50</span><br><span class="line">Continuation:    none specified</span><br><span class="line">Path used:      External Table</span><br><span class="line"></span><br><span class="line">Table PRODUCT_DESCRIPTIONS, loaded from every logical record.</span><br><span class="line">Insert option <span class="keyword">in</span> effect <span class="keyword">for</span> this table: APPEND</span><br><span class="line"></span><br><span class="line">   Column Name                  Position   Len  Term Encl Datatype</span><br><span class="line">------------------------------ ---------- ----- ---- ---- ---------------------</span><br><span class="line">PRODUCT_ID                          FIRST     *   ,       CHARACTER</span><br><span class="line">LANGUAGE_ID                          NEXT     *   ,       CHARACTER</span><br><span class="line">TRANSLATED_NAME                      NEXT     *   ,       CHARACTER</span><br><span class="line">TRANSLATED_DESCRIPTION               NEXT     *   ,       CHARACTER</span><br><span class="line"></span><br><span class="line">Generated control file <span class="keyword">for</span> possible reuse:</span><br><span class="line">OPTIONS(EXTERNAL_TABLE=EXECUTE, TRIM=LRTRIM)</span><br><span class="line">LOAD DATA</span><br><span class="line">INFILE <span class="string">'product_descriptions'</span></span><br><span class="line">APPEND</span><br><span class="line">INTO TABLE PRODUCT_DESCRIPTIONS</span><br><span class="line">FIELDS TERMINATED BY <span class="string">","</span></span><br><span class="line">(</span><br><span class="line">  PRODUCT_ID,</span><br><span class="line">  LANGUAGE_ID,</span><br><span class="line">  TRANSLATED_NAME,</span><br><span class="line">  TRANSLATED_DESCRIPTION</span><br><span class="line">)</span><br><span class="line">End of generated control file <span class="keyword">for</span> possible reuse.</span><br><span class="line"></span><br><span class="line">SQL*Loader-816: error creating temporary directory object SYS_SQLLDR_XT_TMPDIR_00000 <span class="keyword">for</span> file product_descriptions.dat</span><br><span class="line">ORA-01031: insufficient privileges</span><br><span class="line"></span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">SQL*Loader-579: switching to direct path <span class="keyword">for</span> the load</span><br><span class="line">SQL*Loader-583: ignoring trim setting with direct path, using value of LDRTRIM</span><br><span class="line">SQL*Loader-584: ignoring DEGREE_OF_PARALLELISM setting with direct path, using value of NONE</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">Express Mode Load, Table: PRODUCT_DESCRIPTIONS</span><br><span class="line">Data File:      product_descriptions.dat</span><br><span class="line">  Bad File:     product_descriptions.bad</span><br><span class="line">  Discard File:  none specified</span><br><span class="line"></span><br><span class="line"> (Allow all discards)</span><br><span class="line"></span><br><span class="line">Number to load: ALL</span><br><span class="line">Number to skip: 0</span><br><span class="line">Errors allowed: 50</span><br><span class="line">Continuation:    none specified</span><br><span class="line">Path used:      Direct</span><br><span class="line"></span><br><span class="line">Table PRODUCT_DESCRIPTIONS, loaded from every logical record.</span><br><span class="line">Insert option <span class="keyword">in</span> effect <span class="keyword">for</span> this table: APPEND</span><br><span class="line"></span><br><span class="line">   Column Name                  Position   Len  Term Encl Datatype</span><br><span class="line">------------------------------ ---------- ----- ---- ---- ---------------------</span><br><span class="line">PRODUCT_ID                          FIRST     *   ,       CHARACTER</span><br><span class="line">LANGUAGE_ID                          NEXT     *   ,       CHARACTER</span><br><span class="line">TRANSLATED_NAME                      NEXT     *   ,       CHARACTER</span><br><span class="line">TRANSLATED_DESCRIPTION               NEXT     *   ,       CHARACTER</span><br><span class="line"></span><br><span class="line">Generated control file <span class="keyword">for</span> possible reuse:</span><br><span class="line">OPTIONS(DIRECT=TRUE)</span><br><span class="line">LOAD DATA</span><br><span class="line">INFILE <span class="string">'product_descriptions'</span></span><br><span class="line">APPEND</span><br><span class="line">INTO TABLE PRODUCT_DESCRIPTIONS</span><br><span class="line">FIELDS TERMINATED BY <span class="string">","</span></span><br><span class="line">(</span><br><span class="line">  PRODUCT_ID,</span><br><span class="line">  LANGUAGE_ID,</span><br><span class="line">  TRANSLATED_NAME,</span><br><span class="line">  TRANSLATED_DESCRIPTION</span><br><span class="line">)</span><br><span class="line">End of generated control file <span class="keyword">for</span> possible reuse.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Table PRODUCT_DESCRIPTIONS:</span><br><span class="line">  8 Rows successfully loaded.</span><br><span class="line">  0 Rows not loaded due to data errors.</span><br><span class="line">  0 Rows not loaded because all WHEN clauses were failed.</span><br><span class="line">  0 Rows not loaded because all fields were null.</span><br><span class="line"></span><br><span class="line">Bind array size not used <span class="keyword">in</span> direct path.</span><br><span class="line">Column array  rows :    5000</span><br><span class="line">Stream buffer bytes:  256000</span><br><span class="line">Read   buffer bytes: 1048576</span><br><span class="line"></span><br><span class="line">Total logical records skipped:          0</span><br><span class="line">Total logical records <span class="built_in">read</span>:             8</span><br><span class="line">Total logical records rejected:         0</span><br><span class="line">Total logical records discarded:        0</span><br><span class="line">Total stream buffers loaded by SQL*Loader main thread:        1</span><br><span class="line">Total stream buffers loaded by SQL*Loader load thread:        0</span><br><span class="line"></span><br><span class="line">Run began on Wed Feb 05 00:52:12 2020</span><br><span class="line">Run ended on Wed Feb 05 00:52:14 2020</span><br><span class="line"></span><br><span class="line">Elapsed <span class="keyword">time</span> was:     00:00:01.55</span><br><span class="line">CPU <span class="keyword">time</span> was:         00:00:00.06</span><br><span class="line"></span><br><span class="line">SQL&gt; SELECT count(*) FROM PRODUCT_DESCRIPTIONS WHERE product_id &gt; 4000;</span><br><span class="line"></span><br><span class="line">  COUNT(*)</span><br><span class="line">----------</span><br><span class="line">	 8</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SQL&gt; create table INVENTORIES (warehouse_id  varchar(255),</span><br><span class="line">product_id  varchar(255),</span><br><span class="line">  3  quantity_on_hand  varchar(255), remark varchar(255));</span><br><span class="line"></span><br><span class="line">Table created.</span><br><span class="line"></span><br><span class="line">SQL&gt; !sqlldr userid=oe/oracle_4u@emrep control=lab_16_02_02.ctl <span class="built_in">log</span>=lab_16_02_02.log data=lab_16_02_02.dat</span><br><span class="line"></span><br><span class="line">SQL*Loader: Release 12.2.0.1.0 - Production on Wed Feb 5 00:56:04 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2017, Oracle and/or its affiliates.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Path used:      Conventional</span><br><span class="line">Commit point reached - logical record count 64</span><br><span class="line">Commit point reached - logical record count 83</span><br><span class="line"></span><br><span class="line">Table OE.INVENTORIES:</span><br><span class="line">  83 Rows successfully loaded.</span><br><span class="line"></span><br><span class="line">Check the <span class="built_in">log</span> file:</span><br><span class="line">  lab_16_02_02.log</span><br><span class="line"><span class="keyword">for</span> more information about the load.</span><br><span class="line"></span><br><span class="line">SQL&gt; !<span class="built_in">cat</span> lab_16_02_02.log</span><br><span class="line"></span><br><span class="line">SQL*Loader: Release 12.2.0.1.0 - Production on Wed Feb 5 00:56:04 2020</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2017, Oracle and/or its affiliates.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Control File:   lab_16_02_02.ctl</span><br><span class="line">Data File:      lab_16_02_02.dat</span><br><span class="line">  Bad File:     lab_16_02_02.bad</span><br><span class="line">  Discard File:  none specified</span><br><span class="line"></span><br><span class="line"> (Allow all discards)</span><br><span class="line"></span><br><span class="line">Number to load: ALL</span><br><span class="line">Number to skip: 0</span><br><span class="line">Errors allowed: 50</span><br><span class="line">Bind array:     64 rows, maximum of 256000 bytes</span><br><span class="line">Continuation:    none specified</span><br><span class="line">Path used:      Conventional</span><br><span class="line"></span><br><span class="line">Table OE.INVENTORIES, loaded from every logical record.</span><br><span class="line">Insert option <span class="keyword">in</span> effect <span class="keyword">for</span> this table: APPEND</span><br><span class="line"></span><br><span class="line">   Column Name                  Position   Len  Term Encl Datatype</span><br><span class="line">------------------------------ ---------- ----- ---- ---- ---------------------</span><br><span class="line">WAREHOUSE_ID                        FIRST     *   ,       CHARACTER</span><br><span class="line">PRODUCT_ID                           NEXT     *   ,       CHARACTER</span><br><span class="line">QUANTITY_ON_HAND                     NEXT     *   ,       CHARACTER</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Table OE.INVENTORIES:</span><br><span class="line">  83 Rows successfully loaded.</span><br><span class="line">  0 Rows not loaded due to data errors.</span><br><span class="line">  0 Rows not loaded because all WHEN clauses were failed.</span><br><span class="line">  0 Rows not loaded because all fields were null.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Space allocated <span class="keyword">for</span> <span class="built_in">bind</span> array:                  49536 bytes(64 rows)</span><br><span class="line">Read   buffer bytes: 1048576</span><br><span class="line"></span><br><span class="line">Total logical records skipped:          0</span><br><span class="line">Total logical records <span class="built_in">read</span>:            83</span><br><span class="line">Total logical records rejected:         0</span><br><span class="line">Total logical records discarded:        0</span><br><span class="line"></span><br><span class="line">Run began on Wed Feb 05 00:56:04 2020</span><br><span class="line">Run ended on Wed Feb 05 00:56:05 2020</span><br><span class="line"></span><br><span class="line">Elapsed <span class="keyword">time</span> was:     00:00:00.64</span><br><span class="line">CPU <span class="keyword">time</span> was:         00:00:00.06</span><br><span class="line"></span><br><span class="line">SQL&gt; SELECT count(*) FROM inventories WHERE quantity_on_hand = 7 AND    WAREHOUSE_ID&gt;500 ;</span><br><span class="line"></span><br><span class="line">  COUNT(*)</span><br><span class="line">----------</span><br><span class="line">	83</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="KnowledgePoint-1" class="article-heading"><a href="#KnowledgePoint-1" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-1" aria-hidden="true"></a></h3><h2 id="实践16-3-数据泵将视图导出并导入成表" class="article-heading"><a href="#实践16-3-数据泵将视图导出并导入成表" class="headerlink" title="实践16-3:数据泵将视图导出并导入成表"></a>实践16-3:数据泵将视图导出并导入成表<a class="article-anchor" href="#实践16-3-数据泵将视图导出并导入成表" aria-hidden="true"></a></h2><h3 id="Overview-2" class="article-heading"><a href="#Overview-2" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-2" aria-hidden="true"></a></h3><h3 id="Task-2" class="article-heading"><a href="#Task-2" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-2" aria-hidden="true"></a></h3><ol>
+<li>expdp 操作导出在EMP_DEPT视图中查询的表的表定义。</li>
+<li>impdp 操作将EMP_DEPT创建为表</li>
+</ol>
+<h3 id="Practice-2" class="article-heading"><a href="#Practice-2" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-2" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">conn scott<span class="operator">/</span>tiger<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">view</span> emp_dept <span class="keyword">as</span> <span class="keyword">select</span> e.ename,d.dname <span class="keyword">from</span> emp e ,dept d <span class="keyword">where</span> e.deptno<span class="operator">=</span>d.deptno;</span><br><span class="line"></span><br><span class="line">conn sys<span class="operator">/</span>WLS3Gg5_2<span class="variable">@emrep</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="operator">!</span>mkdir <span class="operator">/</span>u01<span class="operator">/</span>software<span class="operator">/</span>expbk</span><br><span class="line"><span class="keyword">create</span> directory dumpdir <span class="keyword">as</span> <span class="string">'/u01/software/expbk'</span>;</span><br><span class="line"><span class="operator">!</span>expdp scott<span class="operator">/</span>tiger<span class="variable">@emrep</span> DIRECTORY<span class="operator">=</span>dumpdir DUMPFILE<span class="operator">=</span>emp1.dmp VIEWS_AS_TABLES<span class="operator">=</span>emp_dept</span><br><span class="line"></span><br><span class="line">conn scott<span class="operator">/</span>tiger<span class="variable">@emrep</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">view</span> emp_dept;</span><br><span class="line"><span class="operator">!</span>impdp scott<span class="operator">/</span>tiger<span class="variable">@emrep</span> DIRECTORY<span class="operator">=</span>dumpdir DUMPFILE<span class="operator">=</span>emp1.dmp VIEWS_AS_TABLES<span class="operator">=</span>emp_dept</span><br><span class="line"></span><br><span class="line">col tname format a10;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tab;</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="KnowledgePoint-2" class="article-heading"><a href="#KnowledgePoint-2" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-2" aria-hidden="true"></a></h3><h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><h3 id="Oracle-Data-Pump概述" class="article-heading"><a href="#Oracle-Data-Pump概述" class="headerlink" title="Oracle Data Pump概述"></a>Oracle Data Pump概述<a class="article-anchor" href="#Oracle-Data-Pump概述" aria-hidden="true"></a></h3><p>Oracle数据泵技术支持将数据和元数据从一个数据库高速迁移到另一个数据库。</p>
+<p>对以下主题的理解可以帮助您成功地充分利用Oracle Data Pump，以发挥最大的优势：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-47B26B0B-3C95-4182-ACDF-2EEDD577FC9E">数据泵组件</a><br>Oracle数据泵由三个不同的组件组成。它们是命令行客户端，<code>expdp</code>和<code>impdp</code>，<code>DBMS_DATAPUMP```PL / SQL包（也称为数据泵API）和</code>DBMS_METADATA`PL / SQL包（也称为元数据API）。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-3F418F02-5FE2-455A-B5AD-C1910DB3B5E0">数据泵如何移动数据？</a><br>这是Data Pump用来将数据移入和移出数据库的方法，以及使用每种方法时的方法。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-45B17B65-20F2-4128-9A39-B1B0F5E323BB">将数据泵与CDB一起使用</a><br>Data Pump可以将数据库的全部或部分从非CDB迁移到PDB，在相同或不同CDB内的PDB之间以及从PDB迁移到非CDB。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-8B6975D3-3BEC-4584-B416-280125EEC57E">数据泵导出和导入操作所需的角色</a><br>许多数据泵导出和导入操作都要求用户同时具有一个<code>DATAPUMP_EXP_FULL_DATABASE</code>或多个<code>DATAPUMP_IMP_FULL_DATABASE</code>角色。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-6BDC1CC8-8596-402D-B016-602985B97AB6">在执行数据泵作业期间会发生什么？</a><br>数据泵作业使用主表，主进程和工作进程执行工作并跟踪进度。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-E365D74E-12CD-495C-BA23-5A55F679C7E7">监视作业状态</a><br>Data Pump导出和导入客户端实用程序可以以日志记录方式或交互式命令方式附加到作业。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-FE7E746D-A343-463E-A4E2-A6AD1349FE4B">文件分配</a><br>了解Data Pump如何分配和处理文件将帮助您充分利用“导出”和“导入”。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-BAA3B679-A758-4D55-9820-432D9EB83C68">在不同数据库版本之间进行导出和导入</a><br>Data Pump可用于在数据库软件的不同版本之间迁移数据库的全部或任何部分。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-9030BC32-193B-4455-8DBB-4271DD44FA7A">SecureFiles LOB注意事项</a><br>当您使用数据泵导出来导出SecureFiles LOB时，产生的行为取决于几件事，包括Export <code>VERSION</code>参数的值，是否存在ContentType以及LOB是否已归档和是否缓存了数据。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-34D0DEE7-3530-42DC-BE01-C2588CC73CE5">数据泵退出代码</a><br>数据泵在日志文件和进程退出代码中报告导出和导入操作的结果。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-4443B80B-0446-4010-B8CA-2524659516BC">审核数据泵作业</a><br>对数据泵作业执行审核，以监视和记录特定的用户数据库操作。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-7EE60BAB-0D3D-46EB-8E11-4FDDA68EF14E">数据泵如何处理时间戳数据？</a><br>本部分描述了可能影响成功完成涉及时间戳数据类型<code>TIMESTAMP WITH TIMEZONE</code>和的导出和导入作业的因素<code>TIMESTAMP WITH LOCAL TIMEZONE</code>。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-72F01BF0-61F5-4775-8C7B-4E227F244866">字符集和全球化支持注意事项</a><br>数据泵导出和导入的全球化支持行为。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-data-pump-overview.html#GUID-B1A6BBA2-0269-48CC-8A0E-8E3955A231C0">具有数据绑定排序规则的Oracle Data Pump行为</a><br>Oracle Data Pump支持数据绑定排序规则（DBC）。</li>
+</ul>
+<h3 id="SQL-Loader" class="article-heading"><a href="#SQL-Loader" class="headerlink" title="SQL * Loader"></a>SQL * Loader<a class="article-anchor" href="#SQL-Loader" aria-hidden="true"></a></h3><p>以下是有关SQL * Loader实用程序的主题。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-concepts.html#GUID-DD843EE2-1FAB-4E72-A115-21D97A501ECC">SQL * Loader概念</a></p>
+<p>描述SQL _ Loader及其功能，以及数据加载概念（包括对象支持）。它讨论了SQL _ Loader的输入，数据库准备以及SQL * Loader的输出。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-commands.html#GUID-CD662CD8-DAA7-4A30-BC84-546E4C40DB31">SQL * Loader命令行参考</a></p>
+<p>描述SQL _ Loader使用的命令行语法。它讨论了命令行参数，抑制SQL _ Loader消息，调整绑定数组的大小等等。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-control-file-contents.html#GUID-7F8983A0-CA5D-41D9-A096-CB1858CEDB4C">SQL * Loader控制文件参考</a></p>
+<p>描述用于配置SQL _ Loader并向SQL _ Loader描述如何将数据映射到Oracle格式的控制文件语法。它提供了详细的语法图以及有关指定数据文件，表和列，数据的位置，要加载的数据的类型和格式等信息。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-field-list-contents.html#GUID-DB309002-461D-42F7-8C94-727B32FA8B85">SQL * Loader字段列表参考</a></p>
+<p>描述SQL * Loader控制文件的字段列表部分。字段列表提供有关正在加载的字段的信息，例如位置，数据类型，条件和定界符。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/loading-objects-using-oracle-sql-loader.html#GUID-A1828462-FD32-457C-976F-C85BA3A995DA">加载对象，LOB和集合</a></p>
+<p>描述如何加载各种格式的列对象。它还讨论了如何加载对象表，<code>REF</code>列，LOB和集合。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-conventional-and-direct-loads.html#GUID-321928FB-C86C-4F1F-9250-05111A988B7B">常规和直接路径载荷</a></p>
+<p>描述常规路径负载和直接路径负载之间的差异。直接路径加载是一种高性能选项，可显着减少加载大量数据所需的时间。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-express-mode.html#GUID-8C235861-2A8B-4196-9705-E6FFED0C0C99">SQL * Loader Express</a></p>
+<p>描述SQL * Loader表示模式，它使您可以快速轻松地装入简单数据类型。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-concepts.html#GUID-DD843EE2-1FAB-4E72-A115-21D97A501ECC">SQL * Loader概念</a><br>这些部分描述SQL * Loader概念。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-commands.html#GUID-CD662CD8-DAA7-4A30-BC84-546E4C40DB31">SQL * Loader命令行参考</a><br>您可以使用命令行参数来启动SQL * Loader。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-control-file-contents.html#GUID-7F8983A0-CA5D-41D9-A096-CB1858CEDB4C">SQL * Loader控制文件参考</a><br>SQL _ Loader控制文件是一个文本文件，其中包含SQL _ Loader作业的数据定义语言（DDL）指令。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-field-list-contents.html#GUID-DB309002-461D-42F7-8C94-727B32FA8B85">SQL * Loader字段列表参考</a><br>SQL * Loader控制文件的字段列表部分提供有关要加载的字段的信息，例如位置，数据类型，条件和定界符。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/loading-objects-using-oracle-sql-loader.html#GUID-A1828462-FD32-457C-976F-C85BA3A995DA">加载对象，LOB和集合</a><br>您可以使用SQL * Loader加载各种格式的列对象，并加载对象表，REF列，LOB和集合。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-conventional-and-direct-loads.html#GUID-321928FB-C86C-4F1F-9250-05111A988B7B">常规和直接路径载荷</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sutil/oracle-sql-loader-express-mode.html#GUID-8C235861-2A8B-4196-9705-E6FFED0C0C99">SQL * Loader Express</a></li>
+</ul>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:00.274Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B516-%E6%A6%82%E8%A7%88"><span class="toc-text">实践16:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B516-1-%E4%BD%BF%E7%94%A8%E6%95%B0%E6%8D%AE%E6%B3%B5%E7%A7%BB%E5%8A%A8%E6%95%B0%E6%8D%AE"><span class="toc-text">实践16-1:使用数据泵移动数据</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B516-2-%E4%BD%BF%E7%94%A8SQL-Loader%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE"><span class="toc-text">实践16-2:使用SQL*Loader加载数据</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-1"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-1"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-1"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-1"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B516-3-%E6%95%B0%E6%8D%AE%E6%B3%B5%E5%B0%86%E8%A7%86%E5%9B%BE%E5%AF%BC%E5%87%BA%E5%B9%B6%E5%AF%BC%E5%85%A5%E6%88%90%E8%A1%A8"><span class="toc-text">实践16-3:数据泵将视图导出并导入成表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-2"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-2"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-2"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-2"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Oracle-Data-Pump%E6%A6%82%E8%BF%B0"><span class="toc-text">Oracle Data Pump概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Loader"><span class="toc-text">SQL * Loader</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

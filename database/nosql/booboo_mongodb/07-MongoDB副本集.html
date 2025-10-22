@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>MongoDB 副本集 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/nosql/booboo_mongodb/07-MongoDB%E5%89%AF%E6%9C%AC%E9%9B%86">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/nosql/booboo_mongodb/07-MongoDB%E5%89%AF%E6%9C%AC%E9%9B%86" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="MongoDB 副本集的原理、搭建、应用 概念​ 在了解了这篇文章之后，可以进行该篇文章的说明和测试。MongoDB 副本集（Replica Set）是有自动故障恢复功能的主从集群，有一个Primary节点和一个或多个Secondary节点组成。类似于MySQL的MMM架构。更多关于副本集的介绍请见官网。也可以在google、baidu上查阅。 ​ 副本集中数据同步过程：Primary节点写入数据">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MongoDB 副本集">
+<meta property="og:url" content="http://www.toberoot.com/database/nosql/booboo_mongodb/07-MongoDB%E5%89%AF%E6%9C%AC%E9%9B%86">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="MongoDB 副本集的原理、搭建、应用 概念​ 在了解了这篇文章之后，可以进行该篇文章的说明和测试。MongoDB 副本集（Replica Set）是有自动故障恢复功能的主从集群，有一个Primary节点和一个或多个Secondary节点组成。类似于MySQL的MMM架构。更多关于副本集的介绍请见官网。也可以在google、baidu上查阅。 ​ 副本集中数据同步过程：Primary节点写入数据">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.864Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:28.930Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">MongoDB 副本集</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/nosql/booboo_mongodb/07-MongoDB副本集.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhoujinyi/p/3554010.html">MongoDB 副本集的原理、搭建、应用</a></p>
+<h2 id="概念" class="article-heading"><a href="#概念" class="headerlink" title="概念"></a>概念<a class="article-anchor" href="#概念" aria-hidden="true"></a></h2><p>​ 在了解了<a target="_blank" rel="noopener" href="http://www.cnblogs.com/zhoujinyi/p/3554196.html">这篇文章</a>之后，可以进行该篇文章的说明和测试。MongoDB 副本集（Replica Set）是有自动故障恢复功能的主从集群，有一个Primary节点和一个或多个Secondary节点组成。类似于MySQL的MMM架构。更多关于副本集的介绍请见<a target="_blank" rel="noopener" href="http://docs.mongodb.org/manual/core/replication-introduction/">官网</a>。也可以在google、baidu上查阅。</p>
+<p>​ <strong>副本集中数据同步过程</strong>：<strong>Primary节点写入数据，Secondary通过读取Primary的oplog得到复制信息，开始复制数据并且将复制信息写入到自己的oplog</strong>。如果某个操作失败，则备份节点停止从当前数据源复制数据。如果某个备份节点由于某些原因挂掉了，当重新启动后，就会自动从oplog的最后一个操作开始同步，同步完成后，将信息写入自己的oplog，由于复制操作是先复制数据，复制完成后再写入oplog，有可能相同的操作会同步两份，不过MongoDB在设计之初就考虑到这个问题，将oplog的同一个操作执行多次，与执行一次的效果是一样的。<strong>简单的说就是：</strong></p>
+<p>当Primary节点完成数据操作后，Secondary会做出一系列的动作保证数据的同步：<br>1：检查自己local库的oplog.rs集合找出最近的时间戳。<br>2：检查Primary节点local库oplog.rs集合，找出大于此时间戳的记录。<br>3：将找到的记录插入到自己的oplog.rs集合中，并执行这些操作。</p>
+<p>​ 副本集的同步和主从同步一样，都是异步同步的过程，不同的是副本集有个自动故障转移的功能。其原理是：slave端从primary端获取日志，然后在自己身上完全顺序的执行日志所记录的各种操作（该日志是不记录查询操作的），这个日志就是local数据 库中的oplog.rs表，默认在64位机器上这个表是比较大的，占磁盘大小的5%，oplog.rs的大小可以在启动参数中设 定：–oplogSize 1000,单位是M。</p>
+<p>​ 注意：在副本集的环境中，要是所有的Secondary都宕机了，只剩下Primary。最后Primary会变成Secondary，不能提供服务。</p>
+<h2 id="部署复制集" class="article-heading"><a href="#部署复制集" class="headerlink" title="部署复制集"></a>部署复制集<a class="article-anchor" href="#部署复制集" aria-hidden="true"></a></h2><blockquote>
+<p>如何用3台已有的&nbsp;<a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/program/mongod.html#bin.mongod"><code>mongod</code></a>&nbsp;实例来部署一个由三个节点组成的&nbsp;<a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-replica-set"><em>复制集</em></a></p>
+</blockquote>
+<h3 id="概述" class="article-heading"><a href="#概述" class="headerlink" title="概述"></a>概述<a class="article-anchor" href="#概述" aria-hidden="true"></a></h3><p>由三个节点组成的 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-replica-set"><em>复制集</em></a> 为网络故障或是其他的系统故障提供了足够的冗余。该复制集也有足够的分布式读操作的能力。复制集应该保持奇数个节点，这也就保证了 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/core/replica-set-elections.html"><em>选举</em></a> 可以正常的进行。参见 <code>复制集概览</code> 以获得更多有关复制集设计的信息。</p>
+<p>我们通常现从一个会成为复制集成员的 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/program/mongod.html#bin.mongod"><code>mongod</code></a> 实例开始来配置复制集。然后为复制集新增实例。</p>
+<h3 id="要求" class="article-heading"><a href="#要求" class="headerlink" title="要求"></a>要求<a class="article-anchor" href="#要求" aria-hidden="true"></a></h3><p>在生产环境的部署中，我们应该尽可能将复制集中得节点置于不同的机器上。当使用虚拟机的时候，我们应该将 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/program/mongod.html#bin.mongod"><code>mongod</code></a> 实例置于拥有冗余电源和冗余网络的机器上。</p>
+<p>在我们部署复制集之前，我们必须在 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-replica-set"><em>复制集</em></a> 的每个机器上安装MongoDB实例。如果我们还没安装MongoDB，请参考 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/installation.html#tutorial-installation"><em>安装指南</em></a> 。</p>
+<h3 id="部署复制集的注意事项" class="article-heading"><a href="#部署复制集的注意事项" class="headerlink" title="部署复制集的注意事项"></a>部署复制集的注意事项<a class="article-anchor" href="#部署复制集的注意事项" aria-hidden="true"></a></h3><h4 id="架构" class="article-heading"><a href="#架构" class="headerlink" title="架构"></a>架构<a class="article-anchor" href="#架构" aria-hidden="true"></a></h4><p>在生产环境中，我们应该将每个节点部署在独立的机器上，并使用标准的MongoDB端口 <code>27017</code> 。使用 <code>bind_ip</code> 参数来限制访问MongoDB的应用程序的地址。</p>
+<blockquote>
+<p>准备服务器</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">10.200.6.30</span><br><span class="line">10.200.6.31</span><br><span class="line">10.200.6.33</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="连通性" class="article-heading"><a href="#连通性" class="headerlink" title="连通性"></a>连通性<a class="article-anchor" href="#连通性" aria-hidden="true"></a></h4><p>确保各个节点之间可以正常通讯，且各个客户端都处于安全的可信的网络环境中。可以考虑以下事项：</p>
+<ul>
+<li>建立虚拟的专用网络。确保各个节点之间的流量是在本地网络范围内路由的。（Establish a virtual private network. Ensure that your network topology routes all traffic between members within a single site over the local area network.）</li>
+<li>Configure access control to prevent connections from unknown clients to the replica set.</li>
+<li>配置网络设置和防火墙规则来对将MongoDB的端口仅开放给应用程序，来让应用程序发的进出数据包可以与MongoDB正常交流。</li>
+</ul>
+<p>最后请确保复制集各节点可以互相通过DNS或是主机名解析。我们需要配置DNS域名或是设置 <code>/etc/hosts</code> 文件来配置。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">10.200.6.30 sh_01</span><br><span class="line">10.200.6.31 sh_02</span><br><span class="line">10.200.6.33 am_01</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="详细步骤" class="article-heading"><a href="#详细步骤" class="headerlink" title="详细步骤"></a>详细步骤<a class="article-anchor" href="#详细步骤" aria-hidden="true"></a></h3><h4 id="安装MongoDB" class="article-heading"><a href="#安装MongoDB" class="headerlink" title="安装MongoDB"></a>安装MongoDB<a class="article-anchor" href="#安装MongoDB" aria-hidden="true"></a></h4><p>以下为安装脚本，下载到本地以后<code>bash install_mongodb.3.2.16.sh</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">curl -O <span class="string">'https://raw.githubusercontent.com/BoobooWei/booboo_mongodb/master/scripts/install_mongodb.3.2.16.sh'</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">bash install_mongodb.3.2.16.sh</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="修改配置文件" class="article-heading"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件<a class="article-anchor" href="#修改配置文件" aria-hidden="true"></a></h4><p>只需要开启：replSet 参数即可。格式为：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">replication:</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#oplog大小</span></span></span><br><span class="line"> oplogSizeMB: 20</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#复制集名称</span></span></span><br><span class="line"> replSetName: booboo</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="启动服务" class="article-heading"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务<a class="article-anchor" href="#启动服务" aria-hidden="true"></a></h4><p>每一个节点都启动</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mongodb.server start</span><br></pre></td></tr></tbody></table></figure>
+
+<p>启动后会提示：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">2018-08-16T17:57:46.700+0800 I REPL     [initandlisten] Did not find local voted for document at startup.</span><br><span class="line">2018-08-16T17:57:46.700+0800 I REPL     [initandlisten] Did not find local replica set configuration document at startup;  NoMatchingDocument: Did not find replica set configuration document in local.system.replset</span><br><span class="line">2018-08-16T17:57:46.700+0800 I NETWORK  [HostnameCanonicalizationWorker] Starting hostname canonicalization worker</span><br><span class="line">2018-08-16T17:57:46.701+0800 I FTDC     [initandlisten] Initializing full-time diagnostic data capture with directory '/alidata/mongodb/data/27017/diagnostic.data'</span><br><span class="line">2018-08-16T17:57:46.701+0800 I NETWORK  [initandlisten] waiting for connections on port 27017</span><br></pre></td></tr></tbody></table></figure>
+
+<p>说明需要进行初始化操作，初始化操作只能执行一次。</p>
+<h4 id="初始化副本集" class="article-heading"><a href="#初始化副本集" class="headerlink" title="初始化副本集"></a>初始化副本集<a class="article-anchor" href="#初始化副本集" aria-hidden="true"></a></h4><p>登入任意一台机器的MongoDB执行：因为是全新的副本集所以可以任意进入一台执行；要是有一台有数据，则需要在有数据上执行；要多台有数据则不能初始化。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">rs.initiate()</span></span><br><span class="line">{</span><br><span class="line">	"info2" : "no configuration specified. Using a default configuration for the set",</span><br><span class="line">	"me" : "sh_01:27017",</span><br><span class="line">	"ok" : 1</span><br><span class="line">}</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行初始化后看到前缀发生了变化</span></span><br><span class="line">booboo:PRIMARY&gt; rs.config()</span><br><span class="line">{</span><br><span class="line">	"_id" : "booboo",</span><br><span class="line">	"version" : 1,</span><br><span class="line">	"protocolVersion" : NumberLong(1),</span><br><span class="line">	"members" : [</span><br><span class="line">		{</span><br><span class="line">			"_id" : 0,</span><br><span class="line">			"host" : "sh_01:27017",</span><br><span class="line">			"arbiterOnly" : false,</span><br><span class="line">			"buildIndexes" : true,</span><br><span class="line">			"hidden" : false,</span><br><span class="line">			"priority" : 1,</span><br><span class="line">			"tags" : {</span><br><span class="line"></span><br><span class="line">			},</span><br><span class="line">			"slaveDelay" : NumberLong(0),</span><br><span class="line">			"votes" : 1</span><br><span class="line">		}</span><br><span class="line">	],</span><br><span class="line">	"settings" : {</span><br><span class="line">		"chainingAllowed" : true,</span><br><span class="line">		"heartbeatIntervalMillis" : 2000,</span><br><span class="line">		"heartbeatTimeoutSecs" : 10,</span><br><span class="line">		"electionTimeoutMillis" : 10000,</span><br><span class="line">		"getLastErrorModes" : {</span><br><span class="line"></span><br><span class="line">		},</span><br><span class="line">		"getLastErrorDefaults" : {</span><br><span class="line">			"w" : 1,</span><br><span class="line">			"wtimeout" : 0</span><br><span class="line">		},</span><br><span class="line">		"replicaSetId" : ObjectId("5b754da04c30f36bbab72366")</span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>“_id”: 副本集的名称</li>
+<li>“members”: 副本集的服务器列表</li>
+<li>“_id”: 服务器的唯一ID</li>
+<li>“host”: 服务器主机</li>
+<li>“priority”: 是优先级，默认为1，优先级0为被动节点，不能成为活跃节点。优先级不位0则按照有大到小选出活跃节点。</li>
+<li>“arbiterOnly”: 仲裁节点，只参与投票，不接收数据，也不能成为活跃节点。</li>
+</ul>
+<h4 id="添加副本集节点" class="article-heading"><a href="#添加副本集节点" class="headerlink" title="添加副本集节点"></a>添加副本集节点<a class="article-anchor" href="#添加副本集节点" aria-hidden="true"></a></h4><p>添加节点的命令如下：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rs.add()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行操作</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">booboo:PRIMARY&gt; rs.add('sh_02:27017')</span><br><span class="line">{ "ok" : 1 }</span><br><span class="line">booboo:PRIMARY&gt; rs.add('am_01:27017')</span><br><span class="line">{ "ok" : 1 }</span><br><span class="line">booboo:PRIMARY&gt; rs.config()</span><br><span class="line">{</span><br><span class="line">	"_id" : "booboo",</span><br><span class="line">	"version" : 3,</span><br><span class="line">	"protocolVersion" : NumberLong(1),</span><br><span class="line">	"members" : [</span><br><span class="line">		{</span><br><span class="line">			"_id" : 0,</span><br><span class="line">			"host" : "sh_01:27017",</span><br><span class="line">			"arbiterOnly" : false,</span><br><span class="line">			"buildIndexes" : true,</span><br><span class="line">			"hidden" : false,</span><br><span class="line">			"priority" : 1,</span><br><span class="line">			"tags" : {</span><br><span class="line"></span><br><span class="line">			},</span><br><span class="line">			"slaveDelay" : NumberLong(0),</span><br><span class="line">			"votes" : 1</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 1,</span><br><span class="line">			"host" : "sh_02:27017",</span><br><span class="line">			"arbiterOnly" : false,</span><br><span class="line">			"buildIndexes" : true,</span><br><span class="line">			"hidden" : false,</span><br><span class="line">			"priority" : 1,</span><br><span class="line">			"tags" : {</span><br><span class="line"></span><br><span class="line">			},</span><br><span class="line">			"slaveDelay" : NumberLong(0),</span><br><span class="line">			"votes" : 1</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 2,</span><br><span class="line">			"host" : "am_01:27017",</span><br><span class="line">			"arbiterOnly" : false,</span><br><span class="line">			"buildIndexes" : true,</span><br><span class="line">			"hidden" : false,</span><br><span class="line">			"priority" : 1,</span><br><span class="line">			"tags" : {</span><br><span class="line"></span><br><span class="line">			},</span><br><span class="line">			"slaveDelay" : NumberLong(0),</span><br><span class="line">			"votes" : 1</span><br><span class="line">		}</span><br><span class="line">	],</span><br><span class="line">	"settings" : {</span><br><span class="line">		"chainingAllowed" : true,</span><br><span class="line">		"heartbeatIntervalMillis" : 2000,</span><br><span class="line">		"heartbeatTimeoutSecs" : 10,</span><br><span class="line">		"electionTimeoutMillis" : 10000,</span><br><span class="line">		"getLastErrorModes" : {</span><br><span class="line"></span><br><span class="line">		},</span><br><span class="line">		"getLastErrorDefaults" : {</span><br><span class="line">			"w" : 1,</span><br><span class="line">			"wtimeout" : 0</span><br><span class="line">		},</span><br><span class="line">		"replicaSetId" : ObjectId("5b754da04c30f36bbab72366")</span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>6：日志</strong></p>
+<p>查看252上的日志：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">2018-08-16T18:16:48.547+0800 I REPL     [ReplicationExecutor] New replica set config in use: { _id: "booboo", version: 3, protocolVersion: 1, members: [ { _id: 0, host: "sh_01:27017", arbiterOnly: false, buildIndexes: true, hidden: false, priority: 1.0, tags: {}, slaveDelay: 0, votes: 1 }, { _id: 1, host: "sh_02:27017", arbiterOnly: false, buildIndexes: true, hidden: false, priority: 1.0, tags: {}, slaveDelay: 0, votes: 1 }, { _id: 2, host: "am_01:27017", arbiterOnly: false, buildIndexes: true, hidden: false, priority: 1.0, tags: {}, slaveDelay: 0, votes: 1 } ], settings: { chainingAllowed: true, heartbeatIntervalMillis: 2000, heartbeatTimeoutSecs: 10, electionTimeoutMillis: 10000, getLastErrorModes: {}, getLastErrorDefaults: { w: 1, wtimeout: 0 }, replicaSetId: ObjectId('5b754da04c30f36bbab72366') } }</span><br><span class="line">2018-08-16T18:16:48.548+0800 I REPL     [ReplicationExecutor] This node is sh_01:27017 in the config</span><br><span class="line"></span><br><span class="line">2018-08-16T18:16:50.555+0800 I REPL     [ReplicationExecutor] Member am_01:27017 is now in state STARTUP2</span><br><span class="line">2018-08-16T18:16:54.557+0800 I REPL     [ReplicationExecutor] Member am_01:27017 is now in state SECONDARY</span><br></pre></td></tr></tbody></table></figure>
+
+<p>至此，整个副本集已经搭建成功了。</p>
+<p>查看副本集状态</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">booboo:PRIMARY&gt; rs.status()</span><br><span class="line">{</span><br><span class="line">	"set" : "booboo",</span><br><span class="line">	"date" : ISODate("2018-08-16T10:58:14.036Z"),</span><br><span class="line">	"myState" : 1,</span><br><span class="line">	"term" : NumberLong(1),</span><br><span class="line">	"heartbeatIntervalMillis" : NumberLong(2000),</span><br><span class="line">	"members" : [</span><br><span class="line">		{</span><br><span class="line">			"_id" : 0,</span><br><span class="line">			"name" : "sh_01:27017",</span><br><span class="line">			"health" : 1,</span><br><span class="line">			"state" : 1,</span><br><span class="line">			"stateStr" : "PRIMARY",</span><br><span class="line">			"uptime" : 3628,</span><br><span class="line">			"optime" : {</span><br><span class="line">				"ts" : Timestamp(1534414608, 1),</span><br><span class="line">				"t" : NumberLong(1)</span><br><span class="line">			},</span><br><span class="line">			"optimeDate" : ISODate("2018-08-16T10:16:48Z"),</span><br><span class="line">			"electionTime" : Timestamp(1534414240, 2),</span><br><span class="line">			"electionDate" : ISODate("2018-08-16T10:10:40Z"),</span><br><span class="line">			"configVersion" : 3,</span><br><span class="line">			"self" : true</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 1,</span><br><span class="line">			"name" : "sh_02:27017",</span><br><span class="line">			"health" : 1,</span><br><span class="line">			"state" : 2,</span><br><span class="line">			"stateStr" : "SECONDARY",</span><br><span class="line">			"uptime" : 2492,</span><br><span class="line">			"optime" : {</span><br><span class="line">				"ts" : Timestamp(1534414608, 1),</span><br><span class="line">				"t" : NumberLong(1)</span><br><span class="line">			},</span><br><span class="line">			"optimeDate" : ISODate("2018-08-16T10:16:48Z"),</span><br><span class="line">			"lastHeartbeat" : ISODate("2018-08-16T10:58:12.645Z"),</span><br><span class="line">			"lastHeartbeatRecv" : ISODate("2018-08-16T10:58:12.325Z"),</span><br><span class="line">			"pingMs" : NumberLong(0),</span><br><span class="line">			"syncingTo" : "sh_01:27017",</span><br><span class="line">			"configVersion" : 3</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 2,</span><br><span class="line">			"name" : "am_01:27017",</span><br><span class="line">			"health" : 1,</span><br><span class="line">			"state" : 2,</span><br><span class="line">			"stateStr" : "SECONDARY",</span><br><span class="line">			"uptime" : 2485,</span><br><span class="line">			"optime" : {</span><br><span class="line">				"ts" : Timestamp(1534414608, 1),</span><br><span class="line">				"t" : NumberLong(1)</span><br><span class="line">			},</span><br><span class="line">			"optimeDate" : ISODate("2018-08-16T10:16:48Z"),</span><br><span class="line">			"lastHeartbeat" : ISODate("2018-08-16T10:58:12.580Z"),</span><br><span class="line">			"lastHeartbeatRecv" : ISODate("2018-08-16T10:58:09.477Z"),</span><br><span class="line">			"pingMs" : NumberLong(0),</span><br><span class="line">			"configVersion" : 3</span><br><span class="line">		}</span><br><span class="line">	],</span><br><span class="line">	"ok" : 1</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="删副本集节点" class="article-heading"><a href="#删副本集节点" class="headerlink" title="删副本集节点"></a>删副本集节点<a class="article-anchor" href="#删副本集节点" aria-hidden="true"></a></h4><blockquote>
+<p>删除sh_02节点</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">rs.remove()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>操作明细</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">booboo:PRIMARY&gt; rs.remove('sh_02:27017')</span><br><span class="line">{ "ok" : 1 }</span><br><span class="line">booboo:PRIMARY&gt; rs.status()</span><br><span class="line">{</span><br><span class="line">	"set" : "booboo",</span><br><span class="line">	"date" : ISODate("2018-08-16T11:06:03.031Z"),</span><br><span class="line">	"myState" : 1,</span><br><span class="line">	"term" : NumberLong(1),</span><br><span class="line">	"heartbeatIntervalMillis" : NumberLong(2000),</span><br><span class="line">	"members" : [</span><br><span class="line">		{</span><br><span class="line">			"_id" : 0,</span><br><span class="line">			"name" : "sh_01:27017",</span><br><span class="line">			"health" : 1,</span><br><span class="line">			"state" : 1,</span><br><span class="line">			"stateStr" : "PRIMARY",</span><br><span class="line">			"uptime" : 4097,</span><br><span class="line">			"optime" : {</span><br><span class="line">				"ts" : Timestamp(1534417560, 1),</span><br><span class="line">				"t" : NumberLong(1)</span><br><span class="line">			},</span><br><span class="line">			"optimeDate" : ISODate("2018-08-16T11:06:00Z"),</span><br><span class="line">			"electionTime" : Timestamp(1534414240, 2),</span><br><span class="line">			"electionDate" : ISODate("2018-08-16T10:10:40Z"),</span><br><span class="line">			"configVersion" : 4,</span><br><span class="line">			"self" : true</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 2,</span><br><span class="line">			"name" : "am_01:27017",</span><br><span class="line">			"health" : 1,</span><br><span class="line">			"state" : 2,</span><br><span class="line">			"stateStr" : "SECONDARY",</span><br><span class="line">			"uptime" : 2954,</span><br><span class="line">			"optime" : {</span><br><span class="line">				"ts" : Timestamp(1534417560, 1),</span><br><span class="line">				"t" : NumberLong(1)</span><br><span class="line">			},</span><br><span class="line">			"optimeDate" : ISODate("2018-08-16T11:06:00Z"),</span><br><span class="line">			"lastHeartbeat" : ISODate("2018-08-16T11:06:02.598Z"),</span><br><span class="line">			"lastHeartbeatRecv" : ISODate("2018-08-16T11:06:00.609Z"),</span><br><span class="line">			"pingMs" : NumberLong(0),</span><br><span class="line">			"syncingTo" : "sh_01:27017",</span><br><span class="line">			"configVersion" : 4</span><br><span class="line">		}</span><br><span class="line">	],</span><br><span class="line">	"ok" : 1</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>sh_02的节点已经被移除。</p>
+<p>再将sh_02加回来<code>rs.add('sh_02:27017')</code></p>
+<h4 id="操作Secondary" class="article-heading"><a href="#操作Secondary" class="headerlink" title="操作Secondary"></a>操作Secondary<a class="article-anchor" href="#操作Secondary" aria-hidden="true"></a></h4><p>默认情况下，Secondary是不提供服务的，即不能读和写。会提示：<br>error: { “$err” : “not master and slaveOk=false”, “code” : 13435 }</p>
+<p>在特殊情况下需要读的话则需要：<br><strong>rs.slaveOk() ，只对当前连接有效。</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">booboo:SECONDARY&gt; db.t1.find().limit(1)</span><br><span class="line">Error: error: { "ok" : 0, "errmsg" : "not master and slaveOk=false", "code" : 13435 }</span><br><span class="line">booboo:SECONDARY&gt; rs.slaveOk()</span><br><span class="line">booboo:SECONDARY&gt; db.t1.find().limit(1)</span><br><span class="line">{ "_id" : ObjectId("5b5ebb6796b8b74a73ee30f6"), "a" : 1, "b" : 2 }</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="测试副本集功能" class="article-heading"><a href="#测试副本集功能" class="headerlink" title="测试副本集功能"></a>测试副本集功能<a class="article-anchor" href="#测试副本集功能" aria-hidden="true"></a></h2><p>当前副本集状态如下：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rs.config()</span><br><span class="line">{</span><br><span class="line">	"_id" : "booboo",</span><br><span class="line">	"version" : 11,</span><br><span class="line">	"protocolVersion" : NumberLong(1),</span><br><span class="line">	"members" : [</span><br><span class="line">		{</span><br><span class="line">			"_id" : 2,</span><br><span class="line">			"host" : "am_01:27017",</span><br><span class="line">			"arbiterOnly" : false,</span><br><span class="line">			"buildIndexes" : true,</span><br><span class="line">			"hidden" : false,</span><br><span class="line">			"priority" : 1,</span><br><span class="line">			"tags" : {</span><br><span class="line"></span><br><span class="line">			},</span><br><span class="line">			"slaveDelay" : NumberLong(0),</span><br><span class="line">			"votes" : 1</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 3,</span><br><span class="line">			"host" : "sh_01:27017",</span><br><span class="line">			"arbiterOnly" : false,</span><br><span class="line">			"buildIndexes" : true,</span><br><span class="line">			"hidden" : false,</span><br><span class="line">			"priority" : 1,</span><br><span class="line">			"tags" : {</span><br><span class="line"></span><br><span class="line">			},</span><br><span class="line">			"slaveDelay" : NumberLong(0),</span><br><span class="line">			"votes" : 1</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 4,</span><br><span class="line">			"host" : "sh_02:27017",</span><br><span class="line">			"arbiterOnly" : false,</span><br><span class="line">			"buildIndexes" : true,</span><br><span class="line">			"hidden" : false,</span><br><span class="line">			"priority" : 1,</span><br><span class="line">			"tags" : {</span><br><span class="line"></span><br><span class="line">			},</span><br><span class="line">			"slaveDelay" : NumberLong(0),</span><br><span class="line">			"votes" : 1</span><br><span class="line">		}</span><br><span class="line">	],</span><br><span class="line">	"settings" : {</span><br><span class="line">		"chainingAllowed" : true,</span><br><span class="line">		"heartbeatIntervalMillis" : 2000,</span><br><span class="line">		"heartbeatTimeoutSecs" : 10,</span><br><span class="line">		"electionTimeoutMillis" : 10000,</span><br><span class="line">		"getLastErrorModes" : {</span><br><span class="line"></span><br><span class="line">		},</span><br><span class="line">		"getLastErrorDefaults" : {</span><br><span class="line">			"w" : 1,</span><br><span class="line">			"wtimeout" : 0</span><br><span class="line">		},</span><br><span class="line">		"replicaSetId" : ObjectId("5b754da04c30f36bbab72366")</span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line">booboo:PRIMARY&gt; rs.status()</span><br><span class="line">{</span><br><span class="line">	"set" : "booboo",</span><br><span class="line">	"date" : ISODate("2018-08-16T11:43:24.447Z"),</span><br><span class="line">	"myState" : 1,</span><br><span class="line">	"term" : NumberLong(8),</span><br><span class="line">	"heartbeatIntervalMillis" : NumberLong(2000),</span><br><span class="line">	"members" : [</span><br><span class="line">		{</span><br><span class="line">			"_id" : 2,</span><br><span class="line">			"name" : "am_01:27017",</span><br><span class="line">			"health" : 1,</span><br><span class="line">			"state" : 2,</span><br><span class="line">			"stateStr" : "SECONDARY",</span><br><span class="line">			"uptime" : 270,</span><br><span class="line">			"optime" : {</span><br><span class="line">				"ts" : Timestamp(1534419549, 1),</span><br><span class="line">				"t" : NumberLong(8)</span><br><span class="line">			},</span><br><span class="line">			"optimeDate" : ISODate("2018-08-16T11:39:09Z"),</span><br><span class="line">			"lastHeartbeat" : ISODate("2018-08-16T11:43:22.722Z"),</span><br><span class="line">			"lastHeartbeatRecv" : ISODate("2018-08-16T11:43:22.702Z"),</span><br><span class="line">			"pingMs" : NumberLong(0),</span><br><span class="line">			"syncingTo" : "sh_02:27017",</span><br><span class="line">			"configVersion" : 11</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 3,</span><br><span class="line">			"name" : "sh_01:27017",</span><br><span class="line">			"health" : 1,</span><br><span class="line">			"state" : 1,</span><br><span class="line">			"stateStr" : "PRIMARY",</span><br><span class="line">			"uptime" : 286,</span><br><span class="line">			"optime" : {</span><br><span class="line">				"ts" : Timestamp(1534419549, 1),</span><br><span class="line">				"t" : NumberLong(8)</span><br><span class="line">			},</span><br><span class="line">			"optimeDate" : ISODate("2018-08-16T11:39:09Z"),</span><br><span class="line">			"electionTime" : Timestamp(1534419548, 1),</span><br><span class="line">			"electionDate" : ISODate("2018-08-16T11:39:08Z"),</span><br><span class="line">			"configVersion" : 11,</span><br><span class="line">			"self" : true</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 4,</span><br><span class="line">			"name" : "sh_02:27017",</span><br><span class="line">			"health" : 1,</span><br><span class="line">			"state" : 2,</span><br><span class="line">			"stateStr" : "SECONDARY",</span><br><span class="line">			"uptime" : 275,</span><br><span class="line">			"optime" : {</span><br><span class="line">				"ts" : Timestamp(1534419549, 1),</span><br><span class="line">				"t" : NumberLong(8)</span><br><span class="line">			},</span><br><span class="line">			"optimeDate" : ISODate("2018-08-16T11:39:09Z"),</span><br><span class="line">			"lastHeartbeat" : ISODate("2018-08-16T11:43:22.733Z"),</span><br><span class="line">			"lastHeartbeatRecv" : ISODate("2018-08-16T11:43:22.768Z"),</span><br><span class="line">			"pingMs" : NumberLong(0),</span><br><span class="line">			"syncingTo" : "sh_01:27017",</span><br><span class="line">			"configVersion" : 11</span><br><span class="line">		}</span><br><span class="line">	],</span><br><span class="line">	"ok" : 1</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="测试副本集数据复制功能" class="article-heading"><a href="#测试副本集数据复制功能" class="headerlink" title="测试副本集数据复制功能"></a>测试副本集数据复制功能<a class="article-anchor" href="#测试副本集数据复制功能" aria-hidden="true"></a></h3><p>在Primary上插入数据：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">booboo:PRIMARY&gt; use test</span><br><span class="line">switched to db test</span><br><span class="line">booboo:PRIMARY&gt; db.superman.insert({name:'jack',age:12})</span><br><span class="line">WriteResult({ "nInserted" : 1 })</span><br><span class="line">booboo:PRIMARY&gt; db.superman.find({name:/a/i})</span><br><span class="line">{ "_id" : ObjectId("5b755ff853976480e26b04c8"), "name" : "jack", "age" : 12 }</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在Secondary上查看是否已经同步：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">booboo:SECONDARY&gt; db.superman.find().limit(1)</span><br><span class="line">{ "_id" : ObjectId("5b755ff853976480e26b04c8"), "name" : "jack", "age" : 12 }</span><br></pre></td></tr></tbody></table></figure>
+
+<p>数据已经同步。</p>
+<h3 id="测试优先级更改功能" class="article-heading"><a href="#测试优先级更改功能" class="headerlink" title="测试优先级更改功能"></a>测试优先级更改功能<a class="article-anchor" href="#测试优先级更改功能" aria-hidden="true"></a></h3><p>将sh_01的优先级改为0.5</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">booboo:PRIMARY&gt; cfg = rs.config()</span><br><span class="line">booboo:PRIMARY&gt; cfg.members[1].priority = 2</span><br><span class="line">booboo:PRIMARY&gt; rs.reconfig(cfg)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>更改优先级后</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">rs.config()</span><br><span class="line">{</span><br><span class="line">	"_id" : "booboo",</span><br><span class="line">	"version" : 11,</span><br><span class="line">	"protocolVersion" : NumberLong(1),</span><br><span class="line">	"members" : [</span><br><span class="line">		{</span><br><span class="line">			"_id" : 2,</span><br><span class="line">			"host" : "am_01:27017",</span><br><span class="line">			"arbiterOnly" : false,</span><br><span class="line">			"buildIndexes" : true,</span><br><span class="line">			"hidden" : false,</span><br><span class="line">			"priority" : 1,</span><br><span class="line">			"tags" : {</span><br><span class="line"></span><br><span class="line">			},</span><br><span class="line">			"slaveDelay" : NumberLong(0),</span><br><span class="line">			"votes" : 1</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 3,</span><br><span class="line">			"host" : "sh_01:27017",</span><br><span class="line">			"arbiterOnly" : false,</span><br><span class="line">			"buildIndexes" : true,</span><br><span class="line">			"hidden" : false,</span><br><span class="line">			"priority" : 2,</span><br><span class="line">			"tags" : {</span><br><span class="line"></span><br><span class="line">			},</span><br><span class="line">			"slaveDelay" : NumberLong(0),</span><br><span class="line">			"votes" : 1</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 4,</span><br><span class="line">			"host" : "sh_02:27017",</span><br><span class="line">			"arbiterOnly" : false,</span><br><span class="line">			"buildIndexes" : true,</span><br><span class="line">			"hidden" : false,</span><br><span class="line">			"priority" : 1,</span><br><span class="line">			"tags" : {</span><br><span class="line"></span><br><span class="line">			},</span><br><span class="line">			"slaveDelay" : NumberLong(0),</span><br><span class="line">			"votes" : 1</span><br><span class="line">		}</span><br><span class="line">	],</span><br><span class="line">	"settings" : {</span><br><span class="line">		"chainingAllowed" : true,</span><br><span class="line">		"heartbeatIntervalMillis" : 2000,</span><br><span class="line">		"heartbeatTimeoutSecs" : 10,</span><br><span class="line">		"electionTimeoutMillis" : 10000,</span><br><span class="line">		"getLastErrorModes" : {</span><br><span class="line"></span><br><span class="line">		},</span><br><span class="line">		"getLastErrorDefaults" : {</span><br><span class="line">			"w" : 1,</span><br><span class="line">			"wtimeout" : 0</span><br><span class="line">		},</span><br><span class="line">		"replicaSetId" : ObjectId("5b754da04c30f36bbab72366")</span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="测试副本集故障转移功能" class="article-heading"><a href="#测试副本集故障转移功能" class="headerlink" title="测试副本集故障转移功能"></a>测试副本集故障转移功能<a class="article-anchor" href="#测试副本集故障转移功能" aria-hidden="true"></a></h3><p>关闭Primary节点，查看其他2个节点的情况：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">[root@sh_01 ~]# mongodb.server stop</span><br><span class="line">killing process with pid: 650</span><br></pre></td></tr></tbody></table></figure>
+
+<p>看到sh_02已经从 SECONDARY 变成了 PRIMARY。具体的信息可以通过日志文件得知。继续操作：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">booboo:SECONDARY&gt; use admin</span><br><span class="line">switched to db admin</span><br><span class="line">booboo:PRIMARY&gt; use test</span><br><span class="line">switched to db test</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看副本集状态</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">booboo:SECONDARY&gt; use admin</span><br><span class="line">switched to db admin</span><br><span class="line">booboo:PRIMARY&gt; use test</span><br><span class="line">switched to db test</span><br><span class="line">booboo:PRIMARY&gt; rs.status()</span><br><span class="line">{</span><br><span class="line">	"set" : "booboo",</span><br><span class="line">	"date" : ISODate("2018-08-16T11:47:30.019Z"),</span><br><span class="line">	"myState" : 1,</span><br><span class="line">	"term" : NumberLong(9),</span><br><span class="line">	"heartbeatIntervalMillis" : NumberLong(2000),</span><br><span class="line">	"members" : [</span><br><span class="line">		{</span><br><span class="line">			"_id" : 2,</span><br><span class="line">			"name" : "am_01:27017",</span><br><span class="line">			"health" : 1,</span><br><span class="line">			"state" : 2,</span><br><span class="line">			"stateStr" : "SECONDARY",</span><br><span class="line">			"uptime" : 513,</span><br><span class="line">			"optime" : {</span><br><span class="line">				"ts" : Timestamp(1534420009, 1),</span><br><span class="line">				"t" : NumberLong(9)</span><br><span class="line">			},</span><br><span class="line">			"optimeDate" : ISODate("2018-08-16T11:46:49Z"),</span><br><span class="line">			"lastHeartbeat" : ISODate("2018-08-16T11:47:29.020Z"),</span><br><span class="line">			"lastHeartbeatRecv" : ISODate("2018-08-16T11:47:28.720Z"),</span><br><span class="line">			"pingMs" : NumberLong(0),</span><br><span class="line">			"syncingTo" : "sh_02:27017",</span><br><span class="line">			"configVersion" : 11</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 3,</span><br><span class="line">			"name" : "sh_01:27017",</span><br><span class="line">			"health" : 0,</span><br><span class="line">			"state" : 8,</span><br><span class="line">			"stateStr" : "(not reachable/healthy)",</span><br><span class="line">			"uptime" : 0,</span><br><span class="line">			"optime" : {</span><br><span class="line">				"ts" : Timestamp(0, 0),</span><br><span class="line">				"t" : NumberLong(-1)</span><br><span class="line">			},</span><br><span class="line">			"optimeDate" : ISODate("1970-01-01T00:00:00Z"),</span><br><span class="line">			"lastHeartbeat" : ISODate("2018-08-16T11:47:29.086Z"),</span><br><span class="line">			"lastHeartbeatRecv" : ISODate("2018-08-16T11:46:38.901Z"),</span><br><span class="line">			"pingMs" : NumberLong(0),</span><br><span class="line">			"lastHeartbeatMessage" : "Connection refused",</span><br><span class="line">			"configVersion" : -1</span><br><span class="line">		},</span><br><span class="line">		{</span><br><span class="line">			"_id" : 4,</span><br><span class="line">			"name" : "sh_02:27017",</span><br><span class="line">			"health" : 1,</span><br><span class="line">			"state" : 1,</span><br><span class="line">			"stateStr" : "PRIMARY",</span><br><span class="line">			"uptime" : 524,</span><br><span class="line">			"optime" : {</span><br><span class="line">				"ts" : Timestamp(1534420009, 1),</span><br><span class="line">				"t" : NumberLong(9)</span><br><span class="line">			},</span><br><span class="line">			"optimeDate" : ISODate("2018-08-16T11:46:49Z"),</span><br><span class="line">			"infoMessage" : "could not find member to sync from",</span><br><span class="line">			"electionTime" : Timestamp(1534420008, 1),</span><br><span class="line">			"electionDate" : ISODate("2018-08-16T11:46:48Z"),</span><br><span class="line">			"configVersion" : 11,</span><br><span class="line">			"self" : true</span><br><span class="line">		}</span><br><span class="line">	],</span><br><span class="line">	"ok" : 1</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>重新启动sh_01，由于其优先级别最高，所以会重新选举primary为sh_01</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">[root@sh_01 ~]# mongodb.server start</span><br><span class="line">[root@sh_01 ~]# mongo</span><br><span class="line">MongoDB shell version: 3.2.16</span><br><span class="line">connecting to: test</span><br><span class="line">Server has startup warnings:</span><br><span class="line">2018-08-16T19:48:53.817+0800 I CONTROL  [initandlisten] ** WARNING: You are running this process as the root user, which is not recommended.</span><br><span class="line">2018-08-16T19:48:53.817+0800 I CONTROL  [initandlisten]</span><br><span class="line">booboo:SECONDARY&gt; use test</span><br><span class="line">switched to db test</span><br><span class="line">booboo:SECONDARY&gt; use test</span><br><span class="line">switched to db test</span><br><span class="line">booboo:PRIMARY&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>注意</strong>：</p>
+<p>所有的Secondary都宕机、或则副本集中只剩下一个节点，则该节点只能为Secondary节点，也就意味着整个集群智能进行读操作而不能进行写操作，当其他的恢复时，之前的primary节点仍然是primary节点。</p>
+<p>当某个节点宕机后重新启动该节点会有一段的时间（时间长短视集群的数据量和宕机时间而定）导致整个集群中所有节点都成为secondary而无法进行写操作（如果应用程序没有设置相应的ReadReference也可能不能进行读取操作）。</p>
+<p>官方推荐的<strong>最小的副本集也应该具备一个primary节点和两个secondary节点。两个节点的副本集不具备真正的故障转移能力。</strong></p>
+<h2 id="副本集应用" class="article-heading"><a href="#副本集应用" class="headerlink" title="副本集应用"></a>副本集应用<a class="article-anchor" href="#副本集应用" aria-hidden="true"></a></h2><p>修改rs.config()中的相应value即可达到目的：</p>
+<table>
+<thead>
+<tr>
+<th>副本集应用</th>
+<th>说明</th>
+<th>方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/tutorial/adjust-replica-set-member-priority.html"><em>修改复制集节点的优先级</em></a></td>
+<td>修改复制集节点在选举中的优先级</td>
+<td><code>cfg.members[0].priority = 0.5</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/tutorial/configure-secondary-only-replica-set-member.html"><em>禁止从节点升职为主节点</em></a></td>
+<td>防止从节点在选举中升职为主节点</td>
+<td><code>cfg.members[1].priority = 0</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/tutorial/configure-a-hidden-replica-set-member.html"><em>配置一个隐藏节点</em></a></td>
+<td>将从节点设置为应用程序不可见来用其提供特殊需求，如备份等</td>
+<td><code>cfg.members[0].priority = 0;cfg.members[0].hidden = true</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/tutorial/configure-a-delayed-replica-set-member.html"><em>配置一个延时复制节点</em></a></td>
+<td>将从节点设置为延时复制节点，来提高数据安全性</td>
+<td><code>cfg.members[0].priority = 0;cfg.members[0].hidden = true;cfg.members[0].slaveDelay = 3600</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/tutorial/configure-a-non-voting-replica-set-member.html"><em>配置一个不参与投票的节点</em></a></td>
+<td>配置一个拥有数据但是不可进行投票的从节点</td>
+<td><code>cfg.members[3].votes = 0</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/tutorial/convert-secondary-into-arbiter.html"><em>将从节点转换为投票节点</em></a></td>
+<td>将一个从节点变为投票节点</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="修改复制集节点的优先级" class="article-heading"><a href="#修改复制集节点的优先级" class="headerlink" title="修改复制集节点的优先级"></a>修改复制集节点的优先级<a class="article-anchor" href="#修改复制集节点的优先级" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改复制集节点的优先级</span></span><br><span class="line">cfg = rs.conf()</span><br><span class="line">cfg.members[0].priority = 0.5</span><br><span class="line">rs.reconfig(cfg)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="禁止从节点升职为主节点" class="article-heading"><a href="#禁止从节点升职为主节点" class="headerlink" title="禁止从节点升职为主节点"></a>禁止从节点升职为主节点<a class="article-anchor" href="#禁止从节点升职为主节点" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">禁止从节点升职为主节点</span></span><br><span class="line">cfg = rs.conf()</span><br><span class="line">cfg.members[1].priority = 0</span><br><span class="line">rs.reconfig(cfg)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="配置一个隐藏节点" class="article-heading"><a href="#配置一个隐藏节点" class="headerlink" title="配置一个隐藏节点"></a>配置一个隐藏节点<a class="article-anchor" href="#配置一个隐藏节点" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置一个隐藏节点</span></span><br><span class="line">cfg = rs.conf()</span><br><span class="line">cfg.members[0].priority = 0</span><br><span class="line">cfg.members[0].hidden = true</span><br><span class="line">rs.reconfig(cfg)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="配置一个延时复制节点" class="article-heading"><a href="#配置一个延时复制节点" class="headerlink" title="配置一个延时复制节点"></a>配置一个延时复制节点<a class="article-anchor" href="#配置一个延时复制节点" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置一个延时复制节点</span></span><br><span class="line">cfg = rs.conf()</span><br><span class="line">cfg.members[0].priority = 0</span><br><span class="line">cfg.members[0].hidden = true</span><br><span class="line">cfg.members[0].slaveDelay = 3600</span><br><span class="line">rs.reconfig(cfg)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="配置一个不参与投票的节点" class="article-heading"><a href="#配置一个不参与投票的节点" class="headerlink" title="配置一个不参与投票的节点"></a>配置一个不参与投票的节点<a class="article-anchor" href="#配置一个不参与投票的节点" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置一个不参与投票的节点</span></span><br><span class="line">cfg = rs.conf()</span><br><span class="line">cfg.members[3].votes = 0</span><br><span class="line">rs.reconfig(cfg)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="将从节点转换为投票节点" class="article-heading"><a href="#将从节点转换为投票节点" class="headerlink" title="将从节点转换为投票节点"></a>将从节点转换为投票节点<a class="article-anchor" href="#将从节点转换为投票节点" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将从节点转换为投票节点</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># way1 我们可以将投票节点的端口设置的与之前的从节点一致。那么我们就必须关闭从节点并移除其数据文件，再重启与重新将其配置为投票节点。</span></span></span><br><span class="line">rs.remove("&lt;hostname&gt;&lt;:port&gt;")</span><br><span class="line">rs.conf()</span><br><span class="line">mv /data/db /data/db-old</span><br><span class="line">mkdir /data/db</span><br><span class="line">mongod --port 27021 --dbpath /data/db --replSet rs</span><br><span class="line">rs.addArb("&lt;hostname&gt;&lt;:port&gt;")</span><br><span class="line">rs.conf()</span><br><span class="line">投票节点必须要包含如下信息：</span><br><span class="line"></span><br><span class="line">"arbiterOnly" : true</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># way2 将投票节点以新的端口运行。我们可以在关闭已有的从节点之前就启动并配置一个投票节点。</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="读写分离" class="article-heading"><a href="#读写分离" class="headerlink" title="读写分离"></a>读写分离<a class="article-anchor" href="#读写分离" aria-hidden="true"></a></h2><p>MongoDB副本集对读写分离的支持是通过Read Preferences特性进行支持的，这个特性非常复杂和灵活。</p>
+<p>应用程序驱动通过read reference来设定如何对副本集进行读取操作，默认的,客户端驱动所有的读操作都是直接访问primary节点的，从而保证了数据的严格一致性。</p>
+<p>支持<strong>五种的read preference模式</strong>：<a target="_blank" rel="noopener" href="http://docs.mongodb.org/manual/applications/replication/#replica-set-read-preference">官网说明</a></p>
+<table>
+<thead>
+<tr>
+<th>复制集读选项模式</th>
+<th>详细说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/read-preference.html#primary"><code>primary</code></a></td>
+<td>默认模式，所有的读操作都在复制集的 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-primary"><em>主节点</em></a> 进行的。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/read-preference.html#primaryPreferred"><code>primaryPreferred</code></a></td>
+<td>在大多数情况时，读操作在 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-primary"><em>主节点</em></a> 上进行，但是如果主节点不可用了，读操作就会转移到 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-secondary"><em>从节点</em></a> 上执行。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/read-preference.html#secondary"><code>secondary</code></a></td>
+<td>All operations read from the <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-secondary"><em>secondary</em></a> members of the replica set.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/read-preference.html#secondaryPreferred"><code>secondaryPreferred</code></a></td>
+<td>在大多数情况下，读操作都是在 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-secondary"><em>从节点</em></a> 上进行的，但是当 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-secondary"><em>从节点</em></a> 不可用了，读操作会转移到 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-primary"><em>主节点</em></a> 上进行。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/read-preference.html#nearest"><code>nearest</code></a></td>
+<td>读操作会在 <a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-replica-set"><em>复制集</em></a> 中网络延时最小的节点上进行，与节点类型无关。</td>
+</tr>
+</tbody></table>
+<h3 id="python连接mongo副本集" class="article-heading"><a href="#python连接mongo副本集" class="headerlink" title="python连接mongo副本集"></a>python连接mongo副本集<a class="article-anchor" href="#python连接mongo副本集" aria-hidden="true"></a></h3><p>脚本：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">#coding:utf-8</span><br><span class="line">import time</span><br><span class="line">from pymongo import *</span><br><span class="line">client = MongoClient('10.200.6.30',replicaset='booboo')</span><br><span class="line">db = client.db1</span><br><span class="line">collection = db.t1</span><br><span class="line">print db</span><br><span class="line">print collection</span><br><span class="line">collection.find_one()</span><br><span class="line">db.client.address</span><br></pre></td></tr></tbody></table></figure>
+
+<p>脚本执行打印出的内容：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@sh_01 ~]# python m1.py</span><br><span class="line">Database(MongoClient([u'sh_01:27017', u'sh_02:27017', u'am_01:27017']), u'db1')</span><br><span class="line">Collection(Database(MongoClient([u'sh_01:27017', u'sh_02:27017', u'am_01:27017']), u'db1'), u't1')</span><br><span class="line">{u'_id': ObjectId('5b757a58057999e331202554'), u'id': 1.0}</span><br><span class="line">Collection(Database(MongoClient([u'sh_01:27017', u'sh_02:27017', u'am_01:27017']), u'db1'), u'client.address')</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="模拟主节点故障" class="article-heading"><a href="#模拟主节点故障" class="headerlink" title="模拟主节点故障"></a>模拟主节点故障<a class="article-anchor" href="#模拟主节点故障" aria-hidden="true"></a></h3><h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><h3 id="搭建副本集" class="article-heading"><a href="#搭建副本集" class="headerlink" title="搭建副本集"></a>搭建副本集<a class="article-anchor" href="#搭建副本集" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th>No.</th>
+<th>步骤</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>修改配置文件</td>
+<td><code>replSetName: booboo</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>启动服务</td>
+<td><code>mongodb.server start</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>初始化副本集</td>
+<td><code>rs.initiate()</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>确认初始化配置</td>
+<td><code>rs.conf()</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>添加副本集节点</td>
+<td><code>rs.add()</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>检查副本集状态</td>
+<td><code>rs.status()</code></td>
+</tr>
+</tbody></table>
+<h3 id="副本集的方法" class="article-heading"><a href="#副本集的方法" class="headerlink" title="副本集的方法"></a>副本集的方法<a class="article-anchor" href="#副本集的方法" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.add.html#rs.add"><code>rs.add（）</code></a></td>
+<td>将成员添加到副本集。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.addArb.html#rs.addArb"><code>rs.addArb（）</code></a></td>
+<td>将<a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-arbiter"><em>仲裁器</em></a>添加到副本集。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.conf.html#rs.conf"><code>rs.conf（）</code></a></td>
+<td>返回副本集配置文档。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.freeze.html#rs.freeze"><code>rs.freeze（）</code></a></td>
+<td>防止现任成员在一段时间内选举为主要成员。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.help.html#rs.help"><code>rs.help（）</code></a></td>
+<td>返回<a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-replica-set"><em>副本集</em></a>函数的基本帮助文本。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.initiate.html#rs.initiate"><code>rs.initiate（）</code></a></td>
+<td>初始化新的副本集。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.printReplicationInfo.html#rs.printReplicationInfo"><code>rs.printReplicationInfo（）</code></a></td>
+<td>从主数据库的角度打印副本集状态的报告。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.printSlaveReplicationInfo.html#rs.printSlaveReplicationInfo"><code>rs.printSlaveReplicationInfo（）</code></a></td>
+<td>从辅助节点的角度打印副本集状态的报告。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.reconfig.html#rs.reconfig"><code>rs.reconfig（）</code></a></td>
+<td>通过应用新的副本集配置对象重新配置副本集。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.remove.html#rs.remove"><code>rs.remove（）</code></a></td>
+<td>从副本集中删除成员。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.slaveOk.html#rs.slaveOk"><code>rs.slaveOk（）</code></a></td>
+<td>设置当前连接的<code>slaveOk</code>属性。已过时。使用<a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/cursor.readPref.html#cursor.readPref"><code>readPref（）</code></a>和<a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/Mongo.setReadPref.html#Mongo.setReadPref"><code>Mongo.setReadPref（）</code></a>来设置<a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-read-preference"><em>读取首选项</em></a>。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.status.html#rs.status"><code>rs.status（）</code></a></td>
+<td>返回包含有关副本集状态的信息的文档。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.stepDown.html#rs.stepDown"><code>rs.stepDown（）</code></a></td>
+<td>导致当前的<a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-primary"><em>初选</em></a>成为强制<a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/glossary.html#term-election"><em>选举</em></a>的次要。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://www.mongoing.com/docs/reference/method/rs.syncFrom.html#rs.syncFrom"><code>rs.syncFrom（）</code></a></td>
+<td>设置此副本集成员将同步的成员，覆盖默认同步目标选择逻辑。</td>
+</tr>
+</tbody></table>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:28.930Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E5%A4%8D%E5%88%B6%E9%9B%86"><span class="toc-text">部署复制集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A6%81%E6%B1%82"><span class="toc-text">要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E5%A4%8D%E5%88%B6%E9%9B%86%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">部署复制集的注意事项</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84"><span class="toc-text">架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9E%E9%80%9A%E6%80%A7"><span class="toc-text">连通性</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E6%AD%A5%E9%AA%A4"><span class="toc-text">详细步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85MongoDB"><span class="toc-text">安装MongoDB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">修改配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="toc-text">启动服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E5%89%AF%E6%9C%AC%E9%9B%86"><span class="toc-text">初始化副本集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E5%89%AF%E6%9C%AC%E9%9B%86%E8%8A%82%E7%82%B9"><span class="toc-text">添加副本集节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E5%89%AF%E6%9C%AC%E9%9B%86%E8%8A%82%E7%82%B9"><span class="toc-text">删副本集节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9CSecondary"><span class="toc-text">操作Secondary</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E5%89%AF%E6%9C%AC%E9%9B%86%E5%8A%9F%E8%83%BD"><span class="toc-text">测试副本集功能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E5%89%AF%E6%9C%AC%E9%9B%86%E6%95%B0%E6%8D%AE%E5%A4%8D%E5%88%B6%E5%8A%9F%E8%83%BD"><span class="toc-text">测试副本集数据复制功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E4%BC%98%E5%85%88%E7%BA%A7%E6%9B%B4%E6%94%B9%E5%8A%9F%E8%83%BD"><span class="toc-text">测试优先级更改功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E5%89%AF%E6%9C%AC%E9%9B%86%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB%E5%8A%9F%E8%83%BD"><span class="toc-text">测试副本集故障转移功能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%AF%E6%9C%AC%E9%9B%86%E5%BA%94%E7%94%A8"><span class="toc-text">副本集应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%A4%8D%E5%88%B6%E9%9B%86%E8%8A%82%E7%82%B9%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-text">修改复制集节点的优先级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A6%81%E6%AD%A2%E4%BB%8E%E8%8A%82%E7%82%B9%E5%8D%87%E8%81%8C%E4%B8%BA%E4%B8%BB%E8%8A%82%E7%82%B9"><span class="toc-text">禁止从节点升职为主节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AA%E9%9A%90%E8%97%8F%E8%8A%82%E7%82%B9"><span class="toc-text">配置一个隐藏节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AA%E5%BB%B6%E6%97%B6%E5%A4%8D%E5%88%B6%E8%8A%82%E7%82%B9"><span class="toc-text">配置一个延时复制节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AA%E4%B8%8D%E5%8F%82%E4%B8%8E%E6%8A%95%E7%A5%A8%E7%9A%84%E8%8A%82%E7%82%B9"><span class="toc-text">配置一个不参与投票的节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86%E4%BB%8E%E8%8A%82%E7%82%B9%E8%BD%AC%E6%8D%A2%E4%B8%BA%E6%8A%95%E7%A5%A8%E8%8A%82%E7%82%B9"><span class="toc-text">将从节点转换为投票节点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB"><span class="toc-text">读写分离</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#python%E8%BF%9E%E6%8E%A5mongo%E5%89%AF%E6%9C%AC%E9%9B%86"><span class="toc-text">python连接mongo副本集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E6%8B%9F%E4%B8%BB%E8%8A%82%E7%82%B9%E6%95%85%E9%9A%9C"><span class="toc-text">模拟主节点故障</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E5%89%AF%E6%9C%AC%E9%9B%86"><span class="toc-text">搭建副本集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%AF%E6%9C%AC%E9%9B%86%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">副本集的方法</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Fluentd 简介与安装 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/2_excellent_tools/fluentd/fluentd">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/2_excellent_tools/fluentd/fluentd" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="简介与安装参考链接 [Blog]http:&#x2F;&#x2F;www.cnblogs.com&#x2F;felixzh&#x2F;p&#x2F;8075340.html [Official]https:&#x2F;&#x2F;www.fluentd.org&#x2F;architecture [GitHub] https:&#x2F;&#x2F;github.com&#x2F;fluent&#x2F;fluentd [Doc] http:&#x2F;&#x2F;docs.fluentd.org&#x2F;articles&#x2F;config-f">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fluentd 简介与安装">
+<meta property="og:url" content="http://www.toberoot.com/linux/2_excellent_tools/fluentd/fluentd">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="简介与安装参考链接 [Blog]http:&#x2F;&#x2F;www.cnblogs.com&#x2F;felixzh&#x2F;p&#x2F;8075340.html [Official]https:&#x2F;&#x2F;www.fluentd.org&#x2F;architecture [GitHub] https:&#x2F;&#x2F;github.com&#x2F;fluent&#x2F;fluentd [Doc] http:&#x2F;&#x2F;docs.fluentd.org&#x2F;articles&#x2F;config-f">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.025Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:03.321Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Fluentd 简介与安装</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/2_excellent_tools/fluentd/fluentd.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h1 id="简介与安装" class="article-heading"><a href="#简介与安装" class="headerlink" title=" 简介与安装"></a><img src="pic/00.png" alt="Logo"> 简介与安装<a class="article-anchor" href="#简介与安装" aria-hidden="true"></a></h1><h2 id="参考链接" class="article-heading"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接<a class="article-anchor" href="#参考链接" aria-hidden="true"></a></h2><ul>
+<li>[Blog]<a target="_blank" rel="noopener" href="http://www.cnblogs.com/felixzh/p/8075340.html">http://www.cnblogs.com/felixzh/p/8075340.html</a></li>
+<li>[Official]<a target="_blank" rel="noopener" href="https://www.fluentd.org/architecture">https://www.fluentd.org/architecture</a></li>
+<li>[GitHub]&nbsp;<a target="_blank" rel="noopener" href="https://github.com/fluent/fluentd">https://github.com/fluent/fluentd</a></li>
+<li>[Doc]&nbsp;<a target="_blank" rel="noopener" href="http://docs.fluentd.org/articles/config-file">http://docs.fluentd.org/articles/config-file</a></li>
+<li>[Example]&nbsp;<a target="_blank" rel="noopener" href="https://github.com/fluent/fluentd/tree/master/example">https://github.com/fluent/fluentd/tree/master/example</a></li>
+</ul>
+<h2 id="What？" class="article-heading"><a href="#What？" class="headerlink" title="What？"></a>What？<a class="article-anchor" href="#What？" aria-hidden="true"></a></h2><p><img src="https://www.fluentd.org/images/fluentd-before.png" alt="img"></p>
+<p>Fluentd是一个开源的数据收集器，专为处理数据流设计，有点像 <code>syslogd </code>，但是使用JSON作为数据格式。它采用了插件式的架构，具有高可扩展性高可用性，同时还实现了高可靠的信息转发。</p>
+<p>据分(Y)析(Y)，Fluentd是由Fluent+d得来，d生动形象地标明了它是以一个守护进程的方式运行。官网上将其描述为data collector，在使用上，我们可以把各种不同来源的信息，首先发送给Fluentd，接着Fluentd根据配置通过不同的插件把信息转发到不同的地方，比如文件、SaaS Platform、数据库，甚至可以转发到另一个Fluentd。</p>
+<p>总结一下，数据流殊途，同归与Fluentd，Fluentd做一些诸如过滤、缓存、路由等工作，将其转发到不同的最终接收方。</p>
+<p>用Fluentd处理数据还能保证一定的实时性，其提供种类丰富的客户端lib，很适合处理单位时间emit出log数量巨大的场景。从v10后，Fluentd <strong>不支持</strong> Windows。</p>
+<p>其采用Ruby编写，比较注重性能的地方采用C编写，Ruby的创始人松本老师这样评价Fluentd：</p>
+<blockquote>
+<p>Fluentd proves you can achieve programmer happiness and performance at the same time. A great example of Ruby beyond the Web.</p>
+</blockquote>
+<p>Heroku的联合创始人Adam Wiggins说的挺有道理：</p>
+<blockquote>
+<p>Logs are streams, not files. I love that Fluentd puts this concept front-and-center, with a developer-friendly approach for distributed systems logging.</p>
+</blockquote>
+<p>更多信息请看 <a target="_blank" rel="noopener" href="http://docs.fluentd.org/articles/architecture">这里 </a>。</p>
+<p><img src="https://docs.fluentd.org/images/fluentd-architecture.png" alt="img"></p>
+<h2 id="How？" class="article-heading"><a href="#How？" class="headerlink" title="How？"></a>How？<a class="article-anchor" href="#How？" aria-hidden="true"></a></h2><p>[官方帮助文档]<a target="_blank" rel="noopener" href="https://docs.fluentd.org/v1.0/articles/quickstart">https://docs.fluentd.org/v1.0/articles/quickstart</a></p>
+<h3 id="准备工作" class="article-heading"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作<a class="article-anchor" href="#准备工作" aria-hidden="true"></a></h3><blockquote>
+<ol>
+<li>设置NTP时间同步服务</li>
+<li>增加文件句柄数</li>
+<li>优化网络内核配置参数</li>
+</ol>
+</blockquote>
+<h4 id="1-设置NTP时间同步服务" class="article-heading"><a href="#1-设置NTP时间同步服务" class="headerlink" title="1 设置NTP时间同步服务"></a>1 设置NTP时间同步服务<a class="article-anchor" href="#1-设置NTP时间同步服务" aria-hidden="true"></a></h4><p><code>ntpd </code>，以d结尾，是一个守护进程，全称是Network Time Protocol (NTP) daemon，它通过与一个Internet标准时钟服务器同步来维护系统时钟，同时也可以将本机做为一个时钟服务器对外提供时钟同步服务。更多信息请man一下<code>ntpd</code>。</p>
+<p>安装ntpd是为了防止Fluentd在收集log的时候出现非法的时间戳。</p>
+<p>在Ubuntu下，apt-get即可安装：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">$ sudo apt-get install ntp</span><br></pre></td></tr></tbody></table></figure>
+
+<p>之后查看ntpd是否启动成功（pgrep返回进程号）：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">$ pgrep ntpd</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="2-增加文件句柄数" class="article-heading"><a href="#2-增加文件句柄数" class="headerlink" title="2 增加文件句柄数"></a>2 增加文件句柄数<a class="article-anchor" href="#2-增加文件句柄数" aria-hidden="true"></a></h4><p>增加系统文件描述符的最大数量</p>
+<p>通过ulimit查看当前的文件描述符的最大数量：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">$ ulimit -n</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果是1024，那是远远不够的，将下面4行添加到 <code>/etc/security/limits.conf </code>中，重启机器。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">root soft nofile 65536</span><br><span class="line">root hard nofile 65536</span><br><span class="line">* soft nofile 65536</span><br><span class="line">* hard nofile 65536</span><br></pre></td></tr></tbody></table></figure>
+
+<p>之后用ulimit查看，应该是65536了。</p>
+<h4 id="3-优化网络内核配置参数" class="article-heading"><a href="#3-优化网络内核配置参数" class="headerlink" title="3 优化网络内核配置参数"></a>3 优化网络内核配置参数<a class="article-anchor" href="#3-优化网络内核配置参数" aria-hidden="true"></a></h4><p>(Optional)优化机器内核TCP/IP参数</p>
+<p>如果Fluentd处于一个高负载的运行环境，比如一个机器中运行了多个Fluentd实例，那么最好将下面的参数添加到 <code>/etc/sysctl.conf </code>中：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">net.ipv4.tcp_tw_recycle = 1</span><br><span class="line">net.ipv4.tcp_tw_reuse = 1</span><br><span class="line">net.ipv4.ip_local_port_range = 10240    65535</span><br></pre></td></tr></tbody></table></figure>
+
+<p>然后执行 <code>sysctl -w </code>或者重启机器使之生效。</p>
+<p>这个跟TCP/IP的细节有关系，我没有深究，貌似是为了防止短连接数过多，机器处于 <code>TIME_WAIT </code>状态的TCP连接数过多，开启快速回收与重用。具体请参考 <a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/337115/setting-time-wait-tcp">这里 </a>。</p>
+<h3 id="安装Fluentd" class="article-heading"><a href="#安装Fluentd" class="headerlink" title="安装Fluentd"></a>安装Fluentd<a class="article-anchor" href="#安装Fluentd" aria-hidden="true"></a></h3><blockquote>
+<p>测试环境使用ubuntu</p>
+</blockquote>
+<p>有 <a target="_blank" rel="noopener" href="http://docs.fluentd.org/categories/installation">很多种方式 </a>来安装Fluentd，比如通过Ruby的Gem，以及Ubuntu的deb、OS X的Homebrew。</p>
+<p>采用Ruby的Gem安装比较简单，安装的是基本版的Fluentd，即不自带 <code>/etc/init.d </code>脚本，在运行时内存分配采用的是操作系统默认的方式；</p>
+<p>而采用.rpm/.deb for Linux的方式安装呢，安装的是一个由 <a target="_blank" rel="noopener" href="http://www.treasuredata.com/">Treasure Data, Inc </a>维护的稳定版本Fluentd，又被称为td-agent。为了保持一个良好的灵活性，Fluentd采用Ruby编写，性能要求比较高的地方采用C编写，考虑到一般的用户可能安装操作Ruby有困难，因此该公司维护并提供了一个稳定版本的Fluentd。该版本的Fluentd在内存分配上采用了着重避免内存碎片分配实现 <a target="_blank" rel="noopener" href="http://www.canonware.com/jemalloc/">jemalloc </a>。两个版本的区别可以在这 <a target="_blank" rel="noopener" href="http://docs.fluentd.org/articles/faq#treasure-agenttd-agnt">查看 </a>。</p>
+<p>那么我们到底选用哪种方式呢，根据官方的文档。td-agent强调new features的稳定性，如果希望自己控制Fluentd的features，自己手动去更新，采用gem的方式安装。如果是第一次使用Fluentd或者在大规模的生产环境使用，推荐安装td-agent，每2-3个月，td-agent就会发布一个新的版本。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@redis-01:~# lsb_release  -a</span><br><span class="line">No LSB modules are available.</span><br><span class="line">Distributor ID:	Ubuntu</span><br><span class="line">Description:	Ubuntu 14.04.3 LTS</span><br><span class="line">Release:	14.04</span><br><span class="line">Codename:	trusty</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看到ubuntu的版本为trusty的，因此选择以下命令窒执行：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@redis-01:~# curl -L https://toolbelt.treasuredata.com/sh/install-ubuntu-trusty-td-agent3.sh | sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/01.png" alt="1526457281102"></p>
+<p>查询安装路径</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@redis-01:~# dpkg -L td-agent</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/07" alt="1526458848402"></p>
+<p><img src="pic/08.png" alt="1526458879421"></p>
+<h3 id="启动Fluentd的守护进程" class="article-heading"><a href="#启动Fluentd的守护进程" class="headerlink" title="启动Fluentd的守护进程"></a>启动Fluentd的守护进程<a class="article-anchor" href="#启动Fluentd的守护进程" aria-hidden="true"></a></h3><p>因为我们安装的是td-agent，自带 <code>/etc/init.d/td-agent </code>脚本，通过该脚本启动Fluentd服务。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">$ /etc/init.d/td-agent restart</span><br><span class="line">* Restarting td-agent td-agent</span><br><span class="line">$ /etc/init.d/td-agent status</span><br><span class="line">* ruby is running</span><br></pre></td></tr></tbody></table></figure>
+
+<p>同时还支持以下命令：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">$ /etc/init.d/td-agent start</span><br><span class="line">$ /etc/init.d/td-agent stop</span><br><span class="line">$ /etc/init.d/td-agent restart</span><br><span class="line">$ /etc/init.d/td-agent status</span><br></pre></td></tr></tbody></table></figure>
+
+<p>配置文件在： <code>/etc/td-agent/td-agent.conf</code></p>
+<p>测试明细</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@redis-01:/opt/td-agent# ll /etc/init.d/td-agent</span><br><span class="line">-rwxr-xr-x 1 root root 6899 May 16 15:54 /etc/init.d/td-agent*</span><br><span class="line">root@redis-01:/opt/td-agent# /etc/init.d/td-agent status</span><br><span class="line"> * td-agent is running</span><br><span class="line">root@redis-01:/opt/td-agent# ll /etc/td-agent/td-agent.conf</span><br><span class="line">-rw-r--r-- 1 root root 2381 May 16 15:54 /etc/td-agent/td-agent.conf</span><br><span class="line">root@redis-01:/opt/td-agent# ps -ef|grep td-agent</span><br><span class="line">td-agent   1545      1  0 15:54 ?        00:00:01 /opt/td-agent/embedded/bin/ruby /usr/sbin/td-agent --log /var/logtd-agent/td-agent.log --daemon /var/run/td-agent/td-agent.pid</span><br><span class="line">td-agent   1552   1545  0 15:54 ?        00:00:02 /opt/td-agent/embedded/bin/ruby -Eascii-8bit:ascii-8bit /usr/sbintd-agent --log /var/log/td-agent/td-agent.log --daemon /var/run/td-agent/td-agent.pid --under-supervisor</span><br><span class="line">root       1654   1324  0 16:26 pts/0    00:00:00 grep --color=auto td-agent</span><br></pre></td></tr></tbody></table></figure>
+
+<p>安装好后已经启动该服务了td-agentd</p>
+<table>
+<thead>
+<tr>
+<th>服务fluentd</th>
+<th>路径</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>配置文件</td>
+<td>/etc/td-agent/td-agent.cof</td>
+</tr>
+<tr>
+<td>数据文件</td>
+<td>/var/log/td-agent/td-agent.log</td>
+</tr>
+<tr>
+<td>服务启动脚本ruby</td>
+<td>/usr/sbin/td-agent</td>
+</tr>
+<tr>
+<td>守护进程名</td>
+<td></td>
+</tr>
+<tr>
+<td>监听端口</td>
+<td>8888</td>
+</tr>
+<tr>
+<td>日志文件</td>
+<td>/var/logtd-agent/td-agent.log</td>
+</tr>
+<tr>
+<td>进程文件</td>
+<td>/var/run/td-agent/td-agent.pid</td>
+</tr>
+</tbody></table>
+<p>默认在配置文件中td-agent在8888端口监听，接收来自HTTP的log信息，并把其路由到stdout（ <code>/var/log/td-agent/td-agent.log </code>）,可以用curl命令测试：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">$ curl -X POST -d 'json={"json":"message"}' http://localhost:8888/debug.test</span><br></pre></td></tr></tbody></table></figure>
+
+<p>之后可以打开 <code>/var/log/td-agent/td-agent.log查看。</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@redis-01:/opt/td-agent# curl -X POST -d 'json={"json":"message"}' http://localhost:8888/debug.test</span><br><span class="line"></span><br><span class="line">root@redis-01:/opt/td-agent# tail -f /var/log/td-agent/td-agent.log</span><br><span class="line">2018-05-16 15:54:11 +0800 [warn]: #0 [output_td] secondary type should be same with primary one primary="Fluent::Plugin::TreasureDataLogOutput" secondary="Fluent::Plugin::FileOutput"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: adding match pattern="debug.**" type="stdout"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: adding source type="forward"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: adding source type="http"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: adding source type="debug_agent"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: #0 starting fluentd worker pid=1552 ppid=1545 worker=0</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: #0 [input_debug_agent] listening dRuby uri="druby://127.0.0.1:24230" object="Fluent::Engine"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: #0 [input_forward] listening port port=24224 bind="0.0.0.0"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: #0 fluentd worker is now running worker=0</span><br><span class="line">2018-05-16 16:30:11.328487488 +0800 debug.test: {"json":"message"}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@redis-01:/opt/td-agent# curl -X POST -d 'json={"name":"booboo","home":"shanghai"}' http://localhost:8888/debug.test</span><br><span class="line">root@redis-01:/opt/td-agent# tail -f /var/log/td-agent/td-agent.log</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: adding match pattern="debug.**" type="stdout"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: adding source type="forward"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: adding source type="http"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: adding source type="debug_agent"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: #0 starting fluentd worker pid=1552 ppid=1545 worker=0</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: #0 [input_debug_agent] listening dRuby uri="druby://127.0.0.1:24230" object="Fluent::Engine"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: #0 [input_forward] listening port port=24224 bind="0.0.0.0"</span><br><span class="line">2018-05-16 15:54:11 +0800 [info]: #0 fluentd worker is now running worker=0</span><br><span class="line">2018-05-16 16:30:11.328487488 +0800 debug.test: {"json":"message"}</span><br><span class="line">2018-05-16 16:32:06.244858932 +0800 debug.test: {"name":"booboo","home":"shanghai"}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Use-Cases" class="article-heading"><a href="#Use-Cases" class="headerlink" title="Use Cases"></a>Use Cases<a class="article-anchor" href="#Use-Cases" aria-hidden="true"></a></h2><blockquote>
+<ul>
+<li>此处选择python应用作为使用场景，通过fluentd将日志保存到本地标准输出</li>
+<li>[配置文件语法] <a target="_blank" rel="noopener" href="https://www.ixdba.net/archives/2018/01/1116.htm">https://www.ixdba.net/archives/2018/01/1116.htm</a></li>
+</ul>
+</blockquote>
+<ol>
+<li><p>修改配置文件<code>vim /etc/td-agent/td-agent.conf</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">&lt;source&gt;</span><br><span class="line">@type forward</span><br><span class="line">port 24224</span><br><span class="line">&lt;/source&gt;</span><br><span class="line">&lt;match fluentd.test.**&gt;</span><br><span class="line">@type stdout</span><br><span class="line">&lt;/match&gt;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>重启服务</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> /etc/init.d/td-agent restart</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>安装fluent-logger-python</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">apt-get install python-pip python-dev build-essential</span><br><span class="line">pip install fluent-logger</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>python程序</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">test.py</span></span><br><span class="line">from fluent import sender</span><br><span class="line">from fluent import event</span><br><span class="line">sender.setup('fluentd.test', host='localhost', port=24224)</span><br><span class="line">event.Event('follow', {</span><br><span class="line">  'from': 'userA',</span><br><span class="line">  'to':   'userB'</span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>运行python程序，查看记录输出</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">python test.py</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">tail</span> -n 1 /var/log/td-agent/td-agent.log</span></span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<p>明细</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@redis-01:~# vim /etc/td-agent/td-agent.conf</span><br><span class="line">root@redis-01:~# /etc/init.d/td-agent restart</span><br><span class="line">Restarting td-agent:  * td-agent</span><br><span class="line">root@redis-01:~# /etc/init.d/td-agent status</span><br><span class="line"> * td-agent is running</span><br><span class="line">root@redis-01:~# apt-get install python-pip python-dev build-essential</span><br><span class="line">Reading package lists... Done</span><br><span class="line">Building dependency tree</span><br><span class="line">Reading state information... Done</span><br><span class="line">root@redis-01:~# pip install fluent-logger</span><br><span class="line">root@redis-01:~# vim test.py</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">test.py</span></span><br><span class="line">from fluent import sender</span><br><span class="line">from fluent import event</span><br><span class="line">sender.setup('fluentd.test', host='localhost', port=24224)</span><br><span class="line">event.Event('follow', {</span><br><span class="line">  'from': 'userA',</span><br><span class="line">  'to':   'userB'</span><br><span class="line">})</span><br><span class="line"></span><br><span class="line">root@redis-01:~# python test.py</span><br><span class="line">root@redis-01:~# tail -f /var/log/td-agent/td-agent.log</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: adding match pattern="debug.**" type="stdout"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: adding match pattern="fluentd.test.**" type="stdout"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: adding source type="forward"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: adding source type="http"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: adding source type="debug_agent"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: #0 starting fluentd worker pid=10505 ppid=10500 worker=0</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: #0 [input_debug_agent] listening dRuby uri="druby://127.0.0.1:24230" object="Fluent::Engine"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: #0 listening port port=24224 bind="0.0.0.0"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: #0 fluentd worker is now running worker=0</span><br><span class="line">2018-05-16 17:09:02.000000000 +0800 fluentd.test.follow: {"to":"userB","from":"userA"}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@redis-01:~# python test.py</span><br><span class="line">root@redis-01:~# tail -f /var/log/td-agent/td-agent.log</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: adding match pattern="fluentd.test.**" type="stdout"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: adding source type="forward"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: adding source type="http"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: adding source type="debug_agent"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: #0 starting fluentd worker pid=10505 ppid=10500 worker=0</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: #0 [input_debug_agent] listening dRuby uri="druby://127.0.0.1:24230" object="Fluent::Engine"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: #0 listening port port=24224 bind="0.0.0.0"</span><br><span class="line">2018-05-16 17:08:35 +0800 [info]: #0 fluentd worker is now running worker=0</span><br><span class="line">2018-05-16 17:09:02.000000000 +0800 fluentd.test.follow: {"to":"userB","from":"userA"}</span><br><span class="line">2018-05-16 17:11:32 +0800 [warn]: #0 no patterns matched tag="fluentd.booboo.zyadmin"</span><br><span class="line">^C</span><br><span class="line">root@redis-01:~# cat test.py</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">test.py</span></span><br><span class="line">from fluent import sender</span><br><span class="line">from fluent import event</span><br><span class="line">sender.setup('fluentd.booboo', host='localhost', port=24224)</span><br><span class="line">event.Event('zyadmin', {</span><br><span class="line">  'from': 'userA',</span><br><span class="line">  'to':   'userB'</span><br><span class="line">})</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/09.png" alt="1526461417615"></p>
+<h2 id="高可用配置" class="article-heading"><a href="#高可用配置" class="headerlink" title="高可用配置"></a>高可用配置<a class="article-anchor" href="#高可用配置" aria-hidden="true"></a></h2><blockquote>
+<p>本实验实现：</p>
+<ol>
+<li>通过http搜集日志后转发给日志整合服务器，标准输出至/var/log/td-agent/td-agent.log</li>
+<li>自动故障转移：日志整合服务器A挂了能自动建日志转发给B</li>
+<li>日志代理服务器是单点</li>
+</ol>
+</blockquote>
+<h3 id="架构规划" class="article-heading"><a href="#架构规划" class="headerlink" title="架构规划"></a>架构规划<a class="article-anchor" href="#架构规划" aria-hidden="true"></a></h3><p><img src="pic/06.png"></p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>ip地址</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>日志代理服务器 log forwarders</td>
+<td>192.168.1.5</td>
+<td>搜集各种日志，可以有多台</td>
+</tr>
+<tr>
+<td>日志整合服务器A log aggregators</td>
+<td>192.168.1.6</td>
+<td>汇总搜集来的日志并输出</td>
+</tr>
+<tr>
+<td>日志整合服务器B log aggregators</td>
+<td>192.168.1.7</td>
+<td>backup</td>
+</tr>
+</tbody></table>
+<h3 id="搭建明细" class="article-heading"><a href="#搭建明细" class="headerlink" title="搭建明细"></a>搭建明细<a class="article-anchor" href="#搭建明细" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装是一样的，重点看配置</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">日志代理服务器192.168.1.5</span></span><br><span class="line">root@redis-01:~# vim /etc/td-agent/td-agent.conf</span><br><span class="line">&lt;source&gt;</span><br><span class="line">  @type forward</span><br><span class="line">  port 24224</span><br><span class="line">&lt;/source&gt;</span><br><span class="line"></span><br><span class="line">&lt;match boobooha.**&gt;</span><br><span class="line">    @type forward</span><br><span class="line">    &lt;server&gt;</span><br><span class="line">    host 192.168.1.6</span><br><span class="line">    port 24224</span><br><span class="line">    &lt;/server&gt;</span><br><span class="line"></span><br><span class="line">    &lt;server&gt;</span><br><span class="line">    host 192.168.1.7</span><br><span class="line">    port 24224</span><br><span class="line">    standby</span><br><span class="line">    &lt;/server&gt;</span><br><span class="line"></span><br><span class="line">  &lt;secondary&gt;</span><br><span class="line">    @type file</span><br><span class="line">    path /var/log/td-agent/forward-failed</span><br><span class="line">  &lt;/secondary&gt;</span><br><span class="line"></span><br><span class="line">    &lt;buffer&gt;</span><br><span class="line">    flush_interval 60s</span><br><span class="line">    &lt;/buffer&gt;</span><br><span class="line">&lt;/match&gt;</span><br><span class="line">root@redis-01:~# service td-agent restart</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">日志整合服务器 192.168.1.6</span></span><br><span class="line">root@redis-02:~# vim /etc/td-agent/td-agent.conf</span><br><span class="line">&lt;source&gt;</span><br><span class="line">  @type forward</span><br><span class="line">  port 24224</span><br><span class="line">&lt;/source&gt;</span><br><span class="line">&lt;match boobooha.**&gt;</span><br><span class="line">  @type stdout</span><br><span class="line">&lt;/match&gt;</span><br><span class="line">root@redis-01:~# service td-agent restart</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">日志整合服务器 192.168.1.7</span></span><br><span class="line">root@redis-03:~# vim /etc/td-agent/td-agent.conf</span><br><span class="line">&lt;source&gt;</span><br><span class="line">  @type forward</span><br><span class="line">  port 24224</span><br><span class="line">&lt;/source&gt;</span><br><span class="line">&lt;match boobooha.**&gt;</span><br><span class="line">  @type stdout</span><br><span class="line">&lt;/match&gt;</span><br><span class="line">root@redis-01:~# service td-agent restart</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">日志代理服务器192.168.1.5</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 开始搜集日志</span></span></span><br><span class="line">root@redis-01:~# curl http://localhost:8888/boobooha -d 'json={"name":"这是一个ha的测试信息"}'</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 查看日志信息可以看到两台转发服务器</span></span></span><br><span class="line">root@redis-01:~# tail -f /var/log/td-agent/td-agent.log</span><br><span class="line">2018-05-21 10:13:10 +0800 [info]: adding match pattern="boobooha.**" type="forward"</span><br><span class="line">2018-05-21 10:13:10 +0800 [warn]: #0 secondary type should be same with primary one primary="Fluent::Plugin::ForwardOutput" secondary="Fluent::Plugin::FileOutput"</span><br><span class="line">2018-05-21 10:13:10 +0800 [info]: #0 adding forwarding server '192.168.1.6:24224' host="192.168.1.6" port=24224 weight=60 plugin_id="object:3fbeebf53c48"</span><br><span class="line">2018-05-21 10:13:10 +0800 [info]: #0 adding forwarding server '192.168.1.7:24224' host="192.168.1.7" port=24224 weight=60 plugin_id="object:3fbeebf53c48"</span><br><span class="line">2018-05-21 10:13:10 +0800 [info]: adding source type="forward"</span><br><span class="line">2018-05-21 10:13:10 +0800 [info]: adding source type="http"</span><br><span class="line">2018-05-21 10:13:10 +0800 [info]: #0 starting fluentd worker pid=2078 ppid=2073 worker=0</span><br><span class="line">2018-05-21 10:13:10 +0800 [info]: #0 delayed_commit_timeout is overwritten by ack_response_timeout</span><br><span class="line">2018-05-21 10:13:10 +0800 [info]: #0 listening port port=24224 bind="0.0.0.0"</span><br><span class="line">2018-05-21 10:13:10 +0800 [info]: #0 fluentd worker is now running worker=0</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">日志整合服务器 192.168.1.6 查看标准输出的搜集的日志信息</span></span><br><span class="line">root@redis-02:~# tail -f /var/log/td-agent/td-agent.log</span><br><span class="line">2018-05-21 10:10:40 +0800 [info]: gem 'fluent-plugin-s3' version '1.1.0'</span><br><span class="line">2018-05-21 10:10:40 +0800 [info]: gem 'fluent-plugin-td' version '1.0.0'</span><br><span class="line">2018-05-21 10:10:40 +0800 [info]: gem 'fluent-plugin-td-monitoring' version '0.2.3'</span><br><span class="line">2018-05-21 10:10:40 +0800 [info]: gem 'fluent-plugin-webhdfs' version '1.2.2'</span><br><span class="line">2018-05-21 10:10:40 +0800 [info]: gem 'fluentd' version '1.0.2'</span><br><span class="line">2018-05-21 10:10:40 +0800 [info]: adding match pattern="boobooha.**" type="stdout"</span><br><span class="line">2018-05-21 10:10:40 +0800 [info]: adding source type="forward"</span><br><span class="line">2018-05-21 10:10:40 +0800 [info]: #0 starting fluentd worker pid=2263 ppid=2258 worker=0</span><br><span class="line">2018-05-21 10:10:40 +0800 [info]: #0 listening port port=24224 bind="0.0.0.0"</span><br><span class="line">2018-05-21 10:10:40 +0800 [info]: #0 fluentd worker is now running worker=0</span><br><span class="line">2018-05-21 10:16:54.646801298 +0800 boobooha: {"name":"这是一个ha的测试信息"}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>以上实验能够看到搜集的日志成功的转发到了<code>192.168.1.6</code>这台日志整合服务器上，接下来我们测试如果这台日志整合服务器A挂了后，日志搜集服务器是否会将日志转发给<code>192.168.1.7</code>上。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">手动停止192.168.1.6上的td-agent服务</span></span><br><span class="line">root@redis-02:~# service td-agent stop</span><br><span class="line">Stopping td-agent:  * td-agent</span><br><span class="line">root@redis-02:~# service td-agent status</span><br><span class="line"> * td-agent is not running</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">192.168.1.5</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 查看td-agent日志</span></span></span><br><span class="line">2018-05-21 10:59:04 +0800 [warn]: #0 detached forwarding server '' host="192.168.1.6" port=24224 phi=16.06797998486109 phi_threshold=16</span><br><span class="line">2018-05-21 10:59:04 +0800 [warn]: #0 using standby node 192.168.1.7:24224 weight=60</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 搜集日志信息</span></span></span><br><span class="line">root@redis-01:~# curl http://localhost:8888/boobooha -d 'json={"name":"这是一个ha的测试信息","info":"测试HA"}'</span><br><span class="line">root@redis-01:~# date</span><br><span class="line">Mon May 21 10:59:05 CST 2018</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">192，168.1.7上观察是否成功获取到日志信息</span></span><br><span class="line">root@redis-03:~# tail -f /var/log/td-agent/td-agent.log</span><br><span class="line">2018-05-21 10:10:33 +0800 [info]: gem 'fluent-plugin-s3' version '1.1.0'</span><br><span class="line">2018-05-21 10:10:33 +0800 [info]: gem 'fluent-plugin-td' version '1.0.0'</span><br><span class="line">2018-05-21 10:10:33 +0800 [info]: gem 'fluent-plugin-td-monitoring' version '0.2.3'</span><br><span class="line">2018-05-21 10:10:33 +0800 [info]: gem 'fluent-plugin-webhdfs' version '1.2.2'</span><br><span class="line">2018-05-21 10:10:33 +0800 [info]: gem 'fluentd' version '1.0.2'</span><br><span class="line">2018-05-21 10:10:33 +0800 [info]: adding match pattern="boobooha.**" type="stdout"</span><br><span class="line">2018-05-21 10:10:33 +0800 [info]: adding source type="forward"</span><br><span class="line">2018-05-21 10:10:33 +0800 [info]: #0 starting fluentd worker pid=2199 ppid=2194 worker=0</span><br><span class="line">2018-05-21 10:10:33 +0800 [info]: #0 listening port port=24224 bind="0.0.0.0"</span><br><span class="line">2018-05-21 10:10:33 +0800 [info]: #0 fluentd worker is now running worker=0</span><br><span class="line">2018-05-21 10:59:05.424160144 +0800 boobooha: {"name":"这是一个ha的测试信息","info":"测试HA"}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以看到，实现了日志整合服务器的自动故障转移。</p>
+<blockquote>
+<p>测试：重新启动日志整合服务器A，新搜集的日志将被转发给哪台整合服务器？</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@redis-02:~# service td-agent start</span><br><span class="line">Starting td-agent:  * td-agent</span><br><span class="line"></span><br><span class="line">root@redis-01:~# tail -n 1 /var/log/td-agent/td-agent.log</span><br><span class="line">2018-05-21 11:02:48 +0800 [warn]: #0 recovered forwarding server '' host="192.168.1.6" port=24224</span><br><span class="line">root@redis-01:~# curl http://localhost:8888/boobooha -d 'json={"name":"重新启动A"}'</span><br><span class="line"></span><br><span class="line">root@redis-02:~# tail -n 1 /var/log/td-agent/td-agent.log</span><br><span class="line">2018-05-21 11:03:37.759968176 +0800 boobooha: {"name":"重新启动A"}</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">可以看到重启A后，新搜集的日志将会转发给A，A即配置文件中作为主的服务器。</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="监控" class="article-heading"><a href="#监控" class="headerlink" title="监控"></a>监控<a class="article-anchor" href="#监控" aria-hidden="true"></a></h2><h3 id="进程" class="article-heading"><a href="#进程" class="headerlink" title="进程"></a>进程<a class="article-anchor" href="#进程" aria-hidden="true"></a></h3><p>存在两个ruby进程，具体如下所示：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">root@redis-03:~# ps w -C ruby -C td-agent --no-heading</span><br><span class="line">  2496 ?        Sl     0:00 /opt/td-agent/embedded/bin/ruby /usr/sbin/td-agent --log /var/log/td-agent/td-agent.log --daemon /var/run/td-agent/td-agent.pid</span><br><span class="line">  2501 ?        Sl     0:00 /opt/td-agent/embedded/bin/ruby -Eascii-8bit:ascii-8bit /usr/sbin/td-agent --log /var/log/td-agent/td-agent.log --daemon /var/run/td-agent/td-agent.pid</span><br><span class="line"></span><br><span class="line">  root@redis-03:~# ps -ef|grep td-agen[t]</span><br><span class="line">td-agent   2496      1  0 11:45 ?        00:00:00 /opt/td-agent/embedded/bin/ruby /usr/sbin/td-agent --log /var/log/td-agent/td-agent.log --daemon /var/run/td-agent/td-agent.pid</span><br><span class="line">td-agent   2501   2496  0 11:45 ?        00:00:00 /opt/td-agent/embedded/bin/ruby -Eascii-8bit:ascii-8bit /usr/sbin/td-agent --log /var/log/td-agent/td-agent.log --daemon /var/run/td-agent/td-agent.pid --under-supervisor</span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以看到这两个进程是父子关系。</p>
+<h3 id="监听端口" class="article-heading"><a href="#监听端口" class="headerlink" title="监听端口"></a>监听端口<a class="article-anchor" href="#监听端口" aria-hidden="true"></a></h3><p>Fluentd opens several ports according to the configuration file. We recommend checking the availability of these ports. The default port settings are shown below:</p>
+<p><code>td-agent</code>服务开启的端口由配置文件决定，默认的监听端口如下：</p>
+<ul>
+<li>TCP 0.0.0.0 9880 (HTTP by default)</li>
+<li>TCP 0.0.0.0 24224 (Forward by default)</li>
+</ul>
+<h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><ul>
+<li>基本安装</li>
+<li>搭建高可用架构</li>
+<li>http和forward输入</li>
+<li>stdout/file/forward输出</li>
+<li>进程和端口监控</li>
+</ul>
+<h3 id="" class="article-heading"><a href="#" class="headerlink" title=""></a><a class="article-anchor" href="#" aria-hidden="true"></a></h3></body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:03.321Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%AE%89%E8%A3%85"><span class="toc-text"> 简介与安装</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-text">参考链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#What%EF%BC%9F"><span class="toc-text">What？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How%EF%BC%9F"><span class="toc-text">How？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-text">准备工作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E8%AE%BE%E7%BD%AENTP%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5%E6%9C%8D%E5%8A%A1"><span class="toc-text">1 设置NTP时间同步服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%A2%9E%E5%8A%A0%E6%96%87%E4%BB%B6%E5%8F%A5%E6%9F%84%E6%95%B0"><span class="toc-text">2 增加文件句柄数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%BC%98%E5%8C%96%E7%BD%91%E7%BB%9C%E5%86%85%E6%A0%B8%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="toc-text">3 优化网络内核配置参数</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Fluentd"><span class="toc-text">安装Fluentd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8Fluentd%E7%9A%84%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B"><span class="toc-text">启动Fluentd的守护进程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Use-Cases"><span class="toc-text">Use Cases</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE"><span class="toc-text">高可用配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E8%A7%84%E5%88%92"><span class="toc-text">架构规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E6%98%8E%E7%BB%86"><span class="toc-text">搭建明细</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7"><span class="toc-text">监控</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B"><span class="toc-text">进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%91%E5%90%AC%E7%AB%AF%E5%8F%A3"><span class="toc-text">监听端口</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text"></span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

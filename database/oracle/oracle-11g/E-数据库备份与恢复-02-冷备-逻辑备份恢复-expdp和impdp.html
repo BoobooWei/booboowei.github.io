@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>冷备和恢复工具-expdp和impdp | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-02-%E5%86%B7%E5%A4%87-%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-expdp%E5%92%8Cimpdp">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-02-%E5%86%B7%E5%A4%87-%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-expdp%E5%92%8Cimpdp" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="逻辑备份和恢复  2019.11.14 BoobooWei     冷备和恢复工具-expdp和impdp 数据泵官方介绍 数据泵组件 数据泵如何移动数据？ 数据泵导出和导入操作的必需角色   expdp导出步骤 1 创建逻辑目录 2 expdp的五种导出方式 第一种：full&#x3D;y全量导出数据库 第二种：schemas按用户导出 第三种：tablespace按表空间导出 第四种：tables导出表">
+<meta property="og:type" content="website">
+<meta property="og:title" content="冷备和恢复工具-expdp和impdp">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-02-%E5%86%B7%E5%A4%87-%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-expdp%E5%92%8Cimpdp">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="逻辑备份和恢复  2019.11.14 BoobooWei     冷备和恢复工具-expdp和impdp 数据泵官方介绍 数据泵组件 数据泵如何移动数据？ 数据泵导出和导入操作的必需角色   expdp导出步骤 1 创建逻辑目录 2 expdp的五种导出方式 第一种：full&#x3D;y全量导出数据库 第二种：schemas按用户导出 第三种：tablespace按表空间导出 第四种：tables导出表">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.778Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:49.445Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">冷备和恢复工具-expdp和impdp</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/E-数据库备份与恢复-02-冷备-逻辑备份恢复-expdp和impdp.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><p><em>逻辑备份和恢复</em></p>
+<blockquote>
+<p>2019.11.14 BoobooWei</p>
+</blockquote>
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#%E5%86%B7%E5%A4%87%E5%92%8C%E6%81%A2%E5%A4%8D%E5%B7%A5%E5%85%B7-expdp%E5%92%8Cimpdp">冷备和恢复工具-expdp和impdp</a><ul>
+<li><a href="#%E6%95%B0%E6%8D%AE%E6%B3%B5%E5%AE%98%E6%96%B9%E4%BB%8B%E7%BB%8D">数据泵官方介绍</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E6%B3%B5%E7%BB%84%E4%BB%B6">数据泵组件</a><ul>
+<li><a href="#%E6%95%B0%E6%8D%AE%E6%B3%B5%E5%A6%82%E4%BD%95%E7%A7%BB%E5%8A%A8%E6%95%B0%E6%8D%AE">数据泵如何移动数据？</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E6%B3%B5%E5%AF%BC%E5%87%BA%E5%92%8C%E5%AF%BC%E5%85%A5%E6%93%8D%E4%BD%9C%E7%9A%84%E5%BF%85%E9%9C%80%E8%A7%92%E8%89%B2">数据泵导出和导入操作的必需角色</a></li>
+</ul>
+</li>
+<li><a href="#expdp%E5%AF%BC%E5%87%BA%E6%AD%A5%E9%AA%A4">expdp导出步骤</a><ul>
+<li><a href="#1-%E5%88%9B%E5%BB%BA%E9%80%BB%E8%BE%91%E7%9B%AE%E5%BD%95">1 创建逻辑目录</a></li>
+<li><a href="#2-expdp%E7%9A%84%E4%BA%94%E7%A7%8D%E5%AF%BC%E5%87%BA%E6%96%B9%E5%BC%8F">2 <code>expdp</code>的五种导出方式</a><ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E7%A7%8Dfully%E5%85%A8%E9%87%8F%E5%AF%BC%E5%87%BA%E6%95%B0%E6%8D%AE%E5%BA%93">第一种：<code>full=y</code>全量导出数据库</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E7%A7%8Dschemas%E6%8C%89%E7%94%A8%E6%88%B7%E5%AF%BC%E5%87%BA">第二种：<code>schemas</code>按用户导出</a></li>
+<li><a href="#%E7%AC%AC%E4%B8%89%E7%A7%8Dtablespace%E6%8C%89%E8%A1%A8%E7%A9%BA%E9%97%B4%E5%AF%BC%E5%87%BA">第三种：<code>tablespace</code>按表空间导出</a></li>
+<li><a href="#%E7%AC%AC%E5%9B%9B%E7%A7%8Dtables%E5%AF%BC%E5%87%BA%E8%A1%A8">第四种：<code>tables</code>导出表</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%94%E7%A7%8Dquery%E6%8C%89%E6%9F%A5%E8%AF%A2%E6%9D%A1%E4%BB%B6%E5%AF%BC">第五种：<code>query</code>按查询条件导</a></li>
+</ul>
+</li>
+<li><a href="#3-impdp%E5%AF%BC%E5%85%A5%E6%AD%A5%E9%AA%A4">3 <code>impdp</code>导入步骤</a><ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E7%A7%8Dfully%E5%85%A8%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E5%BA%93">第一种：<code>full=y</code>全量导入数据库</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E7%A7%8Dschemas%E6%8C%89%E7%94%A8%E6%88%B7%E5%AF%BC%E5%87%BA%E5%90%8E%E5%90%8C%E5%90%8D%E7%94%A8%E6%88%B7%E5%AF%BC%E5%85%A5">第二种：<code>schemas</code>按用户导出后同名用户导入</a></li>
+<li><a href="#%E7%AC%AC%E4%B8%89%E7%A7%8Dtablespaces%E5%AF%BC%E5%85%A5%E8%A1%A8%E7%A9%BA%E9%97%B4">第三种：<code>tablespaces</code>导入表空间</a></li>
+<li><a href="#%E7%AC%AC%E5%9B%9B%E7%A7%8Dtables%E5%AF%BC%E5%85%A5%E8%A1%A8">第四种：<code>tables</code>导入表</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%94%E7%A7%8D%E8%BF%BD%E5%8A%A0%E6%95%B0%E6%8D%AE">第五种：追加数据</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E8%AF%BE%E5%A0%82%E5%AE%9E%E8%B7%B5">课堂实践</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B51-%E5%88%9B%E5%BB%BA%E9%80%BB%E8%BE%91%E7%9B%AE%E5%BD%95%E7%94%A8%E4%BA%8E%E5%AD%98%E6%94%BE%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD">实践1-创建逻辑目录用于存放逻辑备份</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B52-%E8%A7%A3%E5%86%B3%E6%8A%A5%E9%94%99-ora-39213">实践2-解决报错 ORA-39213</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B53-%E5%85%A8%E5%BA%93%E5%A4%87%E4%BB%BD%E5%AF%BC%E5%87%BA">实践3-全库备份导出</a></li>
+</ul>
+</li>
+<li><a href="#%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94">逻辑备份恢复工具对比</a><ul>
+<li><a href="#%E6%88%91%E7%9A%84%E7%90%86%E8%A7%A3">我的理解</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h2 id="数据泵官方介绍" class="article-heading"><a href="#数据泵官方介绍" class="headerlink" title="数据泵官方介绍"></a>数据泵官方介绍<a class="article-anchor" href="#数据泵官方介绍" aria-hidden="true"></a></h2><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/sutil/oracle-data-pump.html#GUID-501A9908-BCC5-434C-8853-9A6096766B5A">Oracle Data Pump</a></p>
+<p>本部分讨论的主题包括数据泵导出，数据泵导入，旧模式，性能和数据泵API <code>DBMS_DATAPUMP</code>。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/sutil/oracle-data-pump-overview.html#GUID-17FAE261-0972-4220-A2E4-44D479F519D4">Oracle数据泵概述</a><br>Oracle数据泵技术可将数据和元数据从一个数据库高速移动到另一个数据库。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/sutil/oracle-data-pump-export-utility.html#GUID-5F7380CE-A619-4042-8D13-1F7DDE429991">Oracle数据泵导出</a><br>Oracle数据泵导出实用程序用于将数据和元数据卸载到一组操作系统文件中，这些文件称为转储文件集。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/sutil/datapump-import-utility.html#GUID-D11E340E-14C6-43B8-AB09-6335F0C1F71B">Oracle数据泵导入</a><br>使用Oracle数据泵导入，您可以将导出转储文件集加载到目标数据库中，或直接从源数据库中加载目标数据库，而无需插入文件。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/sutil/oracle-data-pump-legacy-mode.html#GUID-B4A887AD-1E1D-4305-A6D8-DC16D3B28BA9">Oracle数据泵旧模式</a><br>在Oracle数据泵旧模式下，您可以在Oracle数据泵导出和数据泵导入命令行上使用原始的导出和导入参数。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/sutil/oracle-data-pump-performance-tips.html#GUID-B41F187E-3613-48F8-B47E-CD9BC918424B">Oracle数据泵性能</a><br>了解Oracle数据泵导出和导入如何比原始的导出和导入更好，以及如何提高导出和导入操作的性能。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/19/sutil/using-oracle_datapump-api.html#GUID-EAD7AE4B-778A-4369-9842-68E026409045">Oracle Data Pump API</a><br>您可以使用Oracle Data Pump PL / SQL API自动执行数据移动操作<code>DBMS_DATAPUMP</code>。</li>
+</ul>
+<h2 id="数据泵组件" class="article-heading"><a href="#数据泵组件" class="headerlink" title="数据泵组件"></a>数据泵组件<a class="article-anchor" href="#数据泵组件" aria-hidden="true"></a></h2><p>Oracle数据泵由三个不同的部分组成：</p>
+<ul>
+<li>命令行客户端，<code>expdp</code>以及<code>impdp</code></li>
+<li>该<code>DBMS_DATAPUMP</code>PL / SQL程序包（也称为数据泵API）</li>
+<li>该<code>DBMS_METADATA</code>PL / SQL程序包（也称为元数据API）</li>
+</ul>
+<p>数据泵客户端<code>expdp</code>和分别<code>impdp</code>调用数据泵导出实用程序和数据泵导入实用程序。</p>
+<p>在<code>expdp</code>和<code>impdp</code>客户机使用规定的程序<code>DBMS_DATAPUMP</code>PL / SQL包来执行导出和导入命令，使用在命令行中输入的参数。这些参数支持导出和导入完整数据库或数据库子集的数据和元数据。</p>
+<p>移动元数据时，数据泵将使用<code>DBMS_METADATA</code>PL / SQL软件包提供的功能。该<code>DBMS_METADATA</code>包提供了用于提取，操作和重新创建字典元数据的集中式工具。</p>
+<p>在<code>DBMS_DATAPUMP</code>和<code>DBMS_METADATA</code>PL / SQL程序包可独立使用的数据泵客户。</p>
+<blockquote>
+<p>注意：</p>
+<p>所有数据泵的导出和导入处理，包括读取和写入转储文件，都是在指定数据库连接字符串选择的系统（服务器）上完成的。<strong>这意味着对于非特权用户，数据库管理员（DBA）必须为在该服务器文件系统上读写的数据泵文件创建目录对象。</strong></p>
+<p>也可以看看：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e40758/toc.htm"><em>《 Oracle数据库PL / SQL软件包和类型参考</em></a>》中有关<code>DBMS_DATAPUMP</code>和<code>DBMS_METADATA</code>软件包的描述</li>
+</ul>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/appdev.112/e18294/adlob_bfile_ops.htm#ADLOB45842"><em>《 Oracle数据库SecureFiles和大型对象开发人员指南》</em></a>中有关创建目录对象时要考虑的准则的信息</li>
+</ul>
+</blockquote>
+<h3 id="数据泵如何移动数据？" class="article-heading"><a href="#数据泵如何移动数据？" class="headerlink" title="数据泵如何移动数据？"></a>数据泵如何移动数据？<a class="article-anchor" href="#数据泵如何移动数据？" aria-hidden="true"></a></h3><p>有关Data Pump如何将数据移入和移出数据库的信息，请参阅以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/server.112/e22490/dp_overview.htm#CEGFEEJE">使用数据文件复制来移动数据</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/server.112/e22490/dp_overview.htm#CJAFDGIC">使用直接路径移动数据</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/server.112/e22490/dp_overview.htm#CJABAHDJ">使用外部表移动数据</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/server.112/e22490/dp_overview.htm#CJAGCCAJ">使用常规路径移动数据</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/server.112/e22490/dp_overview.htm#CJABHJHD">使用网络链接导入移动数据</a></li>
+</ul>
+<blockquote>
+<p>注意：</p>
+<p>数据泵不使用 禁用唯一索引。要将数据加载到表中，必须删除索引或重新启用索引。</p>
+</blockquote>
+<h3 id="数据泵导出和导入操作的必需角色" class="article-heading"><a href="#数据泵导出和导入操作的必需角色" class="headerlink" title="数据泵导出和导入操作的必需角色"></a>数据泵导出和导入操作的必需角色<a class="article-anchor" href="#数据泵导出和导入操作的必需角色" aria-hidden="true"></a></h3><p>许多数据泵的导出和导入操作都要求用户<code>DATAPUMP_EXP_FULL_DATABASE</code>扮演一个角色和/或一个<code>DATAPUMP_IMP_FULL_DATABASE</code>角色。当您运行数据库创建过程中的标准脚本时，会自动为Oracle数据库定义这些角色。（请注意，尽管这些角色的名称中包含单词FULL，但实际上对于所有导出和导入模式（不仅是完全模式），都需要这些角色。）</p>
+<p>该<code>DATAPUMP_EXP_FULL_DATABASE</code>角色仅影响导出操作。该<code>DATAPUMP_IMP_FULL_DATABASE</code>角色影响导入操作和使用Import <code>SQLFILE</code>参数的操作。这些角色允许执行导出和导入的用户执行以下操作：</p>
+<ul>
+<li>在其架构范围之外执行操作</li>
+<li>监视其他用户启动的作业</li>
+<li>非特权用户无法引用的导出对象（例如表空间定义）和导入对象（例如目录定义）</li>
+</ul>
+<p>这些是强大的角色。在向用户授予这些角色时，数据库管理员应谨慎行事。</p>
+<p>尽管<code>SYS</code>没有为架构分配任何这些角色，但是由Data Pump执行的所有需要这些角色的安全检查也都授予了对该<code>SYS</code>架构的访问权限。</p>
+<blockquote>
+<p>也可以看看：<br><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/network.112/e36292/authorization.htm#DBSEG4414"><em>《 Oracle数据库安全指南》</em></a>中有关Oracle数据库安装中预定义角色的更多信息</p>
+</blockquote>
+<h2 id="expdp导出步骤" class="article-heading"><a href="#expdp导出步骤" class="headerlink" title="expdp导出步骤"></a>expdp导出步骤<a class="article-anchor" href="#expdp导出步骤" aria-hidden="true"></a></h2><h3 id="1-创建逻辑目录" class="article-heading"><a href="#1-创建逻辑目录" class="headerlink" title="1 创建逻辑目录"></a>1 创建逻辑目录<a class="article-anchor" href="#1-创建逻辑目录" aria-hidden="true"></a></h3><ul>
+<li><p>第一步：在服务器上创建真实的目录；（注意：第三步创建逻辑目录的命令不会在OS上创建真正的目录，所以要先在服务器上创建真实的目录。）<code>mkdir /home/oracle/expbk</code></p>
+</li>
+<li><p>第二步：用sys管理员登录sqlplus <code>sqlplus / as sysdba</code></p>
+</li>
+<li><p>第三步：创建逻辑目录<code>SQL&gt; create directory data_dir as '/home/oracle/expbk';</code></p>
+</li>
+<li><p>第四步：查看管理员目录，检查是否存在<code>select * from dba_directories;</code></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> dba_directories;</span><br><span class="line"></span><br><span class="line">OWNER                          DIRECTORY_NAME</span><br><span class="line"><span class="comment">------------------------------ ------------------------------</span></span><br><span class="line">DIRECTORY_PATH</span><br><span class="line"><span class="comment">--------------------------------------------------------------------------------</span></span><br><span class="line">SYS                            DATA_DIR</span><br><span class="line"><span class="operator">/</span>home<span class="operator">/</span>oracle<span class="operator">/</span>dmp<span class="operator">/</span><span class="keyword">user</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>第五步：用sys管理员给你的指定用户赋予在该目录的操作权限 <code>SQL&gt; grant read,write on directory data_dir to user;</code></p>
+</li>
+</ul>
+<h3 id="2-expdp的五种导出方式" class="article-heading"><a href="#2-expdp的五种导出方式" class="headerlink" title="2 expdp的五种导出方式"></a>2 <code>expdp</code>的五种导出方式<a class="article-anchor" href="#2-expdp的五种导出方式" aria-hidden="true"></a></h3><h4 id="第一种：full-y全量导出数据库" class="article-heading"><a href="#第一种：full-y全量导出数据库" class="headerlink" title="第一种：full=y全量导出数据库"></a>第一种：<code>full=y</code>全量导出数据库<a class="article-anchor" href="#第一种：full-y全量导出数据库" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">expdp user/passwd@orcl dumpfile=expdp.dmp directory=data_dir full=y logfile=expdp.log;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="第二种：schemas按用户导出" class="article-heading"><a href="#第二种：schemas按用户导出" class="headerlink" title="第二种：schemas按用户导出"></a>第二种：<code>schemas</code>按用户导出<a class="article-anchor" href="#第二种：schemas按用户导出" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">expdp user/passwd@orcl schemas=user dumpfile=expdp.dmp directory=data_dir logfile=expdp.log;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="第三种：tablespace按表空间导出" class="article-heading"><a href="#第三种：tablespace按表空间导出" class="headerlink" title="第三种：tablespace按表空间导出"></a>第三种：<code>tablespace</code>按表空间导出<a class="article-anchor" href="#第三种：tablespace按表空间导出" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">expdp sys/passwd@orcl tablespaces=tbs1,tbs2 dumpfile=expdp.dmp directory=data_dir logfile=expdp.log;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="第四种：tables导出表" class="article-heading"><a href="#第四种：tables导出表" class="headerlink" title="第四种：tables导出表"></a>第四种：<code>tables</code>导出表<a class="article-anchor" href="#第四种：tables导出表" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">expdp user/passwd@orcl tables=table1,table2 dumpfile=expdp.dmp directory=data_dir logfile=expdp.log;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="第五种：query按查询条件导" class="article-heading"><a href="#第五种：query按查询条件导" class="headerlink" title="第五种：query按查询条件导"></a>第五种：<code>query</code>按查询条件导<a class="article-anchor" href="#第五种：query按查询条件导" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">expdp user/passwd@orcl tables=table1 query=<span class="string">'where number=1234'</span> dumpfile=expdp.dmp directory=data_dir logfile=expdp.log;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-impdp导入步骤" class="article-heading"><a href="#3-impdp导入步骤" class="headerlink" title="3 impdp导入步骤"></a>3 <code>impdp</code>导入步骤<a class="article-anchor" href="#3-impdp导入步骤" aria-hidden="true"></a></h3><p>（1）如果不是同一台服务器，需要先将上面的dmp文件下载到目标服务器上；</p>
+<p>（2）参照“expdp导出步骤”里的前三步，建立逻辑目录；</p>
+<p>（3）用impdp命令导入，对应五种方式：</p>
+<h4 id="第一种：full-y全量导入数据库" class="article-heading"><a href="#第一种：full-y全量导入数据库" class="headerlink" title="第一种：full=y全量导入数据库"></a>第一种：<code>full=y</code>全量导入数据库<a class="article-anchor" href="#第一种：full-y全量导入数据库" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">impdp user/passwd directory=data_dir dumpfile=expdp.dmp full=y;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="第二种：schemas按用户导出后同名用户导入" class="article-heading"><a href="#第二种：schemas按用户导出后同名用户导入" class="headerlink" title="第二种：schemas按用户导出后同名用户导入"></a>第二种：<code>schemas</code>按用户导出后同名用户导入<a class="article-anchor" href="#第二种：schemas按用户导出后同名用户导入" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">impdp A/passwd schemas=A directory=data_dir dumpfile=expdp.dmp logfile=impdp.log;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="第三种：tablespaces导入表空间" class="article-heading"><a href="#第三种：tablespaces导入表空间" class="headerlink" title="第三种：tablespaces导入表空间"></a>第三种：<code>tablespaces</code>导入表空间<a class="article-anchor" href="#第三种：tablespaces导入表空间" aria-hidden="true"></a></h4><p>同用户：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">impdp sys/passwd tablespaces=tbs1 directory=data_dir dumpfile=expdp.dmp logfile=impdp.log;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>跨用户：将表空间TBS01、TBS02、TBS03导入到表空间A_TBS，将用户B的数据导入到A，并生成新的oid防止冲突；</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">impdp A/passwd remap_tablespace=TBS01:A_TBS,TBS02:A_TBS,TBS03:A_TBS remap_schema=B:A FULL=Y transform=oid:n</span><br><span class="line">directory=data_dir dumpfile=expdp.dmp logfile=impdp.log</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="第四种：tables导入表" class="article-heading"><a href="#第四种：tables导入表" class="headerlink" title="第四种：tables导入表"></a>第四种：<code>tables</code>导入表<a class="article-anchor" href="#第四种：tables导入表" aria-hidden="true"></a></h4><p>同用户：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">impdp A/passwd tables=table1,table2 dumpfile=expdp.dmp logfile=impdp.log;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>跨用户：从A用户中把表table1和table2导入到B用户中</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">impdp B/passwd tables=A.table1,A.table2 remap_schema=A:B directory=data_dir dumpfile=expdp.dmp logfile=impdp.log;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="第五种：追加数据" class="article-heading"><a href="#第五种：追加数据" class="headerlink" title="第五种：追加数据"></a>第五种：追加数据<a class="article-anchor" href="#第五种：追加数据" aria-hidden="true"></a></h4><p><code>--table_exists_action</code>:导入对象已存在时执行的操作。有效关键字:<code>SKIP,APPEND,REPLACE和TRUNCATE</code></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">impdp sys/passwd directory=data_dir dumpfile=expdp.dmp schemas=system table_exists_action=replace logfile=impdp.log;</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>table_exists_action</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>APPEND</td>
+<td>已存在表，追加数据，（若存在主键冲突则导入失败）</td>
+</tr>
+<tr>
+<td>REPLACE</td>
+<td>已存在表，先drop，再导入</td>
+</tr>
+<tr>
+<td>SKIP</td>
+<td>已存在表，则跳过并处理下一个对象</td>
+</tr>
+<tr>
+<td>TRUNCATE</td>
+<td>已存在表，先truncate，再导入</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">TABLE_EXISTS_ACTION</span><br><span class="line">Action to take if imported object already exists.</span><br><span class="line">Valid keywords are: APPEND, REPLACE, [SKIP] and TRUNCATE.</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="课堂实践" class="article-heading"><a href="#课堂实践" class="headerlink" title="课堂实践"></a>课堂实践<a class="article-anchor" href="#课堂实践" aria-hidden="true"></a></h2><h3 id="实践1-创建逻辑目录用于存放逻辑备份" class="article-heading"><a href="#实践1-创建逻辑目录用于存放逻辑备份" class="headerlink" title="实践1-创建逻辑目录用于存放逻辑备份"></a>实践1-创建逻辑目录用于存放逻辑备份<a class="article-anchor" href="#实践1-创建逻辑目录用于存放逻辑备份" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest ~]$ <span class="built_in">mkdir</span> /home/oracle/expbk</span><br><span class="line">[oracle@oratest ~]$ sqlplus / as sysdba</span><br><span class="line"></span><br><span class="line">SQL*Plus: Release 11.2.0.4.0 Production on Sun Nov 10 00:21:27 2019</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2013, Oracle.  All rights reserved.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Connected to:</span><br><span class="line">Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span><br><span class="line">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> *from dba_directories;</span><br><span class="line"></span><br><span class="line">OWNER			       DIRECTORY_NAME</span><br><span class="line">------------------------------ ------------------------------</span><br><span class="line">DIRECTORY_PATH</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">SYS			       ORACLE_OCM_CONFIG_DIR</span><br><span class="line">/u01/app/oracle/product/11.2.0.4/ccr/hosts/oratest/state</span><br><span class="line"></span><br><span class="line">SYS			       DATA_PUMP_DIR</span><br><span class="line">/u01/app/oracle/product/11.2.0.4/rdbms/log/</span><br><span class="line"></span><br><span class="line">SYS			       ORACLE_OCM_CONFIG_DIR2</span><br><span class="line">/u01/app/oracle/product/11.2.0.4/ccr/state</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SQL&gt; column directory_path format a40</span><br><span class="line">SQL&gt; <span class="keyword">select</span> *from dba_directories;</span><br><span class="line"></span><br><span class="line">OWNER			       DIRECTORY_NAME</span><br><span class="line">------------------------------ ------------------------------</span><br><span class="line">DIRECTORY_PATH</span><br><span class="line">----------------------------------------</span><br><span class="line">SYS			       ORACLE_OCM_CONFIG_DIR</span><br><span class="line">/u01/app/oracle/product/11.2.0.4/ccr/hos</span><br><span class="line">ts/oratest/state</span><br><span class="line"></span><br><span class="line">SYS			       DATA_PUMP_DIR</span><br><span class="line">/u01/app/oracle/product/11.2.0.4/rdbms/l</span><br><span class="line">og/</span><br><span class="line"></span><br><span class="line">SYS			       ORACLE_OCM_CONFIG_DIR2</span><br><span class="line"></span><br><span class="line">OWNER			       DIRECTORY_NAME</span><br><span class="line">------------------------------ ------------------------------</span><br><span class="line">DIRECTORY_PATH</span><br><span class="line">----------------------------------------</span><br><span class="line">/u01/app/oracle/product/11.2.0.4/ccr/sta</span><br><span class="line">te</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SQL&gt; create or replace directory expbk as <span class="string">'/home/oracle/expbk'</span>;</span><br><span class="line"></span><br><span class="line">Directory created.</span><br><span class="line"></span><br><span class="line">SQL&gt; grant <span class="built_in">read</span>,write on directory expbk to scott;</span><br><span class="line"></span><br><span class="line">Grant succeeded.</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> *from dba_directories;</span><br><span class="line"></span><br><span class="line">OWNER			       DIRECTORY_NAME</span><br><span class="line">------------------------------ ------------------------------</span><br><span class="line">DIRECTORY_PATH</span><br><span class="line">----------------------------------------</span><br><span class="line">SYS			       EXPBK</span><br><span class="line">/home/oracle/expbk</span><br><span class="line"></span><br><span class="line">SYS			       ORACLE_OCM_CONFIG_DIR</span><br><span class="line">/u01/app/oracle/product/11.2.0.4/ccr/hos</span><br><span class="line">ts/oratest/state</span><br><span class="line"></span><br><span class="line">SYS			       DATA_PUMP_DIR</span><br><span class="line">/u01/app/oracle/product/11.2.0.4/rdbms/l</span><br><span class="line"></span><br><span class="line">OWNER			       DIRECTORY_NAME</span><br><span class="line">------------------------------ ------------------------------</span><br><span class="line">DIRECTORY_PATH</span><br><span class="line">----------------------------------------</span><br><span class="line">og/</span><br><span class="line"></span><br><span class="line">SYS			       ORACLE_OCM_CONFIG_DIR2</span><br><span class="line">/u01/app/oracle/product/11.2.0.4/ccr/sta</span><br><span class="line">te</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="实践2-解决报错-ORA-39213" class="article-heading"><a href="#实践2-解决报错-ORA-39213" class="headerlink" title="实践2-解决报错 ORA-39213"></a>实践2-解决报错 ORA-39213<a class="article-anchor" href="#实践2-解决报错-ORA-39213" aria-hidden="true"></a></h3><p>执行<code>expdp</code>时报错如下：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">ORA-39006: internal error</span><br><span class="line">ORA-39213: Metadata processing is notavailable</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行<code>oerr ora &lt;错误编号&gt;</code>查看报错明细：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest expbk]$ oerr ora 39213</span><br><span class="line">39213, 00000, <span class="string">"Metadata processing is not available"</span></span><br><span class="line">// *Cause:  The Data Pump could not use the Metadata API.  Typically,</span><br><span class="line">//          this is caused by the XSL stylesheets not being <span class="built_in">set</span> up properly.</span><br><span class="line">// *Action: Connect AS SYSDBA and execute dbms_metadata_util.load_stylesheets</span><br><span class="line">//          to reload the stylesheets.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以看到解决方法为，使用<code>sysdba</code>角色的用户执行<code>execute  sys.dbms_metadata_util.load_stylesheets;</code></p>
+<h3 id="实践3-全库备份导出" class="article-heading"><a href="#实践3-全库备份导出" class="headerlink" title="实践3-全库备份导出"></a>实践3-全库备份导出<a class="article-anchor" href="#实践3-全库备份导出" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest expbk]$ expdp userid=system/oracle job_name=full_job directory=expbk dumpfile=full.dump full=y logfile=full.log</span><br><span class="line"></span><br><span class="line">Export: Release 11.2.0.4.0 - Production on Sun Nov 10 00:36:56 2019</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2011, Oracle and/or its affiliates.  All rights reserved.</span><br><span class="line"></span><br><span class="line">Connected to: Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production</span><br><span class="line">With the Partitioning, OLAP, Data Mining and Real Application Testing options</span><br><span class="line">Starting <span class="string">"SYSTEM"</span>.<span class="string">"FULL_JOB"</span>:  userid=system/******** job_name=full_job directory=expbk dumpfile=full.dump full=y logfile=full.log</span><br><span class="line">Estimate <span class="keyword">in</span> progress using BLOCKS method...</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/TABLE_DATA</span><br><span class="line">Total estimation using BLOCKS method: 576 KB</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/TABLESPACE</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/PROFILE</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SYS_USER/USER</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/USER</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/ROLE</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/GRANT/SYSTEM_GRANT/PROC_SYSTEM_GRANT</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/GRANT/SYSTEM_GRANT</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/ROLE_GRANT</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/DEFAULT_ROLE</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/RESOURCE_COST</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/TRUSTED_DB_LINK</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/SEQUENCE/SEQUENCE</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/DIRECTORY/DIRECTORY</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/DIRECTORY/GRANT/OWNER_GRANT/OBJECT_GRANT</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/CONTEXT</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/PUBLIC_SYNONYM/SYNONYM</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/SYNONYM</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TYPE/TYPE_SPEC</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SYSTEM_PROCOBJACT/PRE_SYSTEM_ACTIONS/PROCACT_SYSTEM</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SYSTEM_PROCOBJACT/PROCOBJ</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SYSTEM_PROCOBJACT/POST_SYSTEM_ACTIONS/PROCACT_SYSTEM</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/PROCACT_SCHEMA</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/TABLE</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/PRE_TABLE_ACTION</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/COMMENT</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/PACKAGE/PACKAGE_SPEC</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/FUNCTION/FUNCTION</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/PROCEDURE/PROCEDURE</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/PACKAGE/COMPILE_PACKAGE/PACKAGE_SPEC/ALTER_PACKAGE_SPEC</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/FUNCTION/ALTER_FUNCTION</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/PROCEDURE/ALTER_PROCEDURE</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/INDEX/INDEX</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/CONSTRAINT/CONSTRAINT</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/INDEX/STATISTICS/INDEX_STATISTICS</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/VIEW/VIEW</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/VIEW/GRANT/OWNER_GRANT/OBJECT_GRANT</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/VIEW/COMMENT</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/PACKAGE_BODIES/PACKAGE/PACKAGE_BODY</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/CONSTRAINT/REF_CONSTRAINT</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/STATISTICS/TABLE_STATISTICS</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/POST_TABLE_ACTION</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/TABLE/TRIGGER</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/SCHEMA/POST_SCHEMA/PROCACT_SCHEMA</span><br><span class="line">Processing object <span class="built_in">type</span> DATABASE_EXPORT/AUDIT</span><br><span class="line">. . exported <span class="string">"SCOTT"</span>.<span class="string">"DEPT"</span>                              5.929 KB       4 rows</span><br><span class="line">. . exported <span class="string">"SCOTT"</span>.<span class="string">"EMP"</span>                               8.562 KB      14 rows</span><br><span class="line">. . exported <span class="string">"SCOTT"</span>.<span class="string">"SALGRADE"</span>                          5.859 KB       5 rows</span><br><span class="line">. . exported <span class="string">"SCOTT"</span>.<span class="string">"T02"</span>                               5.421 KB       1 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_AUDIT_ATTRIBUTE</span>"</span>          6.328 KB       2 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_OBJECT_TYPES</span>"</span>             6.882 KB      28 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_RESOLUTION_METHOD</span>"</span>        5.835 KB      19 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_TEMPLATE_STATUS</span>"</span>          5.484 KB       3 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_TEMPLATE_TYPES</span>"</span>           6.289 KB       2 rows</span><br><span class="line">. . exported <span class="string">"OUTLN"</span>.<span class="string">"OL$"</span>                                   0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"OUTLN"</span>.<span class="string">"OL<span class="variable">$HINTS</span>"</span>                              0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"OUTLN"</span>.<span class="string">"OL<span class="variable">$NODES</span>"</span>                              0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SCOTT"</span>.<span class="string">"BONUS"</span>                                 0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"DEF<span class="variable">$_AQCALL</span>"</span>                          0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"DEF<span class="variable">$_AQERROR</span>"</span>                         0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"DEF<span class="variable">$_CALLDEST</span>"</span>                        0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"DEF<span class="variable">$_DEFAULTDEST</span>"</span>                     0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"DEF<span class="variable">$_DESTINATION</span>"</span>                     0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"DEF<span class="variable">$_ERROR</span>"</span>                           0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"DEF<span class="variable">$_LOB</span>"</span>                             0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"DEF<span class="variable">$_ORIGIN</span>"</span>                          0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"DEF<span class="variable">$_PROPAGATOR</span>"</span>                      0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"DEF<span class="variable">$_PUSHED_TRANSACTIONS</span>"</span>             0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_AUDIT_COLUMN</span>"</span>                 0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_COLUMN_GROUP</span>"</span>                 0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_CONFLICT</span>"</span>                     0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_DDL</span>"</span>                          0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_EXCEPTIONS</span>"</span>                   0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_EXTENSION</span>"</span>                    0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_FLAVORS</span>"</span>                      0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_FLAVOR_OBJECTS</span>"</span>               0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_GENERATED</span>"</span>                    0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_GROUPED_COLUMN</span>"</span>               0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_INSTANTIATION_DDL</span>"</span>            0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_KEY_COLUMNS</span>"</span>                  0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_OBJECT_PARMS</span>"</span>                 0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_PARAMETER_COLUMN</span>"</span>             0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_PRIORITY</span>"</span>                     0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_PRIORITY_GROUP</span>"</span>               0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_REFRESH_TEMPLATES</span>"</span>            0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_REPCAT</span>"</span>                       0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_REPCATLOG</span>"</span>                    0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_REPCOLUMN</span>"</span>                    0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_REPGROUP_PRIVS</span>"</span>               0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_REPOBJECT</span>"</span>                    0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_REPPROP</span>"</span>                      0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_REPSCHEMA</span>"</span>                    0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_RESOLUTION</span>"</span>                   0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_RESOLUTION_STATISTICS</span>"</span>        0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_RESOL_STATS_CONTROL</span>"</span>          0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_RUNTIME_PARMS</span>"</span>                0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_SITES_NEW</span>"</span>                    0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_SITE_OBJECTS</span>"</span>                 0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_SNAPGROUP</span>"</span>                    0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_TEMPLATE_OBJECTS</span>"</span>             0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_TEMPLATE_PARMS</span>"</span>               0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_TEMPLATE_REFGROUPS</span>"</span>           0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_TEMPLATE_SITES</span>"</span>               0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_TEMPLATE_TARGETS</span>"</span>             0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_USER_AUTHORIZATIONS</span>"</span>          0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"REPCAT<span class="variable">$_USER_PARM_VALUES</span>"</span>             0 KB       0 rows</span><br><span class="line">. . exported <span class="string">"SYSTEM"</span>.<span class="string">"SQLPLUS_PRODUCT_PROFILE"</span>              0 KB       0 rows</span><br><span class="line">Master table <span class="string">"SYSTEM"</span>.<span class="string">"FULL_JOB"</span> successfully loaded/unloaded</span><br><span class="line">******************************************************************************</span><br><span class="line">Dump file <span class="built_in">set</span> <span class="keyword">for</span> SYSTEM.FULL_JOB is:</span><br><span class="line">  /home/oracle/expbk/full.dump</span><br><span class="line">Job <span class="string">"SYSTEM"</span>.<span class="string">"FULL_JOB"</span> successfully completed at Sun Nov 10 00:37:27 2019 elapsed 0 00:00:31</span><br><span class="line"></span><br><span class="line">[oracle@oratest expbk]$ ll -h</span><br><span class="line">total 2.7M</span><br><span class="line">-rw-r----- 1 oracle oinstall 2.7M Nov 10 00:37 full.dump</span><br><span class="line">-rw-r--r-- 1 oracle oinstall 8.6K Nov 10 00:37 full.log</span><br><span class="line">[oracle@oratest expbk]$ file full.dump</span><br><span class="line">full.dump: DBase 3 data file (1728087684 records)</span><br><span class="line">[oracle@oratest expbk]$ strings full.dump | <span class="built_in">head</span> -n 20</span><br><span class="line"><span class="string">"SYSTEM"</span>.<span class="string">"FULL_JOB"</span></span><br><span class="line">x86_64/Linux 2.4.xx</span><br><span class="line">BOOBOO</span><br><span class="line">ZHS16GBK</span><br><span class="line">11.02.00.04.00</span><br><span class="line">001:001:000001:000001</span><br><span class="line">HDR&gt;T&lt;?</span><br><span class="line">1B<span class="string">"#</span></span><br><span class="line"><span class="string">ejVW</span></span><br><span class="line"><span class="string">4DDE</span></span><br><span class="line"><span class="string">]uW\[</span></span><br><span class="line"><span class="string">JVhv</span></span><br><span class="line"><span class="string">L2k[</span></span><br><span class="line"><span class="string">Q)hZ</span></span><br><span class="line"><span class="string">E)H'</span></span><br><span class="line"><span class="string"><span class="variable">$DD</span>@D</span></span><br><span class="line"><span class="string">UUUUUUUUUUV`</span></span><br><span class="line"><span class="string">.0](</span></span><br><span class="line"><span class="string">HF((0</span></span><br><span class="line"><span class="string">&amp;`wrA</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="逻辑备份恢复工具对比" class="article-heading"><a href="#逻辑备份恢复工具对比" class="headerlink" title="逻辑备份恢复工具对比"></a>逻辑备份恢复工具对比<a class="article-anchor" href="#逻辑备份恢复工具对比" aria-hidden="true"></a></h2><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E11882_01/server.112/e22490/dp_legacy.htm#SUTIL960">Oracle 官网帮助</a></p>
+<table>
+<thead>
+<tr>
+<th>工具区别</th>
+<th><code>exp\imp</code></th>
+<th><code>expdp\impdp</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>使用位置</td>
+<td>服务器/客户端都可</td>
+<td>只能服务端</td>
+</tr>
+<tr>
+<td>影响因素</td>
+<td>网络、磁盘</td>
+<td>磁盘</td>
+</tr>
+<tr>
+<td>备份速度</td>
+<td>更慢</td>
+<td>更快</td>
+</tr>
+<tr>
+<td>恢复速度</td>
+<td>更慢</td>
+<td>更快</td>
+</tr>
+<tr>
+<td>数据库版本</td>
+<td></td>
+<td><code>oracle 11g 开始</code></td>
+</tr>
+</tbody></table>
+<h3 id="我的理解" class="article-heading"><a href="#我的理解" class="headerlink" title="我的理解"></a>我的理解<a class="article-anchor" href="#我的理解" aria-hidden="true"></a></h3><ol>
+<li>与<code>exp</code>工具一样，<code>expdp</code>工具也属于逻辑备份，数据一致性为：备份开始的时间点；</li>
+<li>有三种使用方式：1）命令行；2）参数文件；3）交互式</li>
+<li>数据泵的导出模式：1）<code>full</code> 完全模式；2）<code>schema</code> 库模式；3）<code>tables</code> 表模式；4） <code>tablespace</code>表空间模式；5） <code>transport_tablespaces</code>可传输表空间模式</li>
+<li>从<code>11g</code>开始使用该工具做逻辑备份</li>
+<li>备份文件为<code>二进制文件</code></li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:49.445Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%B3%B5%E5%AE%98%E6%96%B9%E4%BB%8B%E7%BB%8D"><span class="toc-text">数据泵官方介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%B3%B5%E7%BB%84%E4%BB%B6"><span class="toc-text">数据泵组件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%B3%B5%E5%A6%82%E4%BD%95%E7%A7%BB%E5%8A%A8%E6%95%B0%E6%8D%AE%EF%BC%9F"><span class="toc-text">数据泵如何移动数据？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%B3%B5%E5%AF%BC%E5%87%BA%E5%92%8C%E5%AF%BC%E5%85%A5%E6%93%8D%E4%BD%9C%E7%9A%84%E5%BF%85%E9%9C%80%E8%A7%92%E8%89%B2"><span class="toc-text">数据泵导出和导入操作的必需角色</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#expdp%E5%AF%BC%E5%87%BA%E6%AD%A5%E9%AA%A4"><span class="toc-text">expdp导出步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%88%9B%E5%BB%BA%E9%80%BB%E8%BE%91%E7%9B%AE%E5%BD%95"><span class="toc-text">1 创建逻辑目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-expdp%E7%9A%84%E4%BA%94%E7%A7%8D%E5%AF%BC%E5%87%BA%E6%96%B9%E5%BC%8F"><span class="toc-text">2 expdp的五种导出方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%EF%BC%9Afull-y%E5%85%A8%E9%87%8F%E5%AF%BC%E5%87%BA%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">第一种：full&#x3D;y全量导出数据库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%EF%BC%9Aschemas%E6%8C%89%E7%94%A8%E6%88%B7%E5%AF%BC%E5%87%BA"><span class="toc-text">第二种：schemas按用户导出</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%A7%8D%EF%BC%9Atablespace%E6%8C%89%E8%A1%A8%E7%A9%BA%E9%97%B4%E5%AF%BC%E5%87%BA"><span class="toc-text">第三种：tablespace按表空间导出</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E7%A7%8D%EF%BC%9Atables%E5%AF%BC%E5%87%BA%E8%A1%A8"><span class="toc-text">第四种：tables导出表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E7%A7%8D%EF%BC%9Aquery%E6%8C%89%E6%9F%A5%E8%AF%A2%E6%9D%A1%E4%BB%B6%E5%AF%BC"><span class="toc-text">第五种：query按查询条件导</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-impdp%E5%AF%BC%E5%85%A5%E6%AD%A5%E9%AA%A4"><span class="toc-text">3 impdp导入步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%EF%BC%9Afull-y%E5%85%A8%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">第一种：full&#x3D;y全量导入数据库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%EF%BC%9Aschemas%E6%8C%89%E7%94%A8%E6%88%B7%E5%AF%BC%E5%87%BA%E5%90%8E%E5%90%8C%E5%90%8D%E7%94%A8%E6%88%B7%E5%AF%BC%E5%85%A5"><span class="toc-text">第二种：schemas按用户导出后同名用户导入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%A7%8D%EF%BC%9Atablespaces%E5%AF%BC%E5%85%A5%E8%A1%A8%E7%A9%BA%E9%97%B4"><span class="toc-text">第三种：tablespaces导入表空间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E7%A7%8D%EF%BC%9Atables%E5%AF%BC%E5%85%A5%E8%A1%A8"><span class="toc-text">第四种：tables导入表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E7%A7%8D%EF%BC%9A%E8%BF%BD%E5%8A%A0%E6%95%B0%E6%8D%AE"><span class="toc-text">第五种：追加数据</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BE%E5%A0%82%E5%AE%9E%E8%B7%B5"><span class="toc-text">课堂实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B51-%E5%88%9B%E5%BB%BA%E9%80%BB%E8%BE%91%E7%9B%AE%E5%BD%95%E7%94%A8%E4%BA%8E%E5%AD%98%E6%94%BE%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD"><span class="toc-text">实践1-创建逻辑目录用于存放逻辑备份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B52-%E8%A7%A3%E5%86%B3%E6%8A%A5%E9%94%99-ORA-39213"><span class="toc-text">实践2-解决报错 ORA-39213</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B53-%E5%85%A8%E5%BA%93%E5%A4%87%E4%BB%BD%E5%AF%BC%E5%87%BA"><span class="toc-text">实践3-全库备份导出</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D%E5%B7%A5%E5%85%B7%E5%AF%B9%E6%AF%94"><span class="toc-text">逻辑备份恢复工具对比</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%91%E7%9A%84%E7%90%86%E8%A7%A3"><span class="toc-text">我的理解</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

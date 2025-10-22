@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践14:执行备份 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/14-PerformingDatabaseBackups-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/14-PerformingDatabaseBackups-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 14: Performing Database Backups 2020.01.29 BoobooWei  [TOC] 实践14:概览Practices for Lesson 14: Overview In these practices, you will create backups of your database so that you can">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践14:执行备份">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/14-PerformingDatabaseBackups-%E6%89%A7%E8%A1%8C%E5%A4%87%E4%BB%BD">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 14: Performing Database Backups 2020.01.29 BoobooWei  [TOC] 实践14:概览Practices for Lesson 14: Overview In these practices, you will create backups of your database so that you can">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.731Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:59.410Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践14:执行备份</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/14-PerformingDatabaseBackups-执行备份.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p><strong>Practices for Lesson 14: Performing Database Backups</strong></p>
+<p>2020.01.29 BoobooWei</p>
+</blockquote>
+<p>[TOC]</p>
+<h2 id="实践14-概览" class="article-heading"><a href="#实践14-概览" class="headerlink" title="实践14:概览"></a>实践14:概览<a class="article-anchor" href="#实践14-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 14: Overview</p>
+<p>In these practices, you will create backups of your database so that you can recover from various types of failures.</p>
+<p>在这些实践中，您将创建数据库备份，以便从各种类型的故障中恢复。</p>
+<h2 id="实践14-1-备份控制文件" class="article-heading"><a href="#实践14-1-备份控制文件" class="headerlink" title="实践14-1:备份控制文件"></a>实践14-1:备份控制文件<a class="article-anchor" href="#实践14-1-备份控制文件" aria-hidden="true"></a></h2><p>Practice 14-1: Backing Up the Control File</p>
+<h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><p>In this practice, you back up your control file to a trace file, creating a file of SQL commands that can be used to re-create the control file.</p>
+<p><strong>Assumptions</strong></p>
+<p>Practices for lesson 13 have been successfully completed.</p>
+<p>在这种实践中，您将控制文件备份到一个跟踪文件，创建一个SQL命令文件，可用于重新创建控制文件。</p>
+<p>假设：第13课的练习已经成功完成。</p>
+<h3 id="Task" class="article-heading"><a href="#Task" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task" aria-hidden="true"></a></h3><ol>
+<li><p>Launch Enterprise Manager Cloud Control and log in as the <strong>ADMIN</strong> user.</p>
+</li>
+<li><p>Navigate to the orcl database home page.</p>
+</li>
+<li><p>Select <strong>Administration &gt; Storage &gt; Control Files</strong>.</p>
+</li>
+<li><p>Log in to the <strong>orcl</strong> database with your named credential.</p>
+</li>
+<li><p>On the Control Files page, click <strong>Backup to Trace</strong>.</p>
+</li>
+<li><p>An update message is displayed. Click <strong>OK</strong>.</p>
+</li>
+<li><p>You can also perform a control file back up to trace by executing a SQL command. Log in to SQL<em>Plus as the <strong>DBA1</strong> user and execute the <strong>ALTER</strong> <strong>DATABASE</strong> <strong>BACKUP</strong> <strong>CONTROLFILE TO TRACE</strong> command. Exit from SQL</em>Plus.</p>
+</li>
+<li><p>Navigate to the /u01/app/oracle/diag/rdbms/orcl/orcl/trace directory and view the end of the alert log to verify the creation of the trace files and the names of the files.</p>
+</li>
+</ol>
+<h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><ol>
+<li><p>启动企业管理器云控制，以<strong>ADMIN</strong>用户登录。</p>
+</li>
+<li><p>导航到数据库主页。</p>
+<p><img src="pic/14001.png"></p>
+</li>
+<li><p>选择<strong>管理&gt;存储&gt;控制文件</strong>。</p>
+<p><img src="pic/14002.png"></p>
+</li>
+<li><p>使用指定的凭据登录到数据库。</p>
+</li>
+<li><p>在控制文件页面，单击<strong>备份到跟踪文件</strong>。</p>
+<p><img src="pic/14003.png"></p>
+</li>
+<li><p>将显示一条更新消息。点击<strong>确定</strong>。</p>
+<p><img src="pic/14004.png"></p>
+</li>
+<li><p>您还可以通过执行SQL命令来执行一个控制文件。以<strong>DBA1</strong>用户身份登录SQL*Plus，执行<strong>ALTER</strong> <strong>DATABASE</strong> <strong>BACKUP</strong> <strong>CONTROLFILE跟踪</strong>命令。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> database backup controlfile <span class="keyword">to</span> trace;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>导航到<code>/u01/app/oracle/diag/rdbms/emcdb/emcdb/trace</code>目录，查看警报日志的结尾，以验证跟踪文件的创建和文件的名称。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /u01/app/oracle/diag/rdbms/emcdb/emcdb/trace</span><br><span class="line"><span class="built_in">tail</span> alert_orcl.log</span><br><span class="line"></span><br><span class="line">2020-02-04T17:07:31.995723+08:00</span><br><span class="line">alter database backup controlfile to trace</span><br><span class="line">2020-02-04T17:07:32.055314+08:00</span><br><span class="line">Backup controlfile written to trace file /u01/app/oracle/diag/rdbms/emcdb/emcdb/trace/emcdb_ora_32205.trc</span><br><span class="line">Completed: alter database backup controlfile to trace</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3><h2 id="实践14-2-配置控制文件和SPFILE的自动备份" class="article-heading"><a href="#实践14-2-配置控制文件和SPFILE的自动备份" class="headerlink" title="实践14-2:配置控制文件和SPFILE的自动备份"></a>实践14-2:配置控制文件和SPFILE的自动备份<a class="article-anchor" href="#实践14-2-配置控制文件和SPFILE的自动备份" aria-hidden="true"></a></h2><p>Practice 14-2: Configuring Automatic Backups of the Control File and SPFILE</p>
+<h3 id="Overview-1" class="article-heading"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-1" aria-hidden="true"></a></h3><p>In this practice you configure automatic backups of the control file and server parameter file (SPFILE) when a backup of the database is made and when there is a structural change to the database.</p>
+<p>在此实践中，在数据库备份和数据库结构更改时配置控制文件和服务器参数文件(SPFILE)的自动备份。</p>
+<h3 id="Task-1" class="article-heading"><a href="#Task-1" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-1" aria-hidden="true"></a></h3><ol>
+<li>Return to the <strong>orcl</strong> database home page in Enterprise Manager Cloud Control.</li>
+<li>Select <strong>Availability &gt; Backup &amp; Recovery &gt; Backup Settings</strong>.</li>
+<li>On the Backup Settings page, click the <strong>Policy</strong> tab.</li>
+<li>Select “<strong>Automatically backup the control file and server parameter file (SPFILE) with every backup and database structural change</strong>.”</li>
+<li>Scroll to the bottom of the page. In the Host Credentials section, select <strong>New</strong>. Enter <strong>oracle</strong> in the User Name field. Enter your OS password in the Password and Confirm Password fields. Click <strong>Test</strong> to ensure that you entered the values properly.</li>
+<li>Click <strong>Apply</strong>.</li>
+</ol>
+<h3 id="Practice-1" class="article-heading"><a href="#Practice-1" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-1" aria-hidden="true"></a></h3><ol>
+<li><p>返回企业管理器云控制中的数据库主页。</p>
+</li>
+<li><p>选择<strong>可用性&gt;备份和恢复&gt;备份设置</strong>。</p>
+<p><img src="pic/14005.png"></p>
+</li>
+<li><p>在备份设置页面，单击<strong>策略</strong>选项卡。</p>
+<p><img src="pic/14006.png"></p>
+</li>
+<li><p>选择**随着每个备份和数据库结构更改自动备份控制文件和服务器参数文件(SPFILE) **。</p>
+<p><img src="pic/14007.png"></p>
+</li>
+<li><p>滚动到页面底部。在<strong>主机身份证明</strong>部分，选择<strong>新建</strong>。在用户名字段中输入<strong>oracle</strong>。在password中输入操作系统密码并确认密码字段。单击<strong>Test</strong>以确保正确输入了值。（如果已经配置过了，就选择<strong>已命名</strong>）</p>
+<p><img src="pic/14008.png"></p>
+<p><img src="pic/14009.png"></p>
+</li>
+<li><p>点击<strong>应用</strong>。</p>
+</li>
+</ol>
+<h3 id="KnowledgePoint-1" class="article-heading"><a href="#KnowledgePoint-1" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-1" aria-hidden="true"></a></h3><h2 id="实践14-3-创建一个完整的数据库备份" class="article-heading"><a href="#实践14-3-创建一个完整的数据库备份" class="headerlink" title="实践14-3:创建一个完整的数据库备份"></a>实践14-3:创建一个完整的数据库备份<a class="article-anchor" href="#实践14-3-创建一个完整的数据库备份" aria-hidden="true"></a></h2><p>Practice 14-3: Creating a Whole Database Backup</p>
+<h3 id="Overview-2" class="article-heading"><a href="#Overview-2" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-2" aria-hidden="true"></a></h3><p>In this practice, you back up your entire database, including the archived redo log files. The backup should be the base for an incremental backup strategy.</p>
+<p>在这个实践中，需要备份整个数据库，包括归档的重做日志文件。备份应该是增量备份策略的基础。</p>
+<h3 id="Task-2" class="article-heading"><a href="#Task-2" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-2" aria-hidden="true"></a></h3><ol>
+<li>In Enterprise Manager Cloud Control, select <strong>Availability</strong> &gt; <strong>Backup &amp; Recovery</strong> &gt; <strong>Schedule Backup</strong>.</li>
+<li>In the Customized Backup section, select <strong>Whole Database</strong>. Confirm that the host credentials are set with oracle as the user name and password. Click <strong>Schedule Customized Backup</strong>.</li>
+<li>In the Backup Type section, select <strong>Full Backup</strong> and “<strong>Use as the base of an incremental backup strategy</strong>.”</li>
+<li>In the Backup Mode section, select <strong>Online Backup</strong>.</li>
+<li>In the Advanced section, select “<strong>Also back up all archived logs on disk</strong>” and “<strong>Delete all archived logs from disk after they are successfully backed up</strong>.” Click <strong>Next</strong>.</li>
+<li>On the Settings page, select <strong>Disk</strong> as the backup destination. Click <strong>Next</strong>.</li>
+<li>On the Schedule page, accept the defaults. Click <strong>Next</strong>.</li>
+<li>On the Review page, review the RMAN script and then click <strong>Submit Job</strong>.</li>
+<li>A confirmation message is displayed. Click <strong>View Job</strong>.</li>
+<li>Click the Refresh icon on the right side of page until you see that the job has completed successfully.</li>
+</ol>
+<h3 id="Practice-2" class="article-heading"><a href="#Practice-2" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-2" aria-hidden="true"></a></h3><ol>
+<li><p>在Enterprise Manager Cloud Control中，选择<strong>可用性 &gt; 备份和恢复 &gt; 调度备份</strong>。</p>
+<p><img src="pic/14010.png"></p>
+<p><img src="pic/14011.png"></p>
+</li>
+<li><p>在自定义备份部分，选择<strong>整个数据库</strong>。确认主机凭据已设置为oracle用户名和密码。单击<strong>调度定制备份</strong>。</p>
+<p><img src="pic/14012.png"></p>
+</li>
+<li><p>在备份类型部分，选择<strong>完全备份</strong>和 <strong>作为增量备份策略的基础</strong>。</p>
+</li>
+<li><p>在备份模式部分，选择<strong>联机备份</strong>。</p>
+</li>
+<li><p>在高级部分，选择<strong>同时备份磁盘上的所有归档日志</strong>和 <strong>成功备份磁盘上的所有归档日志后将其从磁盘删除</strong>，点击<strong>下一步</strong>。</p>
+<p><img src="pic/14013.png"></p>
+</li>
+<li><p>在设置页面，选择<strong>磁盘</strong>作为备份目的地。点击<strong>下一步</strong>。</p>
+<p><img src="pic/14014.png"></p>
+</li>
+<li><p>在调度页面上，接受默认设置。点击<strong>下一步</strong>。</p>
+<p><img src="pic/14015.png"></p>
+</li>
+<li><p>在复查页面上，审查RMAN脚本，然后单击<strong>提交作业</strong>。</p>
+<p><img src="pic/14016.png"></p>
+</li>
+<li><p>将显示一条确认消息。单击<strong>查看作业</strong>。</p>
+<p><img src="pic/14017.png"></p>
+</li>
+<li><p>单击页面右侧的Refresh图标，直到看到任务成功完成。</p>
+<p><img src="pic/14018.png"></p>
+<p><img src="pic/14019.png"></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">RMAN&gt;  list backup;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">List of Backup Sets</span><br><span class="line">===================</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">BS Key  Type LV Size       Device Type Elapsed Time Completion Time</span><br><span class="line">------- ---- -- ---------- ----------- ------------ ---------------</span><br><span class="line">1       Incr 0  1.75G      DISK        00:00:46     04-FEB-20</span><br><span class="line">        BP Key: 1   Status: AVAILABLE  Compressed: NO  Tag: BACKUP_EMCDB_00000_020420052546</span><br><span class="line">        Piece Name: /u01/app/oracle/fast_recovery_area/EMCDB/96710507BCB024C7E0553CE49B3EAF97/backupset/2020_02_04/o1_mf_nnnd0_BACKUP_EMCDB_00000_0_h3lg4z3h_.bkp</span><br><span class="line">  List of Datafiles <span class="keyword">in</span> backup <span class="built_in">set</span> 1</span><br><span class="line">  Container ID: 3, PDB Name: EMREP</span><br><span class="line">  File LV Type Ckp SCN    Ckp Time  Abs Fuz SCN Sparse Name</span><br><span class="line">  ---- -- ---- ---------- --------- ----------- ------ ----</span><br><span class="line">  9    0  Incr 3452953    04-FEB-20              NO    /u01/app/oracle/oradata/booboo/booboopdb1/system01.dbf</span><br><span class="line">  10   0  Incr 3452953    04-FEB-20              NO    /u01/app/oracle/oradata/booboo/booboopdb1/sysaux01.dbf</span><br><span class="line">  11   0  Incr 3452953    04-FEB-20              NO    /u01/app/oracle/oradata/booboo/booboopdb1/undotbs01.dbf</span><br><span class="line">  12   0  Incr 3452953    04-FEB-20              NO    /u01/app/oracle/oradata/booboo/booboopdb1/users01.dbf</span><br><span class="line">  25   0  Incr 3452953    04-FEB-20              NO    /u01/app/oracle/oradata/booboo/booboopdb1/mgmt_ecm_depot1.dbf</span><br><span class="line">  26   0  Incr 3452953    04-FEB-20 3452975      NO    /u01/app/oracle/oradata/booboo/booboopdb1/mgmt.dbf</span><br><span class="line">  27   0  Incr 3452953    04-FEB-20              NO    /u01/app/oracle/oradata/booboo/booboopdb1/mgmt_deepdive.dbf</span><br><span class="line"></span><br><span class="line">BS Key  Type LV Size       Device Type Elapsed Time Completion Time</span><br><span class="line">------- ---- -- ---------- ----------- ------------ ---------------</span><br><span class="line">2       Incr 0  1.13G      DISK        00:00:22     04-FEB-20</span><br><span class="line">        BP Key: 2   Status: AVAILABLE  Compressed: NO  Tag: BACKUP_EMCDB_00000_020420052546</span><br><span class="line">        Piece Name: /u01/app/oracle/fast_recovery_area/EMCDB/backupset/2020_02_04/o1_mf_nnnd0_BACKUP_EMCDB_00000_0_h3lg6po0_.bkp</span><br><span class="line">  List of Datafiles <span class="keyword">in</span> backup <span class="built_in">set</span> 2</span><br><span class="line">  File LV Type Ckp SCN    Ckp Time  Abs Fuz SCN Sparse Name</span><br><span class="line">  ---- -- ---- ---------- --------- ----------- ------ ----</span><br><span class="line">  1    0  Incr 3453177    04-FEB-20              NO    /u01/app/oracle/oradata/booboo/system01.dbf</span><br><span class="line">  3    0  Incr 3453177    04-FEB-20              NO    /u01/app/oracle/oradata/booboo/sysaux01.dbf</span><br><span class="line">  4    0  Incr 3453177    04-FEB-20              NO    /u01/app/oracle/oradata/booboo/undotbs01.dbf</span><br><span class="line">  7    0  Incr 3453177    04-FEB-20              NO    /u01/app/oracle/oradata/booboo/users01.dbf</span><br><span class="line"></span><br><span class="line">BS Key  Type LV Size       Device Type Elapsed Time Completion Time</span><br><span class="line">------- ---- -- ---------- ----------- ------------ ---------------</span><br><span class="line">3       Incr 0  512.22M    DISK        00:00:11     04-FEB-20</span><br><span class="line">        BP Key: 3   Status: AVAILABLE  Compressed: NO  Tag: BACKUP_EMCDB_00000_020420052546</span><br><span class="line">        Piece Name: /u01/app/oracle/fast_recovery_area/EMCDB/93219DF8F4031975E0553CE49B3EAF97/backupset/2020_02_04/o1_mf_nnnd0_BACKUP_EMCDB_00000_0_h3lg7htl_.bkp</span><br><span class="line">  List of Datafiles <span class="keyword">in</span> backup <span class="built_in">set</span> 3</span><br><span class="line">  Container ID: 2, PDB Name: PDB<span class="variable">$SEED</span></span><br><span class="line">  File LV Type Ckp SCN    Ckp Time  Abs Fuz SCN Sparse Name</span><br><span class="line">  ---- -- ---- ---------- --------- ----------- ------ ----</span><br><span class="line">  5    0  Incr 1441296    03-NOV-19              NO    /u01/app/oracle/oradata/booboo/pdbseed/system01.dbf</span><br><span class="line">  6    0  Incr 1441296    03-NOV-19              NO    /u01/app/oracle/oradata/booboo/pdbseed/sysaux01.dbf</span><br><span class="line">  8    0  Incr 1441296    03-NOV-19              NO    /u01/app/oracle/oradata/booboo/pdbseed/undotbs01.dbf</span><br><span class="line"></span><br><span class="line">BS Key  Type LV Size       Device Type Elapsed Time Completion Time</span><br><span class="line">------- ---- -- ---------- ----------- ------------ ---------------</span><br><span class="line">4       Full    17.94M     DISK        00:00:01     04-FEB-20</span><br><span class="line">        BP Key: 4   Status: AVAILABLE  Compressed: NO  Tag: TAG20200204T172727</span><br><span class="line">        Piece Name: /u01/app/oracle/fast_recovery_area/EMCDB/autobackup/2020_02_04/o1_mf_s_1031506047_h3lg805t_.bkp</span><br><span class="line">  SPFILE Included: Modification <span class="keyword">time</span>: 04-FEB-20</span><br><span class="line">  SPFILE db_unique_name: EMCDB</span><br><span class="line">  Control File Included: Ckp SCN: 3453270      Ckp <span class="keyword">time</span>: 04-FEB-20</span><br><span class="line"></span><br><span class="line">BS Key  Size       Device Type Elapsed Time Completion Time</span><br><span class="line">------- ---------- ----------- ------------ ---------------</span><br><span class="line">5       91.75M     DISK        00:00:00     04-FEB-20</span><br><span class="line">        BP Key: 5   Status: AVAILABLE  Compressed: NO  Tag: BACKUP_EMCDB_00000_020420052546</span><br><span class="line">        Piece Name: /u01/app/oracle/fast_recovery_area/EMCDB/backupset/2020_02_04/o1_mf_annnn_BACKUP_EMCDB_00000_0_h3lg8359_.bkp</span><br><span class="line"></span><br><span class="line">  List of Archived Logs <span class="keyword">in</span> backup <span class="built_in">set</span> 5</span><br><span class="line">  Thrd Seq     Low SCN    Low Time  Next SCN   Next Time</span><br><span class="line">  ---- ------- ---------- --------- ---------- ---------</span><br><span class="line">  1    32      3399092    04-FEB-20 3415518    04-FEB-20</span><br><span class="line">  1    33      3415518    04-FEB-20 3415523    04-FEB-20</span><br><span class="line">  1    34      3415523    04-FEB-20 3415528    04-FEB-20</span><br><span class="line">  1    35      3415528    04-FEB-20 3415533    04-FEB-20</span><br><span class="line">  1    36      3415533    04-FEB-20 3415538    04-FEB-20</span><br><span class="line">  1    37      3415538    04-FEB-20 3453307    04-FEB-20</span><br><span class="line"></span><br><span class="line">BS Key  Type LV Size       Device Type Elapsed Time Completion Time</span><br><span class="line">------- ---- -- ---------- ----------- ------------ ---------------</span><br><span class="line">6       Full    17.94M     DISK        00:00:00     04-FEB-20</span><br><span class="line">        BP Key: 6   Status: AVAILABLE  Compressed: NO  Tag: TAG20200204T172732</span><br><span class="line">        Piece Name: /u01/app/oracle/fast_recovery_area/EMCDB/autobackup/2020_02_04/o1_mf_s_1031506052_h3lg84pn_.bkp</span><br><span class="line">  SPFILE Included: Modification <span class="keyword">time</span>: 04-FEB-20</span><br><span class="line">  SPFILE db_unique_name: EMCDB</span><br><span class="line">  Control File Included: Ckp SCN: 3453372      Ckp <span class="keyword">time</span>: 04-FEB-20</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h3 id="KnowledgePoint-2" class="article-heading"><a href="#KnowledgePoint-2" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-2" aria-hidden="true"></a></h3><p>在Enterprise Manager Cloud Control中，通过调度备份进行数据库在线热备之全库备份</p>
+<h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><p>Enterprise Manager Cloud Control中关于备份的操作个人理解为是RMAN的图形化界面。</p>
+<ol>
+<li><p>备份控制文件<code>alter database backup controlfile to trace;</code></p>
+</li>
+<li><p>配置控制文件和SPFILE的自动备份<code>CONFIGURE CONTROLFILE AUTOBACKUP ON;</code></p>
+</li>
+<li><p>创建一个完整的数据库备份</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">backup incremental level <span class="number">0</span> cumulative device type disk tag <span class="string">'%TAG'</span> database;</span><br><span class="line">backup device type disk tag <span class="string">'%TAG'</span> archivelog <span class="keyword">all</span> <span class="keyword">not</span> backed up <span class="keyword">delete</span> <span class="keyword">all</span> input;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/BoobooWei/booboo_oracle/blob/master/scripts/AutoGetRmanBackupScripts.sh"><strong>AutoGetRmanBackupScripts.sh</strong></a></p>
+</li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:59.410Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B514-%E6%A6%82%E8%A7%88"><span class="toc-text">实践14:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B514-1-%E5%A4%87%E4%BB%BD%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6"><span class="toc-text">实践14-1:备份控制文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B514-2-%E9%85%8D%E7%BD%AE%E6%8E%A7%E5%88%B6%E6%96%87%E4%BB%B6%E5%92%8CSPFILE%E7%9A%84%E8%87%AA%E5%8A%A8%E5%A4%87%E4%BB%BD"><span class="toc-text">实践14-2:配置控制文件和SPFILE的自动备份</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-1"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-1"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-1"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-1"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B514-3-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD"><span class="toc-text">实践14-3:创建一个完整的数据库备份</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-2"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-2"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-2"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-2"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

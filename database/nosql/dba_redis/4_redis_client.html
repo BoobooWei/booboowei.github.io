@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Redis_client | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/nosql/dba_redis/4_redis_client">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/nosql/dba_redis/4_redis_client" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2017-10-16 BoobooWei  客户端分类 普通客户端使用套接字来与服务器进行通讯，服务器会记录客户端套接字的描述符。 伪客户端处理的命令请求来源于 AOF 文件或者 Lua 脚本， 而不是网络，这种客户端不需要套接字连接， 也不需要记录套接字描述符。  处理 Lua 脚本的伪客户端在服务器初始化时创建， 这个客户端会一直存在， 直到服务器关闭。 载入 AOF 文件时使用的伪客户端在">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Redis_client">
+<meta property="og:url" content="http://www.toberoot.com/database/nosql/dba_redis/4_redis_client">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2017-10-16 BoobooWei  客户端分类 普通客户端使用套接字来与服务器进行通讯，服务器会记录客户端套接字的描述符。 伪客户端处理的命令请求来源于 AOF 文件或者 Lua 脚本， 而不是网络，这种客户端不需要套接字连接， 也不需要记录套接字描述符。  处理 Lua 脚本的伪客户端在服务器初始化时创建， 这个客户端会一直存在， 直到服务器关闭。 载入 AOF 文件时使用的伪客户端在">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.873Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:33.534Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Redis_client</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/nosql/dba_redis/4_redis_client.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2017-10-16 BoobooWei</p>
+</blockquote>
+<h2 id="客户端分类" class="article-heading"><a href="#客户端分类" class="headerlink" title="客户端分类"></a>客户端分类<a class="article-anchor" href="#客户端分类" aria-hidden="true"></a></h2><p><img src="pic/22.png"></p>
+<h3 id="普通客户端" class="article-heading"><a href="#普通客户端" class="headerlink" title="普通客户端"></a>普通客户端<a class="article-anchor" href="#普通客户端" aria-hidden="true"></a></h3><p>使用套接字来与服务器进行通讯，服务器会记录客户端套接字的描述符。</p>
+<h3 id="伪客户端" class="article-heading"><a href="#伪客户端" class="headerlink" title="伪客户端"></a>伪客户端<a class="article-anchor" href="#伪客户端" aria-hidden="true"></a></h3><p>处理的命令请求来源于 AOF 文件或者 Lua 脚本， 而不是网络，这种客户端不需要套接字连接， 也不需要记录套接字描述符。</p>
+<ul>
+<li>处理 Lua 脚本的伪客户端在服务器初始化时创建， 这个客户端会一直存在， 直到服务器关闭。</li>
+<li>载入 AOF 文件时使用的伪客户端在载入工作开始时动态创建， 载入工作完毕之后关闭。</li>
+</ul>
+<h2 id="客户端属性" class="article-heading"><a href="#客户端属性" class="headerlink" title="客户端属性"></a>客户端属性<a class="article-anchor" href="#客户端属性" aria-hidden="true"></a></h2><blockquote>
+<p><a target="_blank" rel="noopener" href="http://redisbook.com/preview/client/redis_client_property.html">参考文档</a></p>
+</blockquote>
+<p>对客户端状态中比较通用的那部分属性进行介绍，客户端状态包含的属性可以分为两类：</p>
+<ul>
+<li>一类是比较通用的属性， 这些属性很少与特定功能相关， 无论客户端执行的是什么工作， 它们都要用到这些属性。</li>
+<li>另外一类是和特定功能相关的属性， 比如操作数据库时需要用到的 <code>db</code> 属性和 <code>dictid</code> 属性， 执行事务时需要用到的 <code>mstate</code> 属性， 以及执行 WATCH 命令时需要用到的 <code>watched_keys</code> 属性， 等等。</li>
+</ul>
+<h3 id="创建普通客户端" class="article-heading"><a href="#创建普通客户端" class="headerlink" title="创建普通客户端"></a>创建普通客户端<a class="article-anchor" href="#创建普通客户端" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">redis-cli -h &lt;ip&gt; -p &lt;port&gt; -a &lt;password&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="获取客户端属性" class="article-heading"><a href="#获取客户端属性" class="headerlink" title="获取客户端属性"></a>获取客户端属性<a class="article-anchor" href="#获取客户端属性" aria-hidden="true"></a></h3><p>命令<code>client list</code>获取客户端属性。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@ToBeRoot ~]# redis-cli -p 6380 -a zyadmin</span><br><span class="line">127.0.0.1:6380&gt; client list</span><br><span class="line">id=16 addr=127.0.0.1:36044 fd=5 name= age=9 idle=0 flags=N db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=32768 obl=0 oll=0 omem=0 events=r cmd=client</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="读懂客户端属性" class="article-heading"><a href="#读懂客户端属性" class="headerlink" title="读懂客户端属性"></a>读懂客户端属性<a class="article-anchor" href="#读懂客户端属性" aria-hidden="true"></a></h3><p>客户端属性如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>16</td>
+<td>客户端标识</td>
+</tr>
+<tr>
+<td>addr</td>
+<td>127.0.0.1:36044</td>
+<td>客户端的地址和端口</td>
+</tr>
+<tr>
+<td>fd</td>
+<td>-1 or 大于 -1的整数</td>
+<td>伪客户端（fake client）载入 AOF 文件并还原数据库状态；执行 Lua 脚本中包含的 Redis 命令。普通客户端的 <code>fd</code> 属性的值为大于 <code>-1</code> 的整数</td>
+</tr>
+<tr>
+<td>name</td>
+<td></td>
+<td>在默认情况下， 一个连接到服务器的客户端是没有名字的。</td>
+</tr>
+<tr>
+<td>age</td>
+<td>9</td>
+<td>以秒计算的已连接时长</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>N</td>
+<td>记录了客户端的角色（role）， 以及客户端目前所处的状态</td>
+</tr>
+<tr>
+<td>db</td>
+<td>0</td>
+<td>该客户端正在使用的数据库 ID</td>
+</tr>
+<tr>
+<td>sub</td>
+<td>0</td>
+<td>已订阅频道的数量</td>
+</tr>
+<tr>
+<td>multi</td>
+<td>-1</td>
+<td>在事务中被执行的命令数量</td>
+</tr>
+<tr>
+<td>qbuf</td>
+<td>0</td>
+<td>输入缓冲区的大小会根据输入内容动态地缩小或者扩大， 但它的最大大小不能超过 1 GB ， 否则服务器将关闭这个客户端。</td>
+</tr>
+<tr>
+<td>qbuf-free</td>
+<td>32768</td>
+<td>查询缓冲区剩余空间的长度（字节为单位， 0 表示没有剩余空间）</td>
+</tr>
+<tr>
+<td>obl</td>
+<td>0</td>
+<td>输出缓冲区的长度（字节为单位， 0 表示没有分配输出缓冲区）</td>
+</tr>
+<tr>
+<td>oll</td>
+<td>0</td>
+<td>输出列表包含的对象数量（当输出缓冲区没有剩余空间时，命令回复会以字符串对象的形式被入队到这个队列里）</td>
+</tr>
+<tr>
+<td>omem</td>
+<td>0</td>
+<td>输出缓冲区和输出列表占用的内存总量</td>
+</tr>
+<tr>
+<td>events</td>
+<td>r</td>
+<td>文件描述符事件</td>
+</tr>
+<tr>
+<td>cmd</td>
+<td>client</td>
+<td>最近一次执行的命令</td>
+</tr>
+</tbody></table>
+<p>客户端 flag 可以由以下部分组成：</p>
+<ul>
+<li>O ： 客户端是 MONITOR 模式下的附属节点（slave）</li>
+<li>S ： 客户端是一般模式下（normal）的附属节点</li>
+<li>M ： 客户端是主节点（master）</li>
+<li>x ： 客户端正在执行事务</li>
+<li>b ： 客户端正在等待阻塞事件</li>
+<li>i ： 客户端正在等待 VM I/O 操作（已废弃）</li>
+<li>d ： 一个受监视（watched）的键已被修改， EXEC 命令将失败</li>
+<li>c : 在将回复完整地写出之后，关闭链接</li>
+<li>u : 客户端未被阻塞（unblocked）</li>
+<li>A : 尽可能快地关闭连接</li>
+<li>N : 未设置任何 flag</li>
+</ul>
+<p>文件描述符事件可以是：</p>
+<ul>
+<li>r : 客户端套接字（在事件 loop 中）是可读的（readable）</li>
+<li>w : 客户端套接字（在事件 loop 中）是可写的（writeable）</li>
+</ul>
+<h3 id="设置客户端属性" class="article-heading"><a href="#设置客户端属性" class="headerlink" title="设置客户端属性"></a>设置客户端属性<a class="article-anchor" href="#设置客户端属性" aria-hidden="true"></a></h3><h4 id="设置名字" class="article-heading"><a href="#设置名字" class="headerlink" title="设置名字"></a>设置名字<a class="article-anchor" href="#设置名字" aria-hidden="true"></a></h4><p>命令<code>client setname</code> 为客户端设置一个名字， 让客户端的身份变得更清晰。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">127.0.0.1:6380&gt; client setname test1</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6380&gt; client list</span><br><span class="line">id=16 addr=127.0.0.1:36044 fd=5 name=test1 age=965 idle=0 flags=N db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=32768 obl=0 oll=0 omem=0 events=r cmd=client</span><br></pre></td></tr></tbody></table></figure>
+
+<p>命令<code>client getname</code>获取客户端名字</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">127.0.0.1:6380&gt; client getname</span><br><span class="line">"test1"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>命令<code>client setname ""</code>清空名字</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">127.0.0.1:6380&gt; client setname ""</span><br><span class="line">OK</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="关闭客户端" class="article-heading"><a href="#关闭客户端" class="headerlink" title="关闭客户端"></a>关闭客户端<a class="article-anchor" href="#关闭客户端" aria-hidden="true"></a></h4><p>命令<code>client kill</code> 用于关闭客户端连接。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">redis 127.0.0.1:6379&gt; CLIENT KILL ip:port</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="阻塞客户端" class="article-heading"><a href="#阻塞客户端" class="headerlink" title="阻塞客户端"></a>阻塞客户端<a class="article-anchor" href="#阻塞客户端" aria-hidden="true"></a></h4><p>命令<code>client pause</code> 用于阻塞客户端命令一段时间（以毫秒计）。</p>
+<p>redis Client Pause 命令基本语法如下：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">redis 127.0.0.1:6379&gt; CLIENT PAUSE timeout</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="客户端状态" class="article-heading"><a href="#客户端状态" class="headerlink" title="客户端状态"></a>客户端状态<a class="article-anchor" href="#客户端状态" aria-hidden="true"></a></h2><h3 id="clients-链表" class="article-heading"><a href="#clients-链表" class="headerlink" title="clients 链表"></a>clients 链表<a class="article-anchor" href="#clients-链表" aria-hidden="true"></a></h3><p>客户端在服务器状态 <code>clients</code> 属性中的样子:</p>
+<p><img src="pic/16.png"></p>
+<ul>
+<li>服务器状态结构使用 <code>clients</code> 链表连接起多个客户端状态， 新添加的客户端状态会被放到链表的末尾。</li>
+</ul>
+<h3 id="输入缓冲区" class="article-heading"><a href="#输入缓冲区" class="headerlink" title="输入缓冲区"></a>输入缓冲区<a class="article-anchor" href="#输入缓冲区" aria-hidden="true"></a></h3><p>Redis 客户端的输入缓冲区示例:</p>
+<p><img src="pic/17.png"></p>
+<ul>
+<li>输入缓冲区记录了客户端发送的命令请求， 这个缓冲区的大小不能超过 1 GB 。</li>
+</ul>
+<h3 id="命令与命令参数" class="article-heading"><a href="#命令与命令参数" class="headerlink" title="命令与命令参数"></a>命令与命令参数<a class="article-anchor" href="#命令与命令参数" aria-hidden="true"></a></h3><p>Redis 客户端的 <code>argv</code> 属性和 <code>argc</code> 属性示例：</p>
+<p><img src="pic/18.png"></p>
+<ul>
+<li>命令的参数和参数个数会被记录在客户端状态的 <code>argv</code> 和 <code>argc</code> 属性里面， 而 <code>cmd</code> 属性则记录了客户端要执行命令的实现函数。</li>
+<li>在服务器将客户端发送的命令请求保存到客户端状态的 <code>querybuf</code> 属性之后， 服务器将对命令请求的内容进行分析， 并将得出的命令参数以及命令参数的个数分别保存到客户端状态的 <code>argv</code> 属性和 <code>argc</code> 属性。</li>
+<li><code>argv</code> 属性是一个数组， 数组中的每个项都是一个字符串对象： 其中 <code>argv[0]</code> 是要执行的命令， 而之后的其他项则是传给命令的参数。</li>
+<li><code>argc</code> 属性则负责记录 <code>argv</code> 数组的长度。</li>
+</ul>
+<h3 id="命令的实现函数" class="article-heading"><a href="#命令的实现函数" class="headerlink" title="命令的实现函数"></a>命令的实现函数<a class="article-anchor" href="#命令的实现函数" aria-hidden="true"></a></h3><p>服务器在 <code>argv[0]</code> 为 <code>"SET"</code> 时， 查找命令表并将客户端状态的 <code>cmd</code> 指针指向目标 <code>redisCommand</code> 结构的整个过程如下：</p>
+<p><img src="pic/19.png"></p>
+<h3 id="输出缓冲区" class="article-heading"><a href="#输出缓冲区" class="headerlink" title="输出缓冲区"></a>输出缓冲区<a class="article-anchor" href="#输出缓冲区" aria-hidden="true"></a></h3><p>执行命令所得的命令回复会被保存在客户端状态的输出缓冲区里面， 每个客户端都有两个输出缓冲区可用， 一个缓冲区的大小是固定的， 另一个缓冲区的大小是可变的：</p>
+<ul>
+<li>固定大小的缓冲区用于保存那些长度比较小的回复， 比如 <code>OK</code> 、简短的字符串值、整数值、错误回复，等等。</li>
+<li>可变大小的缓冲区用于保存那些长度比较大的回复， 比如一个非常长的字符串值， 一个由很多项组成的列表， 一个包含了很多元素的集合， 等等。</li>
+</ul>
+<p>客户端的固定大小缓冲区由 <code>buf</code> 和 <code>bufpos</code> 两个属性组成：</p>
+<ul>
+<li><code>buf</code> 是一个大小为 <code>REDIS_REPLY_CHUNK_BYTES</code> 字节的字节数组，<code>REDIS_REPLY_CHUNK_BYTES</code> 常量目前的默认值为 <code>16*1024</code> ， 也即是说， <code>buf</code> 数组的默认大小为 16 KB 。</li>
+<li><code>bufpos</code> 属性则记录了 <code>buf</code> 数组目前已使用的字节数量。</li>
+</ul>
+<p>使用固定大小缓冲区来保存返回值 <code>+OK\r\n</code> 的例子：</p>
+<p><img src="pic/20.png"></p>
+<p>当 <code>buf</code> 数组的空间已经用完， 或者回复因为太大而没办法放进 <code>buf</code> 数组里面时， 服务器就会开始使用可变大小缓冲区。</p>
+<ul>
+<li><p>可变大小缓冲区由 <code>reply</code> 链表和一个或多个字符串对象组成。</p>
+</li>
+<li><p>通过使用链表来连接多个字符串对象， 服务器可以为客户端保存一个非常长的命令回复， 而不必受到固定大小缓冲区 16 KB 大小的限制。</p>
+</li>
+</ul>
+<p>包含三个字符串对象的 <code>reply</code> 链表的例子：</p>
+<p><img src="pic/21.png"></p>
+<h4 id="输出缓冲区限制" class="article-heading"><a href="#输出缓冲区限制" class="headerlink" title="输出缓冲区限制"></a>输出缓冲区限制<a class="article-anchor" href="#输出缓冲区限制" aria-hidden="true"></a></h4><p>服务器使用两种模式来限制客户端输出缓冲区的大小：</p>
+<ul>
+<li>硬性限制（hard limit）： 如果输出缓冲区大小超过了硬性限制所设置的大小，那么服务器立刻关闭客户端。</li>
+<li>软性限制（soft limit）：如果输出缓冲区大小超过了软性限制所设置的大小，但是没有超过硬性限制，那么服务器将使用客户端状态结构的<code>obuf_soft_limit_reached_time</code>属性记录下<strong>客户端到达软性限制的起始时间</strong>；之后服务器会继续监视客户端，如果输出缓冲区的大小一直超过软性限制，并且持续时间超过服务器设定的时长，那么服务器将关闭客户端；相反地，如果输出缓冲区的大小在指定时间内，不再超出软性限制，那么客户端就不会被关闭，并且<code>obuf_soft_limit_reached_time</code>会被清零。</li>
+</ul>
+<h4 id="限制配置" class="article-heading"><a href="#限制配置" class="headerlink" title="限制配置"></a>限制配置<a class="article-anchor" href="#限制配置" aria-hidden="true"></a></h4><p>配置文件中通过<code>client-output-buffer-limit</code>来配置，如下：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">client-output-buffer-limit normal 0 0 0</span><br><span class="line">client-output-buffer-limit slave 256mb 64mb 60</span><br><span class="line">client-output-buffer-limit pubsub 32mb 8mb 60</span><br></pre></td></tr></tbody></table></figure>
+
+<p>不同客户端有不同策略，策略如下：</p>
+<ul>
+<li><p>对于普通客户端来说，限制为0，也就是不限制。因为普通客户端通常采用阻塞式的消息应答模式，何谓阻塞式呢？如：发送请求，等待返回，再发送请求，再等待返回。这种模式下，通常不会导致Redis服务器输出缓冲区的堆积膨胀；</p>
+</li>
+<li><p>对于Pub/Sub客户端（也就是发布/订阅模式），大小限制是8M，当输出缓冲区超过8M时，会关闭连接。持续性限制是，当客户端缓冲区大小持续60秒超过2M，则关闭客户端连接；</p>
+</li>
+<li><p>对于slave客户端来说，大小限制是256M，持续性限制是当客户端缓冲区大小持续60秒超过64M，则关闭客户端连接。</p>
+</li>
+</ul>
+<p>上述三种规则都是可以修改的。可以通过<code>CONFIG SET</code> 命令设置或者直接修改redis.conf文件。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">上面三个参数可能会出现如下问题</span></span><br><span class="line">Client id=174607862 addr=10.11.24.158:59918 fd=19 name= age=261 idle=261 flags=S db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=0 obl=11590 oll=2456 omem=70541940 events=r cmd=psync scheduled to be closed ASAP for overcoming of output buffer limits.</span><br><span class="line">31799:M 27 Oct 23:07:57.660 # Connection with slave 10.11.24.158:18101 lost.</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">解决方法</span></span><br><span class="line">/data/app/redis/bin/redis-cli -h 127.0.0.1 -p 18101  config set  client-output-buffer-limit "normal 0 0 0 slave 268435456 67108864 120 pubsub 33554432 8388608 120"</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="身份验证" class="article-heading"><a href="#身份验证" class="headerlink" title="身份验证"></a>身份验证<a class="article-anchor" href="#身份验证" aria-hidden="true"></a></h3><p>客户端状态的 <code>authenticated</code> 属性用于记录客户端是否通过了身份验证：</p>
+<ul>
+<li>如果 <code>authenticated</code> 的值为 <code>0</code> ， 那么表示客户端未通过身份验证；</li>
+<li>如果 <code>authenticated</code> 的值为 <code>1</code> ， 那么表示客户端已经通过了身份验证。</li>
+</ul>
+<p>举个例子， 对于一个尚未进行身份验证的客户端来说， 客户端状态的 <code>authenticated</code> 属性将下 所示：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">当客户端 authenticated 属性的值为 0 时， 除了 AUTH 命令之外， 客户端发送的所有其他命令都会被服务器拒绝执行：</span></span><br><span class="line">[root@ToBeRoot ~]# redis-cli -p 6380</span><br><span class="line">127.0.0.1:6380&gt; client list</span><br><span class="line">NOAUTH Authentication required.</span><br><span class="line">127.0.0.1:6380&gt; ping</span><br><span class="line">(error) NOAUTH Authentication required.</span><br><span class="line">127.0.0.1:6380&gt; auth zyadmin</span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">当客户端通过 AUTH 命令成功进行身份验证之后， 客户端状态 authenticated 属性的值就会从 0 变为 1</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>authenticated</code> 属性仅在服务器启用了身份验证功能时使用： 如果服务器没有启用身份验证功能的话， 那么即使 <code>authenticated</code> 属性的值为 <code>0</code>（这是默认值）， 服务器也不会拒绝执行客户端发送的命令请求。</p>
+<h3 id="时间" class="article-heading"><a href="#时间" class="headerlink" title="时间"></a>时间<a class="article-anchor" href="#时间" aria-hidden="true"></a></h3><p>客户端还有几个和时间有关的属性：</p>
+<ul>
+<li><code>ctime</code> 属性记录了创建客户端的时间， 这个时间可以用来计算客户端与服务器已经连接了多少秒 —— <code>client list</code> 命令的 <code>age</code> 域记录了这个秒数；</li>
+<li><code>lastinteraction</code> 属性记录了客户端与服务器最后一次进行互动（interaction）的时间， 这里的互动可以是客户端向服务器发送命令请求， 也可以是服务器向客户端发送命令回复—— <code>client list</code> 命令的 <code>idle</code> 域记录了这个秒数；</li>
+<li><code>obuf_soft_limit_reached_time</code> 属性记录了输出缓冲区第一次到达软性限制（soft limit）的时间。</li>
+</ul>
+<h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><ul>
+<li>服务器状态结构使用 <code>clients</code> 链表连接起多个客户端状态， 新添加的客户端状态会被放到链表的末尾。</li>
+<li>客户端状态的 <code>flags</code> 属性使用不同标志来表示客户端的角色， 以及客户端当前所处的状态。</li>
+<li>输入缓冲区记录了客户端发送的命令请求， 这个缓冲区的大小不能超过 1 GB 。</li>
+<li>命令的参数和参数个数会被记录在客户端状态的 <code>argv</code> 和 <code>argc</code> 属性里面， 而 <code>cmd</code> 属性则记录了客户端要执行命令的实现函数。</li>
+<li>客户端有固定大小缓冲区和可变大小缓冲区两种缓冲区可用， 其中固定大小缓冲区的最大大小为 16 KB ， 而可变大小缓冲区的最大大小不能超过服务器设置的硬性限制值。</li>
+<li>输出缓冲区限制值有两种， 如果输出缓冲区的大小超过了服务器设置的硬性限制， 那么客户端会被立即关闭； 除此之外， 如果客户端在一定时间内， 一直超过服务器设置的软性限制， 那么客户端也会被关闭。</li>
+<li>当一个客户端通过网络连接连上服务器时， 服务器会为这个客户端创建相应的客户端状态。 网络连接关闭、 发送了不合协议格式的命令请求、 成为 CLIENT_KILL 命令的目标、 空转时间超时、 输出缓冲区的大小超出限制， 以上这些原因都会造成客户端被关闭。</li>
+<li>处理 Lua 脚本的伪客户端在服务器初始化时创建， 这个客户端会一直存在， 直到服务器关闭。</li>
+<li>载入 AOF 文件时使用的伪客户端在载入工作开始时动态创建， 载入工作完毕之后关闭。</li>
+</ul>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:33.534Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%86%E7%B1%BB"><span class="toc-text">客户端分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">普通客户端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%AA%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">伪客户端</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B1%9E%E6%80%A7"><span class="toc-text">客户端属性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%99%AE%E9%80%9A%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">创建普通客户端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B1%9E%E6%80%A7"><span class="toc-text">获取客户端属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BB%E6%87%82%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B1%9E%E6%80%A7"><span class="toc-text">读懂客户端属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B1%9E%E6%80%A7"><span class="toc-text">设置客户端属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E5%90%8D%E5%AD%97"><span class="toc-text">设置名字</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E9%97%AD%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">关闭客户端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%BB%E5%A1%9E%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">阻塞客户端</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%8A%B6%E6%80%81"><span class="toc-text">客户端状态</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#clients-%E9%93%BE%E8%A1%A8"><span class="toc-text">clients 链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E7%BC%93%E5%86%B2%E5%8C%BA"><span class="toc-text">输入缓冲区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E4%B8%8E%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0"><span class="toc-text">命令与命令参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0"><span class="toc-text">命令的实现函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E7%BC%93%E5%86%B2%E5%8C%BA"><span class="toc-text">输出缓冲区</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E7%BC%93%E5%86%B2%E5%8C%BA%E9%99%90%E5%88%B6"><span class="toc-text">输出缓冲区限制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%99%90%E5%88%B6%E9%85%8D%E7%BD%AE"><span class="toc-text">限制配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81"><span class="toc-text">身份验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4"><span class="toc-text">时间</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

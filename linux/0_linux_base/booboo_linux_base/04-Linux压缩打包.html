@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Linux压缩打包 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/04-Linux%E5%8E%8B%E7%BC%A9%E6%89%93%E5%8C%85">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/04-Linux%E5%8E%8B%E7%BC%A9%E6%89%93%E5%8C%85" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="压缩的意义和原理压缩的意义你是否遇到过以下情况：  文件太大, 一个 u 盘无法全部复制? 备份某些重要数据 , 偏偏这些数据量太大了 , 耗掉了你太多的磁盘空间?  这个时候，“文件压缩”技术可 就派上用场了 ! 因为这些比较大型的文件透过所谓的文件压缩技术后 , 可以将他的磁盘使用量降低 , 可以达到减低文件容量的效果 , 此外 , 有的压缩程序还可以进行容量限制 , 使一个大型文件可以分割成">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Linux压缩打包">
+<meta property="og:url" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/04-Linux%E5%8E%8B%E7%BC%A9%E6%89%93%E5%8C%85">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="压缩的意义和原理压缩的意义你是否遇到过以下情况：  文件太大, 一个 u 盘无法全部复制? 备份某些重要数据 , 偏偏这些数据量太大了 , 耗掉了你太多的磁盘空间?  这个时候，“文件压缩”技术可 就派上用场了 ! 因为这些比较大型的文件透过所谓的文件压缩技术后 , 可以将他的磁盘使用量降低 , 可以达到减低文件容量的效果 , 此外 , 有的压缩程序还可以进行容量限制 , 使一个大型文件可以分割成">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.008Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:46.504Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Linux压缩打包</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/0_linux_base/booboo_linux_base/04-Linux压缩打包.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h2 id="压缩的意义和原理" class="article-heading"><a href="#压缩的意义和原理" class="headerlink" title="压缩的意义和原理"></a>压缩的意义和原理<a class="article-anchor" href="#压缩的意义和原理" aria-hidden="true"></a></h2><h3 id="压缩的意义" class="article-heading"><a href="#压缩的意义" class="headerlink" title="压缩的意义"></a>压缩的意义<a class="article-anchor" href="#压缩的意义" aria-hidden="true"></a></h3><p>你是否遇到过以下情况：</p>
+<ul>
+<li>文件太大, 一个 u 盘无法全部复制?</li>
+<li>备份某些重要数据 , 偏偏这些数据量太大了 , 耗掉了你太多的磁盘空间?</li>
+</ul>
+<p>这个时候，“文件压缩”技术可 就派上用场了 !</p>
+<p>因为这些比较大型的文件透过所谓的文件压缩技术后 , 可以将他的磁盘使用量降低 , 可以达到减低文件容量的效果 , 此外 , 有的压缩程序还可以进行容量限制 , 使一个大型文件可以分割成为数个小型文件 , 以方便 U盘携带呢 !</p>
+<h3 id="压缩的原理" class="article-heading"><a href="#压缩的原理" class="headerlink" title="压缩的原理"></a>压缩的原理<a class="article-anchor" href="#压缩的原理" aria-hidden="true"></a></h3><p>目前我们使用的计算机系统中都是使 bytes(字节)单位来计量的! 事实上 , 计算机最小的计量单位应该是 bits (比特)。</p>
+<p>1 byte = 8 bits 。</p>
+<p>如果让计算机记录 1 这个数字他会如何记录 ?</p>
+<p>假设一个 byte 可以看成下面的样子 :</p>
+<p>□□□□□□□□</p>
+<p>Tips:</p>
+<p>1 byte = 8 bits , 所以每个 byte 当中会有 8 个空格 , 而每个空格可以是 0, 或者 1 , 这里仅是做为一个粗略的介绍。由于我们记录数字是 1 , 表示成二进制就是 00000001 , 1 会在最右边占据 1 个 bit , 而其他 的 7 个bits 将会被填上 0 ! 有一种压缩技术示这么做的,他是将重复的数据进行统计记录的。</p>
+<p>举个例子说 , 如果你的数据『 111…. 』共有 100 个 1</p>
+<p>那么压缩技术会记录为『 100 个 1 』而不是真的有 100 个 1 的位存在 !</p>
+<p>简单的说 , 你可以将他想成 , 其实文件里面有相当多的『空间』存在 , 并不是完全填满的</p>
+<ul>
+<li>『压缩』 技术就是将这些『空间』填满 , 以让整个文件占用的容量下降 !</li>
+<li>『压缩过的档案』并无法直接被我们的操作系统所使用 , 因此 , 若要使用这些被压缩过的文件数据 , 则必项将他『还原』回到 未压缩前的模样 ,那就是所谓的『解压缩』啰 !</li>
+<li>至于压缩前与压缩后的档案所占用的磁盘空间大小 , 就可以被称为是『压缩比』。</li>
+</ul>
+<h3 id="压缩与解压缩的好处" class="article-heading"><a href="#压缩与解压缩的好处" class="headerlink" title="压缩与解压缩的好处"></a>压缩与解压缩的好处<a class="article-anchor" href="#压缩与解压缩的好处" aria-hidden="true"></a></h3><p>最大的好处就是压缩过的文件容量变小了 , 所以你的 硬盘容量无形当中就可以容纳更多的资料。此外 , 在一些网络数据的传输中 , 也会由于数据量的降低 , 好让网络带宽可以用来作更多的工作 ! 而并是老是卡在一些大型的文件传输上面呢 ! 目前很多的 WWW 网站也是利用文件压缩的技术来进行数据的传送 , 好让网站带宽的可利用率上升。</p>
+<h2 id="压缩打包命令" class="article-heading"><a href="#压缩打包命令" class="headerlink" title="压缩打包命令"></a>压缩打包命令<a class="article-anchor" href="#压缩打包命令" aria-hidden="true"></a></h2><p>命令概览</p>
+<ul>
+<li><p>compress 是一个相当古老的 unix 档案压缩指令。</p>
+</li>
+<li><p>gzip 是 GNUzip 的缩写,它是一个 GNU( 全称是 GNU’s Not Unix ) 自由软件的文件压缩程序 ; 由于 gzip 可以产生更理想的压缩比例,一般人多已改用 gzip 为档案压缩工具。</p>
+</li>
+<li><p>bzip2 是一个基于 Burrows-Wheeler 变换的无损压缩软件,压缩效果比传统的 LZ77/LZ78 压缩算法来得好 ; 若说 gzip 是为了取代 compress 并提供更好的压缩比而成立的,那么 bzip2 则是为了取代 gzip 并提供更佳的压缩比而来的。 bzip2 这玩意的压缩比竟然比 gzip 还要好。</p>
+</li>
+<li><p>tar 命令最初的设计目的是将文件备份到磁带上 (tape archive) ,因而得名 tar 。</p>
+</li>
+</ul>
+<p><img src="pic/01.png" alt="01"></p>
+<h3 id="zip" class="article-heading"><a href="#zip" class="headerlink" title=".zip"></a>.zip<a class="article-anchor" href="#zip" aria-hidden="true"></a></h3><p>.zip 扩展名表示文件是使用许多 zip 归档程序和压缩程序之一(但不是 gzip )创建的。因为这是一种非常流行的压缩格式,算法的详细描述也有很多,所以可以找到用于所有操作系统的有用的移植形式。这包括创建和扩展带有 .zip 文件扩展名的档案的压缩和解压缩实用程序。在 Linux 上有两种这样的工具:</p>
+<p>免费的 Info-ZIP 和以赢利为目的的 PKZIP for Linux 。</p>
+<p>如果您只是偶尔需要创建或打开 zip 文件,使用 Info-ZIP 。如果希望使用在 MS-DOS 或其它系统上使用的相同工具,请选择PKZIP ( PKZIP 可用于许多操作系统)。用于微软 Windows 的 WinZIP 和用于 Mac OS 的Stufflt 这两种实用程序可以创建和打开相互之间兼容的档案。</p>
+<p>Info-ZIP 在无法使用 gzip 或 tar 的情况下可以提供压缩和解压缩的一个不错的选择,这或许是在Linux 、微软 Windows 和 Mac OS 用户之间交换压缩文件的一种最好的形式。有许多不错的 zip 程序(有开放源码的,也有商业的)可用于这些操作系统,它们应该能确保文件的顺利交换(当然,只要是在特定于某个特定工具的特殊功能关闭的情况下)。</p>
+<p>rhel7 默认带有 info-zip 软件</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 zip-3.0]# which zip</span><br><span class="line">/usr/bin/zip</span><br><span class="line">[root@mastera0 zip-3.0]# rpm -qf /usr/bin/zip</span><br><span class="line">zip-3.0-10.el7.x86_64</span><br><span class="line">[root@mastera0 zip-3.0]# head -n 18 /usr/share/doc/zip-3.0/README</span><br><span class="line">Zip 3.0 is the first Zip update adding large file support. For now Zip 2.3x</span><br><span class="line">remains available and supported, but users should switch to this new release.</span><br><span class="line">Testing for Zip 3.0 has focused mainly on Unix, VMS, Max OS X, and Win32,</span><br><span class="line">and some other ports may not be fully supported yet. If you find your</span><br><span class="line">favorite port is broke, send us the details or, better, send bug fixes. It's</span><br><span class="line">possible that support for some older ports may be dropped in the future.</span><br><span class="line">Copyright (c) 1990-2008 Info-ZIP. All rights reserved.</span><br><span class="line">See the accompanying file LICENSE (the contents of which are also included</span><br><span class="line">in unzip.h, zip.h and wiz.h) for terms of use. If, for some reason, all</span><br><span class="line">of these files are missing, the Info-ZIP license also may be found at:</span><br><span class="line">ftp://ftp.info-zip.org/pub/infozip/license.html and</span><br><span class="line">http://www.info-zip.org/pub/infozip/license.html.</span><br><span class="line">[root@mastera0 ~]# rpm -qi zip</span><br><span class="line">Name</span><br><span class="line">: zip</span><br><span class="line">Version : 3.0</span><br><span class="line">Release : 10.el7</span><br><span class="line">Architecture: x86_64</span><br><span class="line">Install Date: Thu 23 Jun 2016 01:50:41 PM CST</span><br><span class="line">Group</span><br><span class="line">: Applications/Archiving</span><br><span class="line">Size</span><br><span class="line">: 815045License : BSD</span><br><span class="line">Signature : RSA/SHA256, Thu 03 Apr 2014 06:52:17 AM CST, Key ID 199e2f91fd431d51</span><br><span class="line">Source RPM : zip-3.0-10.el7.src.rpm</span><br><span class="line">Build Date : Tue 28 Jan 2014 06:35:49 AM CST</span><br><span class="line">Build Host : x86-019.build.eng.bos.redhat.com</span><br><span class="line">Relocations : (not relocatable)</span><br><span class="line">Packager : Red Hat, Inc. &lt;http://bugzilla.redhat.com/bugzilla&gt;</span><br><span class="line">Vendor</span><br><span class="line">: Red Hat, Inc.</span><br><span class="line">URL</span><br><span class="line">: http://www.info-zip.org/Zip.html</span><br><span class="line">Summary : A file compression and packaging utility compatible with PKZIP</span><br><span class="line">Description :</span><br><span class="line">The zip program is a compression and file packaging utility. Zip is</span><br><span class="line">analogous to a combination of the UNIX tar and compress commands and</span><br><span class="line">is compatible with PKZIP (a compression and file packaging utility for</span><br><span class="line">MS-DOS systems).</span><br><span class="line">Install the zip package if you need to compress files using the zip</span><br><span class="line">program.</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="zip-命令用法" class="article-heading"><a href="#zip-命令用法" class="headerlink" title="zip 命令用法"></a>zip 命令用法<a class="article-anchor" href="#zip-命令用法" aria-hidden="true"></a></h4><p>zip 命令可以用来解压缩文件,或者对文件进行打包操作。 zip 是个使用广泛的压缩程序,文件经它压缩后会另外产生具有 “ .zip” 扩展名的压缩文件。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">语法 zip( 选项 )( 参数 )</span><br><span class="line"></span><br><span class="line">选项</span><br><span class="line"></span><br><span class="line">-A :调整可执行的自动解压缩文件;</span><br><span class="line">-b&lt; 工作目录 &gt; :指定暂时存放文件的目录;</span><br><span class="line">-c :替每个被压缩的文件加上注释;</span><br><span class="line">-d :从压缩文件内删除指定的文件;</span><br><span class="line">-D :压缩文件内不建立目录名称;</span><br><span class="line">-f :此参数的效果和指定 “ -u” 参数类似,但不仅更新既有文件,如果某些文件原本不存在于压缩文</span><br><span class="line">件内,使用本参数会一并将其加入压缩文件中;</span><br><span class="line">-F :尝试修复已损坏的压缩文件;</span><br><span class="line">-g :将文件压缩后附加在已有的压缩文件之后,而非另行建立新的压缩文件;</span><br><span class="line">-h :在线帮助;</span><br><span class="line">-i&lt; 范本样式 &gt; :只压缩符合条件的文件;</span><br><span class="line">-j :只保存文件名称及其内容,而不存放任何目录名称;</span><br><span class="line">-J :删除压缩文件前面不必要的数据;</span><br><span class="line">-k :使用 MS-DOS 兼容格式的文件名称;</span><br><span class="line">-l :压缩文件时,把 LF 字符置换成 LF+CR 字符;</span><br><span class="line">-ll :压缩文件时,把 LF+cp 字符置换成 LF 字符;</span><br><span class="line">-L :显示版权信息;</span><br><span class="line">-m :将文件压缩并加入压缩文件后,删除原始文件,即把文件移到压缩文件中;</span><br><span class="line">-n&lt; 字尾字符串 &gt; :不压缩具有特定字尾字符串的文件;</span><br><span class="line">-o :以压缩文件内拥有最新更改时间的文件为准,将压缩文件的更改时间设成和该文件相同;</span><br><span class="line">-q :不显示指令执行过程;</span><br><span class="line">-r :递归处理,将指定目录下的所有文件和子目录一并处理;</span><br><span class="line">-S :包含系统和隐藏文件;</span><br><span class="line">-t&lt; 日期时间 &gt; :把压缩文件的日期设成指定的日期;</span><br><span class="line">-T :检查备份文件内的每个文件是否正确无误;</span><br><span class="line">-u :更换较新的文件到压缩文件内;</span><br><span class="line">-v :显示指令执行过程或显示版本信息;</span><br><span class="line">-V :保存 VMS 操作系统的文件属性;</span><br><span class="line">-w :在文件名称里假如版本编号,本参数仅在 VMS 操作系统下有效;</span><br><span class="line">-x&lt; 范本样式 &gt; :压缩时排除符合条件的文件;</span><br><span class="line">-X :不保存额外的文件属性;</span><br><span class="line">-y :直接保存符号连接,而非该链接所指向的文件,本参数仅在 UNIX 之类的系统下有效;</span><br><span class="line">-z :替压缩文件加上注释;</span><br><span class="line"><span class="meta prompt_">-$ </span><span class="language-bash">:保存第一个被压缩文件所在磁盘的卷册名称;</span></span><br><span class="line">-&lt; 压缩效率 &gt; :压缩效率是一个介于 1~9 的数值。</span><br><span class="line">参数</span><br><span class="line">zip 压缩包:指定要创建的 zip 压缩包;</span><br><span class="line">文件列表:指定要压缩的文件列表。</span><br><span class="line">实例</span><br><span class="line">zip -q -r html.zip /home/Blinux/html</span><br><span class="line">zip -q -r html.zip *</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="unzip-的用法" class="article-heading"><a href="#unzip-的用法" class="headerlink" title="unzip 的用法"></a>unzip 的用法<a class="article-anchor" href="#unzip-的用法" aria-hidden="true"></a></h4><p>unzip 命令用于解压缩由 zip 命令压缩的 “ .zip” 压缩包</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">语法 unzip( 选项 )( 参数 )</span><br><span class="line"></span><br><span class="line">选项</span><br><span class="line"></span><br><span class="line">-c :将解压缩的结果显示到屏幕上,并对字符做适当的转换;</span><br><span class="line">-f :更新现有的文件;</span><br><span class="line">-l :显示压缩文件内所包含的文件;</span><br><span class="line">-p :与 -c 参数类似,会将解压缩的结果显示到屏幕上,但不会执行任何的转换;</span><br><span class="line">-t :检查压缩文件是否正确;</span><br><span class="line">-u :与 -f 参数类似,但是除了更新现有的文件外,也会将压缩文件中的其他文件解压缩到目录中;</span><br><span class="line">-v :执行时显示详细的信息;</span><br><span class="line">-z :仅显示压缩文件的备注文字;</span><br><span class="line">-a :对文本文件进行必要的字符转换;</span><br><span class="line">-b :不要对文本文件进行字符转换;</span><br><span class="line">-C :压缩文件中的文件名称区分大小写;</span><br><span class="line">-j :不处理压缩文件中原有的目录路径;</span><br><span class="line">-L :将压缩文件中的全部文件名改为小写;</span><br><span class="line">-M :将输出结果送到 more 程序处理;</span><br><span class="line">-n :解压缩时不要覆盖原有的文件;</span><br><span class="line">-o :不必先询问用户, unzip 执行后覆盖原有的文件;</span><br><span class="line">-P&lt; 密码 &gt; :使用 zip 的密码选项;</span><br><span class="line">-q :执行时不显示任何信息;</span><br><span class="line">-s :将文件名中的空白字符转换为底线字符;</span><br><span class="line">-V :保留 VMS 的文件版本信息;</span><br><span class="line">-X :解压缩时同时回存文件原来的 UID/GID ;</span><br><span class="line">-d&lt; 目录 &gt; :指定文件解压缩后所要存储的目录;</span><br><span class="line">-x&lt; 文件 &gt; :指定不要处理 .zip 压缩文件中的哪些文件;</span><br><span class="line">-Z : unzip-Z 等于执行 zipinfo 指令</span><br><span class="line"></span><br><span class="line">参数 压缩包:指定要解压的 “ .zip” 压缩包。</span><br><span class="line"></span><br><span class="line">实例</span><br><span class="line"></span><br><span class="line">unzip test.zip</span><br><span class="line">unzip -v test.zip</span><br><span class="line">unzip -n test.zip -d /tmp</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="gz" class="article-heading"><a href="#gz" class="headerlink" title=".gz"></a>.gz<a class="article-anchor" href="#gz" aria-hidden="true"></a></h3><h4 id="gzip-的用法" class="article-heading"><a href="#gzip-的用法" class="headerlink" title="gzip 的用法"></a>gzip 的用法<a class="article-anchor" href="#gzip-的用法" aria-hidden="true"></a></h4><p>gzip 命令用来压缩文件。 gzip 是个使用广泛的压缩程序,文件经它压缩过后,其名称后面会多处 “ .gz”扩展名。 gzip 是在 Linux 系统中经常使用的一个对文件进行压缩和解压缩的命令,既方便又好用。</p>
+<p>gzip 不仅可以用来压缩大的、较少使用的文件以节省磁盘空间,还可以和 tar 命令一起构成 Linux 操作系统中比较流行的压缩文件格式。据统计, gzip 命令对文本文件有 60% ~ 70% 的压缩率。减少文件大小有两个明显的好处,一是可以减少存储空间,二是通过网络传输文件时,可以减少传输的时间。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">语法 gzip( 选项 )( 参数 )</span><br><span class="line"></span><br><span class="line">选项</span><br><span class="line"></span><br><span class="line">-a 或 —— ascii :使用 ASCII 文字模式;</span><br><span class="line">-d 或 --decompress 或 ----uncompress :解开压缩文件;</span><br><span class="line">-f 或 —— force :强行压缩文件。不理会文件名称或硬连接是否存在以及该文件是否为符号连接;</span><br><span class="line">-h 或 —— help :在线帮助;</span><br><span class="line">-l 或 —— list :列出压缩文件的相关信息;</span><br><span class="line">-L 或 —— license :显示版本与版权信息;</span><br><span class="line">-n 或 --no-name :压缩文件时,不保存原来的文件名称及时间戳记;</span><br><span class="line">-N 或 —— name :压缩文件时,保存原来的文件名称及时间戳记;</span><br><span class="line">-q 或 —— quiet :不显示警告信息;</span><br><span class="line">-r 或 —— recursive :递归处理,将指定目录下的所有文件及子目录一并处理;</span><br><span class="line">-S 或 &lt; 压缩字尾字符串 &gt; 或 ----suffix&lt; 压缩字尾字符串 &gt; :更改压缩字尾字符串;</span><br><span class="line">-t 或 —— test :测试压缩文件是否正确无误;</span><br><span class="line">-v 或 —— verbose :显示指令执行过程;</span><br><span class="line">-V 或 —— version :显示版本信息;</span><br><span class="line">-&lt; 压缩效率 &gt; :压缩效率是一个介于 1~9 的数值,预设值为 “ 6” ,指定愈大的数值,压缩效率就会</span><br><span class="line">愈高;</span><br><span class="line">--best :此参数的效果和指定 “ -9” 参数相同;</span><br><span class="line">--fast :此参数的效果和指定 “ -1” 参数相同。</span><br><span class="line"></span><br><span class="line">参数 文件列表:指定要压缩的文件或指定要解压的文件。。</span><br><span class="line"></span><br><span class="line">实例</span><br><span class="line"></span><br><span class="line">gzip * 将当前目录下的每个文件都压缩成 .gz 文件</span><br><span class="line">gzip test 将 test 文件压缩成 test.gz 文件并删除源文件</span><br><span class="line">gzip -rv /tmp 第归压缩目录中的所有文件,压缩成 .gz 结尾的文件,并显示指令执行过程</span><br><span class="line">gizp -dr /tmp 第归解压 /tmp 目录下的 .gz 结尾的文件</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="gunzip-的用法" class="article-heading"><a href="#gunzip-的用法" class="headerlink" title="gunzip 的用法"></a>gunzip 的用法<a class="article-anchor" href="#gunzip-的用法" aria-hidden="true"></a></h4><p>gunzip 命令用来解压缩文件。 gunzip 是个使用广泛的解压缩程序,它用于解开被 gzip 压缩过的文件,这些压缩文件预设最后的扩展名为 .gz 。其实压缩或解压缩,都可通过 gzip 指令单独完成。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">语法 gunzip( 选项 )( 参数 )</span><br><span class="line"></span><br><span class="line">选项</span><br><span class="line"></span><br><span class="line">-a 或 —— ascii :使用 ASCII 文字模式;</span><br><span class="line">-c 或 --stdout 或 --to-stdout :把解压后的文件输出到标准输出设备;</span><br><span class="line">-f 或 -force :强行解开压缩文件,不理会文件名称或硬连接是否存在以及该文件是否为符号连接;</span><br><span class="line">-h 或 —— help :在线帮助;</span><br><span class="line">-l 或 —— list :列出压缩文件的相关信息;</span><br><span class="line">-L 或 —— license :显示版本与版权信息;</span><br><span class="line">-n 或 --no-name :解压缩时,若压缩文件内含有原来的文件名称及时间戳记,则将其忽略不予处理;</span><br><span class="line">-N 或 —— name :解压缩时,若压缩文件内含有原来的文件名称及时间戳记,则将其回存到解开</span><br><span class="line">的文件上;</span><br><span class="line">-q 或 —— quiet :不显示警告信息;</span><br><span class="line">-r 或 —— recursive :递归处理,将指定目录下的所有文件及子目录一并处理;</span><br><span class="line">-S 或 &lt; 压缩字尾字符串 &gt; 或 ----suffix&lt; 压缩字尾字符串 &gt; :更改压缩字尾字符串;</span><br><span class="line">-t 或 —— test :测试压缩文件是否正确无误;</span><br><span class="line">-v 或 —— verbose :显示指令执行过程;</span><br><span class="line">-V 或 —— version :显示版本信息;</span><br><span class="line"></span><br><span class="line">参数 文件列表:指定要解压的压缩包。</span><br><span class="line"></span><br><span class="line">实例</span><br><span class="line">gzip -d test.gz</span><br><span class="line">gunzip test.gz</span><br><span class="line">效果一样</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="bz2" class="article-heading"><a href="#bz2" class="headerlink" title=".bz2"></a>.bz2<a class="article-anchor" href="#bz2" aria-hidden="true"></a></h3><h4 id="bzip2-的用法" class="article-heading"><a href="#bzip2-的用法" class="headerlink" title="bzip2 的用法"></a>bzip2 的用法<a class="article-anchor" href="#bzip2-的用法" aria-hidden="true"></a></h4><p>bzip2 命令用于创建和管理(包括解压缩) “ .bz2” 格式的压缩包。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">语法 bzip2( 选项 )( 参数 )</span><br><span class="line"></span><br><span class="line">选项</span><br><span class="line"></span><br><span class="line">-c 或 —— stdout :将压缩与解压缩的结果送到标准输出;</span><br><span class="line">-d 或 —— decompress :执行解压缩;</span><br><span class="line">-f 或 -force : bzip2 在压缩或解压缩时,若输出文件与现有文件同名,预设不会覆盖现有文件。若</span><br><span class="line">要覆盖。请使用此参数;</span><br><span class="line">-h 或 —— help :在线帮助;</span><br><span class="line">-k 或 —— keep : bzip2 在压缩或解压缩后,会删除原始文件。若要保留原始文件,请使用此参数;</span><br><span class="line">-s 或 —— small :降低程序执行时内存的使用量;</span><br><span class="line">-t 或 —— test :测试 .bz2 压缩文件的完整性;</span><br><span class="line">-v 或 —— verbose :压缩或解压缩文件时,显示详细的信息;</span><br><span class="line">-z 或 —— compress :强制执行压缩;</span><br><span class="line">-V 或 —— version :显示版本信息;</span><br><span class="line">--repetitive-best :若文件中有重复出现的资料时,可利用此参数提高压缩效果;</span><br><span class="line">--repetitive-fast :若文件中有重复出现的资料时,可利用此参数加快执行效果。</span><br><span class="line"></span><br><span class="line">参数 文件列表:指定要压缩的文件或指定要解压的文件。</span><br><span class="line"></span><br><span class="line">实例</span><br><span class="line"></span><br><span class="line">bzip2 test 压缩 test 文件,生成压缩文件 test.bz2 ,并删除源文件</span><br><span class="line">bzip2 -k test 压缩 test 文件,生成压缩文件 test.bz2 ,并保留源文件</span><br><span class="line">bzip2 -d test.bz2 解压文件</span><br><span class="line">bunzip2 test.bz2 解压文件</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="bunzip2-的用法" class="article-heading"><a href="#bunzip2-的用法" class="headerlink" title="bunzip2 的用法"></a>bunzip2 的用法<a class="article-anchor" href="#bunzip2-的用法" aria-hidden="true"></a></h4><p>bunzip2 命令解压缩由 bzip2 指令创建的 ” .bz2” 压缩包。对文件进行压缩与解压缩。此命令类似于“ gzip/gunzip” 命令,只能对文件进行压缩。对于目录只能压缩目录下的所有文件,压缩完成后,在目录下生成以 “ .bz2” 为后缀的压缩包。 bunzip2 其实是 bzip2 的符号链接,即软链接,因此压缩解压都可以通过 bzip2 实现。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera0 ~]# which bzip2</span><br><span class="line">/usr/bin/bzip2</span><br><span class="line">[root@mastera0 ~]# which bunzip2</span><br><span class="line">/usr/bin/bunzip2</span><br><span class="line">[root@mastera0 ~]# ll -i /usr/bin/bzip2</span><br><span class="line">33853111 -rwxr-xr-x. 1 root root 36752 Jul 31 2014 /usr/bin/bzip2</span><br><span class="line">[root@mastera0 ~]# ll -i /usr/bin/bunzip2</span><br><span class="line">34293684 lrwxrwxrwx. 1 root root 5 Jun 23 13:50 /usr/bin/bunzip2 -&gt; bzip2</span><br><span class="line"></span><br><span class="line">bunzip2 [ -fkvsVL ] [ filenames ... ]</span><br><span class="line"></span><br><span class="line">-f 或 --force :解压缩时,若输出的文件与现有文件同名时,预设不会覆盖现有的文件;</span><br><span class="line">-k 或 --keep :在解压缩后,预设会删除原来的压缩文件。若要保留压缩文件,请使用此参数;</span><br><span class="line">-s 或 --small :降低程序执行时,内存的使用量;</span><br><span class="line">-v 或 --verbose :解压缩文件时,显示详细的信息;</span><br><span class="line">-l , --license , -V 或 —— version :显示版本信息。</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="xz" class="article-heading"><a href="#xz" class="headerlink" title=".xz"></a>.xz<a class="article-anchor" href="#xz" aria-hidden="true"></a></h3><p>XZ Utils 是为 POSIX 平台开发具有高压缩率的工具。它使用 LZMA2 压缩算法,生成的压缩文件比POSIX 平台传统使用的 gzip、bzip2 生成的压缩文件更小,而且解压缩速度也很快。最初 XZ Utils的是基于 LZMA-SDK 开发,但是 LZMA-SDK 包含了一些 WINDOWS 平台的特性,所以 XZ Utils 为以适应 POSIX 平台作了大幅的修改。XZ Utils 的出现也是为了取代 POSIX 系统中旧的 LZMA Utils。XZ Utils 主要包含了下列部分:</p>
+<ul>
+<li>命令行程序 xz ,用来生成和解压缩 .xz 压缩文件。</li>
+<li>一组实用的脚本工具 (xzcat, xdiff, xzgrep 等)提供浏览,查找以及比较 .xz 文件内<br>容等功能。</li>
+<li>liblzma 压缩库,提供算法的实现和近似于 ZLIB 的编程接口。</li>
+<li>提供对 LZMA Utils 的一些兼容</li>
+</ul>
+<p>xz 文件格式</p>
+<p>XZ Utils 工具生成的压缩文件扩展名为 .xz (MIME 类型为”application/x-xz”)。</p>
+<p>.xz 文件格式具有下列特点:</p>
+<ul>
+<li>基于数据流: 易于通过管道 (pipe) 生成压缩文件或解压缩文件。.xz 文件格式与 .gz/.bz2 文件一样,不具备对多个文件进行归档打包的能力。若要处理多个文件,可以和归档工具 tar 结合使用,生成扩展名为 .tar.xz 或 .txz 的压缩文件。</li>
+<li>随机读取: 存储的数据被划分为独立的压缩块,并对每个压缩块进行索引,当每个压缩块比较小时,便能够进行有限的随机读取压缩数据。</li>
+<li>完整性验证: 可以使用 CRC32、CRC64、SHA-256 来进行数据的完整性验证,也可以增加自定义验证方法。</li>
+<li>可连接(concatenation): 类似于 .gz/.bz2 文件,可以把多个压缩数据流连接到一个文件中。解压缩时,就像解压一个正常单压缩流文件一样。</li>
+<li>支持多 filter 和 filter 链: 提供自定义 filter 的能力,也能够将多个 filter 组成filter 链,对数据进行处理。这点与 Unix 命令间使用的管道 (pipe) 类似。</li>
+<li>可填充(padding): 可以在 .xz 文件末尾填充二进制’0’以充满特定大小的空间,比如备份磁带上的一个块 (block)。</li>
+</ul>
+<p>XZ Utils 具有高压缩率,解压速度快的特点。能够生成更小文件的同时,也能提供稳定快速的解压,在对数据大小比较敏感的场合,比如说大数据的网络传输,文件的备份,处理能力有限的嵌入系统等场合,有着十分广泛的用途。</p>
+<h4 id="xz-命令用法" class="article-heading"><a href="#xz-命令用法" class="headerlink" title="xz 命令用法"></a>xz 命令用法<a class="article-anchor" href="#xz-命令用法" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">语法 xz ( 选项 )( 参数 )</span><br><span class="line"></span><br><span class="line">选项</span><br><span class="line"></span><br><span class="line">-z, --compress</span><br><span class="line">force compression 强制压缩</span><br><span class="line">-d, --decompress, --uncompress</span><br><span class="line">force decompression 解开压缩文件</span><br><span class="line">-t, --test test compressed file integrity 测试压缩文件是否正确无误</span><br><span class="line">-l, --list list information about .xz files 列出压缩文件的相关信息</span><br><span class="line">-k, --keep keep (don't delete) input files 不删除源文件</span><br><span class="line">-f, --force force overwrite of output file and (de)compress links 强制压缩,覆盖输出文件同名的文件</span><br><span class="line">-c, --stdout, --to-stdout write to standard output and don't delete input files 写入标准输出,不要删除输入文件</span><br><span class="line">-0 ... -9 compression preset; default is 6; take compressor *and* decompressor memory usage into account before using 7-9! 压缩效率是一个介于</span><br><span class="line">1~9 的数值,预设值为 “ 6” ,指定愈大的数值,压缩效率就会愈高;解压由县考虑使用 7-9</span><br><span class="line">-e, --extreme try to improve compression ratio by using more CPU time; does not affect decompressor memory requirements 通过使用更多的处理器时间</span><br><span class="line">来提高压缩比;不影响解压时的内存需求</span><br><span class="line">-T, --threads=NUM use at most NUM threads; the default is 1; set to 0 to use the number of processor cores 最多使用的线程数量,默认为 1 ,如果设置为</span><br><span class="line">0 去使用处理器内核的数量</span><br><span class="line">-q, --quiet suppress warnings; specify twice to suppress errors too 抑制警告;指定两次</span><br><span class="line">以抑制错误</span><br><span class="line">-v, --verbose be verbose; specify twice for even more verbose</span><br><span class="line">-h, --help display this short help and exit</span><br><span class="line">-H, --long-help display the long help (lists also the advanced options)</span><br><span class="line">-V, --version display the version number and exit</span><br><span class="line"></span><br><span class="line">参数 文件列表:指定要压缩的文件列表。</span><br><span class="line"></span><br><span class="line">实例</span><br><span class="line">xz test 压缩一个文件 test ,压缩成功后删除源文件</span><br><span class="line">xz -d -k test.xz 解压 test.xz 文件, -k 参数保证源文件不被删除</span><br><span class="line">xz -l test.xz 查看基本信息,包括压缩率等</span><br><span class="line">xz -k7 test 使用参数 -0, -1, -2, ... -6, ... -9 或参数 --fast, --best 设定压缩率。 xz 命令的默认为-6 。</span><br><span class="line">借助 xargs 命令并行压缩多文件。下面的命令行可以将 /var/log 目录下所有的扩展名为 .log 的文件压缩。通过 xargs 命令同时运行多个 xz 进行压缩。</span><br><span class="line">find /var/log -type f -iname "*.log" -print0 | xargs -P4 -n16 xz -T1</span><br><span class="line">注意:运行此命令须有 root 权限。</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="tar" class="article-heading"><a href="#tar" class="headerlink" title="tar"></a>tar<a class="article-anchor" href="#tar" aria-hidden="true"></a></h3><p>tar 命令可以为 linux 的文件和目录创建档案。利用 tar ,可以为某一特定文件创建档案(备份文件),也可以在档案中改变文件,或者向档案中加入新的文件。 tar 最初被用来在磁带上创建档案,现在,用户可以在任何设备上创建档案。利用 tar 命令,可以把一大堆的文件和目录全部打包成一个文件,这对于备份文件或将几个文件组合成为一个文件以便于网络传输是非常有用的。</p>
+<p>首先要弄清两个概念:打包和压缩。</p>
+<ul>
+<li>打包是指将一大堆文件或目录变成一个总的文件;</li>
+<li>压缩则是将一个大的文件通过一些压缩算法变成一个小文件。</li>
+</ul>
+<p>为什么要区分这两个概念呢?</p>
+<p>这源于 Linux 中很多压缩程序只能针对一个文件进行压缩,这样当你想要压缩一大堆文件时,你得先将这一大堆文件先打成一个包( tar 命令),然后再用压缩程序进行压缩( gzip bzip2 命令)。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">语法 tar ( 选项 )( 参数 )</span><br><span class="line"></span><br><span class="line">选项</span><br><span class="line">-A 或 --catenate :新增文件到以存在的备份文件;</span><br><span class="line">-B :设置区块大小;</span><br><span class="line">-c 或 --create :建立新的备份文件;</span><br><span class="line">-C &lt; 目录 &gt; :这个选项用在解压缩,若要在特定目录解压缩,可以使用这个选项。</span><br><span class="line">-d :记录文件的差别;</span><br><span class="line">-x 或 --extract 或 --get :从备份文件中还原文件;</span><br><span class="line">-t 或 --list :列出备份文件的内容;</span><br><span class="line">-z 或 --gzip 或 --ungzip :通过 gzip 指令处理备份文件;</span><br><span class="line">-Z 或 --compress 或 --uncompress :通过 compress 指令处理备份文件;</span><br><span class="line">-f&lt; 备份文件 &gt; 或 --file=&lt; 备份文件 &gt; :指定备份文件;</span><br><span class="line">-v 或 --verbose :显示指令执行过程;</span><br><span class="line">-r :添加文件到已经压缩的文件;</span><br><span class="line">-u :添加改变了和现有的文件到已经存在的压缩文件;</span><br><span class="line">-j :支持 bzip2 解压文件;</span><br><span class="line">-J :支持 xz 解压文件;</span><br><span class="line">-v :显示操作过程;</span><br><span class="line">-l :文件系统边界设置;</span><br><span class="line">-k :保留原有文件不覆盖;</span><br><span class="line">-m :保留文件不被覆盖;</span><br><span class="line">-w :确认压缩文件的正确性;</span><br><span class="line">-p 或 --same-permissions :用原来的文件权限还原文件;</span><br><span class="line">-P 或 --absolute-names :文件名使用绝对名称,不移除文件名称前的 “ /” 号;</span><br><span class="line">-N &lt; 日期格式 &gt; 或 --newer=&lt; 日期时间 &gt; :只将较指定日期更新的文件保存到备份文件里;</span><br><span class="line">--exclude=&lt; 范本样式 &gt; :排除符合范本样式的文件。</span><br><span class="line"></span><br><span class="line">参数 文件列表:指定要打包的文件或目录列表。</span><br><span class="line"></span><br><span class="line">实例</span><br><span class="line">tar -cvf log.tar log2012.log 仅打包,不压缩! tar -xf 解压</span><br><span class="line">tar -zcvf log.tar.gz log2012.log 打包后,以 gzip 压缩 tar -zxf 解压</span><br><span class="line">tar -jcvf log.tar.bz2 log2012.log 打包后,以 bzip2 压缩 tar -jxf 解压</span><br><span class="line">tar -Jcvf log.tar.xz log2012.log 打包后,以 xz 压缩 tar -Jxf 解压</span><br><span class="line">tar -tf log.tar 查看打包文件</span><br><span class="line">注意 -f 参数后面必须接文件名</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="04-Linux压缩打包课后习题" class="article-heading"><a href="#04-Linux压缩打包课后习题" class="headerlink" title="04-Linux压缩打包课后习题"></a>04-Linux压缩打包课后习题<a class="article-anchor" href="#04-Linux压缩打包课后习题" aria-hidden="true"></a></h2><ol>
+<li>通过dd创建4个5M的文件,分别为afile;bfile;cfile;dfile,并将这4个文件放在/tmp/test目录中保存</li>
+<li>对这4个相同大小的文件进行压缩,分别使用zip;bzip2;gzip;xz,并观察</li>
+<li>在将压缩文件进行解压,并观察</li>
+<li>将/tmp/test目录进行打包,分别使用gzip和bzip2压缩</li>
+</ol>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:46.504Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E7%9A%84%E6%84%8F%E4%B9%89%E5%92%8C%E5%8E%9F%E7%90%86"><span class="toc-text">压缩的意义和原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E7%9A%84%E6%84%8F%E4%B9%89"><span class="toc-text">压缩的意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-text">压缩的原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E4%B8%8E%E8%A7%A3%E5%8E%8B%E7%BC%A9%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="toc-text">压缩与解压缩的好处</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E6%89%93%E5%8C%85%E5%91%BD%E4%BB%A4"><span class="toc-text">压缩打包命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#zip"><span class="toc-text">.zip</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#zip-%E5%91%BD%E4%BB%A4%E7%94%A8%E6%B3%95"><span class="toc-text">zip 命令用法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#unzip-%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-text">unzip 的用法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#gz"><span class="toc-text">.gz</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#gzip-%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-text">gzip 的用法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#gunzip-%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-text">gunzip 的用法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bz2"><span class="toc-text">.bz2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#bzip2-%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-text">bzip2 的用法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bunzip2-%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-text">bunzip2 的用法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#xz"><span class="toc-text">.xz</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#xz-%E5%91%BD%E4%BB%A4%E7%94%A8%E6%B3%95"><span class="toc-text">xz 命令用法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tar"><span class="toc-text">tar</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#04-Linux%E5%8E%8B%E7%BC%A9%E6%89%93%E5%8C%85%E8%AF%BE%E5%90%8E%E4%B9%A0%E9%A2%98"><span class="toc-text">04-Linux压缩打包课后习题</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

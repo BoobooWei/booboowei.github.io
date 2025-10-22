@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>SELINUX | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/12-SELINUX">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/12-SELINUX" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="SELinuxSecurity Enhanced Linux 安全强化的 Linux 作用强制限制某些操作 , 属于权限的一种 思考 : 到目前为止学过的 linux 中的权限 ? u\g\o r\w\x ssid\sgid\stid acl attr 配置文件&#x2F;etc&#x2F;selinux&#x2F;config [#15#root@rhel6 ~]#ll &#x2F;etc&#x2F;selinux">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SELINUX">
+<meta property="og:url" content="http://www.toberoot.com/linux/0_linux_base/booboo_linux_base/12-SELINUX">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="SELinuxSecurity Enhanced Linux 安全强化的 Linux 作用强制限制某些操作 , 属于权限的一种 思考 : 到目前为止学过的 linux 中的权限 ? u\g\o r\w\x ssid\sgid\stid acl attr 配置文件&#x2F;etc&#x2F;selinux&#x2F;config [#15#root@rhel6 ~]#ll &#x2F;etc&#x2F;selinux">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.008Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:53.809Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">SELINUX</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/0_linux_base/booboo_linux_base/12-SELINUX.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h2 id="SELinux" class="article-heading"><a href="#SELinux" class="headerlink" title="SELinux"></a>SELinux<a class="article-anchor" href="#SELinux" aria-hidden="true"></a></h2><p>Security Enhanced Linux 安全强化的 Linux</p>
+<h3 id="作用" class="article-heading"><a href="#作用" class="headerlink" title="作用"></a>作用<a class="article-anchor" href="#作用" aria-hidden="true"></a></h3><p>强制限制某些操作 , 属于权限的一种</p>
+<p>思考 : 到目前为止学过的 linux 中的权限 ?</p>
+<p>u\g\o r\w\x ssid\sgid\stid acl attr</p>
+<h3 id="配置文件" class="article-heading"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件<a class="article-anchor" href="#配置文件" aria-hidden="true"></a></h3><p>/etc/selinux/config</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">[#</span><span class="language-bash">15#root@rhel6 ~]#ll /etc/selinux/config</span></span><br><span class="line">-rw-r--r--. 1 root root 458 Jul 2 2015 /etc/selinux/config</span><br><span class="line"><span class="meta prompt_">[#</span><span class="language-bash">16#root@rhel6 ~]#ll /etc/sysconfig/selinux</span></span><br><span class="line">lrwxrwxrwx. 1 root root 17 Jul 2 2015 /etc/sysconfig/selinux -&gt; ../selinux/config</span><br><span class="line"><span class="meta prompt_">[#</span><span class="language-bash">17#root@rhel6 ~]#<span class="built_in">cat</span> /etc/selinux/config</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">This file controls the state of SELinux on the system.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">SELINUX= can take one of these three values: 【三种状态】</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">enforcing - SELinux security policy is enforced. 【打开 selinux , 并强制限制】</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">permissive - SELinux prints warnings instead of enforcing. 【打开 selinux , 不限制操作 , 但会警</span></span><br><span class="line">告】</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">disabled - No SELinux policy is loaded. 【关闭 selinux 】</span></span><br><span class="line">SELINUX=enforcing</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">SELINUXTYPE= can take one of these two values: 【两种类型】</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">targeted - Targeted processes are protected, 【针对网络服务较多 , 针对主机较少】</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">mls - Multi Level Security protection. 【全方位的控制】</span></span><br><span class="line">SELINUXTYPE=targeted</span><br></pre></td></tr></tbody></table></figure>
+
+<p>重启电脑后生效 , 并永久生效</p>
+<h3 id="相关指令" class="article-heading"><a href="#相关指令" class="headerlink" title="相关指令"></a>相关指令<a class="article-anchor" href="#相关指令" aria-hidden="true"></a></h3><ul>
+<li>查看当前 selinux 状态的命令 : getenforce/sestatus</li>
+<li>设置 selinux 状态 ( 临时生效 ): setenforce [ Enforcing | Permissive | 1 | 0 ]</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">[#</span><span class="language-bash">12#root@rhel6 ~]#getenforce</span></span><br><span class="line">Enforcing</span><br><span class="line"><span class="meta prompt_">[#</span><span class="language-bash">13#root@rhel6 ~]#sestatus</span></span><br><span class="line">SELinux status:</span><br><span class="line">enabled</span><br><span class="line">SELinuxfs mount:</span><br><span class="line">/selinux</span><br><span class="line">Current mode:</span><br><span class="line">enforcing</span><br><span class="line">Mode from config file:</span><br><span class="line">enforcing</span><br><span class="line">Policy version:</span><br><span class="line">28</span><br><span class="line">Policy from config file:</span><br><span class="line">targeted</span><br><span class="line">[root@rhel7 ~]# setenforce 0</span><br><span class="line">[root@rhel7 ~]# getenforce</span><br><span class="line">Permissive</span><br><span class="line">[root@rhel7 ~]# sestatus</span><br><span class="line">SELinux status:</span><br><span class="line">enabled</span><br><span class="line">SELinuxfs mount:</span><br><span class="line">/sys/fs/selinux</span><br><span class="line">SELinux root directory:</span><br><span class="line">/etc/selinux</span><br><span class="line">Loaded policy name:</span><br><span class="line">targeted</span><br><span class="line">Current mode:</span><br><span class="line">permissive</span><br><span class="line">Mode from config file:</span><br><span class="line">enforcing</span><br><span class="line">Policy MLS status:</span><br><span class="line">enabled</span><br><span class="line">Policy deny_unknown status: allowed</span><br><span class="line">Max kernel policy version: 28</span><br><span class="line">[root@rhel7 ~]# which getenforce</span><br><span class="line">/usr/sbin/getenforce</span><br><span class="line">[root@rhel7 ~]# rpm -qf /usr/sbin/getenforce</span><br><span class="line">libselinux-utils-2.2.2-6.el7.x86_64</span><br><span class="line">[root@rhel7 ~]# rpm -ql libselinux-utils|head</span><br><span class="line">/usr/sbin/avcstat</span><br><span class="line">/usr/sbin/getenforce</span><br><span class="line">/usr/sbin/getsebool</span><br><span class="line">/usr/sbin/matchpathcon</span><br><span class="line">/usr/sbin/selinuxconlist</span><br><span class="line">/usr/sbin/selinuxdefcon</span><br><span class="line">/usr/sbin/selinuxenabled</span><br><span class="line">/usr/sbin/selinuxexeccon</span><br><span class="line">/usr/sbin/setenforce</span><br><span class="line">/usr/share/man/man5/booleans.5.gz</span><br><span class="line">[root@rhel7 ~]# which sestatus</span><br><span class="line">/usr/sbin/sestatus</span><br><span class="line">[root@rhel7 ~]# rpm -qf /usr/sbin/sestatuspolicycoreutils-2.2.5-11.el7.x86_64</span><br><span class="line">[root@rhel7 ~]# rpm -ql policycoreutils|head</span><br><span class="line">/etc/sestatus.conf</span><br><span class="line">/usr/bin/secon</span><br><span class="line">/usr/sbin/fixfiles</span><br><span class="line">/usr/sbin/genhomedircon</span><br><span class="line">/usr/sbin/load_policy</span><br><span class="line">/usr/sbin/restorecon</span><br><span class="line">/usr/sbin/semodule</span><br><span class="line">/usr/sbin/sestatus</span><br><span class="line">/usr/sbin/setfiles</span><br><span class="line">/usr/sbin/setsebool</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="操作限制的实现方法" class="article-heading"><a href="#操作限制的实现方法" class="headerlink" title="操作限制的实现方法"></a>操作限制的实现方法<a class="article-anchor" href="#操作限制的实现方法" aria-hidden="true"></a></h3><ol>
+<li>通过 bool 值来进行操作的限制</li>
+</ol>
+<ul>
+<li>1&gt;getsebool -a &lt;== 显示主机中所有的布尔值</li>
+<li>2&gt;setsebool [-PV] boolean value | bool1=val1 bool2=val2 …</li>
+</ul>
+<ol start="2">
+<li>通过安全上下文<br>主体（进程）与目标的安全上下文必须一致才能够顺利访问<br>查看安全上下文</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">[#</span><span class="language-bash">19#root@rhel6 ~]#<span class="built_in">ls</span> -Z</span></span><br><span class="line">-rw-------. root root system_u:object_r:admin_home_t:s0 anaconda-ks.cfg</span><br><span class="line">drwxr-xr-x. root root unconfined_u:object_r:admin_home_t:s0 Desktop</span><br><span class="line">drwxr-xr-x. root root unconfined_u:object_r:admin_home_t:s0 Documents</span><br><span class="line">drwxr-xr-x. root root unconfined_u:object_r:admin_home_t:s0 Downloads</span><br><span class="line">-rw-r--r--. root root unconfined_u:object_r:admin_home_t:s0 index.php3?stat=26</span><br><span class="line">-rw-r--r--. root root system_u:object_r:admin_home_t:s0 install.log</span><br><span class="line">-rw-r--r--. root root system_u:object_r:admin_home_t:s0 install.log.syslog</span><br><span class="line">drwxr-xr-x. root root unconfined_u:object_r:admin_home_t:s0 Music</span><br><span class="line">drwxr-xr-x. root root unconfined_u:object_r:admin_home_t:s0 Pictures</span><br><span class="line">drwxr-xr-x. root root unconfined_u:object_r:admin_home_t:s0 Public</span><br><span class="line">-rw-r--r--. root root unconfined_u:object_r:admin_home_t:s0 root@172.25.0.10</span><br><span class="line">drwxr-xr-x. root root unconfined_u:object_r:admin_home_t:s0 Templates</span><br><span class="line">drwxr-xr-x. root root unconfined_u:object_r:admin_home_t:s0 Videos</span><br></pre></td></tr></tbody></table></figure>
+
+<p>安全上下文主要用冒号分为三个字段 :</p>
+<p>Identify:role:type</p>
+<p>身份识别 : 角色 : 类型1.5 selinux 所需要的服务</p>
+<p>身份标识和角色并不重要，安全上下文里重要的就是这个类型，一个主体进程能不能读取到这个文件资源与类型字段有关。<br>之前我们说进程和文件的上下文的类型必须要匹配。这里涉及到两个专有名词，一个叫域，一个叫类型。其中主体程序中称为域，文件资源上称为类型，是不是有种听天书的感觉？很拗口吧？我们来举个列子。<br>先将httpd服务开启，service httpd start<br>Cd /var/www/html 这里是一个系列的网页文件，可以看到文件类型属于httpd_sys_content_t 还有httpd_sys_script_exec_t。<br>然后我们再看进程的上下文类型<br>先查看有没有这个进程 pstree | grep httpd<br>然后查看进程的安全上下文 ps aux -Z | grep http。<br>在这里Httpd是一个域，selinux的策略针对这个域制定了许多的规则，其中包括这个域可以读的目标资源类型，比如sys_content。<br>主题进程和目标的文件的安全上下文必须匹配不然会有权限报错的提示</p>
+<p>修改安全上下文<br>使用chcon命令来更改安全上下文的类型</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@python tmp]# ls --context test.txt</span><br><span class="line">-rw-r--r-- root root root:object_r:staff_tmp_t test.txt</span><br><span class="line">[root@python tmp]# chcon -t etc_t test.txt</span><br><span class="line">[root@python tmp]# ls -lZ test.txt</span><br><span class="line">-rw-r--r-- root root root:object_r:etc_t test.txt</span><br></pre></td></tr></tbody></table></figure>
+
+<p>###Selinux的日志分析工具sealert<br>setroubleshoot</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">[#</span><span class="language-bash">40#root@rhel6 ~]#yum install -y setroubleshoot     ===&gt;安装日志分析工具</span></span><br><span class="line"><span class="meta prompt_">[#</span><span class="language-bash">42#root@rhel6 ~]#rpm -ql setroubleshoot-server|<span class="built_in">head</span></span></span><br><span class="line">/etc/audisp/plugins.d/sedispatch.conf</span><br><span class="line">/etc/dbus-1/system.d/org.fedoraproject.SetroubleshootFixit.conf</span><br><span class="line">/etc/dbus-1/system.d/org.fedoraproject.Setroubleshootd.conf</span><br><span class="line">/etc/logrotate.d/setroubleshoot</span><br><span class="line">/etc/setroubleshoot</span><br><span class="line">/etc/setroubleshoot/setroubleshoot.conf</span><br><span class="line">/usr/bin/sealert</span><br><span class="line"><span class="meta prompt_">[#</span><span class="language-bash">40#root@rhel6 ~]#Sealert -a /var/log/audit/audit.log	===&gt;使用日志分析工具来分析selinux的日志</span></span><br><span class="line">等待数据处理，处理完毕之后查看</span><br></pre></td></tr></tbody></table></figure>
+
+<p>setroubleshot 将 selinux 相关的错误信息和解决方法记录在 /var/log/messages 日志中。<code>cat /var/log/messages | grep setroubleshoot</code></p>
+<h4 id="auditd" class="article-heading"><a href="#auditd" class="headerlink" title="auditd"></a>auditd<a class="article-anchor" href="#auditd" aria-hidden="true"></a></h4><ul>
+<li>auditd –&gt; 将 selinux 相关的信息记录在 /var/log/audit/audit.log 日志中,非常详细。</li>
+<li>sealert -a /var/log/audit/audit.log</li>
+</ul>
+<h3 id="selinux-policy-devel" class="article-heading"><a href="#selinux-policy-devel" class="headerlink" title="selinux-policy-devel"></a>selinux-policy-devel<a class="article-anchor" href="#selinux-policy-devel" aria-hidden="true"></a></h3><p>el6 上没有该软件</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# yum list|grep selinux-policy-devel</span><br><span class="line">selinux-policy-devel.noarch 3.12.1-153.el7 server</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">[#</span><span class="language-bash">64#root@rhel6 ~]#yum list|grep selinux-policy-devel</span></span><br><span class="line">This system is not registered to Red Hat Subscription Management. You can use subscription-manager</span><br><span class="line">to register.</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>man</code> 关键词 <code>_selinux</code> 查找和关键字相关的 <code>selinux</code> 限制具体内容 , 包括什么打开什么布尔值 , 需要设置怎样的安全上下文。</p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:53.809Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SELinux"><span class="toc-text">SELinux</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4"><span class="toc-text">相关指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E9%99%90%E5%88%B6%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95"><span class="toc-text">操作限制的实现方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#auditd"><span class="toc-text">auditd</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#selinux-policy-devel"><span class="toc-text">selinux-policy-devel</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

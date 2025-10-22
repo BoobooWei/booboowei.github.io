@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>冷备计划的制定和实施 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-10-%E5%86%B7%E5%A4%87_%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E5%86%B7%E5%A4%87%E8%AE%A1%E5%88%92%E7%9A%84%E5%88%B6%E5%AE%9A%E5%92%8C%E5%AE%9E%E6%96%BD">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-10-%E5%86%B7%E5%A4%87_%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E5%86%B7%E5%A4%87%E8%AE%A1%E5%88%92%E7%9A%84%E5%88%B6%E5%AE%9A%E5%92%8C%E5%AE%9E%E6%96%BD" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2019.12.15 BoobooWei     冷备计划的制定和实施&emsp;1.1. 概念&emsp;1.2. 冷备计划&emsp;&emsp;1.2.1. RMAN备份周期&emsp;&emsp;1.2.2. RMAN备份保留策略&emsp;&emsp;&emsp;1.2.2.1. Linux计划任务crontab&emsp;&emsp;&emsp;1.2.2.2. RMAN自带的ret">
+<meta property="og:type" content="website">
+<meta property="og:title" content="冷备计划的制定和实施">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/E-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D-10-%E5%86%B7%E5%A4%87_%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D-%E5%86%B7%E5%A4%87%E8%AE%A1%E5%88%92%E7%9A%84%E5%88%B6%E5%AE%9A%E5%92%8C%E5%AE%9E%E6%96%BD">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2019.12.15 BoobooWei     冷备计划的制定和实施&emsp;1.1. 概念&emsp;1.2. 冷备计划&emsp;&emsp;1.2.1. RMAN备份周期&emsp;&emsp;1.2.2. RMAN备份保留策略&emsp;&emsp;&emsp;1.2.2.1. Linux计划任务crontab&emsp;&emsp;&emsp;1.2.2.2. RMAN自带的ret">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.770Z">
+<meta property="article:modified_time" content="2025-10-22T08:47:49.830Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">冷备计划的制定和实施</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/E-数据库备份与恢复-10-冷备_物理备份恢复-冷备计划的制定和实施.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2019.12.15 BoobooWei</p>
+</blockquote>
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:1 flatten:0 bullets:0 updateOnSave:1 -->
+
+<ol>
+<li><a href="#%E5%86%B7%E5%A4%87%E8%AE%A1%E5%88%92%E7%9A%84%E5%88%B6%E5%AE%9A%E5%92%8C%E5%AE%9E%E6%96%BD">冷备计划的制定和实施</a><br> 1.1. <a href="#%E6%A6%82%E5%BF%B5">概念</a><br> 1.2. <a href="#%E5%86%B7%E5%A4%87%E8%AE%A1%E5%88%92">冷备计划</a><br>  1.2.1. <a href="#rman%E5%A4%87%E4%BB%BD%E5%91%A8%E6%9C%9F">RMAN备份周期</a><br>  1.2.2. <a href="#rman%E5%A4%87%E4%BB%BD%E4%BF%9D%E7%95%99%E7%AD%96%E7%95%A5">RMAN备份保留策略</a><br>   1.2.2.1. <a href="#linux%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1crontab">Linux计划任务<code>crontab</code></a><br>   1.2.2.2. <a href="#rman%E8%87%AA%E5%B8%A6%E7%9A%84retention-policy">RMAN自带的<code>retention policy</code></a><br>  1.2.3. <a href="#rman%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC">RMAN备份脚本</a><br>   1.2.3.1. <a href="#homeoraclebackup_scriptsrmanbk_inc0"><code>/home/oracle/backup_scripts/rmanbk_inc0</code></a><br>   1.2.3.2. <a href="#homeoraclebackup_scriptsrmanbk_inc1"><code>/home/oracle/backup_scripts/rmanbk_inc1</code></a><br>   1.2.3.3. <a href="#homeoraclebackup_scriptsrmanbk_crontabsh"><code>/home/oracle/backup_scripts/rmanbk_crontab.sh </code></a><br>   1.2.3.4. <a href="#crontab%E9%85%8D%E7%BD%AEcrontab-e-u-oracle">Crontab配置<code>crontab -e -u oracle</code></a><br>   1.2.3.5. <a href="#linux%E5%88%A0%E9%99%A414%E5%A4%A9%E7%9A%84%E6%96%87%E4%BB%B6rmanbk_delsh">Linux删除14天的文件<code>rmanbk_del.sh</code></a><br>   1.2.3.6. <a href="#%E5%86%B7%E5%A4%87-rman%E5%9C%A8%E7%BA%BF%E7%83%AD%E5%A4%87-%E5%AE%9E%E6%96%BD%E8%AE%B0%E5%BD%95">冷备-RMAN在线热备-实施记录</a></li>
+</ol>
+<!-- /MDTOC -->
+
+<h2 id="概念" class="article-heading"><a href="#概念" class="headerlink" title="概念"></a>概念<a class="article-anchor" href="#概念" aria-hidden="true"></a></h2><blockquote>
+<p>注意：增量备份（通用）=差异增量（Oracle） 差异备份（通用）=累计增量（Oracle）<br>增量备份（通用）:相对于上一次的备份<br>差异备份（通用）:相对于上一次的全备</p>
+</blockquote>
+<ul>
+<li>包含从最近一次备份以来被修改或添加的数据块.可以分为<strong>差异增量备份</strong>和<strong>累计增量备份</strong></li>
+<li>差异增量备份：仅仅包含n级或n级以下被修改过的数据块。备份数据量小，恢复时间长。</li>
+<li>累计增量备份：仅仅包含n-1级或n-1级以下被修改过的数据块。备份数据量大，恢复时间短。</li>
+<li>0级增量备份相当于一个完整备份,该备份包含所有已用的数据块文件,与完整备份的差异是完整备份不能用作级增量备份的基础</li>
+</ul>
+<h2 id="冷备计划" class="article-heading"><a href="#冷备计划" class="headerlink" title="冷备计划"></a>冷备计划<a class="article-anchor" href="#冷备计划" aria-hidden="true"></a></h2><ul>
+<li>备份周期：一周一全备，每天一增备</li>
+<li>备份数据保留策略：保留近14天的备份</li>
+</ul>
+<h3 id="RMAN备份周期" class="article-heading"><a href="#RMAN备份周期" class="headerlink" title="RMAN备份周期"></a>RMAN备份周期<a class="article-anchor" href="#RMAN备份周期" aria-hidden="true"></a></h3><p>一周一全备，每天一增备</p>
+<p><img src="pic/e-05.png"></p>
+<ul>
+<li>每周日晚做 0 级备份,就是备份所有使用过的数据块.</li>
+<li>周一做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 0 级备份.所以备份当天的变化.</li>
+<li>周二做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 1 级备份.所以备份当天的变化.</li>
+<li>周三做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 1 级备份.所以备份当天的变化.</li>
+<li>周四做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 1 级备份.所以备份当天的变化.</li>
+<li>周五做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 1 级备份.所以备份当天的变化.</li>
+<li>周六做 1 级增量,备份小于等于 1 以来备份后发生变化的块,前面有个 1 级备份.所以备份当天的变化.</li>
+<li>周日做 0 级增量, 备份所有使用过的数据块.</li>
+</ul>
+<h3 id="RMAN备份保留策略" class="article-heading"><a href="#RMAN备份保留策略" class="headerlink" title="RMAN备份保留策略"></a>RMAN备份保留策略<a class="article-anchor" href="#RMAN备份保留策略" aria-hidden="true"></a></h3><p>保留近14天的备份</p>
+<p><img src="pic/e-06.png"></p>
+<p>实现方式：</p>
+<ol>
+<li>Linux计划任务<code>crontab</code></li>
+<li>RMAN自带的<code>retention policy</code></li>
+</ol>
+<h4 id="Linux计划任务crontab" class="article-heading"><a href="#Linux计划任务crontab" class="headerlink" title="Linux计划任务crontab"></a>Linux计划任务<code>crontab</code><a class="article-anchor" href="#Linux计划任务crontab" aria-hidden="true"></a></h4><p>保留14天的备份数据，当今天是周一时，会保留 近14天的数据，删除两周前的周一的数据。</p>
+<table>
+<thead>
+<tr>
+<th>周日</th>
+<th>周一</th>
+<th>周二</th>
+<th>周三</th>
+<th>周四</th>
+<th>周五</th>
+<th>周六</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td>清除</td>
+<td>保留</td>
+<td>保留</td>
+<td>保留</td>
+<td>保留</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>保留</td>
+<td>保留</td>
+<td>保留</td>
+<td>保留</td>
+<td>保留</td>
+<td>保留</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>保留</td>
+<td>Now</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>因此保留14天的备份数据，可以将数据恢复的时间范围为：<code>上周周日~本周当前</code></p>
+<h4 id="RMAN自带的retention-policy" class="article-heading"><a href="#RMAN自带的retention-policy" class="headerlink" title="RMAN自带的retention policy"></a>RMAN自带的<code>retention policy</code><a class="article-anchor" href="#RMAN自带的retention-policy" aria-hidden="true"></a></h4><p>保留14天的备份数据，即每份备份数据的冗余备份数量为14</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">configure retention policy <span class="keyword">to</span> redundancy <span class="number">14</span>;</span><br><span class="line">configure retention policy <span class="keyword">to</span> recovery <span class="keyword">window</span> <span class="keyword">of</span> <span class="number">14</span> days;</span><br><span class="line">report obsolete;</span><br><span class="line"><span class="keyword">delete</span> obsolete;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="RMAN备份脚本" class="article-heading"><a href="#RMAN备份脚本" class="headerlink" title="RMAN备份脚本"></a>RMAN备份脚本<a class="article-anchor" href="#RMAN备份脚本" aria-hidden="true"></a></h3><h4 id="home-oracle-backup-scripts-rmanbk-inc0" class="article-heading"><a href="#home-oracle-backup-scripts-rmanbk-inc0" class="headerlink" title="/home/oracle/backup_scripts/rmanbk_inc0"></a><code>/home/oracle/backup_scripts/rmanbk_inc0</code><a class="article-anchor" href="#home-oracle-backup-scripts-rmanbk-inc0" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">run {</span><br><span class="line">configure retention policy <span class="keyword">to</span> recovery <span class="keyword">window</span> <span class="keyword">of</span> <span class="number">14</span> days;</span><br><span class="line">configure controlfile autobackup <span class="keyword">on</span>;</span><br><span class="line"><span class="keyword">allocate</span> channel ch1 type disk;</span><br><span class="line">backup <span class="keyword">as</span> compressed backupset  incremental level <span class="number">0</span></span><br><span class="line">format <span class="string">'/home/oracle/rmbk/incr0_%d_%U'</span></span><br><span class="line">tag <span class="string">'day_incr0'</span></span><br><span class="line">database plus archivelog <span class="keyword">delete</span> input;</span><br><span class="line">crosscheck backup;</span><br><span class="line">crosscheck archivelog <span class="keyword">all</span>;</span><br><span class="line"><span class="keyword">delete</span> noprompt obsolete;</span><br><span class="line"><span class="keyword">delete</span> noprompt  expired backup;</span><br><span class="line"><span class="keyword">delete</span> noprompt  expired archivelog <span class="keyword">all</span>;</span><br><span class="line"><span class="keyword">release</span> channel ch1;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="home-oracle-backup-scripts-rmanbk-inc1" class="article-heading"><a href="#home-oracle-backup-scripts-rmanbk-inc1" class="headerlink" title="/home/oracle/backup_scripts/rmanbk_inc1"></a><code>/home/oracle/backup_scripts/rmanbk_inc1</code><a class="article-anchor" href="#home-oracle-backup-scripts-rmanbk-inc1" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">run {</span><br><span class="line">configure retention policy <span class="keyword">to</span> recovery <span class="keyword">window</span> <span class="keyword">of</span> <span class="number">14</span> days;</span><br><span class="line">configure controlfile autobackup <span class="keyword">on</span>;</span><br><span class="line"><span class="keyword">allocate</span> channel ch1 type disk;</span><br><span class="line">backup <span class="keyword">as</span> compressed backupset  incremental level <span class="number">1</span></span><br><span class="line">format <span class="string">'/home/oracle/rmbk/incr1_%d_%U'</span></span><br><span class="line">tag <span class="string">'day_incr1'</span></span><br><span class="line">database plus archivelog <span class="keyword">delete</span> input;</span><br><span class="line">crosscheck backup;</span><br><span class="line">crosscheck archivelog <span class="keyword">all</span>;</span><br><span class="line"><span class="keyword">delete</span> noprompt obsolete;</span><br><span class="line"><span class="keyword">delete</span> noprompt  expired backup;</span><br><span class="line"><span class="keyword">delete</span> noprompt  expired archivelog <span class="keyword">all</span>;</span><br><span class="line"><span class="keyword">release</span> channel ch1;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="home-oracle-backup-scripts-rmanbk-crontab-sh" class="article-heading"><a href="#home-oracle-backup-scripts-rmanbk-crontab-sh" class="headerlink" title="/home/oracle/backup_scripts/rmanbk_crontab.sh "></a><code>/home/oracle/backup_scripts/rmanbk_crontab.sh </code><a class="article-anchor" href="#home-oracle-backup-scripts-rmanbk-crontab-sh" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">PATH=<span class="variable">$PATH</span>:<span class="variable">$HOME</span>/bin</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH</span><br><span class="line"><span class="built_in">export</span> ORACLE_BASE=/u01/app/oracle</span><br><span class="line"><span class="built_in">export</span> ORACLE_HOME=/u01/app/oracle/product/11.2.0.4</span><br><span class="line"><span class="built_in">export</span> ORACLE_SID=BOOBOO</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$ORACLE_HOME</span>/bin</span><br><span class="line"><span class="built_in">export</span> TNS_ADMIN=<span class="variable">$ORACLE_HOME</span>/network/admin</span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$LD_LIBRARY_PATH</span>:ORACLE_HOME/lib</span><br><span class="line"><span class="built_in">export</span> NLS_LANG=AMERICAN_AMERICA.ZHS16GBK</span><br><span class="line"><span class="built_in">export</span> ORA_NLS10=<span class="variable">$ORACLE_HOME</span>/nls/data</span><br><span class="line"><span class="built_in">export</span> SQLPATH=<span class="string">"/home/oracle/.login.sql"</span></span><br><span class="line"></span><br><span class="line">level=<span class="variable">$1</span></span><br><span class="line">/u01/app/oracle/product/11.2.0.4/bin/rman target / <span class="built_in">log</span>=/home/oracle/rmbk_log/bak_inc<span class="variable">${level}</span>.<span class="built_in">log</span> append cmdfile=/home/oracle/backup_scripts/rmanbk_inc<span class="variable">${level}</span></span><br><span class="line"><span class="comment">#echo ${level}</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="Crontab配置crontab-e-u-oracle" class="article-heading"><a href="#Crontab配置crontab-e-u-oracle" class="headerlink" title="Crontab配置crontab -e -u oracle"></a>Crontab配置<code>crontab -e -u oracle</code><a class="article-anchor" href="#Crontab配置crontab-e-u-oracle" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">30 22 * * 0 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 0</span><br><span class="line">30 22 * * 1 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">30 22 * * 2 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">30 22 * * 3 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">30 22 * * 4 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">30 22 * * 5 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">30 22 * * 6 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">40 22 * * * /bin/bash /home/oracle/backup_scripts/rmanbk_del.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="Linux删除14天的文件rmanbk-del-sh" class="article-heading"><a href="#Linux删除14天的文件rmanbk-del-sh" class="headerlink" title="Linux删除14天的文件rmanbk_del.sh"></a>Linux删除14天的文件<code>rmanbk_del.sh</code><a class="article-anchor" href="#Linux删除14天的文件rmanbk-del-sh" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">#<span class="operator">!</span><span class="operator">/</span>bin<span class="operator">/</span>bash</span><br><span class="line">#del <span class="keyword">old</span> folders</span><br><span class="line">find <span class="operator">/</span>home<span class="operator">/</span>oracle<span class="operator">/</span>rmbk<span class="operator">/</span> <span class="operator">-</span>mtime <span class="operator">+</span><span class="number">13</span> <span class="operator">-</span><span class="keyword">exec</span> ls {} \;</span><br><span class="line">find <span class="operator">/</span>home<span class="operator">/</span>oracle<span class="operator">/</span>rmbk<span class="operator">/</span> <span class="operator">-</span>mtime <span class="operator">+</span><span class="number">13</span> <span class="operator">-</span><span class="keyword">exec</span> rm <span class="operator">-</span>rf {} \;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="冷备-RMAN在线热备-实施记录" class="article-heading"><a href="#冷备-RMAN在线热备-实施记录" class="headerlink" title="冷备-RMAN在线热备-实施记录"></a>冷备-RMAN在线热备-实施记录<a class="article-anchor" href="#冷备-RMAN在线热备-实施记录" aria-hidden="true"></a></h4><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@oratest ~]# <span class="built_in">whoami</span></span><br><span class="line">root</span><br><span class="line">[root@oratest ~]# crontab -e -u oracle</span><br><span class="line">crontab: installing new crontab</span><br><span class="line">[root@oratest ~]# crontab -l -u oracle</span><br><span class="line">30 22 * * 0 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 0</span><br><span class="line">30 22 * * 1 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">30 22 * * 2 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">30 22 * * 3 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">30 22 * * 4 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">30 22 * * 5 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">30 22 * * 6 /bin/bash /home/oracle/backup_scripts/rmanbk_crontab.sh 1</span><br><span class="line">[root@oratest ~]# service crond restart</span><br><span class="line">Stopping crond:                                            [  OK  ]</span><br><span class="line">Starting crond:                                            [  OK  ]</span><br><span class="line"></span><br><span class="line">-- 模拟时间变化：</span><br><span class="line">周日~周六</span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-05 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-06 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-07 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-08 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-09 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-10 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-11 22:29:55"</span></span><br><span class="line">周日~周六</span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-12 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-13 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-14 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-15 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-16 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-17 22:29:55"</span></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-18 22:29:55"</span></span><br><span class="line">周日~周六</span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-19 22:29:55"</span> 应该删除 <span class="string">"2020-01-05"</span>的备份</span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-20 22:29:55"</span> 应该删除 <span class="string">"2020-01-06"</span>的备份</span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-21 22:29:55"</span> 应该删除 <span class="string">"2020-01-07"</span>的备份</span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-22 22:29:55"</span> 应该删除 <span class="string">"2020-01-08"</span>的备份</span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-23 22:29:55"</span> 应该删除 <span class="string">"2020-01-09"</span>的备份</span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-24 22:29:55"</span> 应该删除 <span class="string">"2020-01-10"</span>的备份</span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-25 22:29:55"</span> 应该删除 <span class="string">"2020-01-11"</span>的备份</span><br><span class="line"></span><br><span class="line"><span class="built_in">date</span> -s <span class="string">"2020-01-26 22:29:55"</span> 应该删除 <span class="string">"2020-01-12"</span>的备份</span><br><span class="line">--观察结果</span><br><span class="line"></span><br><span class="line">[root@oratest ~]# <span class="built_in">date</span> -s <span class="string">"2020-01-20 22:29:59"</span></span><br><span class="line">Mon Jan 20 22:29:59 CST 2020</span><br><span class="line">[root@oratest ~]# <span class="built_in">date</span> -s <span class="string">"2020-01-21 22:29:59"</span></span><br><span class="line">Tue Jan 21 22:29:59 CST 2020</span><br><span class="line">[root@oratest ~]# <span class="built_in">date</span> -s <span class="string">"2020-01-22 22:29:59"</span></span><br><span class="line">Wed Jan 22 22:29:59 CST 2020</span><br></pre></td></tr></tbody></table></figure>
+
+<p>参考命令文章</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/feiyun126/p/3594281.html">https://www.cnblogs.com/feiyun126/p/3594281.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34556414/article/details/79447432">https://blog.csdn.net/qq_34556414/article/details/79447432</a></li>
+</ul>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:47:49.830Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%B7%E5%A4%87%E8%AE%A1%E5%88%92"><span class="toc-text">冷备计划</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RMAN%E5%A4%87%E4%BB%BD%E5%91%A8%E6%9C%9F"><span class="toc-text">RMAN备份周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RMAN%E5%A4%87%E4%BB%BD%E4%BF%9D%E7%95%99%E7%AD%96%E7%95%A5"><span class="toc-text">RMAN备份保留策略</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Linux%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1crontab"><span class="toc-text">Linux计划任务crontab</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RMAN%E8%87%AA%E5%B8%A6%E7%9A%84retention-policy"><span class="toc-text">RMAN自带的retention policy</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RMAN%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC"><span class="toc-text">RMAN备份脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#home-oracle-backup-scripts-rmanbk-inc0"><span class="toc-text">&#x2F;home&#x2F;oracle&#x2F;backup_scripts&#x2F;rmanbk_inc0</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#home-oracle-backup-scripts-rmanbk-inc1"><span class="toc-text">&#x2F;home&#x2F;oracle&#x2F;backup_scripts&#x2F;rmanbk_inc1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#home-oracle-backup-scripts-rmanbk-crontab-sh"><span class="toc-text">&#x2F;home&#x2F;oracle&#x2F;backup_scripts&#x2F;rmanbk_crontab.sh </span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Crontab%E9%85%8D%E7%BD%AEcrontab-e-u-oracle"><span class="toc-text">Crontab配置crontab -e -u oracle</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Linux%E5%88%A0%E9%99%A414%E5%A4%A9%E7%9A%84%E6%96%87%E4%BB%B6rmanbk-del-sh"><span class="toc-text">Linux删除14天的文件rmanbk_del.sh</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%B7%E5%A4%87-RMAN%E5%9C%A8%E7%BA%BF%E7%83%AD%E5%A4%87-%E5%AE%9E%E6%96%BD%E8%AE%B0%E5%BD%95"><span class="toc-text">冷备-RMAN在线热备-实施记录</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

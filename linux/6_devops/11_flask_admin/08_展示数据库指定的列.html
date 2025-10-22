@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>08_展示表指定的列 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/6_devops/11_flask_admin/08_%E5%B1%95%E7%A4%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8C%87%E5%AE%9A%E7%9A%84%E5%88%97">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/6_devops/11_flask_admin/08_%E5%B1%95%E7%A4%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8C%87%E5%AE%9A%E7%9A%84%E5%88%97" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2018-11-07 大宝  1 效果图用户管理界面中，展示的是数据库中的user表，只展示其中的三个列first_name、last_name、login。  2 代码说明manage.py代码中找到class MyModelView，修改为 class MyModelView(sqla.ModelView):    def is_accessible(self):        return">
+<meta property="og:type" content="website">
+<meta property="og:title" content="08_展示表指定的列">
+<meta property="og:url" content="http://www.toberoot.com/linux/6_devops/11_flask_admin/08_%E5%B1%95%E7%A4%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8C%87%E5%AE%9A%E7%9A%84%E5%88%97">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2018-11-07 大宝  1 效果图用户管理界面中，展示的是数据库中的user表，只展示其中的三个列first_name、last_name、login。  2 代码说明manage.py代码中找到class MyModelView，修改为 class MyModelView(sqla.ModelView):    def is_accessible(self):        return">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.044Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:21.793Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">08_展示表指定的列</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/6_devops/11_flask_admin/08_展示数据库指定的列.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2018-11-07 大宝</p>
+</blockquote>
+<h2 id="1-效果图" class="article-heading"><a href="#1-效果图" class="headerlink" title="1 效果图"></a>1 效果图<a class="article-anchor" href="#1-效果图" aria-hidden="true"></a></h2><p>用户管理界面中，展示的是数据库中的user表，只展示其中的三个列<code>first_name、last_name、login</code>。</p>
+<p><img src="pic/08/01.png"></p>
+<h2 id="2-代码说明" class="article-heading"><a href="#2-代码说明" class="headerlink" title="2 代码说明"></a>2 代码说明<a class="article-anchor" href="#2-代码说明" aria-hidden="true"></a></h2><p><code>manage.py</code>代码中找到<code>class MyModelView</code>，修改为</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyModelView</span>(sqla.ModelView):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_accessible</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> login.current_user.is_authenticated</span><br><span class="line">    <span class="comment"># 08_展示表指定的列</span></span><br><span class="line">    column_list = (<span class="string">'first_name'</span>,<span class="string">'last_name'</span>,<span class="string">'login'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Flask-admin 框架中对于ModelView的帮助链接<a target="_blank" rel="noopener" href="https://flask-admin.readthedocs.io/en/latest/introduction/#customizing-built-in-views">Flask-admin官方帮助</a></p>
+<h2 id="3-操作指南" class="article-heading"><a href="#3-操作指南" class="headerlink" title="3 操作指南"></a>3 操作指南<a class="article-anchor" href="#3-操作指南" aria-hidden="true"></a></h2><h3 id="3-1-使用myweb用户登陆服务器" class="article-heading"><a href="#3-1-使用myweb用户登陆服务器" class="headerlink" title="3.1 使用myweb用户登陆服务器"></a>3.1 使用myweb用户登陆服务器<a class="article-anchor" href="#3-1-使用myweb用户登陆服务器" aria-hidden="true"></a></h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">su - myweb</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[root@am_01 ~]# su - myweb</span><br><span class="line">Last login: Wed Nov  7 10:53:02 CST 2018 on pts/1</span><br><span class="line">[myweb@am_01 ~]$ <span class="built_in">cd</span> PonyTail/</span><br><span class="line">[myweb@am_01 PonyTail]$ <span class="built_in">pwd</span></span><br><span class="line">/home/myweb/PonyTail</span><br><span class="line">[myweb@am_01 PonyTail]$ ll</span><br><span class="line">total 12</span><br><span class="line">-rw-rw-r--. 1 myweb myweb    1 Nov  2 18:33 __init__.py</span><br><span class="line">-rw-rw-r--. 1 myweb myweb 6436 Nov  7 11:05 manage.py</span><br><span class="line">drwxrwxr-x. 3 myweb myweb   98 Nov  5 16:42 templates</span><br></pre></td></tr></tbody></table></figure></blockquote>
+<h3 id="3-2-修改manage-py" class="article-heading"><a href="#3-2-修改manage-py" class="headerlink" title="3.2 修改manage.py"></a>3.2 修改manage.py<a class="article-anchor" href="#3-2-修改manage-py" aria-hidden="true"></a></h3><p>代码中注释为“ # 08_展示数据库指定的列”的下一行就是新增的代码</p>
+<p>修改后的manange.py文件如下：</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding:utf8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"><span class="keyword">from</span> flask_admin <span class="keyword">import</span> Admin</span><br><span class="line"><span class="keyword">from</span> flask_admin <span class="keyword">import</span> BaseView</span><br><span class="line"><span class="keyword">from</span> flask_admin <span class="keyword">import</span> expose</span><br><span class="line"><span class="keyword">from</span> flask_babelex <span class="keyword">import</span> Babel</span><br><span class="line"><span class="keyword">from</span> flask_sqlalchemy <span class="keyword">import</span> SQLAlchemy</span><br><span class="line"><span class="keyword">from</span> flask_admin.contrib.sqla <span class="keyword">import</span> ModelView</span><br><span class="line"><span class="comment"># 07_新增登陆界面:加载模块</span></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> url_for, redirect, render_template, request</span><br><span class="line"><span class="keyword">from</span> wtforms <span class="keyword">import</span> form, fields, validators</span><br><span class="line"><span class="keyword">import</span> flask_admin <span class="keyword">as</span> admin</span><br><span class="line"><span class="keyword">import</span> flask_login <span class="keyword">as</span> login</span><br><span class="line"><span class="keyword">from</span> flask_admin.contrib <span class="keyword">import</span> sqla</span><br><span class="line"><span class="keyword">from</span> flask_admin <span class="keyword">import</span> helpers</span><br><span class="line"><span class="keyword">from</span> werkzeug.security <span class="keyword">import</span> generate_password_hash, check_password_hash</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">db = SQLAlchemy()</span><br><span class="line">app = Flask(__name__)</span><br><span class="line">babel = Babel(app)</span><br><span class="line"></span><br><span class="line"><span class="comment">#set optional bootswatch theme</span></span><br><span class="line"><span class="comment">#app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'</span></span><br><span class="line">app.config[<span class="string">'BABEL_DEFAULT_LOCALE'</span>] = <span class="string">'zh_CN'</span></span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_DATABASE_URI'</span>] = <span class="string">'mysql://root:myweb@localhost:3306/myweb?charset=utf8'</span></span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_COMMIT_ON_TEARDOWN'</span>] = <span class="literal">True</span></span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_TRACK_MODIFICATIONS'</span>] = <span class="literal">False</span></span><br><span class="line"><span class="comment"># 07_新增登陆界面：配置key才能使用session</span></span><br><span class="line"><span class="comment"># Create dummy secrey key so we can use sessions</span></span><br><span class="line">app.config[<span class="string">'SECRET_KEY'</span>] = <span class="string">'123456790'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">db.init_app(app)</span><br><span class="line"></span><br><span class="line"><span class="comment"># models</span></span><br><span class="line"><span class="comment"># Create user model.</span></span><br><span class="line"><span class="comment"># 07_新增登陆界面：将原来的UserAdmin表改为User</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">User</span>(db.Model):</span><br><span class="line">    __tablename__ = <span class="string">'user'</span></span><br><span class="line">    <span class="built_in">id</span> = db.Column(db.Integer, primary_key=<span class="literal">True</span>)</span><br><span class="line">    first_name = db.Column(db.String(<span class="number">100</span>))</span><br><span class="line">    last_name = db.Column(db.String(<span class="number">100</span>))</span><br><span class="line">    login = db.Column(db.String(<span class="number">80</span>), unique=<span class="literal">True</span>)</span><br><span class="line">    email = db.Column(db.String(<span class="number">120</span>))</span><br><span class="line">    password = db.Column(db.String(<span class="number">64</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Flask-Login integration</span></span><br><span class="line">    <span class="comment"># <span class="doctag">NOTE:</span> is_authenticated, is_active, and is_anonymous</span></span><br><span class="line">    <span class="comment"># are methods in Flask-Login &lt; 0.3.0</span></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_authenticated</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_active</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_anonymous</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_id</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.<span class="built_in">id</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Required for administrative interface</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__unicode__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.username</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Define login and registration forms (for flask-login)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LoginForm</span>(form.Form):</span><br><span class="line">    login = fields.StringField(validators=[validators.required()])</span><br><span class="line">    password = fields.PasswordField(validators=[validators.required()])</span><br><span class="line">    <span class="comment">#password = fields.StringField(validators=[validators.required()])</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">validate_login</span>(<span class="params">self, field</span>):</span><br><span class="line">        user = <span class="variable language_">self</span>.get_user()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> user <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">raise</span> validators.ValidationError(<span class="string">'Invalid user'</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># we're comparing the plaintext pw with the the hash from the db</span></span><br><span class="line">        <span class="comment">#if not check_password_hash(user.password, self.password.data):</span></span><br><span class="line">        <span class="comment"># to compare plain text passwords use</span></span><br><span class="line">        <span class="keyword">if</span> user.password != <span class="variable language_">self</span>.password.data:</span><br><span class="line">            <span class="keyword">raise</span> validators.ValidationError(<span class="string">'Invalid password'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_user</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> db.session.query(User).filter_by(login=<span class="variable language_">self</span>.login.data).first()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RegistrationForm</span>(form.Form):</span><br><span class="line">    login = fields.StringField(validators=[validators.required()])</span><br><span class="line">    email = fields.StringField()</span><br><span class="line">    password = fields.PasswordField(validators=[validators.required()])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">validate_login</span>(<span class="params">self, field</span>):</span><br><span class="line">        <span class="keyword">if</span> db.session.query(User).filter_by(login=<span class="variable language_">self</span>.login.data).count() &gt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">raise</span> validators.ValidationError(<span class="string">'Duplicate username'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Initialize flask-login</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">init_login</span>():</span><br><span class="line">    login_manager = login.LoginManager()</span><br><span class="line">    login_manager.init_app(app)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Create user loader function</span></span><br><span class="line"><span class="meta">    @login_manager.user_loader</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">load_user</span>(<span class="params">user_id</span>):</span><br><span class="line">        <span class="keyword">return</span> db.session.query(User).get(user_id)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create customized model view class</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyModelView</span>(sqla.ModelView):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_accessible</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> login.current_user.is_authenticated</span><br><span class="line">    <span class="comment"># 08_展示表指定的列</span></span><br><span class="line">    column_list = (<span class="string">'first_name'</span>,<span class="string">'last_name'</span>,<span class="string">'login'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create customized index view class that handles login &amp; registration</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyAdminIndexView</span>(admin.AdminIndexView):</span><br><span class="line"></span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">index</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> login.current_user.is_authenticated:</span><br><span class="line">            <span class="keyword">return</span> redirect(url_for(<span class="string">'.login_view'</span>))</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(MyAdminIndexView, <span class="variable language_">self</span>).index()</span><br><span class="line"></span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/login/'</span>, methods=(<span class="params"><span class="string">'GET'</span>, <span class="string">'POST'</span></span>)</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">login_view</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># handle user login</span></span><br><span class="line">        form = LoginForm(request.form)</span><br><span class="line">        <span class="keyword">if</span> helpers.validate_form_on_submit(form):</span><br><span class="line">            user = form.get_user()</span><br><span class="line">            login.login_user(user)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> login.current_user.is_authenticated:</span><br><span class="line">            <span class="keyword">return</span> redirect(url_for(<span class="string">'.index'</span>))</span><br><span class="line">        link = <span class="string">'&lt;p&gt;Don\'t have an account? &lt;a href="'</span> + url_for(<span class="string">'.register_view'</span>) + <span class="string">'"&gt;Click here to register.&lt;/a&gt;&lt;/p&gt;'</span></span><br><span class="line">        <span class="variable language_">self</span>._template_args[<span class="string">'form'</span>] = form</span><br><span class="line">        <span class="variable language_">self</span>._template_args[<span class="string">'link'</span>] = link</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(MyAdminIndexView, <span class="variable language_">self</span>).index()</span><br><span class="line"></span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/register/'</span>, methods=(<span class="params"><span class="string">'GET'</span>, <span class="string">'POST'</span></span>)</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">register_view</span>(<span class="params">self</span>):</span><br><span class="line">        form = RegistrationForm(request.form)</span><br><span class="line">        <span class="keyword">if</span> helpers.validate_form_on_submit(form):</span><br><span class="line">            user = User()</span><br><span class="line"></span><br><span class="line">            form.populate_obj(user)</span><br><span class="line">            <span class="comment"># we hash the users password to avoid saving it as plaintext in the db,</span></span><br><span class="line">            <span class="comment"># remove to use plain text:</span></span><br><span class="line">            <span class="comment">#user.password = generate_password_hash(form.password.data)</span></span><br><span class="line"></span><br><span class="line">            db.session.add(user)</span><br><span class="line">            db.session.commit()</span><br><span class="line"></span><br><span class="line">            login.login_user(user)</span><br><span class="line">            <span class="keyword">return</span> redirect(url_for(<span class="string">'.index'</span>))</span><br><span class="line">        link = <span class="string">'&lt;p&gt;Already have an account? &lt;a href="'</span> + url_for(<span class="string">'.login_view'</span>) + <span class="string">'"&gt;Click here to log in.&lt;/a&gt;&lt;/p&gt;'</span></span><br><span class="line">        <span class="variable language_">self</span>._template_args[<span class="string">'form'</span>] = form</span><br><span class="line">        <span class="variable language_">self</span>._template_args[<span class="string">'link'</span>] = link</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(MyAdminIndexView, <span class="variable language_">self</span>).index()</span><br><span class="line"></span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/logout/'</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">logout_view</span>(<span class="params">self</span>):</span><br><span class="line">        login.logout_user()</span><br><span class="line">        <span class="keyword">return</span> redirect(url_for(<span class="string">'.index'</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Add administrative views here</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Happy</span>(<span class="title class_ inherited__">BaseView</span>):</span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">index</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.render(<span class="string">'happy.html'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Birthday</span>(<span class="title class_ inherited__">BaseView</span>):</span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">index</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.render(<span class="string">'birthday.html'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Flask views</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'index.html'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Initialize flask-login</span></span><br><span class="line">init_login()</span><br><span class="line"></span><br><span class="line">admin = Admin(app, name=<span class="string">'PonyTail'</span>, index_view=MyAdminIndexView(), base_template=<span class="string">'my_master.html'</span>, template_mode=<span class="string">'bootstrap3'</span>)</span><br><span class="line">admin.add_view(Happy(name=<span class="string">u'工作之愉'</span>))</span><br><span class="line">admin.add_view(Birthday(name=<span class="string">u'年年有今日岁岁有今朝'</span>))</span><br><span class="line">admin.add_view(MyModelView(User,db.session,name=<span class="string">u'用户管理'</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>,host=<span class="string">'0.0.0.0'</span>,port=<span class="number">5000</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-7-运行程序" class="article-heading"><a href="#3-7-运行程序" class="headerlink" title="3.7 运行程序"></a>3.7 运行程序<a class="article-anchor" href="#3-7-运行程序" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">[myweb@am_01 PonyTail]$ python manage.py</span><br><span class="line"> * Serving Flask app "manage" (lazy loading)</span><br><span class="line"> * Environment: production</span><br><span class="line">   WARNING: Do not use the development server in a production environment.</span><br><span class="line">   Use a production WSGI server instead.</span><br><span class="line"> * Debug mode: on</span><br><span class="line"> * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)</span><br><span class="line"> * Restarting with stat</span><br><span class="line"> * Debugger is active!</span><br><span class="line"> * Debugger PIN: 476-676-292</span><br></pre></td></tr></tbody></table></figure>
+
+<p>访问网站<code>http://10.200.6.150:5000/</code></p>
+<h2 id="4-拓展练习" class="article-heading"><a href="#4-拓展练习" class="headerlink" title="4 拓展练习"></a>4 拓展练习<a class="article-anchor" href="#4-拓展练习" aria-hidden="true"></a></h2><h3 id="4-1-实现列名映射和排序功能" class="article-heading"><a href="#4-1-实现列名映射和排序功能" class="headerlink" title="4.1 实现列名映射和排序功能"></a>4.1 实现列名映射和排序功能<a class="article-anchor" href="#4-1-实现列名映射和排序功能" aria-hidden="true"></a></h3><p>阅读<a target="_blank" rel="noopener" href="https://flask-admin.readthedocs.io/en/latest/introduction/#customizing-built-in-views">Flask-admin官方帮助</a> 实现以下功能：</p>
+<ul>
+<li><p>展示user表的列名从<code>First_name、Last_name、Login</code>改为<code>名、性、用户名</code></p>
+</li>
+<li><p>展示user表时，可以通过login列进行排序</p>
+</li>
+</ul>
+<p>效果图如下：</p>
+<p><img src="pic/08/02.png"></p>
+<p><strong>答案：</strong></p>
+<p>将类<code>MyModelView</code>的代码进行添加：</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyModelView</span>(sqla.ModelView):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_accessible</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> login.current_user.is_authenticated</span><br><span class="line">    <span class="comment"># 08_展示表指定的列</span></span><br><span class="line">    column_list = (<span class="string">'first_name'</span>,<span class="string">'last_name'</span>,<span class="string">'login'</span>)</span><br><span class="line">    <span class="comment"># 08_展示表映射列名</span></span><br><span class="line">    column_labels = {</span><br><span class="line">        <span class="string">'first_name'</span>:<span class="string">u'名'</span>,</span><br><span class="line">        <span class="string">'last_name'</span>:<span class="string">u'姓'</span>,</span><br><span class="line">        <span class="string">'login'</span>:<span class="string">u'用户名'</span></span><br><span class="line">    }</span><br><span class="line">    <span class="comment"># 08_展示表可排序的列</span></span><br><span class="line">    column_sortable_list = (<span class="string">'login'</span>,)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="4-2-实现表的明细查看" class="article-heading"><a href="#4-2-实现表的明细查看" class="headerlink" title="4.2 实现表的明细查看"></a>4.2 实现表的明细查看<a class="article-anchor" href="#4-2-实现表的明细查看" aria-hidden="true"></a></h3><p>当前我们的user表只展示了三个列，要求通过点击某个按钮可以查看所有列的信息。效果图如下：</p>
+<p><img src="pic/08/03.png"></p>
+<p>红色框框中多了一个眼睛的图形，点击后，进入下图的“详情”：</p>
+<p><img src="pic/08/04.png"></p>
+<p><strong>答案：</strong></p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyModelView</span>(sqla.ModelView):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_accessible</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> login.current_user.is_authenticated</span><br><span class="line">    <span class="comment"># 08_展示表指定的列</span></span><br><span class="line">    column_list = (<span class="string">'first_name'</span>,<span class="string">'last_name'</span>,<span class="string">'login'</span>)</span><br><span class="line">    <span class="comment"># 08_展示表映射列名</span></span><br><span class="line">    column_labels = {</span><br><span class="line">        <span class="string">'first_name'</span>:<span class="string">u'名'</span>,</span><br><span class="line">        <span class="string">'last_name'</span>:<span class="string">u'姓'</span>,</span><br><span class="line">        <span class="string">'login'</span>:<span class="string">u'用户名'</span></span><br><span class="line">    }</span><br><span class="line">    <span class="comment"># 08_展示表可排序的列</span></span><br><span class="line">    column_sortable_list = (<span class="string">'login'</span>,)</span><br><span class="line">    <span class="comment"># 08_展示表详情</span></span><br><span class="line">    can_view_details = <span class="literal">True</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="5-manage-py的代码" class="article-heading"><a href="#5-manage-py的代码" class="headerlink" title="5 manage.py的代码"></a>5 manage.py的代码<a class="article-anchor" href="#5-manage-py的代码" aria-hidden="true"></a></h2><figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding:utf8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"><span class="keyword">from</span> flask_admin <span class="keyword">import</span> Admin</span><br><span class="line"><span class="keyword">from</span> flask_admin <span class="keyword">import</span> BaseView</span><br><span class="line"><span class="keyword">from</span> flask_admin <span class="keyword">import</span> expose</span><br><span class="line"><span class="keyword">from</span> flask_babelex <span class="keyword">import</span> Babel</span><br><span class="line"><span class="keyword">from</span> flask_sqlalchemy <span class="keyword">import</span> SQLAlchemy</span><br><span class="line"><span class="keyword">from</span> flask_admin.contrib.sqla <span class="keyword">import</span> ModelView</span><br><span class="line"><span class="comment"># 07_新增登陆界面:加载模块</span></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> url_for, redirect, render_template, request</span><br><span class="line"><span class="keyword">from</span> wtforms <span class="keyword">import</span> form, fields, validators</span><br><span class="line"><span class="keyword">import</span> flask_admin <span class="keyword">as</span> admin</span><br><span class="line"><span class="keyword">import</span> flask_login <span class="keyword">as</span> login</span><br><span class="line"><span class="keyword">from</span> flask_admin.contrib <span class="keyword">import</span> sqla</span><br><span class="line"><span class="keyword">from</span> flask_admin <span class="keyword">import</span> helpers</span><br><span class="line"><span class="keyword">from</span> werkzeug.security <span class="keyword">import</span> generate_password_hash, check_password_hash</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">db = SQLAlchemy()</span><br><span class="line">app = Flask(__name__)</span><br><span class="line">babel = Babel(app)</span><br><span class="line"></span><br><span class="line"><span class="comment">#set optional bootswatch theme</span></span><br><span class="line"><span class="comment">#app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'</span></span><br><span class="line">app.config[<span class="string">'BABEL_DEFAULT_LOCALE'</span>] = <span class="string">'zh_CN'</span></span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_DATABASE_URI'</span>] = <span class="string">'mysql://root:myweb@localhost:3306/myweb?charset=utf8'</span></span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_COMMIT_ON_TEARDOWN'</span>] = <span class="literal">True</span></span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_TRACK_MODIFICATIONS'</span>] = <span class="literal">False</span></span><br><span class="line"><span class="comment"># 07_新增登陆界面：配置key才能使用session</span></span><br><span class="line"><span class="comment"># Create dummy secrey key so we can use sessions</span></span><br><span class="line">app.config[<span class="string">'SECRET_KEY'</span>] = <span class="string">'123456790'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">db.init_app(app)</span><br><span class="line"></span><br><span class="line"><span class="comment"># models</span></span><br><span class="line"><span class="comment"># Create user model.</span></span><br><span class="line"><span class="comment"># 07_新增登陆界面：将原来的UserAdmin表改为User</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">User</span>(db.Model):</span><br><span class="line">    __tablename__ = <span class="string">'user'</span></span><br><span class="line">    <span class="built_in">id</span> = db.Column(db.Integer, primary_key=<span class="literal">True</span>)</span><br><span class="line">    first_name = db.Column(db.String(<span class="number">100</span>))</span><br><span class="line">    last_name = db.Column(db.String(<span class="number">100</span>))</span><br><span class="line">    login = db.Column(db.String(<span class="number">80</span>), unique=<span class="literal">True</span>)</span><br><span class="line">    email = db.Column(db.String(<span class="number">120</span>))</span><br><span class="line">    password = db.Column(db.String(<span class="number">64</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Flask-Login integration</span></span><br><span class="line">    <span class="comment"># <span class="doctag">NOTE:</span> is_authenticated, is_active, and is_anonymous</span></span><br><span class="line">    <span class="comment"># are methods in Flask-Login &lt; 0.3.0</span></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_authenticated</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_active</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_anonymous</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_id</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.<span class="built_in">id</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Required for administrative interface</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__unicode__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.username</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Define login and registration forms (for flask-login)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LoginForm</span>(form.Form):</span><br><span class="line">    login = fields.StringField(validators=[validators.required()])</span><br><span class="line">    password = fields.PasswordField(validators=[validators.required()])</span><br><span class="line">    <span class="comment">#password = fields.StringField(validators=[validators.required()])</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">validate_login</span>(<span class="params">self, field</span>):</span><br><span class="line">        user = <span class="variable language_">self</span>.get_user()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> user <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">raise</span> validators.ValidationError(<span class="string">'Invalid user'</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># we're comparing the plaintext pw with the the hash from the db</span></span><br><span class="line">        <span class="comment">#if not check_password_hash(user.password, self.password.data):</span></span><br><span class="line">        <span class="comment"># to compare plain text passwords use</span></span><br><span class="line">        <span class="keyword">if</span> user.password != <span class="variable language_">self</span>.password.data:</span><br><span class="line">            <span class="keyword">raise</span> validators.ValidationError(<span class="string">'Invalid password'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_user</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> db.session.query(User).filter_by(login=<span class="variable language_">self</span>.login.data).first()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RegistrationForm</span>(form.Form):</span><br><span class="line">    login = fields.StringField(validators=[validators.required()])</span><br><span class="line">    email = fields.StringField()</span><br><span class="line">    password = fields.PasswordField(validators=[validators.required()])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">validate_login</span>(<span class="params">self, field</span>):</span><br><span class="line">        <span class="keyword">if</span> db.session.query(User).filter_by(login=<span class="variable language_">self</span>.login.data).count() &gt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">raise</span> validators.ValidationError(<span class="string">'Duplicate username'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Initialize flask-login</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">init_login</span>():</span><br><span class="line">    login_manager = login.LoginManager()</span><br><span class="line">    login_manager.init_app(app)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Create user loader function</span></span><br><span class="line"><span class="meta">    @login_manager.user_loader</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">load_user</span>(<span class="params">user_id</span>):</span><br><span class="line">        <span class="keyword">return</span> db.session.query(User).get(user_id)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create customized model view class</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyModelView</span>(sqla.ModelView):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_accessible</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> login.current_user.is_authenticated</span><br><span class="line">    <span class="comment"># 08_展示表指定的列</span></span><br><span class="line">    column_list = (<span class="string">'first_name'</span>,<span class="string">'last_name'</span>,<span class="string">'login'</span>)</span><br><span class="line">    <span class="comment"># 08_展示表映射列名</span></span><br><span class="line">    column_labels = {</span><br><span class="line">        <span class="string">'first_name'</span>:<span class="string">u'名'</span>,</span><br><span class="line">        <span class="string">'last_name'</span>:<span class="string">u'姓'</span>,</span><br><span class="line">        <span class="string">'login'</span>:<span class="string">u'用户名'</span></span><br><span class="line">    }</span><br><span class="line">    <span class="comment"># 08_展示表可排序的列</span></span><br><span class="line">    column_sortable_list = (<span class="string">'login'</span>,)</span><br><span class="line">    <span class="comment"># 08_展示表详情</span></span><br><span class="line">    can_view_details = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create customized index view class that handles login &amp; registration</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyAdminIndexView</span>(admin.AdminIndexView):</span><br><span class="line"></span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">index</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> login.current_user.is_authenticated:</span><br><span class="line">            <span class="keyword">return</span> redirect(url_for(<span class="string">'.login_view'</span>))</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(MyAdminIndexView, <span class="variable language_">self</span>).index()</span><br><span class="line"></span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/login/'</span>, methods=(<span class="params"><span class="string">'GET'</span>, <span class="string">'POST'</span></span>)</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">login_view</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># handle user login</span></span><br><span class="line">        form = LoginForm(request.form)</span><br><span class="line">        <span class="keyword">if</span> helpers.validate_form_on_submit(form):</span><br><span class="line">            user = form.get_user()</span><br><span class="line">            login.login_user(user)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> login.current_user.is_authenticated:</span><br><span class="line">            <span class="keyword">return</span> redirect(url_for(<span class="string">'.index'</span>))</span><br><span class="line">        link = <span class="string">'&lt;p&gt;Don\'t have an account? &lt;a href="'</span> + url_for(<span class="string">'.register_view'</span>) + <span class="string">'"&gt;Click here to register.&lt;/a&gt;&lt;/p&gt;'</span></span><br><span class="line">        <span class="variable language_">self</span>._template_args[<span class="string">'form'</span>] = form</span><br><span class="line">        <span class="variable language_">self</span>._template_args[<span class="string">'link'</span>] = link</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(MyAdminIndexView, <span class="variable language_">self</span>).index()</span><br><span class="line"></span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/register/'</span>, methods=(<span class="params"><span class="string">'GET'</span>, <span class="string">'POST'</span></span>)</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">register_view</span>(<span class="params">self</span>):</span><br><span class="line">        form = RegistrationForm(request.form)</span><br><span class="line">        <span class="keyword">if</span> helpers.validate_form_on_submit(form):</span><br><span class="line">            user = User()</span><br><span class="line"></span><br><span class="line">            form.populate_obj(user)</span><br><span class="line">            <span class="comment"># we hash the users password to avoid saving it as plaintext in the db,</span></span><br><span class="line">            <span class="comment"># remove to use plain text:</span></span><br><span class="line">            <span class="comment">#user.password = generate_password_hash(form.password.data)</span></span><br><span class="line"></span><br><span class="line">            db.session.add(user)</span><br><span class="line">            db.session.commit()</span><br><span class="line"></span><br><span class="line">            login.login_user(user)</span><br><span class="line">            <span class="keyword">return</span> redirect(url_for(<span class="string">'.index'</span>))</span><br><span class="line">        link = <span class="string">'&lt;p&gt;Already have an account? &lt;a href="'</span> + url_for(<span class="string">'.login_view'</span>) + <span class="string">'"&gt;Click here to log in.&lt;/a&gt;&lt;/p&gt;'</span></span><br><span class="line">        <span class="variable language_">self</span>._template_args[<span class="string">'form'</span>] = form</span><br><span class="line">        <span class="variable language_">self</span>._template_args[<span class="string">'link'</span>] = link</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(MyAdminIndexView, <span class="variable language_">self</span>).index()</span><br><span class="line"></span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/logout/'</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">logout_view</span>(<span class="params">self</span>):</span><br><span class="line">        login.logout_user()</span><br><span class="line">        <span class="keyword">return</span> redirect(url_for(<span class="string">'.index'</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Add administrative views here</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Happy</span>(<span class="title class_ inherited__">BaseView</span>):</span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">index</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.render(<span class="string">'happy.html'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Birthday</span>(<span class="title class_ inherited__">BaseView</span>):</span><br><span class="line"><span class="meta">    @expose(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">index</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.render(<span class="string">'birthday.html'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Flask views</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'index.html'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Initialize flask-login</span></span><br><span class="line">init_login()</span><br><span class="line"></span><br><span class="line">admin = Admin(app, name=<span class="string">'PonyTail'</span>, index_view=MyAdminIndexView(), base_template=<span class="string">'my_master.html'</span>, template_mode=<span class="string">'bootstrap3'</span>)</span><br><span class="line">admin.add_view(Happy(name=<span class="string">u'工作之愉'</span>))</span><br><span class="line">admin.add_view(Birthday(name=<span class="string">u'年年有今日岁岁有今朝'</span>))</span><br><span class="line">admin.add_view(MyModelView(User,db.session,name=<span class="string">u'用户管理'</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>,host=<span class="string">'0.0.0.0'</span>,port=<span class="number">5000</span>)</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:21.793Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%95%88%E6%9E%9C%E5%9B%BE"><span class="toc-text">1 效果图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%BB%A3%E7%A0%81%E8%AF%B4%E6%98%8E"><span class="toc-text">2 代码说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97"><span class="toc-text">3 操作指南</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E4%BD%BF%E7%94%A8myweb%E7%94%A8%E6%88%B7%E7%99%BB%E9%99%86%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">3.1 使用myweb用户登陆服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E4%BF%AE%E6%94%B9manage-py"><span class="toc-text">3.2 修改manage.py</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F"><span class="toc-text">3.7 运行程序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%8B%93%E5%B1%95%E7%BB%83%E4%B9%A0"><span class="toc-text">4 拓展练习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%AE%9E%E7%8E%B0%E5%88%97%E5%90%8D%E6%98%A0%E5%B0%84%E5%92%8C%E6%8E%92%E5%BA%8F%E5%8A%9F%E8%83%BD"><span class="toc-text">4.1 实现列名映射和排序功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%AE%9E%E7%8E%B0%E8%A1%A8%E7%9A%84%E6%98%8E%E7%BB%86%E6%9F%A5%E7%9C%8B"><span class="toc-text">4.2 实现表的明细查看</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-manage-py%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="toc-text">5 manage.py的代码</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

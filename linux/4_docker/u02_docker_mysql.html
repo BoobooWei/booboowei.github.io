@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Docker 部署 MySQL 8.0.22 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/4_docker/u02_docker_mysql">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/4_docker/u02_docker_mysql" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="容器 mysql:8.0.22 登陆 docker hub ，搜索mysql https:&#x2F;&#x2F;hub.docker.com&#x2F;_&#x2F;mysql?tab&#x3D;tags 拉到本地 阅读帮助文档 https:&#x2F;&#x2F;hub.docker.com&#x2F;_&#x2F;mysql?tab&#x3D;description 初始化一个新实例 阅读其他文档 https:&#x2F;&#x2F;www.runoob.com&#x2F;docker&#x2F;docker-install-m">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Docker 部署 MySQL 8.0.22">
+<meta property="og:url" content="http://www.toberoot.com/linux/4_docker/u02_docker_mysql">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="容器 mysql:8.0.22 登陆 docker hub ，搜索mysql https:&#x2F;&#x2F;hub.docker.com&#x2F;_&#x2F;mysql?tab&#x3D;tags 拉到本地 阅读帮助文档 https:&#x2F;&#x2F;hub.docker.com&#x2F;_&#x2F;mysql?tab&#x3D;description 初始化一个新实例 阅读其他文档 https:&#x2F;&#x2F;www.runoob.com&#x2F;docker&#x2F;docker-install-m">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-21T09:56:40.741Z">
+<meta property="article:modified_time" content="2025-10-21T09:56:40.741Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../docs/" class="main-nav-link">Hexo</a><a href="../../news/" class="main-nav-link">News</a><a href="../../api/" class="main-nav-link">MySQL8.0</a><a href="../../database/" class="main-nav-link">Database</a><a href="../../linux/" class="main-nav-link">Linux</a><a href="../../cloud/" class="main-nav-link">Cloud</a><a href="../../singapore/" class="main-nav-link">Singapore</a><a href="../../amy/" class="main-nav-link">AMY</a><a href="../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Docker 部署 MySQL 8.0.22</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/4_docker/u02_docker_mysql.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h2 id="容器-mysql-8-0-22" class="article-heading"><a href="#容器-mysql-8-0-22" class="headerlink" title="容器 mysql:8.0.22"></a>容器 mysql:8.0.22<a class="article-anchor" href="#容器-mysql-8-0-22" aria-hidden="true"></a></h2><ol>
+<li>登陆 docker hub ，搜索mysql <a target="_blank" rel="noopener" href="https://hub.docker.com/_/mysql?tab=tags">https://hub.docker.com/_/mysql?tab=tags</a></li>
+<li>拉到本地</li>
+<li>阅读帮助文档 <a target="_blank" rel="noopener" href="https://hub.docker.com/_/mysql?tab=description">https://hub.docker.com/_/mysql?tab=description</a></li>
+<li>初始化一个新实例</li>
+<li>阅读其他文档 <a target="_blank" rel="noopener" href="https://www.runoob.com/docker/docker-install-mysql.html">https://www.runoob.com/docker/docker-install-mysql.html</a></li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># docker pull mysql:8.0.22</span></span><br><span class="line">docker images</span><br><span class="line"></span><br><span class="line"><span class="comment"># mysql_node1</span></span><br><span class="line"></span><br><span class="line">docker run -itd --name mysql_node1 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0.22</span><br><span class="line"><span class="comment"># 参数说明：</span></span><br><span class="line"><span class="comment">## docker run 命令的参数</span></span><br><span class="line">-d: 后台运行容器，并返回容器ID</span><br><span class="line">-i: 以交互模式运行容器，通常与 -t 同时使用；</span><br><span class="line">-name: 为容器命名</span><br><span class="line">-v: <span class="string">"$`pwd`/data"</span>:/var/lib/mysql 将数据目录映射到宿主机的指定目录</span><br><span class="line">-p: 指定端口映射,主机(宿主)端口:容器端口</span><br><span class="line"><span class="comment">## mysql 容器的参数</span></span><br><span class="line">MYSQL_ROOT_PASSWORD=123456：设置 MySQL 服务 root 用户的密码。</span><br><span class="line"></span><br><span class="line"><span class="comment">## 查看日志</span></span><br><span class="line">docker <span class="built_in">exec</span> -it mysql_node1 bash</span><br><span class="line">docker logs mysql_node1</span><br><span class="line"><span class="comment">## 进入容器使用mysql客户端连接数据库</span></span><br><span class="line">docker <span class="built_in">exec</span> -it mysql_node1 sh</span><br><span class="line">mysql -uroot -p<span class="string">"<span class="variable">$MYSQL_ROOT_PASSWORD</span>"</span></span><br><span class="line">create database booboo;</span><br><span class="line">use booboo;</span><br><span class="line">create table t1 (<span class="built_in">id</span> int primary key ,num int);</span><br><span class="line">insert into t1 values (1,100);</span><br><span class="line"><span class="keyword">select</span> * from t1;</span><br><span class="line"></span><br><span class="line"><span class="comment">## 逻辑备份</span></span><br><span class="line">docker <span class="built_in">exec</span> mysql_node1 sh -c <span class="string">'exec mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD"'</span> &gt; `<span class="built_in">pwd</span>`/all-databases.sql</span><br><span class="line"><span class="comment">## 停止容器</span></span><br><span class="line">docker stop mysql_node1</span><br><span class="line"></span><br><span class="line"><span class="comment"># mysql_node2</span></span><br><span class="line"><span class="comment">## 导入备份</span></span><br><span class="line">docker run -itd --name mysql_node2 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0.22</span><br><span class="line">docker <span class="built_in">exec</span> -i mysql_node2 sh -c <span class="string">'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD"'</span> &lt; `<span class="built_in">pwd</span>`/all-databases.sql</span><br><span class="line"><span class="comment">## 交互式查询</span></span><br><span class="line">docker <span class="built_in">exec</span> -it mysql_node2 sh</span><br><span class="line">mysql -uroot -p<span class="string">"<span class="variable">$MYSQL_ROOT_PASSWORD</span>"</span></span><br><span class="line"><span class="keyword">select</span> * from booboo.t1;</span><br><span class="line"><span class="comment">## 非交互式查询</span></span><br><span class="line">docker <span class="built_in">exec</span> mysql_node2 sh -c <span class="string">'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "select * from booboo.t1"'</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="pic/mac09.png"></p>
+<p>操作记录</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">05:35 下午 :~ booboowei$ docker run -itd --name mysql_node1 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0.22</span><br><span class="line">76478cf18dd80e02589b707232cfc7d96da1d59e7a30f7d441da42d3acde9971</span><br><span class="line">05:35 下午 :~ booboowei$ docker image list</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">mysql               8.0.22              4f1413420360        25 hours ago        545MB</span><br><span class="line">05:35 下午 :~ booboowei$ docker ps --all</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                               NAMES</span><br><span class="line">76478cf18dd8        mysql:8.0.22        <span class="string">"docker-entrypoint.s…"</span>   21 seconds ago      Up 20 seconds       0.0.0.0:3306-&gt;3306/tcp, 33060/tcp   mysql_node1</span><br><span class="line">05:35 下午 :~ booboowei$ docker logs mysql_node1</span><br><span class="line">2020-11-19 09:35:26+00:00 [Note] [Entrypoint]: Entrypoint script <span class="keyword">for</span> MySQL Server 8.0.22-1debian10 started.</span><br><span class="line">2020-11-19 09:35:26+00:00 [Note] [Entrypoint]: Switching to dedicated user <span class="string">'mysql'</span></span><br><span class="line">2020-11-19 09:35:26+00:00 [Note] [Entrypoint]: Entrypoint script <span class="keyword">for</span> MySQL Server 8.0.22-1debian10 started.</span><br><span class="line">2020-11-19 09:35:26+00:00 [Note] [Entrypoint]: Initializing database files</span><br><span class="line">2020-11-19T09:35:26.378413Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.22) initializing of server <span class="keyword">in</span> progress as process 45</span><br><span class="line">2020-11-19T09:35:26.384963Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.</span><br><span class="line">2020-11-19T09:35:26.801039Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.</span><br><span class="line">2020-11-19T09:35:28.049978Z 6 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.</span><br><span class="line">2020-11-19 09:35:30+00:00 [Note] [Entrypoint]: Database files initialized</span><br><span class="line">2020-11-19 09:35:30+00:00 [Note] [Entrypoint]: Starting temporary server</span><br><span class="line">mysqld will <span class="built_in">log</span> errors to /var/lib/mysql/76478cf18dd8.err</span><br><span class="line">mysqld is running as pid 92</span><br><span class="line">2020-11-19 09:35:31+00:00 [Note] [Entrypoint]: Temporary server started.</span><br><span class="line">Warning: Unable to load <span class="string">'/usr/share/zoneinfo/iso3166.tab'</span> as <span class="keyword">time</span> zone. Skipping it.</span><br><span class="line">Warning: Unable to load <span class="string">'/usr/share/zoneinfo/leap-seconds.list'</span> as <span class="keyword">time</span> zone. Skipping it.</span><br><span class="line">Warning: Unable to load <span class="string">'/usr/share/zoneinfo/zone.tab'</span> as <span class="keyword">time</span> zone. Skipping it.</span><br><span class="line">Warning: Unable to load <span class="string">'/usr/share/zoneinfo/zone1970.tab'</span> as <span class="keyword">time</span> zone. Skipping it.</span><br><span class="line"></span><br><span class="line">2020-11-19 09:35:34+00:00 [Note] [Entrypoint]: Stopping temporary server</span><br><span class="line">2020-11-19 09:35:36+00:00 [Note] [Entrypoint]: Temporary server stopped</span><br><span class="line"></span><br><span class="line">2020-11-19 09:35:36+00:00 [Note] [Entrypoint]: MySQL init process <span class="keyword">done</span>. Ready <span class="keyword">for</span> start up.</span><br><span class="line"></span><br><span class="line">2020-11-19T09:35:37.239688Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.22) starting as process 1</span><br><span class="line">2020-11-19T09:35:37.249809Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.</span><br><span class="line">2020-11-19T09:35:37.388270Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.</span><br><span class="line">2020-11-19T09:35:37.495677Z 0 [System] [MY-011323] [Server] X Plugin ready <span class="keyword">for</span> connections. Bind-address: <span class="string">'::'</span> port: 33060, socket: /var/run/mysqld/mysqlx.sock</span><br><span class="line">2020-11-19T09:35:37.569246Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.</span><br><span class="line">2020-11-19T09:35:37.569759Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported <span class="keyword">for</span> this channel.</span><br><span class="line">2020-11-19T09:35:37.572660Z 0 [Warning] [MY-011810] [Server] Insecure configuration <span class="keyword">for</span> --pid-file: Location <span class="string">'/var/run/mysqld'</span> <span class="keyword">in</span> the path is accessible to all OS <span class="built_in">users</span>. Consider choosing a different directory.</span><br><span class="line">2020-11-19T09:35:37.595682Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready <span class="keyword">for</span> connections. Version: <span class="string">'8.0.22'</span>  socket: <span class="string">'/var/run/mysqld/mysqld.sock'</span>  port: 3306  MySQL Community Server - GPL.</span><br><span class="line"></span><br><span class="line">05:38 下午 :~ booboowei$ docker <span class="built_in">exec</span> -it 76478cf18dd8 sh</span><br><span class="line"><span class="comment"># ls</span></span><br><span class="line">bin  boot  dev    docker-entrypoint-initdb.d  entrypoint.sh  etc    home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line"><span class="comment"># which mysql</span></span><br><span class="line">/usr/bin/mysql</span><br><span class="line"><span class="comment"># mysql</span></span><br><span class="line">ERROR 1045 (28000): Access denied <span class="keyword">for</span> user <span class="string">'root'</span>@<span class="string">'localhost'</span> (using password: NO)</span><br><span class="line"><span class="comment"># mysql -uroot -p"$MYSQL_ROOT_PASSWORD"</span></span><br><span class="line">mysql: [Warning] Using a password on the <span class="built_in">command</span> line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection <span class="built_in">id</span> is 12</span><br><span class="line">Server version: 8.0.22 MySQL Community Server - GPL</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type <span class="string">'help;'</span> or <span class="string">'\h'</span> <span class="keyword">for</span> <span class="built_in">help</span>. Type <span class="string">'\c'</span> to clear the current input statement.</span><br><span class="line"></span><br><span class="line">mysql&gt; show databases;</span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+--------------------+</span><br><span class="line">4 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.01 sec)</span><br><span class="line">mysql&gt; create database booboo;</span><br><span class="line">Query OK, 1 row affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; use booboo;</span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; create table t1 (<span class="built_in">id</span> int primary key ,num int);</span><br><span class="line">Query OK, 0 rows affected (0.02 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; insert into t1 values (1,100);</span><br><span class="line">Query OK, 1 row affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * from t1;</span><br><span class="line">+----+------+</span><br><span class="line">| <span class="built_in">id</span> | num  |</span><br><span class="line">+----+------+</span><br><span class="line">|  1 |  100 |</span><br><span class="line">+----+------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">05:43 下午 :~ booboowei$ docker <span class="built_in">exec</span> mysql_node1 sh -c <span class="string">'exec mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD"'</span> &gt; `<span class="built_in">pwd</span>`/all-databases.sql</span><br><span class="line">05:43 下午 :~ booboowei$ ll all-databases.sql</span><br><span class="line">-rw-r--r--  1 booboowei  staff   3.6M 11 19 17:42 all-databases.sql</span><br><span class="line"></span><br><span class="line">5:44 下午 :~ booboowei$ docker run -itd --name mysql_node2 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0.22</span><br><span class="line">e54f1bc29d33984dac3303c26f332618d26785043ecf9cf76e088224c3797c14</span><br><span class="line">05:45 下午 :~ booboowei$ docker <span class="built_in">exec</span> -i mysql_node2 sh -c <span class="string">'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD"'</span> &lt; `<span class="built_in">pwd</span>`/all-databases.sql</span><br><span class="line">mysql: [Warning] Using a password on the <span class="built_in">command</span> line interface can be insecure.</span><br><span class="line"></span><br><span class="line">05:47 下午 :~ booboowei$ docker <span class="built_in">exec</span> mysql_node2 sh -c <span class="string">'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "select * from booboo.t1"'</span></span><br><span class="line">mysql: [Warning] Using a password on the <span class="built_in">command</span> line interface can be insecure.</span><br><span class="line"><span class="built_in">id</span>    num</span><br><span class="line">1    100</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-21T09:56:40.741Z" itemprop="dateModified">Last updated: 2025-10-21</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8-mysql-8-0-22"><span class="toc-text">容器 mysql:8.0.22</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../docs/" class="mobile-nav-link">Hexo</a><a href="../../news/" class="mobile-nav-link">News</a><a href="../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../database/" class="mobile-nav-link">Database</a><a href="../../linux/" class="mobile-nav-link">Linux</a><a href="../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../amy/" class="mobile-nav-link">AMY</a><a href="../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../js/lang_select.js"></script>
+
+
+<script src="../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>02-TICKscript语言-F-节点 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/5_tick/kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80/F_TICKscript%E8%8A%82%E7%82%B9%E5%B1%9E%E6%80%A7%E6%96%B9%E6%B3%95">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/5_tick/kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80/F_TICKscript%E8%8A%82%E7%82%B9%E5%B1%9E%E6%80%A7%E6%96%B9%E6%B3%95" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="TICKscript节点 节点分类      TICKscript节点节点分类 A 定义数据获取方式：批、流 B、C 确定待处理的数据集 D、E 用于处理数据      NO. 节点分类 节点 含义    A 数据源定义节点 顶级节点定义数据来源    A 数据源定义节点 BatchNode 顶级节点，定义了：批处理模式   A 数据源定义节点 StreamNode 顶级节点，定义了：流处理">
+<meta property="og:type" content="website">
+<meta property="og:title" content="02-TICKscript语言-F-节点">
+<meta property="og:url" content="http://www.toberoot.com/linux/5_tick/kapacitor/02_TICKscript%E8%AF%AD%E8%A8%80/F_TICKscript%E8%8A%82%E7%82%B9%E5%B1%9E%E6%80%A7%E6%96%B9%E6%B3%95">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="TICKscript节点 节点分类      TICKscript节点节点分类 A 定义数据获取方式：批、流 B、C 确定待处理的数据集 D、E 用于处理数据      NO. 节点分类 节点 含义    A 数据源定义节点 顶级节点定义数据来源    A 数据源定义节点 BatchNode 顶级节点，定义了：批处理模式   A 数据源定义节点 StreamNode 顶级节点，定义了：流处理">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2020-04-14T11:28:48.000Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:09.912Z">
+<meta property="article:author" content="魏亚萍">
+<meta property="article:tag" content="TICKscript语言">
+<meta property="article:tag" content="TICK技术栈">
+<meta property="article:tag" content="监控告警">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">02-TICKscript语言-F-节点</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/5_tick/kapacitor/02_TICKscript语言/F_TICKscript节点属性方法.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --><html><head></head><body><ul>
+<li><a href="#tickscript%E8%8A%82%E7%82%B9">TICKscript节点</a><ul>
+<li><a href="#%E8%8A%82%E7%82%B9%E5%88%86%E7%B1%BB">节点分类</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h1 id="TICKscript节点" class="article-heading"><a href="#TICKscript节点" class="headerlink" title="TICKscript节点"></a>TICKscript节点<a class="article-anchor" href="#TICKscript节点" aria-hidden="true"></a></h1><h2 id="节点分类" class="article-heading"><a href="#节点分类" class="headerlink" title="节点分类"></a>节点分类<a class="article-anchor" href="#节点分类" aria-hidden="true"></a></h2><ul>
+<li>A 定义数据获取方式：批、流</li>
+<li>B、C 确定待处理的数据集</li>
+<li>D、E 用于处理数据</li>
+</ul>
+<p><img src="dag_03.jpg"></p>
+<table>
+<thead>
+<tr>
+<th align="left">NO.</th>
+<th align="left">节点分类</th>
+<th align="left">节点</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">A</td>
+<td align="left">数据源定义节点</td>
+<td align="left"><strong>顶级节点定义数据来源</strong></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">A</td>
+<td align="left">数据源定义节点</td>
+<td align="left"><code>BatchNode</code></td>
+<td align="left">顶级节点，定义了：批处理模式</td>
+</tr>
+<tr>
+<td align="left">A</td>
+<td align="left">数据源定义节点</td>
+<td align="left"><code>StreamNode</code></td>
+<td align="left">顶级节点，定义了：流处理模式</td>
+</tr>
+<tr>
+<td align="left">B</td>
+<td align="left">数据定义节点</td>
+<td align="left"><strong>定义待处理的数据帧或数据流</strong></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">B</td>
+<td align="left">数据定义节点</td>
+<td align="left"><code>QueryNode</code></td>
+<td align="left">只能跟着<code>BatchNode</code></td>
+</tr>
+<tr>
+<td align="left">B</td>
+<td align="left">数据定义节点</td>
+<td align="left"><code>FromNode</code></td>
+<td align="left">只能跟着<code>StreamNode</code></td>
+</tr>
+<tr>
+<td align="left">B</td>
+<td align="left">数据定义节点</td>
+<td align="left"><code>SideloadNode</code></td>
+<td align="left">基于来自各种源的分层数据向点添加字段和标签</td>
+</tr>
+<tr>
+<td align="left">C</td>
+<td align="left">数据操作节点</td>
+<td align="left"><strong>更改或生成数据集内的值</strong></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">C</td>
+<td align="left">数据操作节点</td>
+<td align="left"><code>DefaultNode</code></td>
+<td align="left">用于为数据系列中的tag和field设置默认值</td>
+</tr>
+<tr>
+<td align="left">C</td>
+<td align="left">数据操作节点</td>
+<td align="left"><code>ShiftNode</code></td>
+<td align="left">用于移动数据点时间戳</td>
+</tr>
+<tr>
+<td align="left">C</td>
+<td align="left">数据操作节点</td>
+<td align="left"><code>WhereNode</code></td>
+<td align="left">用于过滤</td>
+</tr>
+<tr>
+<td align="left">C</td>
+<td align="left">数据操作节点</td>
+<td align="left"><code>WindowNode</code></td>
+<td align="left">用于在移动时间范围内缓存数据</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><strong>用于更改数据结构</strong></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>CombineNode</code></td>
+<td align="left">用于将来自单个节点的数据与自身组合在一起</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>EvalNode</code></td>
+<td align="left">用于对表达式命名</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>GroupByNode</code></td>
+<td align="left">按照标签<code>Tag</code>对传如数据进行分组</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>JoinNode</code></td>
+<td align="left">根据匹配的<code>时间戳</code>连接来自任意数量管道的数据</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>UnionNode</code></td>
+<td align="left">可以将任意数量的管道进行联合</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><strong>用于转换或处理数据集中数据点</strong></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>DeleteNode</code></td>
+<td align="left">从数据点删除字段Field和标记Tag</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>DerivativeNode</code></td>
+<td align="left">求导数</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>FattenNode</code></td>
+<td align="left">在特定维度上展平一组点</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>InfluxQLNode</code></td>
+<td align="left">提供对InfluxQL功能的访问</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>StateDurationNode</code></td>
+<td align="left">计算给定状态持续时间</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>StatsNode</code></td>
+<td align="left">给定时间间隔发出有关另一个节点内部统计信息</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>BarrierNode</code></td>
+<td align="left">可以在没有数据流量的情况下执行管道</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>ChangeDetectNode</code></td>
+<td align="left">如果字段值发生变化则创建节点</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>StateCountNode</code></td>
+<td align="left">计算连续点的在一个给定的状态的数目</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><strong>用于触发事件</strong></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>AlertNode</code></td>
+<td align="left">配置警报发射</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>DeadmanNode</code></td>
+<td align="left">实际上是辅助函数，它是alert当数据流低于指定阈值时触发的别名</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>HTTPOutNode</code></td>
+<td align="left">为其收到的每个组缓存最新数据，使用字符串参数作为最终定位器上下文，使其可通过Kapicator http服务器使用</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>HTTPPostNode</code></td>
+<td align="left">将数据发布到字符串数组中指定的HTTP端点</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>InfluxDBOutNode</code></td>
+<td align="left">在收到数据时将数据写入InfluxDB</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>K8sAutoscaleNode</code></td>
+<td align="left">触发Kubernetes™资源的自动缩放</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>KapacitorLoopback</code></td>
+<td align="left">将数据写回kapacitor流</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>SwarmAutoscaleNode</code></td>
+<td align="left">触发Docker Swarm模式集群上的服务的自动调度事件。该节点还输出触发事件的点</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>EC2AutoscaleNode</code></td>
+<td align="left">触发AWS Autoscaling组上的组的自动调度事件</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">处理节点</td>
+<td align="left"><code>LogNode</code></td>
+<td align="left">记录通过它的所有数据</td>
+</tr>
+<tr>
+<td align="left">E</td>
+<td align="left">用户自定义的函数UDF</td>
+<td align="left"><code>UDFNode</code></td>
+<td align="left"><strong>用于实现由用户或脚本定义的功能</strong></td>
+</tr>
+<tr>
+<td align="left">F</td>
+<td align="left">内部使用节点</td>
+<td align="left"><code>NoOpNode</code></td>
+<td align="left"><strong>不要用</strong></td>
+</tr>
+</tbody></table>
+<h2 id="节点属性方法" class="article-heading"><a href="#节点属性方法" class="headerlink" title="节点属性方法"></a>节点属性方法<a class="article-anchor" href="#节点属性方法" aria-hidden="true"></a></h2><p><a target="_blank" rel="noopener" href="https://docs.influxdata.com/kapacitor/v1.5/nodes/">Nodes官方文档</a></p>
+<h3 id="数据源定义节点" class="article-heading"><a href="#数据源定义节点" class="headerlink" title="数据源定义节点"></a>数据源定义节点<a class="article-anchor" href="#数据源定义节点" aria-hidden="true"></a></h3><p><strong>batch or stream？</strong></p>
+<p>使用哪个取决于系统资源和正在进行的计算类型。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Batch</th>
+<th>Stream</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>适应场景</td>
+<td>时间段长，数据量大</td>
+<td>时间段较小</td>
+</tr>
+<tr>
+<td>特点</td>
+<td>触发查询时将导致InfluxDB负载高</td>
+<td>降低了InfluxDB的查询负载，将数据全部缓存在内存中</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>在长时间内使用大量数据时<code>batch</code>首选，它会将数据保留在磁盘上，直到需要它为止，但触发时查询将导致数据库突然出现高负载。</p>
+</li>
+<li><p>使用较小的时间帧时 <code>stream</code>是首选。这意味着不必要地将数十亿个数据点保存在内存中，它降低了InfluxDB的查询负载。</p>
+</li>
+</ul>
+<h3 id="数据定义节点" class="article-heading"><a href="#数据定义节点" class="headerlink" title="数据定义节点"></a>数据定义节点<a class="article-anchor" href="#数据定义节点" aria-hidden="true"></a></h3><h3 id="数据操作节点" class="article-heading"><a href="#数据操作节点" class="headerlink" title="数据操作节点"></a>数据操作节点<a class="article-anchor" href="#数据操作节点" aria-hidden="true"></a></h3><h3 id="处理节点-用于更改数据结构" class="article-heading"><a href="#处理节点-用于更改数据结构" class="headerlink" title="处理节点-用于更改数据结构"></a>处理节点-用于更改数据结构<a class="article-anchor" href="#处理节点-用于更改数据结构" aria-hidden="true"></a></h3><h3 id="处理节点-用于转换或处理数据集中数据点" class="article-heading"><a href="#处理节点-用于转换或处理数据集中数据点" class="headerlink" title="处理节点-用于转换或处理数据集中数据点"></a>处理节点-用于转换或处理数据集中数据点<a class="article-anchor" href="#处理节点-用于转换或处理数据集中数据点" aria-hidden="true"></a></h3><h3 id="处理节点-用于触发事件" class="article-heading"><a href="#处理节点-用于触发事件" class="headerlink" title="处理节点-用于触发事件"></a>处理节点-用于触发事件<a class="article-anchor" href="#处理节点-用于触发事件" aria-hidden="true"></a></h3></body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:09.912Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#TICKscript%E8%8A%82%E7%82%B9"><span class="toc-text">TICKscript节点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E5%88%86%E7%B1%BB"><span class="toc-text">节点分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E5%B1%9E%E6%80%A7%E6%96%B9%E6%B3%95"><span class="toc-text">节点属性方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%BA%90%E5%AE%9A%E4%B9%89%E8%8A%82%E7%82%B9"><span class="toc-text">数据源定义节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%AE%9A%E4%B9%89%E8%8A%82%E7%82%B9"><span class="toc-text">数据定义节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C%E8%8A%82%E7%82%B9"><span class="toc-text">数据操作节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E8%8A%82%E7%82%B9-%E7%94%A8%E4%BA%8E%E6%9B%B4%E6%94%B9%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-text">处理节点-用于更改数据结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E8%8A%82%E7%82%B9-%E7%94%A8%E4%BA%8E%E8%BD%AC%E6%8D%A2%E6%88%96%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%AD%E6%95%B0%E6%8D%AE%E7%82%B9"><span class="toc-text">处理节点-用于转换或处理数据集中数据点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E8%8A%82%E7%82%B9-%E7%94%A8%E4%BA%8E%E8%A7%A6%E5%8F%91%E4%BA%8B%E4%BB%B6"><span class="toc-text">处理节点-用于触发事件</span></a></li></ol></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

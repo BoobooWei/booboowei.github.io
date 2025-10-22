@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>物理结构_跟踪文件 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-11g/D-%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-04-%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84_%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6trace_files">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-11g/D-%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-04-%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84_%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6trace_files" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2019.10.03 BoobooWei     物理结构_跟踪文件 关于Oracle代码的可测量性 自动诊断存储库ADR 跟踪文件的分类 计划内的，由用户请求所产生的跟踪文件 产生方式 跟踪文件的位置 命名约定 对跟踪文件加标记   计划外的，数据库服务器自动产生的跟踪文件 产生方式 处理方式   实践 实践——查看是否开启跟踪文件 实践——查看跟踪文件位置 实践——启用用户跟踪文件">
+<meta property="og:type" content="website">
+<meta property="og:title" content="物理结构_跟踪文件">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-11g/D-%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-04-%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84_%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6trace_files">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2019.10.03 BoobooWei     物理结构_跟踪文件 关于Oracle代码的可测量性 自动诊断存储库ADR 跟踪文件的分类 计划内的，由用户请求所产生的跟踪文件 产生方式 跟踪文件的位置 命名约定 对跟踪文件加标记   计划外的，数据库服务器自动产生的跟踪文件 产生方式 处理方式   实践 实践——查看是否开启跟踪文件 实践——查看跟踪文件位置 实践——启用用户跟踪文件">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.782Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:45.958Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">物理结构_跟踪文件</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-11g/D-体系结构和存储引擎-04-物理结构_跟踪文件trace_files.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2019.10.03 BoobooWei</p>
+</blockquote>
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6">物理结构_跟踪文件</a><ul>
+<li><a href="#%E5%85%B3%E4%BA%8Eoracle%E4%BB%A3%E7%A0%81%E7%9A%84%E5%8F%AF%E6%B5%8B%E9%87%8F%E6%80%A7">关于Oracle代码的可测量性</a></li>
+<li><a href="#%E8%87%AA%E5%8A%A8%E8%AF%8A%E6%96%AD%E5%AD%98%E5%82%A8%E5%BA%93adr">自动诊断存储库ADR</a></li>
+<li><a href="#%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E7%9A%84%E5%88%86%E7%B1%BB">跟踪文件的分类</a><ul>
+<li><a href="#%E8%AE%A1%E5%88%92%E5%86%85%E7%9A%84%E7%94%B1%E7%94%A8%E6%88%B7%E8%AF%B7%E6%B1%82%E6%89%80%E4%BA%A7%E7%94%9F%E7%9A%84%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6">计划内的，由用户请求所产生的跟踪文件</a><ul>
+<li><a href="#%E4%BA%A7%E7%94%9F%E6%96%B9%E5%BC%8F">产生方式</a></li>
+<li><a href="#%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%8D%E7%BD%AE">跟踪文件的位置</a></li>
+<li><a href="#%E5%91%BD%E5%90%8D%E7%BA%A6%E5%AE%9A">命名约定</a></li>
+<li><a href="#%E5%AF%B9%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E5%8A%A0%E6%A0%87%E8%AE%B0">对跟踪文件加标记</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AE%A1%E5%88%92%E5%A4%96%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%8A%A8%E4%BA%A7%E7%94%9F%E7%9A%84%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6">计划外的，数据库服务器自动产生的跟踪文件</a><ul>
+<li><a href="#%E4%BA%A7%E7%94%9F%E6%96%B9%E5%BC%8F">产生方式</a></li>
+<li><a href="#%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F">处理方式</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9E%E8%B7%B5">实践</a><ul>
+<li><a href="#%E5%AE%9E%E8%B7%B5%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E5%BC%80%E5%90%AF%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6">实践——查看是否开启跟踪文件</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B5%E6%9F%A5%E7%9C%8B%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE">实践——查看跟踪文件位置</a></li>
+<li><a href="#%E5%AE%9E%E8%B7%B5%E5%90%AF%E7%94%A8%E7%94%A8%E6%88%B7%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6">实践——启用用户跟踪文件</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E7%AC%94%E8%AE%B0">笔记</a><ul>
+<li><a href="#1-%E6%9F%A5%E7%9C%8B%E5%B8%B8%E7%94%A8%E7%9A%84%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84">1. 查看常用的跟踪文件路径</a></li>
+<li><a href="#2-%E6%8E%8C%E6%8F%A1%E5%B8%B8%E7%94%A8%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99">2. 掌握常用跟踪文件命名规则</a></li>
+<li><a href="#3-%E6%8E%8C%E6%8F%A1%E6%89%93%E5%BC%80%E5%85%B3%E9%97%AD%E5%BD%93%E5%89%8D%E4%BC%9A%E8%AF%9D%E8%B7%9F%E8%B8%AA%E7%9A%84%E6%96%B9%E6%B3%95">3. 掌握打开/关闭当前会话跟踪的方法</a></li>
+<li><a href="#4-%E6%8E%8C%E6%8F%A1%E6%89%93%E5%BC%80%E5%85%B3%E9%97%AD%E6%8C%87%E5%AE%9A%E7%9A%84%E4%BC%9A%E8%AF%9D%E8%B7%9F%E8%B8%AA%E6%96%B9%E6%B3%95">4. 掌握打开/关闭指定的会话跟踪方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h2 id="关于Oracle代码的可测量性" class="article-heading"><a href="#关于Oracle代码的可测量性" class="headerlink" title="关于Oracle代码的可测量性"></a>关于Oracle代码的可测量性<a class="article-anchor" href="#关于Oracle代码的可测量性" aria-hidden="true"></a></h2><blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag001.htm#ADMIN11257">关于Oracle数据库故障诊断基础架构</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag.htm#adminChapterDiagnosability">管理诊断数据</a></li>
+</ul>
+</blockquote>
+<p>在应用设计和开发中，可测量性至关重要。每一版Oracle数据库的可测量性都越来越好。</p>
+<ul>
+<li>Oracle 10g 将内核中的代码测量发展到一个全新的层次，引入了自动负载存储库<code>Automatic Workload Repository,AWR</code> 和活动会话历史<code>Active Session History,ASH</code>特性；</li>
+<li>Oracle 11g 则更进一步，引入了自动诊断存储库<code>Automatic Diagnostic Repository,ADR</code>和SQL性能分析器<code>SQL Performance Analyzer,SPA</code>;</li>
+<li>Oracle 12c 在原来的基础上又增加了 DDL 日志以记录数据库中所有的DDL操作，此外还增加了调试日志，用于记录数据库中产生的一些异常情况。</li>
+</ul>
+<p>​ ——摘自《<strong>Oracle编程艺术：深入理解数据库体系结构(第3版)</strong>》</p>
+<blockquote>
+<p>从指标采集，到自动诊断和SQL分析，个人觉得Oracle的监控告警做得太棒了！相信不久的将来，Oracle 可以做到故障自愈 ^.^</p>
+</blockquote>
+<hr>
+<p>从 Oracle 11 <em>g</em>开始，Oracle数据库有一个<strong>高级故障诊断系统</strong>用于收集和管理诊断数据。<strong>诊断数据</strong>包括以前版本中也存在的<code>跟踪文件</code>，<code>转储</code>和<code>核心文件</code>，以及使客户和Oracle支持人员能够快速有效地识别，调查，跟踪和解决问题的<code>新型诊断数据</code>。</p>
+<p>在这一章当中：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag001.htm#CHDIAADE">关于Oracle数据库故障诊断基础架构</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag002.htm#CHDJDBCH">调查，报告和解决问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag003.htm#CHDBCHID">使用企业管理器支持工作台查看问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag004.htm#CHDFECDJ">创建用户报告的问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag005.htm#CHDGCEIH">查看警报日志</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag006.htm#CHDIHIBA">查找跟踪文件</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag007.htm#CHDFCCAE">使用运行状况监控器运行运行状况检查</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag008.htm#CHDBIGAA">使用SQL Repair Advisor修复SQL故障</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag009.htm#CHDBHCFF">使用Data Recovery Advisor修复数据损坏</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/diag010.htm#CHDCACEJ">创建，编辑和上传定制事件包</a></li>
+</ul>
+<p>今天要学习的跟踪文件只是 Oracle 11g 高级故障诊断系统收集的数据之一，本节我们将集中学习各种跟踪文件中的信息，如某类跟踪文件到底是什么，在哪里，对这些跟踪文件能够做什么。</p>
+<h2 id="自动诊断存储库ADR" class="article-heading"><a href="#自动诊断存储库ADR" class="headerlink" title="自动诊断存储库ADR"></a>自动诊断存储库ADR<a class="article-anchor" href="#自动诊断存储库ADR" aria-hidden="true"></a></h2><p>自动诊断存储库<code>Automatic Diagnostic Repository,ADR</code>中的文件目录结构</p>
+<p><img src="pic/admin077.gif"></p>
+<ul>
+<li>该图显示了单个数据库实例的ADR的目录结构，其中每个目录都由一个文件夹表示。顶部是一个标有“ ADR base”的文件夹。</li>
+<li>在ADR基础之下是一个名为diag的目录，在其下是一个名为rdbms的目录。在rdbms目录下面是一个目录，其名称为数据库名称。</li>
+<li>在该目录下是目录全名的是数据库SID。此目录由标签标记为数据库实例的ADR主目录。例如我的环境中是<code>/u01/app/oracle/diag/rdbms/dbtest/dbtest</code></li>
+<li>ADR主目录（名称为数据库SID的目录）下面是以下子目录：alert，cdump，event，trace和其他。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>目录</th>
+<th>英文</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>trace</code></td>
+<td><code>Diag Trace</code></td>
+<td>用户进程和后台进程产生的诊断跟踪文件</td>
+</tr>
+<tr>
+<td><code>alert</code></td>
+<td><code>Diag Alert</code></td>
+<td>XML格式的告警日志</td>
+</tr>
+<tr>
+<td><code>incident</code></td>
+<td><code>Diag Incident</code></td>
+<td>记录事件信息，包含多个子目录，其中每个子目录都为特定事件命名，每个子目录包含仅与该事件有关的转储</td>
+</tr>
+<tr>
+<td><code>cdump</code></td>
+<td><code>Diag Cdump</code></td>
+<td>内核跟踪目标，当发生严重问题时（如进程崩溃）会自动生成相应的跟踪文件</td>
+</tr>
+<tr>
+<td><code>hm</code></td>
+<td><code>Health Monitor</code></td>
+<td>运行状况监控器报告</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest dbtest]$ <span class="built_in">pwd</span></span><br><span class="line">/u01/app/oracle/diag/rdbms/dbtest/dbtest</span><br><span class="line">[oracle@oratest dbtest]$ ll</span><br><span class="line">total 68</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:47 alert</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:47 cdump</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:47 hm</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:47 incident</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:47 incpkg</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:47 ir</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:48 lck</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:48 metadata</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:47 metadata_dgif</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:47 metadata_pv</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:47 stage</span><br><span class="line">drwxr-x---. 2 oracle oinstall  4096 Jun  6 15:47 sweep</span><br><span class="line">drwxr-x---. 2 oracle oinstall 20480 Oct  5 22:20 trace</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="跟踪文件的分类" class="article-heading"><a href="#跟踪文件的分类" class="headerlink" title="跟踪文件的分类"></a>跟踪文件的分类<a class="article-anchor" href="#跟踪文件的分类" aria-hidden="true"></a></h2><p>我们将跟踪文件分成两大类：</p>
+<ul>
+<li><strong>计划内的，由用户请求所产生的跟踪文件</strong>：如启用<code>DBMS_MONITOR.SESSION_TRACE_ENABLE</code>产生的跟踪文件。这类文件包含会话相关的诊断信息，它有助于你调整及优化应用的性能，并诊断出瓶颈到底在哪里。</li>
+<li><strong>计划外的，数据库服务器自动产生的跟踪文件</strong>：当数据库服务器发生某些严重错误时，它会自动生成这些跟踪文件。这些错误包括（但不限于）<code>ORA-00600 "Internal Error"</code>（内部错误）、<code>ORA-03113 "End of file on communication channel"</code>（通信通道上文件结束）以及<code>ORA-07445 "Exception Encountered"</code>（遇到异常）。这些跟踪文件包含一些诊断信息，它主要对 Oracle Support 的分析人员有用，但对我们来说，除了能看出应用中哪里出现了内部错误之外，用处不大。</li>
+</ul>
+<h3 id="计划内的，由用户请求所产生的跟踪文件" class="article-heading"><a href="#计划内的，由用户请求所产生的跟踪文件" class="headerlink" title="计划内的，由用户请求所产生的跟踪文件"></a>计划内的，由用户请求所产生的跟踪文件<a class="article-anchor" href="#计划内的，由用户请求所产生的跟踪文件" aria-hidden="true"></a></h3><p>这些跟踪文件包含与诊断和性能相关的信息。他们对于了解数据应用的内部工作有着非凡的意义。在一个正常运行的数据库中，这类跟踪文件最为常见。</p>
+<h4 id="产生方式" class="article-heading"><a href="#产生方式" class="headerlink" title="产生方式"></a>产生方式<a class="article-anchor" href="#产生方式" aria-hidden="true"></a></h4><ul>
+<li><code>DBMS_MONITOR</code></li>
+<li><code>Oracle 9iR2</code>及更早的版本中可用<code>alter session set sql_trace=TRUE</code></li>
+<li><code>10046</code>事件等<code>Oracle拓展跟踪工具</code></li>
+</ul>
+<h4 id="跟踪文件的位置" class="article-heading"><a href="#跟踪文件的位置" class="headerlink" title="跟踪文件的位置"></a>跟踪文件的位置<a class="article-anchor" href="#跟踪文件的位置" aria-hidden="true"></a></h4><p>不论使用以上三种产生方式中的哪一种，Oracle都会在以下两个位置之一产生跟踪文件：</p>
+<ol>
+<li>如果使用<strong>专用服务器连接</strong>，会在<code>user_dump_dest</code>参数指定的目录中生成跟踪文件；</li>
+<li>如果使用<strong>共享服务器连接</strong>，会在<code>backgroup_dump_dest</code>参数指定的目录中生成跟踪文件。</li>
+</ol>
+<p>如何查看跟踪文件的位置？</p>
+<ul>
+<li>sqlplus 执行<code>show parameter dump_dest</code></li>
+<li>查看视图<code>v$parameter</code></li>
+<li>查看视图<code>v$diag_info</code></li>
+</ul>
+<h4 id="命名约定" class="article-heading"><a href="#命名约定" class="headerlink" title="命名约定"></a>命名约定<a class="article-anchor" href="#命名约定" aria-hidden="true"></a></h4><blockquote>
+<p>Oracle 跟踪文件的命名约定随着版本不同而变化。</p>
+</blockquote>
+<p>Linux系统的命名规范如下：</p>
+<table>
+<thead>
+<tr>
+<th>数据库版本</th>
+<th>跟踪文件名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>9i Release 1</td>
+<td>ora_10583.trc</td>
+</tr>
+<tr>
+<td>9i Release 2</td>
+<td>ora9ir2_ora_1905.trc</td>
+</tr>
+<tr>
+<td>10g Release 2</td>
+<td>ora10gr2_ora_6793.trc</td>
+</tr>
+<tr>
+<td>11g Release 2</td>
+<td>ora11gr2_ora_1990.trc</td>
+</tr>
+<tr>
+<td>12c Release 1</td>
+<td>ora12cr1_ora_2344.trc</td>
+</tr>
+</tbody></table>
+<p>除了<code>9i Release 1</code>，其他版本的跟踪文件名包含以下部分：<code>$ORACLE_SID_ora_&lt;进程ID&gt;.trc</code></p>
+<ul>
+<li>第一部分：<code>$ORACLE_SID</code></li>
+<li>第二部分：<code>ora</code></li>
+<li>第三部分：专用服务器在操作系统中的<code>进程ID</code></li>
+</ul>
+<h4 id="对跟踪文件加标记" class="article-heading"><a href="#对跟踪文件加标记" class="headerlink" title="对跟踪文件加标记"></a>对跟踪文件加标记<a class="article-anchor" href="#对跟踪文件加标记" aria-hidden="true"></a></h4><p>当我们无权访问<code>v$process</code> 和<code>v$session</code>的时候，想得到跟踪文件的名字就比较困难了。这时，我们可以对跟踪文件“加标记”来找到它。</p>
+<ul>
+<li>有权限访问<code>user_dump_dest</code>目录</li>
+<li>使用会话参数<code>tracefile_identifier</code>来标记跟踪文件</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> session <span class="keyword">set</span> tracefile_identifier <span class="operator">=</span> <span class="string">'Look_For_Me'</span>;</span><br><span class="line"><span class="operator">!</span>ls $ORACLE_BASE<span class="operator">/</span>diag<span class="operator">/</span>rdbms<span class="operator">/</span>dbtest<span class="operator">/</span>dbtest<span class="operator">/</span>trace<span class="comment">/*Look_For_Me*</span></span><br><span class="line"><span class="comment">exec dbms_monitor.session_trace_enable</span></span><br><span class="line"><span class="comment">!ls $ORACLE_BASE/diag/rdbms/dbtest/dbtest/trace/*Look_For_Me*</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行以上命令可以获取到添加标记的两个文件：</p>
+<ul>
+<li><code>/u01/app/oracle/diag/rdbms/dbtest/dbtest/trace/dbtest_ora_22489_Look_For_Me.trc</code></li>
+<li><code>/u01/app/oracle/diag/rdbms/dbtest/dbtest/trace/dbtest_ora_22489_Look_For_Me.trm</code></li>
+</ul>
+<p><code>.trc</code>结尾的文件为标记后的跟踪文件；<code>.trm</code>结尾的文件为跟踪文件的图文件<code>trace map file</code>,包含了跟踪文件的结构信息。</p>
+<h3 id="计划外的，数据库服务器自动产生的跟踪文件" class="article-heading"><a href="#计划外的，数据库服务器自动产生的跟踪文件" class="headerlink" title="计划外的，数据库服务器自动产生的跟踪文件"></a>计划外的，数据库服务器自动产生的跟踪文件<a class="article-anchor" href="#计划外的，数据库服务器自动产生的跟踪文件" aria-hidden="true"></a></h3><h4 id="产生方式-1" class="article-heading"><a href="#产生方式-1" class="headerlink" title="产生方式"></a>产生方式<a class="article-anchor" href="#产生方式-1" aria-hidden="true"></a></h4><ul>
+<li>这类跟踪文件的产生不在我们的计划内</li>
+<li>由<code>ORA-00600</code>或另外某个内部错误而自动产生</li>
+</ul>
+<h4 id="处理方式" class="article-heading"><a href="#处理方式" class="headerlink" title="处理方式"></a>处理方式<a class="article-anchor" href="#处理方式" aria-hidden="true"></a></h4><p>针对这类跟踪文件我们能做什么？</p>
+<ul>
+<li>向Oracle提交一个服务请求</li>
+<li>将产生的跟踪文件打包上传到Oracle Support</li>
+</ul>
+<p>从Oracle 11g开始，利用命令行工具<code>ADRCI(Automatic Diagnostic Repository Command Interpreter)</code>并结合<code>Enterprice Manager</code>的用户界面，就能轻松查看自动诊断存储库<code>ADR</code>中的跟踪信息，并把它们打包传输到Oracle Support。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest ~]$ adrci</span><br><span class="line"></span><br><span class="line">ADRCI: Release 11.2.0.4.0 - Production on Sat Oct 5 22:20:20 2019</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2011, Oracle and/or its affiliates.  All rights reserved.</span><br><span class="line"></span><br><span class="line">ADR base = <span class="string">"/u01/app/oracle"</span></span><br><span class="line">adrci&gt; show problem</span><br><span class="line"></span><br><span class="line">ADR Home = /u01/app/oracle/diag/rdbms/dbtest/dbtest:</span><br><span class="line">*************************************************************************</span><br><span class="line">0 rows fetched</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="实践" class="article-heading"><a href="#实践" class="headerlink" title="实践"></a>实践<a class="article-anchor" href="#实践" aria-hidden="true"></a></h3><h4 id="实践——查看是否开启跟踪文件" class="article-heading"><a href="#实践——查看是否开启跟踪文件" class="headerlink" title="实践——查看是否开启跟踪文件"></a>实践——查看是否开启跟踪文件<a class="article-anchor" href="#实践——查看是否开启跟踪文件" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">parameter</span> trace</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="实践——查看跟踪文件位置" class="article-heading"><a href="#实践——查看跟踪文件位置" class="headerlink" title="实践——查看跟踪文件位置"></a>实践——查看跟踪文件位置<a class="article-anchor" href="#实践——查看跟踪文件位置" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">parameter</span> dump_dest</span><br><span class="line"><span class="keyword">select</span> name,<span class="keyword">value</span> <span class="keyword">from</span> v$<span class="keyword">parameter</span> <span class="keyword">where</span> name <span class="keyword">like</span> <span class="string">'%dump_dest%'</span>;</span><br><span class="line"><span class="keyword">select</span> name,<span class="keyword">value</span> <span class="keyword">from</span> v$diag_info;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里显示了三个跟踪目标：</p>
+<ul>
+<li><code>background_dump_dest</code>：后台跟踪目标，用于所有服务器后台进程</li>
+<li><code>core_dump_dest</code>：内核跟踪目标，当发生严重问题时（如进程崩溃）会自动生成相应的跟踪文件</li>
+<li><code>user_dump_dest</code>：用户跟踪目标，用于专用/共享服务器的跟踪文件</li>
+</ul>
+<h4 id="实践——启用用户跟踪文件" class="article-heading"><a href="#实践——启用用户跟踪文件" class="headerlink" title="实践——启用用户跟踪文件"></a>实践——启用用户跟踪文件<a class="article-anchor" href="#实践——启用用户跟踪文件" aria-hidden="true"></a></h4><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">exec</span> dbms_monitor.session_trace_enable</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>疑问？</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[oracle@oratest trace]$ ps -ef|</span><br><span class="line">&gt; grep sqlplus</span><br><span class="line">oracle     3230   2951  0 05:06 pts/0    00:00:00 rlwrap sqlplus / as sysdba</span><br><span class="line">oracle     3231   3230  0 05:06 pts/1    00:00:00 sqlplus   as sysdba</span><br><span class="line">oracle     3309   3250  0 05:12 pts/2    00:00:00 grep sqlplus</span><br></pre></td></tr></tbody></table></figure>
+
+<p>sqlplus 的系统进程id为3231，但是产生的跟踪文件却是3232！</p>
+<p>[root@oratest ~]# ps -ef|grep 3231<br>oracle 3231 3230 0 05:06 pts/1 00:00:00 sqlplus as sysdba<br>oracle 3232 3231 0 05:06 pts/1 00:00:00 oracledbtest (DESCRIPTION=(LOCAL=YES)(ADDRESS=(PROTOCOL=beq)))</p>
+<p>可以看到3231有一个子进程 3232 zhege jiushi Oracle的用户会话进程，因此跟踪文件使用的是 3232 ，而不是3231的sqlplus客户端进程。</p>
+</blockquote>
+<h2 id="笔记" class="article-heading"><a href="#笔记" class="headerlink" title="笔记"></a>笔记<a class="article-anchor" href="#笔记" aria-hidden="true"></a></h2><h3 id="1-查看常用的跟踪文件路径" class="article-heading"><a href="#1-查看常用的跟踪文件路径" class="headerlink" title="1. 查看常用的跟踪文件路径"></a>1. 查看常用的跟踪文件路径<a class="article-anchor" href="#1-查看常用的跟踪文件路径" aria-hidden="true"></a></h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">show parameter diagnostic_dest</span><br><span class="line">show parameter user_dump_dest</span><br><span class="line">show parameter background_dump_dest</span><br><span class="line">show parameter core_dump_dest</span><br><span class="line"></span><br><span class="line">/u01/app/oracle</span><br><span class="line">/u01/app/oracle/diag/rdbms/orcl/orcl/trace</span><br><span class="line">/u01/app/oracle/diag/rdbms/orcl/orcl/trace</span><br><span class="line">/u01/app/oracle/diag/rdbms/orcl/orcl/cdump</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="2-掌握常用跟踪文件命名规则" class="article-heading"><a href="#2-掌握常用跟踪文件命名规则" class="headerlink" title="2. 掌握常用跟踪文件命名规则"></a>2. 掌握常用跟踪文件命名规则<a class="article-anchor" href="#2-掌握常用跟踪文件命名规则" aria-hidden="true"></a></h3><ul>
+<li>警报日志：<code>alert_&lt;$ORACLE_SID&gt;.log</code>,数据库报错信息的概要文件</li>
+<li>后台进程的跟踪文件:<code>&lt;$ORACLE_SID&gt;_进程名字_pid.trc</code>，后台进程工作时的消息或者报错信息</li>
+<li>用户进程的跟踪文件:<code>&lt;$ORACLE_SID&gt;_ora_pid.trc</code>,记录user process发出的消息，但是需要手工打开跟踪</li>
+</ul>
+<h3 id="3-掌握打开-关闭当前会话跟踪的方法" class="article-heading"><a href="#3-掌握打开-关闭当前会话跟踪的方法" class="headerlink" title="3. 掌握打开/关闭当前会话跟踪的方法"></a>3. 掌握打开/关闭当前会话跟踪的方法<a class="article-anchor" href="#3-掌握打开-关闭当前会话跟踪的方法" aria-hidden="true"></a></h3><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">exec</span> dbms_monitor.session_trace_enable</span><br><span class="line"><span class="keyword">exec</span> dbms_monitor.session_trace_disable</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="4-掌握打开-关闭指定的会话跟踪方法" class="article-heading"><a href="#4-掌握打开-关闭指定的会话跟踪方法" class="headerlink" title="4. 掌握打开/关闭指定的会话跟踪方法"></a>4. 掌握打开/关闭指定的会话跟踪方法<a class="article-anchor" href="#4-掌握打开-关闭指定的会话跟踪方法" aria-hidden="true"></a></h3><ul>
+<li><p>获得需要跟踪的会话的信息：<code>select sid,serial#,username,machine from v$session where username='SYS';</code></p>
+</li>
+<li><p>打开跟踪：<code>EXEC DBMS_SYSTEM.SET_SQL_TRACE_IN_SESSION(sid,serial#,boolean);</code></p>
+</li>
+<li><p>做业务</p>
+</li>
+<li><p>关闭跟踪：<code>EXEC DBMS_SYSTEM.SET_SQL_TRACE_IN_SESSION(sid,serial#,boolean);</code></p>
+</li>
+<li><p>查找跟踪文件：<code>select spid from v$process p,v$session s where p.addr=s.paddr and s.sid=20;</code></p>
+</li>
+<li><p>格式化用户跟踪文件: <code>tkprof orcl_ora_5874.trc 1.txt</code></p>
+</li>
+</ul>
+<p>举例：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">SQL&gt; <span class="keyword">select</span> sid,serial#,username,machine from v<span class="variable">$session</span> <span class="built_in">where</span> username=<span class="string">'SYS'</span>;</span><br><span class="line"></span><br><span class="line">       SID    SERIAL# USERNAME	 MACHINE</span><br><span class="line">---------- ---------- ---------- --------------------</span><br><span class="line">	21	   33 SYS	 oratest</span><br><span class="line"></span><br><span class="line">SQL&gt; EXEC DBMS_SYSTEM.SET_SQL_TRACE_IN_SESSION(21,33,<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">PL/SQL procedure successfully completed.</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> * from v<span class="variable">$process</span> <span class="built_in">where</span> rownum &lt; 10;</span><br><span class="line"></span><br><span class="line">ADDR			PID SPID					     PNAME	USERNAME      SERIAL# TERMINAL</span><br><span class="line">---------------- ---------- ------------------------------------------------ ---------- ---------- ---------- ------------------------------------------------------------</span><br><span class="line">PROGRAM</span><br><span class="line">------------------------------------------------------------------------------------------------</span><br><span class="line">TRACEID</span><br><span class="line">--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">TRACEFILE</span><br><span class="line">--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">BA LATCHWAIT			    LATCHSPIN			     PGA_USED_MEM PGA_ALLOC_MEM PGA_FREEABLE_MEM PGA_MAX_MEM</span><br><span class="line">-- -------------------------------- -------------------------------- ------------ ------------- ---------------- -----------</span><br><span class="line">000000007E8D2748	  1										    0</span><br><span class="line">PSEUDO</span><br><span class="line"></span><br><span class="line">/u01/app/oracle/diag/rdbms/dbtest/dbtest/trace/dbtest_ora_0.trc</span><br><span class="line">										0	      0 	       0	   0</span><br><span class="line"></span><br><span class="line">000000007E8D3800	  2 2985					     PMON	oracle		    1 UNKNOWN</span><br><span class="line">oracle@oratest (PMON)</span><br><span class="line">此处省略。。。</span><br><span class="line"></span><br><span class="line">SQL&gt; EXEC DBMS_SYSTEM.SET_SQL_TRACE_IN_SESSION(21,33,<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">PL/SQL procedure successfully completed.</span><br><span class="line"></span><br><span class="line">SQL&gt; <span class="keyword">select</span> spid from v<span class="variable">$process</span> p,v<span class="variable">$session</span> s <span class="built_in">where</span> p.addr=s.paddr and s.sid=21;</span><br><span class="line"></span><br><span class="line">SPID</span><br><span class="line">------------------------------------------------</span><br><span class="line">3302</span><br><span class="line"></span><br><span class="line">SQL&gt; show parameter user_dump_dest</span><br><span class="line"></span><br><span class="line">NAME				     TYPE		    VALUE</span><br><span class="line">------------------------------------ ---------------------- ------------------------------</span><br><span class="line">user_dump_dest			     string		    /u01/app/oracle/diag/rdbms/dbt</span><br><span class="line">							    est/dbtest/trace</span><br><span class="line">SQL&gt; !<span class="built_in">ls</span> /u01/app/oracle/diag/rdbms/dbtest/dbtest/trace/dbtest_ora_3302*</span><br><span class="line">/u01/app/oracle/diag/rdbms/dbtest/dbtest/trace/dbtest_ora_3302.trc  /u01/app/oracle/diag/rdbms/dbtest/dbtest/trace/dbtest_ora_3302.trm</span><br><span class="line"></span><br><span class="line">[oracle@oratest trace]$ <span class="built_in">which</span> tkprof</span><br><span class="line">/u01/app/oracle/product/11.2.0.4/bin/tkprof</span><br><span class="line">[oracle@oratest trace]$ tkprof /u01/app/oracle/diag/rdbms/dbtest/dbtest/trace/dbtest_ora_3302.trc booboo.txt</span><br><span class="line"></span><br><span class="line">TKPROF: Release 11.2.0.4.0 - Development on Sat Oct 5 23:37:25 2019</span><br><span class="line"></span><br><span class="line">Copyright (c) 1982, 2011, Oracle and/or its affiliates.  All rights reserved.</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:45.958Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EOracle%E4%BB%A3%E7%A0%81%E7%9A%84%E5%8F%AF%E6%B5%8B%E9%87%8F%E6%80%A7"><span class="toc-text">关于Oracle代码的可测量性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E8%AF%8A%E6%96%AD%E5%AD%98%E5%82%A8%E5%BA%93ADR"><span class="toc-text">自动诊断存储库ADR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-text">跟踪文件的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E5%88%92%E5%86%85%E7%9A%84%EF%BC%8C%E7%94%B1%E7%94%A8%E6%88%B7%E8%AF%B7%E6%B1%82%E6%89%80%E4%BA%A7%E7%94%9F%E7%9A%84%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6"><span class="toc-text">计划内的，由用户请求所产生的跟踪文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A7%E7%94%9F%E6%96%B9%E5%BC%8F"><span class="toc-text">产生方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-text">跟踪文件的位置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E5%90%8D%E7%BA%A6%E5%AE%9A"><span class="toc-text">命名约定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E5%8A%A0%E6%A0%87%E8%AE%B0"><span class="toc-text">对跟踪文件加标记</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E5%88%92%E5%A4%96%E7%9A%84%EF%BC%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%8A%A8%E4%BA%A7%E7%94%9F%E7%9A%84%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6"><span class="toc-text">计划外的，数据库服务器自动产生的跟踪文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A7%E7%94%9F%E6%96%B9%E5%BC%8F-1"><span class="toc-text">产生方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F"><span class="toc-text">处理方式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5"><span class="toc-text">实践</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E5%BC%80%E5%90%AF%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6"><span class="toc-text">实践——查看是否开启跟踪文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E6%9F%A5%E7%9C%8B%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE"><span class="toc-text">实践——查看跟踪文件位置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94%E5%90%AF%E7%94%A8%E7%94%A8%E6%88%B7%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6"><span class="toc-text">实践——启用用户跟踪文件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%94%E8%AE%B0"><span class="toc-text">笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%B8%B8%E7%94%A8%E7%9A%84%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84"><span class="toc-text">1. 查看常用的跟踪文件路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%8E%8C%E6%8F%A1%E5%B8%B8%E7%94%A8%E8%B7%9F%E8%B8%AA%E6%96%87%E4%BB%B6%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99"><span class="toc-text">2. 掌握常用跟踪文件命名规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%8E%8C%E6%8F%A1%E6%89%93%E5%BC%80-%E5%85%B3%E9%97%AD%E5%BD%93%E5%89%8D%E4%BC%9A%E8%AF%9D%E8%B7%9F%E8%B8%AA%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">3. 掌握打开&#x2F;关闭当前会话跟踪的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%8E%8C%E6%8F%A1%E6%89%93%E5%BC%80-%E5%85%B3%E9%97%AD%E6%8C%87%E5%AE%9A%E7%9A%84%E4%BC%9A%E8%AF%9D%E8%B7%9F%E8%B8%AA%E6%96%B9%E6%B3%95"><span class="toc-text">4. 掌握打开&#x2F;关闭指定的会话跟踪方法</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

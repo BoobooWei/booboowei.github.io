@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>DNS域名解析服务 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/0_linux_base/booboo_easy_service/01_dns">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/0_linux_base/booboo_easy_service/01_dns" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="课程要求   在企业内部搭建一台域名解析服务器DNS正反解析 在企业内部搭建两台域名解析服务器做DNS主辅同步  DNS服务全称是domain name server域名解析服务。 我们知道每个联网的计算机都有一个ip地址吧？Ip地址是用来做什么的呢？Ip地址是用来和互联网上别的机器进行通讯的。但是ip地址很难记吧？一两个ip地址可能还好，但是，我们每天要访问的网页不仅仅只有一两个吧？ 我们记得">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DNS域名解析服务">
+<meta property="og:url" content="http://www.toberoot.com/linux/0_linux_base/booboo_easy_service/01_dns">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="课程要求   在企业内部搭建一台域名解析服务器DNS正反解析 在企业内部搭建两台域名解析服务器做DNS主辅同步  DNS服务全称是domain name server域名解析服务。 我们知道每个联网的计算机都有一个ip地址吧？Ip地址是用来做什么的呢？Ip地址是用来和互联网上别的机器进行通讯的。但是ip地址很难记吧？一两个ip地址可能还好，但是，我们每天要访问的网页不仅仅只有一两个吧？ 我们记得">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T09:08:23.976Z">
+<meta property="article:modified_time" content="2025-10-22T09:08:23.976Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../docs/" class="main-nav-link">Hexo</a><a href="../../../news/" class="main-nav-link">News</a><a href="../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../database/" class="main-nav-link">Database</a><a href="../../../linux/" class="main-nav-link">Linux</a><a href="../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../amy/" class="main-nav-link">AMY</a><a href="../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">DNS域名解析服务</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/0_linux_base/booboo_easy_service/01_dns.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>课程要求</p>
+</blockquote>
+<ol>
+<li>在企业内部搭建一台域名解析服务器DNS正反解析</li>
+<li>在企业内部搭建两台域名解析服务器做DNS主辅同步</li>
+</ol>
+<h3 id="DNS服务" class="article-heading"><a href="#DNS服务" class="headerlink" title="DNS服务"></a>DNS服务<a class="article-anchor" href="#DNS服务" aria-hidden="true"></a></h3><p>全称是domain name server域名解析服务。</p>
+<p>我们知道每个联网的计算机都有一个ip地址吧？Ip地址是用来做什么的呢？Ip地址是用来和互联网上别的机器进行通讯的。但是ip地址很难记吧？一两个ip地址可能还好，但是，我们每天要访问的网页不仅仅只有一两个吧？</p>
+<p>我们记得都是什么呢？<a target="_blank" rel="noopener" href="http://www.baidu.com/">www.baidu.com</a>. <a href="http://www.sina.com。我们记住的其实都是字符，都是域名。就像我们的电话号码，很难记，于是我们把电话号码存到手机里，给他起个昵称或者直接输入人名对吧，把电话号码对应成人名吧？然后打电话的时候就直接找到这个人名就好了。">www.sina.com。我们记住的其实都是字符，都是域名。就像我们的电话号码，很难记，于是我们把电话号码存到手机里，给他起个昵称或者直接输入人名对吧，把电话号码对应成人名吧？然后打电话的时候就直接找到这个人名就好了。</a></p>
+<p>所以我们系统也是一样，会把ip地址对应成一个主机名。在我们系统里有这么一个文件，就是专门用来做对应关系的，这个文件叫<code>/etc/hosts/</code>，我们可以打开来看一下，一条记录一行，行里面就是主机名和ip地址，当然一个ip地址可以对应多个主机名，就像人有很多的昵称一样。</p>
+<p>那么这样是不是就解决问题了，当我们想要访问一个网站的时候，我们就不用输入ip地址，而是可以直接输入主机名就行了，机器会帮我们做一个解析，把主机名对应成ip地址进行通信。早期这样做的确没问题，但是随着互联网愈发的壮大，这个文件就不那么实用了。我们要在机器上配置大量的对应关系，是非常耗时，非常麻烦的，而且要配置的机器可不止一台。比如说我是百度，我希望世界上所有的人都要来访问我的网页，那么，我是不是需要让世界上所有的人都去添加我的ip地址和主机名的对应关系。这个是非常难做到的事情，工作量太大。于是我们就引入了一种新的机制。</p>
+<h3 id="DNS的实现原理" class="article-heading"><a href="#DNS的实现原理" class="headerlink" title="DNS的实现原理"></a>DNS的实现原理<a class="article-anchor" href="#DNS的实现原理" aria-hidden="true"></a></h3><p>这种机制的作用和hosts文件一样，但是实现方法却不一样，这个机制就叫DNS (Domain name server)。通过dns，我们可以解决这个大批量域名解析的问题。那具体是怎么实现的呢？这就是dns的结构方面的问题了。</p>
+<p>我们之前说我们的系统是一个什么样的结构，是不是一个分层式的结构，这个结构的体现方式就是目录吧？对不对。Dns也是如此，它也采用了分层市管理的方式。</p>
+<p>不过不同于目录，我们的目录是一个逻辑上的概念，用来帮助我们理解文件系统的一种方式。而dns，他是实实在在的一种管理结构。</p>
+<p>那我们来看，目录的至高点是什么。是根吧，对不对，那么对于我们dns来说，既然是分层式管理结构，它也需要有一个至高点吧。这个至高点是什么呢？</p>
+<p>我们把它称作根域，以点代表根域。全世界总共有13台根域，是处于至高无上的位置的，只有13台机器。</p>
+<p>那么根域下面就是顶级域了，通常我们看到的顶级域有这个com。有org，有cn还有edu等等，这些都是顶级域。顶级域下面管理二级域，以此类推。</p>
+<p>FQDN：主机名加上域名，被称作完全合格的域名，fqdn。其实com后面应该有个点的，代表根域。只不过我们现在习惯性的将其省略了。就好像国家管理省，省管理市，市管理县等等</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">完整的域名	www.baidu.com.</span><br><span class="line">.	根域	全球一共13个根域</span><br><span class="line">.com	超级域，一级域</span><br><span class="line">.baidu	二级域</span><br><span class="line">www	主机名</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<blockquote>
+<p>举例：寻找新浪的方式。</p>
+</blockquote>
+</blockquote>
+<ol>
+<li>先看本地<code>/etc/hosts</code>有没有记录。</li>
+<li>找另外一个人问，–&gt;找DNS服务器去问。 在<code>/etc/resolv.conf</code>文件中指定了找谁去问。</li>
+</ol>
+<p>当然，这先后顺序也是由某个文件决定的。这个文件是<code>/etc/nsswitch.conf</code>.</p>
+<p>Windows上面也有</p>
+<p>网上邻居&gt;属性&gt;本地连接。</p>
+<p><strong>DNS的两种查询方式</strong> 对于DNS服务器，他可能知道也可能不知道，</p>
+<p>知道的情况有两种：</p>
+<ol>
+<li>本地有这个域，能够解析到</li>
+<li>本地有缓存，其他人已经来问过sina是谁，那么DNS服务器可以将该结果直接返回给客户。</li>
+</ol>
+<p>不知道的话就会去找自己的上级域，然后通过等待上级域的反馈，将反馈信息返回给客户端。这种方式叫做递归查询。</p>
+<p>那么还有一种情况就是，DNS去询问上级域，然后上级域将对应的同级DNS服务器反馈回来，由客户端去询问新的DNS服务器来找寻网””址对应的IP地址。这种叫做迭代查询</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">`www.sina.com.`</span><br><span class="line">1) 找根域`.`</span><br><span class="line">2) 找超级域`.com`</span><br><span class="line">3) 找二级域`.sina`</span><br><span class="line">4) 成功找到`www`</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="实战项目1-在企业内部搭建一台域名解析服务器DNS正反解析" class="article-heading"><a href="#实战项目1-在企业内部搭建一台域名解析服务器DNS正反解析" class="headerlink" title="实战项目1:在企业内部搭建一台域名解析服务器DNS正反解析"></a>实战项目1:在企业内部搭建一台域名解析服务器DNS正反解析<a class="article-anchor" href="#实战项目1-在企业内部搭建一台域名解析服务器DNS正反解析" aria-hidden="true"></a></h3><blockquote>
+<p>1)在rhel6上配置dns域名解析服务，解析uplooking.com域名，要求如下：</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">        NS      @</span><br><span class="line">        A       172.25.0.11</span><br><span class="line">www     A       172.25.0.10</span><br><span class="line">        MX 5    mail</span><br><span class="line">mail    A       172.25.0.10</span><br><span class="line">ftp     A       172.25.0.10</span><br><span class="line">bbs	CNAME	ftp</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>2)配置反向解析<code>172.25.0.10</code>和<code>172.25.0.11</code>；</p>
+</blockquote>
+<blockquote>
+<p>3)要求rhel6和rhel7这两台服务器的域名解析服务器为<code>172.25.0.11</code>这台服务器。</p>
+</blockquote>
+<h4 id="实验准备阶段" class="article-heading"><a href="#实验准备阶段" class="headerlink" title="实验准备阶段"></a>实验准备阶段<a class="article-anchor" href="#实验准备阶段" aria-hidden="true"></a></h4><ol>
+<li>画出网络拓扑图</li>
+<li>规划不同服务器需要安装的软件(os–soft版本)</li>
+<li>开始安装</li>
+<li>配置服务</li>
+<li>启动服务</li>
+<li>测试排错</li>
+</ol>
+<blockquote>
+<p>详细步骤概览</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">num</th>
+<th align="left">step</th>
+<th align="left">man</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1)</td>
+<td align="left">安装软件</td>
+<td align="left"><code>bind bind-chroot</code></td>
+</tr>
+<tr>
+<td align="left">2)</td>
+<td align="left">查看软件架构</td>
+<td align="left"><code>rpm -ql </code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">日志</td>
+<td align="left">/var/log/named.log</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">数据</td>
+<td align="left">/var/named/</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">配置</td>
+<td align="left">/etc/named.conf</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">/etc/named.rfc1912.zones</td>
+</tr>
+<tr>
+<td align="left">3)</td>
+<td align="left">修改配置文件</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">4)</td>
+<td align="left">启动服务</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">service</td>
+<td align="left">named</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">daemon</td>
+<td align="left">named</td>
+</tr>
+<tr>
+<td align="left">4.1）</td>
+<td align="left">排除错误</td>
+<td align="left">看日志</td>
+</tr>
+<tr>
+<td align="left">5)</td>
+<td align="left">测试</td>
+<td align="left">nslookup</td>
+</tr>
+<tr>
+<td align="left">5.1）</td>
+<td align="left">排错</td>
+<td align="left">看日志</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>网络拓扑图</p>
+</blockquote>
+<p><img src="pic/12.png" alt="12"></p>
+<blockquote>
+<p>规划服务器软件</p>
+</blockquote>
+<p><img src="pic/11.png" alt="11"></p>
+<blockquote>
+<p>开始安装</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel6 ~]# yum install -y bind bind-chroot</span><br><span class="line">Loaded plugins: product-id, refresh-packagekit, security, subscription-manager</span><br><span class="line">This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.</span><br><span class="line">server                                                   | 3.9 kB     00:00</span><br><span class="line">Setting up Install Process</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Running transaction check</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package bind.x86_64 32:9.8.2-0.17.rc1.el6_4.6 will be installed</span></span><br><span class="line"><span class="meta prompt_">---&gt; </span><span class="language-bash">Package bind-chroot.x86_64 32:9.8.2-0.17.rc1.el6_4.6 will be installed</span></span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">Finished Dependency Resolution</span></span><br><span class="line"></span><br><span class="line">Dependencies Resolved</span><br><span class="line"></span><br><span class="line">================================================================================</span><br><span class="line"> Package          Arch        Version                         Repository   Size</span><br><span class="line">================================================================================</span><br><span class="line">Installing:</span><br><span class="line"> bind             x86_64      32:9.8.2-0.17.rc1.el6_4.6       server      4.0 M</span><br><span class="line"> bind-chroot      x86_64      32:9.8.2-0.17.rc1.el6_4.6       server       71 k</span><br><span class="line"></span><br><span class="line">Transaction Summary</span><br><span class="line">================================================================================</span><br><span class="line">Install       2 Package(s)</span><br><span class="line"></span><br><span class="line">Total download size: 4.0 M</span><br><span class="line">Installed size: 7.3 M</span><br><span class="line">Downloading Packages:</span><br><span class="line">(1/2): bind-9.8.2-0.17.rc1.el6_4.6.x86_64.rpm            | 4.0 MB     00:00</span><br><span class="line">(2/2): bind-chroot-9.8.2-0.17.rc1.el6_4.6.x86_64.rpm     |  71 kB     00:00</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Total                                            23 MB/s | 4.0 MB     00:00</span><br><span class="line">Running rpm_check_debug</span><br><span class="line">Running Transaction Test</span><br><span class="line">Transaction Test Succeeded</span><br><span class="line">Running Transaction</span><br><span class="line">  Installing : 32:bind-9.8.2-0.17.rc1.el6_4.6.x86_64                        1/2</span><br><span class="line">  Installing : 32:bind-chroot-9.8.2-0.17.rc1.el6_4.6.x86_64                 2/2</span><br><span class="line">  Verifying  : 32:bind-9.8.2-0.17.rc1.el6_4.6.x86_64                        1/2</span><br><span class="line">  Verifying  : 32:bind-chroot-9.8.2-0.17.rc1.el6_4.6.x86_64                 2/2</span><br><span class="line"></span><br><span class="line">Installed:</span><br><span class="line">  bind.x86_64 32:9.8.2-0.17.rc1.el6_4.6</span><br><span class="line">  bind-chroot.x86_64 32:9.8.2-0.17.rc1.el6_4.6</span><br><span class="line"></span><br><span class="line">Complete!</span><br><span class="line">[root@rhel6 ~]# rpm -ql bind</span><br><span class="line">/etc/NetworkManager/dispatcher.d/13-named</span><br><span class="line">/etc/logrotate.d/named</span><br><span class="line">/etc/named</span><br><span class="line">/etc/named.conf</span><br><span class="line">/etc/named.iscdlv.key</span><br><span class="line">/etc/named.rfc1912.zones</span><br><span class="line">/etc/named.root.key</span><br><span class="line">/etc/portreserve/named</span><br><span class="line">/etc/rc.d/init.d/named</span><br><span class="line">/etc/rndc.conf</span><br><span class="line">/etc/rndc.key</span><br><span class="line">/etc/sysconfig/named</span><br><span class="line">/usr/lib64/bind</span><br><span class="line">/usr/sbin/arpaname</span><br><span class="line">/usr/sbin/ddns-confgen</span><br><span class="line">/usr/sbin/dnssec-dsfromkey</span><br><span class="line">/usr/sbin/dnssec-keyfromlabel</span><br><span class="line">/usr/sbin/dnssec-keygen</span><br><span class="line">/usr/sbin/dnssec-revoke</span><br><span class="line">/usr/sbin/dnssec-settime</span><br><span class="line">/usr/sbin/dnssec-signzone</span><br><span class="line">/usr/sbin/genrandom</span><br><span class="line">/usr/sbin/isc-hmac-fixup</span><br><span class="line">/usr/sbin/lwresd</span><br><span class="line">/usr/sbin/named</span><br><span class="line">/usr/sbin/named-checkconf</span><br><span class="line">/usr/sbin/named-checkzone</span><br><span class="line">/usr/sbin/named-compilezone</span><br><span class="line">/usr/sbin/named-journalprint</span><br><span class="line">/usr/sbin/nsec3hash</span><br><span class="line">/usr/sbin/rndc</span><br><span class="line">/usr/sbin/rndc-confgen</span><br><span class="line">/usr/share/doc/bind-9.8.2</span><br><span class="line">... ...</span><br><span class="line">/var/log/named.log</span><br><span class="line">/var/named</span><br><span class="line">/var/named/data</span><br><span class="line">/var/named/dynamic</span><br><span class="line">/var/named/named.ca</span><br><span class="line">/var/named/named.empty</span><br><span class="line">/var/named/named.localhost</span><br><span class="line">/var/named/named.loopback</span><br><span class="line">/var/named/slaves</span><br><span class="line">/var/run/named</span><br><span class="line">[root@rhel6 ~]# rpm -ql bind-chroot</span><br><span class="line">/var/named/chroot</span><br><span class="line">/var/named/chroot/dev</span><br><span class="line">/var/named/chroot/dev/null</span><br><span class="line">/var/named/chroot/dev/random</span><br><span class="line">/var/named/chroot/dev/zero</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>配置文件</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>/etc/named.conf</p>
+</blockquote>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">listen-on port 53 { any; };</span><br><span class="line">listen-on-v6 port 53 { any; };</span><br><span class="line">directory 	"/var/named";</span><br><span class="line">dump-file 	"/var/named/data/cache_dump.db";</span><br><span class="line">       statistics-file "/var/named/data/named_stats.txt";</span><br><span class="line">       memstatistics-file "/var/named/data/named_mem_stats.txt";</span><br><span class="line">allow-query     { any; };</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<blockquote>
+<p>/etc/named.rfc1912.zones</p>
+</blockquote>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">正解析</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">域名--&gt;ip</span></span><br><span class="line">zone "uplooking.com" IN {</span><br><span class="line">        type master;</span><br><span class="line">        file "named.uplooking";</span><br><span class="line">        allow-update { none; };</span><br><span class="line">};</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">反解析</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">ip---&gt;域名</span></span><br><span class="line">zone "0.25.172.in-addr.arpa" IN {</span><br><span class="line">        type master;</span><br><span class="line">        file "named.arpa.uplooking";</span><br><span class="line">        allow-update { none; };</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<blockquote>
+<p>/var/named/named.uplooking</p>
+</blockquote>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">TTL 1D</span></span><br><span class="line">@       IN SOA  @ rname.invalid. (</span><br><span class="line">                                        0       ; serial</span><br><span class="line">                                        1D      ; refresh</span><br><span class="line">                                        1H      ; retry</span><br><span class="line">                                        1W      ; expire</span><br><span class="line">	                                       3H )    ; minimum</span><br><span class="line">主机名	主要记录	ip</span><br><span class="line">        NS      @</span><br><span class="line">        A       172.25.0.11</span><br><span class="line">www     A       172.25.0.10</span><br><span class="line">        MX 5    mail</span><br><span class="line">mail    A       172.25.0.10</span><br><span class="line">ftp     A       172.25.0.10</span><br><span class="line">bbs	CNAME	ftp</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>注意</strong> 文件的所属者和所属组以及文件的ugo权限</p>
+<blockquote>
+<blockquote>
+<p>named.arpa.uplooking</p>
+</blockquote>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">TTL 1D</span></span><br><span class="line">@       IN SOA  @ rname.invalid. (</span><br><span class="line">                                        0       ; serial</span><br><span class="line">                                        1D      ; refresh</span><br><span class="line">                                        1H      ; retry</span><br><span class="line">                                        1W      ; expire</span><br><span class="line">                                        3H )    ; minimum</span><br><span class="line">        NS      uplooking.com.</span><br><span class="line">11      PTR     uplooking.com.</span><br><span class="line">10      PTR     www.uplooking.com.</span><br><span class="line">10      PTR     mail.uplooking.com.</span><br><span class="line">10      PTR     ftp.uplooking.com.</span><br><span class="line">10      PTR     bbs.uplooking.com.</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>注意：</strong> NS后面此时一定要将@换成域名uplooking.com.域名必须写完整的域名，带根域的</p>
+<blockquote>
+<p>服务的启动</p>
+</blockquote>
+<ul>
+<li>rhel6 <code>service named start</code></li>
+<li>rhel7 <code>systemctl start named</code></li>
+</ul>
+<blockquote>
+<p>防火墙的关闭</p>
+</blockquote>
+<ul>
+<li>rhel6 <code>service iptables stop</code></li>
+<li>rhel7 <code>systemctl stop firewalld</code></li>
+</ul>
+<p><strong>如果服务启动不了</strong> 那么尝试执行以下语句<code>rndc-confgen -a -r /etc/named.conf</code></p>
+<blockquote>
+<p>测试</p>
+</blockquote>
+<ol>
+<li><code>/etc/hosts</code> 系统管理员手动写</li>
+<li><code>/etc/resolv.conf</code>—-》指定找哪个域名解析服务器<code>nameserver 172.25.0.11</code></li>
+<li>通过<code>nslookup</code>命令</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"></span><br><span class="line">[root@rhel6 named]# nslookup</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">www.uplooking.com</span></span><br><span class="line">Server:		172.25.0.11</span><br><span class="line">Address:	172.25.0.11#53</span><br><span class="line"></span><br><span class="line">Name:	www.uplooking.com</span><br><span class="line">Address: 172.25.0.10</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">mail.uplooking.com</span></span><br><span class="line">Server:		172.25.0.11</span><br><span class="line">Address:	172.25.0.11#53</span><br><span class="line"></span><br><span class="line">Name:	mail.uplooking.com</span><br><span class="line">Address: 172.25.0.10</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">ftp.uplooking.com</span></span><br><span class="line">Server:		172.25.0.11</span><br><span class="line">Address:	172.25.0.11#53</span><br><span class="line"></span><br><span class="line">Name:	ftp.uplooking.com</span><br><span class="line">Address: 172.25.0.10</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">uplooking.com</span></span><br><span class="line">Server:		172.25.0.11</span><br><span class="line">Address:	172.25.0.11#53</span><br><span class="line"></span><br><span class="line">Name:	uplooking.com</span><br><span class="line">Address: 172.25.0.11</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">bbs.uplooking.com</span></span><br><span class="line">Server:		172.25.0.11</span><br><span class="line">Address:	172.25.0.11#53</span><br><span class="line"></span><br><span class="line">bbs.uplooking.com	canonical name = ftp.uplooking.com.</span><br><span class="line">Name:	ftp.uplooking.com</span><br><span class="line">Address: 172.25.0.10</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">172.25.0.10</span></span><br><span class="line">Server:		172.25.0.11</span><br><span class="line">Address:	172.25.0.11#53</span><br><span class="line"></span><br><span class="line">10.0.25.172.in-addr.arpa	name = bbs.uplooking.com.</span><br><span class="line">10.0.25.172.in-addr.arpa	name = www.uplooking.com.</span><br><span class="line">10.0.25.172.in-addr.arpa	name = mail.uplooking.com.</span><br><span class="line">10.0.25.172.in-addr.arpa	name = ftp.uplooking.com.</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">172.25.0.11</span></span><br><span class="line">Server:		172.25.0.11</span><br><span class="line">Address:	172.25.0.11#53</span><br><span class="line"></span><br><span class="line">11.0.25.172.in-addr.arpa	name = uplooking.com.</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash"><span class="built_in">exit</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h3 id="实战项目2-在企业内部搭建两台域名解析服务器做DNS主辅同步" class="article-heading"><a href="#实战项目2-在企业内部搭建两台域名解析服务器做DNS主辅同步" class="headerlink" title="实战项目2:在企业内部搭建两台域名解析服务器做DNS主辅同步"></a>实战项目2:在企业内部搭建两台域名解析服务器做DNS主辅同步<a class="article-anchor" href="#实战项目2-在企业内部搭建两台域名解析服务器做DNS主辅同步" aria-hidden="true"></a></h3><p>主辅同步：如果有数万台客户机在同一时间来访问DNS服务器，会导致服务器承受很大的压力，这时候我可能需要另外一个人来帮我分担压力，或者说如果主服务器遇到什么问题，我能有另外一个人直接顶上我的工作，这时候就可以用到一个辅助服务器了。</p>
+<p>那么很显然，辅助服务器需要和主服务器用一样的配置，配置里写的数据也基本相同。对于我们DNS服务器来说，其实它的数据文件并不固定，对应的IP和主机名都可能会经常发生变化，那么当那个时候，我希望能够修改主机上的某一个文件的时候，从机上的文件也能够被自动被修改，保持两台机器完全同步一致。</p>
+<p>这时候就有了一种配置方法，叫做主辅同步。</p>
+<h4 id="实验准备阶段-1" class="article-heading"><a href="#实验准备阶段-1" class="headerlink" title="实验准备阶段"></a>实验准备阶段<a class="article-anchor" href="#实验准备阶段-1" aria-hidden="true"></a></h4><ol>
+<li>网络拓扑图</li>
+<li>规划软件安装bind bind-chroot</li>
+<li>修改配置文件</li>
+</ol>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">#主服务器	/etc/named.rfc1912.zones	允许传输给从机</span><br><span class="line">		/var/named/named.uplooking	序列号从0改成日期</span><br><span class="line">		/var/named/named.arpa.uplooking 序列号从0改成日期</span><br><span class="line">#从服务器	/etc/named.conf			any</span><br><span class="line">		/etc/named.rfc1912.zones	slave;masters;file</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>启动从机服务</li>
+<li>查看从机缓冲/var/named/slaves/</li>
+<li>注意防火墙关闭</li>
+<li>客户端测试服务</li>
+</ol>
+<h4 id="具体步骤" class="article-heading"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤<a class="article-anchor" href="#具体步骤" aria-hidden="true"></a></h4><blockquote>
+<p>网络拓扑图</p>
+</blockquote>
+<p><img src="pic/14.png" alt="14"></p>
+<blockquote>
+<p>规划软件安装</p>
+</blockquote>
+<p><img src="pic/13.png" alt="13"></p>
+<blockquote>
+<p>主服务器：</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel6 named]# vim /etc/named.rfc1912.zones</span><br><span class="line">zone "uplooking.com" IN {</span><br><span class="line">        type master;</span><br><span class="line">        file "named.uplooking";</span><br><span class="line">        allow-update { none; };</span><br><span class="line">        allow-transfer { 172.25.0.10; };    	===&gt;允许从机172.25.0.10来读取</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone "0.25.172.in-addr.arpa" IN {</span><br><span class="line">        type master;</span><br><span class="line">        file "named.arpa.uplooking";</span><br><span class="line">        allow-update { none; };</span><br><span class="line">        allow-transfer { 172.25.0.10; };	===&gt;允许从机172.25.0.10来读取</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">[root@rhel6 named]# pwd</span><br><span class="line">/var/named</span><br><span class="line">[root@rhel6 named]# ll</span><br><span class="line">total 40</span><br><span class="line">drwxr-x---. 6 root  named 4096 Aug  2 10:30 chroot</span><br><span class="line">drwxrwx---. 2 named named 4096 Aug  2 11:03 data</span><br><span class="line">drwxrwx---. 2 named named 4096 Aug  2 15:06 dynamic</span><br><span class="line">-rw-r-----. 1 root  named  271 Aug  2 13:59 named.arpa.uplooking</span><br><span class="line">-rw-r-----. 1 root  named 1892 Feb 18  2008 named.ca</span><br><span class="line">-rw-r-----. 1 root  named  152 Dec 15  2009 named.empty</span><br><span class="line">-rw-r-----. 1 root  named  152 Jun 21  2007 named.localhost</span><br><span class="line">-rw-r-----. 1 root  named  168 Dec 15  2009 named.loopback</span><br><span class="line">-rw-r-----. 1 root  named  224 Aug  2 11:34 named.uplooking</span><br><span class="line">drwxrwx---. 2 named named 4096 Aug 14  2013 slaves</span><br><span class="line">[root@rhel6 named]# vim named.uplooking</span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">TTL 1D</span></span><br><span class="line">@       IN SOA  @ rname.invalid. (</span><br><span class="line">                                        20160802        ; serial</span><br><span class="line">                                        1D      ; refresh</span><br><span class="line">                                        1H      ; retry</span><br><span class="line">                                        1W      ; expire</span><br><span class="line">                                        3H )    ; minimum</span><br><span class="line">        NS      @</span><br><span class="line">        A       172.25.0.11</span><br><span class="line">www     A       172.25.0.10</span><br><span class="line">        MX 5    mail</span><br><span class="line">mail    A       172.25.0.10</span><br><span class="line">ftp     A       172.25.0.10</span><br><span class="line">bbs     CNAME   ftp</span><br><span class="line">~</span><br><span class="line"></span><br><span class="line">[root@rhel6 named]# vim named.arpa.uplooking</span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">TTL 1D</span></span><br><span class="line">@       IN SOA  @ rname.invalid. (</span><br><span class="line">                                        20160802        ; serial</span><br><span class="line">                                        1D      ; refresh</span><br><span class="line">                                        1H      ; retry</span><br><span class="line">                                        1W      ; expire</span><br><span class="line">                                        3H )    ; minimum</span><br><span class="line">        NS      uplooking.com.</span><br><span class="line">11      PTR     uplooking.com.</span><br><span class="line">10      PTR     www.uplooking.com.</span><br><span class="line">10      PTR     mail.uplooking.com.</span><br><span class="line">10      PTR     ftp.uplooking.com.</span><br><span class="line">10      PTR     bbs.uplooking.com.</span><br><span class="line"></span><br><span class="line">[root@rhel6 named]# service named restart</span><br><span class="line">Stopping named: .                                          [  OK  ]</span><br><span class="line">Starting named:                                            [  OK  ]</span><br><span class="line">[root@rhel6 named]# service iptables stop</span><br><span class="line">iptables: Firewall is not running.</span><br><span class="line">[root@rhel6 named]# getenforce</span><br><span class="line">Enforcing</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>从服务器</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# cat /etc/resolv.conf</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Generated by NetworkManager</span></span><br><span class="line">domain example.com</span><br><span class="line">search example.com</span><br><span class="line">nameserver 172.25.254.254</span><br><span class="line">[root@rhel7 ~]# yum install -y bind*</span><br><span class="line">[root@rhel7 ~]# vim /etc/named.conf</span><br><span class="line">[root@rhel7 ~]# vim /etc/named.rfc1912.zones</span><br><span class="line">zone "uplooking.com" IN {</span><br><span class="line">        type slave;				&lt;== 定义类型为奴隶 slave</span><br><span class="line">        masters { 172.25.0.11; };		&lt;== 告诉计算机我的主人 master 是谁</span><br><span class="line">        file "slaves/uploooking.com.zone";	&lt;== 告诉计算机 zone 数据库地址在哪里,奴隶有专门的目录</span><br><span class="line">        allow-update { none; };</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone "0.25.172.in-addr.arpa" IN {</span><br><span class="line">        type slave;</span><br><span class="line">        masters { 172.25.0.11; };</span><br><span class="line">        file "slaves/arpa.uplooking.zone";</span><br><span class="line">        allow-update { none; };</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>服务启动与关闭</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# systemctl stop firewalld</span><br><span class="line">[root@rhel7 ~]# getenforce</span><br><span class="line">Enforcing</span><br><span class="line">[root@rhel7 ~]# systemctl start named</span><br><span class="line">[root@rhel7 ~]# ll /var/named/slaves</span><br><span class="line">total 8</span><br><span class="line">-rw-r--r--. 1 named named 381 Aug  2 03:54 arpa.uplooking.zone</span><br><span class="line">-rw-r--r--. 1 named named 463 Aug  2 03:54 uploooking.com.zone</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>测试</p>
+</blockquote>
+<p>客户端 rhel7</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# vim /etc/resolv.conf</span><br><span class="line">nameserver 172.25.0.11</span><br><span class="line">[root@rhel7 ~]# nslookup</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">www.uplooking.com</span></span><br><span class="line">Server:		172.25.0.11</span><br><span class="line">Address:	172.25.0.11#53</span><br><span class="line"></span><br><span class="line">Name:	www.uplooking.com</span><br><span class="line">Address: 172.25.0.10</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">172.25.0.10</span></span><br><span class="line">Server:		172.25.0.11</span><br><span class="line">Address:	172.25.0.11#53</span><br><span class="line"></span><br><span class="line">10.0.25.172.in-addr.arpa	name = www.uplooking.com.</span><br><span class="line">10.0.25.172.in-addr.arpa	name = mail.uplooking.com.</span><br><span class="line">10.0.25.172.in-addr.arpa	name = ftp.uplooking.com.</span><br><span class="line">10.0.25.172.in-addr.arpa	name = bbs.uplooking.com.</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">172.25.0.11</span></span><br><span class="line">Server:		172.25.0.11</span><br><span class="line">Address:	172.25.0.11#53</span><br><span class="line"></span><br><span class="line">11.0.25.172.in-addr.arpa	name = uplooking.com.</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash"><span class="built_in">exit</span></span></span><br><span class="line"></span><br><span class="line">[root@rhel7 ~]# vim /etc/resolv.conf</span><br><span class="line">nameserver 172.25.0.10</span><br><span class="line">[root@rhel7 ~]# nslookup</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">www.uplooking.com</span></span><br><span class="line">Server:		172.25.0.10</span><br><span class="line">Address:	172.25.0.10#53</span><br><span class="line"></span><br><span class="line">Name:	www.uplooking.com</span><br><span class="line">Address: 172.25.0.10</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">172.25.0.11</span></span><br><span class="line">Server:		172.25.0.10</span><br><span class="line">Address:	172.25.0.10#53</span><br><span class="line"></span><br><span class="line">11.0.25.172.in-addr.arpa	name = uplooking.com.</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">172.25.0.10</span></span><br><span class="line">Server:		172.25.0.10</span><br><span class="line">Address:	172.25.0.10#53</span><br><span class="line"></span><br><span class="line">10.0.25.172.in-addr.arpa	name = bbs.uplooking.com.</span><br><span class="line">10.0.25.172.in-addr.arpa	name = www.uplooking.com.</span><br><span class="line">10.0.25.172.in-addr.arpa	name = ftp.uplooking.com.</span><br><span class="line">10.0.25.172.in-addr.arpa	name = mail.uplooking.com.</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash"><span class="built_in">exit</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="排错记录" class="article-heading"><a href="#排错记录" class="headerlink" title="排错记录"></a>排错记录<a class="article-anchor" href="#排错记录" aria-hidden="true"></a></h3><h4 id="服务启动不了" class="article-heading"><a href="#服务启动不了" class="headerlink" title="服务启动不了"></a>服务启动不了<a class="article-anchor" href="#服务启动不了" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# systemctl start named</span><br><span class="line">Job for named.service failed. See 'systemctl status named.service' and 'journalctl -xn' for details.</span><br><span class="line"></span><br><span class="line">[root@rhel7 ~]# systemctl status named.service</span><br><span class="line">named.service - Berkeley Internet Name Domain (DNS)</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/named.service; disabled)</span><br><span class="line">   Active: failed (Result: exit-code) since Tue 2016-08-02 04:19:20 EDT; 23s ago</span><br><span class="line">  Process: 2297 ExecStartPre=/usr/sbin/named-checkconf -z /etc/named.conf (code=exited, status=1/FAILURE)</span><br><span class="line"></span><br><span class="line">Aug 02 04:19:20 rhel7 systemd[1]: Starting Berkeley Internet Name Domain (DNS)...</span><br><span class="line">Aug 02 04:19:20 rhel7 named-checkconf[2297]: /etc/named.rfc1912.zones:51: missing ';' before '}'</span><br><span class="line">Aug 02 04:19:20 rhel7 systemd[1]: named.service: control process exited, code=exited status=1</span><br><span class="line">Aug 02 04:19:20 rhel7 systemd[1]: Failed to start Berkeley Internet Name Domain (DNS).</span><br><span class="line">Aug 02 04:19:20 rhel7 systemd[1]: Unit named.service entered failed state.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>ps：当服务启动不了的时候，报错内容中说我们可以通过以下两个命令来查看，<code>systemctl status named.service</code> 或者 <code>journalctl -xn</code>此时我们可以去执行以下上面命令中的任何一个，都可以看到详细的报错信息。</p>
+<p><code>Aug 02 04:19:20 rhel7 named-checkconf[2297]: /etc/named.rfc1912.zones:51: missing ';' before '}'</code></p>
+<p>这条日志告诉我们，在配置文件<code>/etc/named.rfc1912.zones</code>的第51行中，<code>'}'</code>前少了一个<code>';'</code>。因此我们根据日志中的提示去修改配置文件即可。</p>
+<h4 id="服务启动不了-1" class="article-heading"><a href="#服务启动不了-1" class="headerlink" title="服务启动不了"></a>服务启动不了<a class="article-anchor" href="#服务启动不了-1" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# systemctl status named</span><br><span class="line">named.service - Berkeley Internet Name Domain (DNS)</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/named.service; disabled)</span><br><span class="line">   Active: failed (Result: exit-code) since Tue 2016-08-02 04:50:39 EDT; 1min 42s ago</span><br><span class="line">  Process: 6541 ExecStartPre=/usr/sbin/named-checkconf -z /etc/named.conf (code=exited, status=1/FAILURE)</span><br><span class="line"></span><br><span class="line">Aug 02 04:50:39 rhel7 named-checkconf[6541]: zone 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0...al 0</span><br><span class="line">Aug 02 04:50:39 rhel7 named-checkconf[6541]: zone 1.0.0.127.in-addr.arpa/IN: loaded serial 0</span><br><span class="line">Aug 02 04:50:39 rhel7 named-checkconf[6541]: zone 0.in-addr.arpa/IN: loaded serial 0</span><br><span class="line">Aug 02 04:50:39 rhel7 named-checkconf[6541]: zone uplooking.com/IN: loaded serial 20160802</span><br><span class="line">Aug 02 04:50:39 rhel7 named-checkconf[6541]: zone 19.25.172.in-addr.arpa/IN: loading from master file nam...ound</span><br><span class="line">Aug 02 04:50:39 rhel7 named-checkconf[6541]: zone 19.25.172.in-addr.arpa/IN: not loaded due to errors.</span><br><span class="line">Aug 02 04:50:39 rhel7 named-checkconf[6541]: _default/19.25.172.in-addr.arpa/IN: file not found</span><br><span class="line">Aug 02 04:50:39 rhel7 systemd[1]: named.service: control process exited, code=exited status=1</span><br><span class="line">Aug 02 04:50:39 rhel7 systemd[1]: Failed to start Berkeley Internet Name Domain (DNS).</span><br><span class="line">Aug 02 04:50:39 rhel7 systemd[1]: Unit named.service entered failed state.</span><br><span class="line">Hint: Some lines were ellipsized, use -l to show in full.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@rhel7 ~]# tail -n 15 /etc/named.rfc1912.zones</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone  "uplooking.com" IN {</span><br><span class="line">        type master;</span><br><span class="line">        file "named.uplooking";</span><br><span class="line">        allow-update { none; };</span><br><span class="line">	allow-transfer { 172.25.19.10;};</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone "19.25.172.in-addr.arpa" IN {</span><br><span class="line">        type master;</span><br><span class="line">        file "named.uplooking.arpa";</span><br><span class="line">        allow-update { none; };</span><br><span class="line">	allow-transfer { 172.25.19.10; };</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">[root@rhel7 ~]# ll /var/named/named*</span><br><span class="line">-rw-r-----. 1 root named  330 Aug  2 04:50 /var/named/named.arpa.uplooking</span><br><span class="line">-rw-r-----. 1 root named 2076 Jan 28  2013 /var/named/named.ca</span><br><span class="line">-rw-r-----. 1 root named  152 Dec 15  2009 /var/named/named.empty</span><br><span class="line">-rw-r-----. 1 root named  152 Jun 21  2007 /var/named/named.localhost</span><br><span class="line">-rw-r-----. 1 root named  168 Dec 15  2009 /var/named/named.loopback</span><br><span class="line">-rw-r-----. 1 root named  295 Aug  2 04:50 /var/named/named.uplooking</span><br></pre></td></tr></tbody></table></figure>
+
+<p>ps:问题出在数据文件名和配置文件中指定的数据文件名不一致。</p>
+<p><code>file "named.uplooking.arpa";</code></p>
+<p><code>/var/named/named.arpa.uplooking</code></p>
+<h4 id="主辅同步缓冲文件只有一个" class="article-heading"><a href="#主辅同步缓冲文件只有一个" class="headerlink" title="主辅同步缓冲文件只有一个"></a>主辅同步缓冲文件只有一个<a class="article-anchor" href="#主辅同步缓冲文件只有一个" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# ll /var/named/slaves/</span><br><span class="line">total 4</span><br><span class="line">-rw-r--r-- 1 named named 386 Jan  1 02:46 uplooking123.zoo</span><br></pre></td></tr></tbody></table></figure>
+
+<p>ps:原因是<code>/etc/named.rfc1912.zones</code>中的配置有问题，指定缓冲的目录写少了一个<code>s</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">zone \"uplooking.com\" IN {</span><br><span class="line">        type slave;</span><br><span class="line">        masters { 172.25.33.11; };</span><br><span class="line">        file \"slave/uplooking.zone\";</span><br><span class="line">        allow-update { none; };</span><br><span class="line">      };</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="主辅同步将从机的数据文件指定位置放在非slaves目录" class="article-heading"><a href="#主辅同步将从机的数据文件指定位置放在非slaves目录" class="headerlink" title="主辅同步将从机的数据文件指定位置放在非slaves目录"></a>主辅同步将从机的数据文件指定位置放在非slaves目录<a class="article-anchor" href="#主辅同步将从机的数据文件指定位置放在非slaves目录" aria-hidden="true"></a></h4><p>从服务器的配置文件放置的位置不在slaves目录下，而在其他目录下，则同步不成功。<br>原因从三处排查</p>
+<ul>
+<li>配置文件</li>
+<li>UGO权限</li>
+<li>selinux权限</li>
+</ul>
+<p>此处是由于selinux的问题，我们安装一个工具<code>setroubleshoot</code>帮助我们分析</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Yum search setroubleshoot</span><br><span class="line">Yum -y install setroubleshoot</span><br><span class="line">Sealert -a audit.log</span><br></pre></td></tr></tbody></table></figure>
+
+<p>看到关于布尔值的信息和关于安全上下文的信息:</p>
+<ul>
+<li>1）设置布尔值setsebool -P named_write_master_zones 1</li>
+<li>2）设置安全上下文，通过man named_selinux或者看一下slaves目录的安全上下文是什么<br>根据slaves的安全上下文去改。</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">Chcon -t named_zone_t test</span><br><span class="line">Chcon -u system_u  -r object_r  test</span><br></pre></td></tr></tbody></table></figure>
+
+<p>然后将selinux打开，将test下的目录的同步过来的文件给删除，重启服务，看是否被同步过来。</p>
+<p>同步成功。</p>
+<h4 id="如果启动服务时候太慢" class="article-heading"><a href="#如果启动服务时候太慢" class="headerlink" title="如果启动服务时候太慢"></a>如果启动服务时候太慢<a class="article-anchor" href="#如果启动服务时候太慢" aria-hidden="true"></a></h4><p>可以使用<code>/usr/sbin/rndc-confgen -a -r /etc/named.conf</code></p>
+<p>这是一个秘钥加密产生的bug</p>
+<h4 id="有顺序的批量配置的写法：（简单了解一下）" class="article-heading"><a href="#有顺序的批量配置的写法：（简单了解一下）" class="headerlink" title="有顺序的批量配置的写法：（简单了解一下）"></a>有顺序的批量配置的写法：（简单了解一下）<a class="article-anchor" href="#有顺序的批量配置的写法：（简单了解一下）" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">GENERATE 1-100 stu$   A   172.25.0.$</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">GENERATE 1-200 $ PTR foundation$.ilt.example.com</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="从机数据文件的查看" class="article-heading"><a href="#从机数据文件的查看" class="headerlink" title="从机数据文件的查看"></a>从机数据文件的查看<a class="article-anchor" href="#从机数据文件的查看" aria-hidden="true"></a></h4><p><strong>7版本上无法查看</strong>：因为从机在slaves目录下生成的配置文件是data类型的。<br><strong>6版本上可以查看</strong>：老版本是可以查看的。</p>
+<hr>
+<h3 id="配置文件详细解析" class="article-heading"><a href="#配置文件详细解析" class="headerlink" title="配置文件详细解析"></a>配置文件详细解析<a class="article-anchor" href="#配置文件详细解析" aria-hidden="true"></a></h3><h4 id="主配置文件-etc-named-conf" class="article-heading"><a href="#主配置文件-etc-named-conf" class="headerlink" title="主配置文件/etc/named.conf"></a>主配置文件/etc/named.conf<a class="article-anchor" href="#主配置文件-etc-named-conf" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">Options 全局的配置行</span><br><span class="line">options {&nbsp;//服务器的全局配置选项及一些默认设置</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;listen-on port 53 { any; };&nbsp;//监听端口默认监听53号端口，也可写为 { 127.0.0.1; 192.168.139.46; }</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;listen-on-v6 port 53 { ::1; };&nbsp;//对ip6支持</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;directory&nbsp; &nbsp;&nbsp; &nbsp; "/var/named";&nbsp;&nbsp;//区域文件存储目录</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;dump-file&nbsp; &nbsp;&nbsp; &nbsp; "/var/named/data/cache_dump.db";&nbsp;//缓存的目录directory</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;statistics-file "/var/named/data/named_stats.txt";  // 状态信息文件</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;memstatistics-file "/var/named/data/named_mem_stats.txt";   //内存信息文件</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;pid-file&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;"/var/run/named/named.pid";&nbsp;//存着named的pid</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;forwarders&nbsp; &nbsp;&nbsp;&nbsp;{ 168.95.1.1; 139.175.10.20; };&nbsp;// 如果域名服务器无法解析时，将请求交由168.95.1.1; 139.175.10.20来解析</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;allow-query&nbsp; &nbsp; { any; };&nbsp; &nbsp;//指定允许进行查询的主机，当然是要所有的电脑都可以查啦</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;allow-transfer { none; };&nbsp;//指定允许接受区域传送请求的主机，说明白一点就是辅dns定义，比如辅dns的ip是192.168.139.5，那么可以这样定义{ 192.168.139.5; }，要不然主辅dns不能同步，当然，{}里的也可以用下面提到的acl。</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;// those options should be used carefully because they disable port</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;// randomization</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;// query-source&nbsp; &nbsp; port 53;&nbsp; &nbsp;&nbsp;&nbsp;</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;// query-source-v6 port 53;</span><br><span class="line">Dnssec开头的是一些加密文件</span><br><span class="line">Xxxx.key是一些秘钥文件</span><br><span class="line">};</span><br><span class="line">logging {&nbsp;//指定服务器日志记录的内容和日志信息来源</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;channel default_debug {</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; file "data/named.run";</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; severity dynamic;</span><br><span class="line">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;};</span><br><span class="line">};</span><br><span class="line">zone "." IN {&nbsp;//在这个文件中是用zone关键字来定义域区的，一个zone关键字定义一个域区&nbsp;</span><br><span class="line">type hint;&nbsp;</span><br><span class="line">/*在这里type类型有三种，它们分别是master,slave和hint它们的含义分别是：&nbsp;</span><br><span class="line">master:表示定义的是主域名服务器&nbsp;</span><br><span class="line">slave :表示定义的是辅助域名服务器&nbsp;</span><br><span class="line">hint:表示是互联网中根域名服务器&nbsp;</span><br><span class="line">*/&nbsp;</span><br><span class="line">Include  "/etc/named.rfc1912.conf"</span><br><span class="line">Include  "/etc/named.root.key"  //两个include字段代表读取本配置文件时候同时读取/etc/named.rfc1912.conf和/etc/named.root.key文件，这里主要关注第一个文件，该文件是专门用于定义域的文件。</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong><code>allow-query-cache</code>主辅同步时:</strong></p>
+<ul>
+<li>6版本上必须加上 不然会报错</li>
+<li>7版本不用</li>
+</ul>
+<p><strong><code>recursion</code>主辅同步时</strong> 必须是yes，关掉之后会阻止新纪录进入到缓冲。</p>
+<h4 id="named-rfc1912-conf" class="article-heading"><a href="#named-rfc1912-conf" class="headerlink" title="named.rfc1912.conf"></a>named.rfc1912.conf<a class="article-anchor" href="#named-rfc1912-conf" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">Zone "域名 "IN {</span><br><span class="line">File ;域对应的数据文件</span><br><span class="line">Allow-update ;是否需要更新</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>注意</strong></p>
+<ol>
+<li>所有语句结束后都需要一个分号代表结束符</li>
+<li>括号必须成对出现</li>
+<li>file指向的数据文件写的是相对路径，相对于主配置文件的dirctory配置字段，即相对于/var/named目录。</li>
+</ol>
+<p><strong>主辅同步中slave需要的配置</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">Zone "域名" IN {</span><br><span class="line">Type slave;</span><br><span class="line">Masters { 172.25.0.11;} ;</span><br><span class="line">File "slaves/test.com.zone";</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="数据文件-var-named-named-localhost" class="article-heading"><a href="#数据文件-var-named-named-localhost" class="headerlink" title="数据文件/var/named/named.localhost"></a>数据文件/var/named/named.localhost<a class="article-anchor" href="#数据文件-var-named-named-localhost" aria-hidden="true"></a></h4><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">TTL //代表周期，缓存时间，DNS会自己做缓存，1D就代表一天，缓存时间为一天。</span><br><span class="line">SOA //记录  --&gt;起始授权记录  @代表继承域名</span><br><span class="line">IN  SOA @ 用户名.域名  {</span><br><span class="line">     0;serial    //序列号；一般写修改当天日期，从服务器根据该序列号来判定文件是否修改过。</span><br><span class="line">     1D；refresh  // 多久做一次同步</span><br><span class="line">     1H；retry    //重置时间，同步不成功时，间隔多久重新做一次同步</span><br><span class="line">     1W；expire   //当重复同步不成功时，多久不再做同步。</span><br><span class="line">	 3H；minimun  //最小缓存时间，一般是错误缓存。假设有一个人，一直问我一个错误的域名，那我就会将该错误的域名缓存下来，</span><br><span class="line">当人再来问我时，我就不再搜寻，而将该结果反馈给他。</span><br><span class="line"></span><br><span class="line">这里将serial一列改为当前日期。</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">NS代表的是正向记录  ，解析还分成正向解析和反向解析，正向解析就是知道主机名，想要搜寻IP地址。这里先来看正向解析</span><br><span class="line"></span><br><span class="line">@代表继承域名</span><br><span class="line">   NS    @</span><br><span class="line">   A    127.0.0.1</span><br><span class="line">这句话代表，我的域名是localhost，localhost指向的是127.0.0.1</span><br><span class="line">如果不写@而写成域名，就应该写成test.com.   Com后面必须有个点，代表根域的意思。</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h3><p>掌握实践项目<br><img src="pic/02.png" alt="02">
+ </p>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T09:08:23.976Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#DNS%E6%9C%8D%E5%8A%A1"><span class="toc-text">DNS服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DNS%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-text">DNS的实现原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE1-%E5%9C%A8%E4%BC%81%E4%B8%9A%E5%86%85%E9%83%A8%E6%90%AD%E5%BB%BA%E4%B8%80%E5%8F%B0%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1%E5%99%A8DNS%E6%AD%A3%E5%8F%8D%E8%A7%A3%E6%9E%90"><span class="toc-text">实战项目1:在企业内部搭建一台域名解析服务器DNS正反解析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E5%87%86%E5%A4%87%E9%98%B6%E6%AE%B5"><span class="toc-text">实验准备阶段</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE2-%E5%9C%A8%E4%BC%81%E4%B8%9A%E5%86%85%E9%83%A8%E6%90%AD%E5%BB%BA%E4%B8%A4%E5%8F%B0%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%81%9ADNS%E4%B8%BB%E8%BE%85%E5%90%8C%E6%AD%A5"><span class="toc-text">实战项目2:在企业内部搭建两台域名解析服务器做DNS主辅同步</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E5%87%86%E5%A4%87%E9%98%B6%E6%AE%B5-1"><span class="toc-text">实验准备阶段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E6%AD%A5%E9%AA%A4"><span class="toc-text">具体步骤</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%92%E9%94%99%E8%AE%B0%E5%BD%95"><span class="toc-text">排错记录</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8%E4%B8%8D%E4%BA%86"><span class="toc-text">服务启动不了</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8%E4%B8%8D%E4%BA%86-1"><span class="toc-text">服务启动不了</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E8%BE%85%E5%90%8C%E6%AD%A5%E7%BC%93%E5%86%B2%E6%96%87%E4%BB%B6%E5%8F%AA%E6%9C%89%E4%B8%80%E4%B8%AA"><span class="toc-text">主辅同步缓冲文件只有一个</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E8%BE%85%E5%90%8C%E6%AD%A5%E5%B0%86%E4%BB%8E%E6%9C%BA%E7%9A%84%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E6%8C%87%E5%AE%9A%E4%BD%8D%E7%BD%AE%E6%94%BE%E5%9C%A8%E9%9D%9Eslaves%E7%9B%AE%E5%BD%95"><span class="toc-text">主辅同步将从机的数据文件指定位置放在非slaves目录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E6%97%B6%E5%80%99%E5%A4%AA%E6%85%A2"><span class="toc-text">如果启动服务时候太慢</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%89%E9%A1%BA%E5%BA%8F%E7%9A%84%E6%89%B9%E9%87%8F%E9%85%8D%E7%BD%AE%E7%9A%84%E5%86%99%E6%B3%95%EF%BC%9A%EF%BC%88%E7%AE%80%E5%8D%95%E4%BA%86%E8%A7%A3%E4%B8%80%E4%B8%8B%EF%BC%89"><span class="toc-text">有顺序的批量配置的写法：（简单了解一下）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%8E%E6%9C%BA%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E7%9A%84%E6%9F%A5%E7%9C%8B"><span class="toc-text">从机数据文件的查看</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E7%BB%86%E8%A7%A3%E6%9E%90"><span class="toc-text">配置文件详细解析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-etc-named-conf"><span class="toc-text">主配置文件&#x2F;etc&#x2F;named.conf</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#named-rfc1912-conf"><span class="toc-text">named.rfc1912.conf</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6-var-named-named-localhost"><span class="toc-text">数据文件&#x2F;var&#x2F;named&#x2F;named.localhost</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../news/" class="mobile-nav-link">News</a><a href="../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../database/" class="mobile-nav-link">Database</a><a href="../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../js/lang_select.js"></script>
+
+
+<script src="../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

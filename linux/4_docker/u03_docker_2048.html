@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Docker 部署 2048游戏网站 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/linux/4_docker/u03_docker_2048">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/linux/4_docker/u03_docker_2048" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="2018-05-23  1. 2048游戏网站的快速搭建   操作 命令    在线仓库寻找dao-2048镜像    将注册&#x2F;仓库服务器上的镜像下载到本地    显示本地已有镜像    显示docker的系统信息    将dao-2048镜像运行在内存中，创建并运行容器 2048，放在后台运行，映射80端口    2. 熟悉Docker容器命令   操作 命令    停止容器2048">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Docker 部署 2048游戏网站">
+<meta property="og:url" content="http://www.toberoot.com/linux/4_docker/u03_docker_2048">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="2018-05-23  1. 2048游戏网站的快速搭建   操作 命令    在线仓库寻找dao-2048镜像    将注册&#x2F;仓库服务器上的镜像下载到本地    显示本地已有镜像    显示docker的系统信息    将dao-2048镜像运行在内存中，创建并运行容器 2048，放在后台运行，映射80端口    2. 熟悉Docker容器命令   操作 命令    停止容器2048">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:56.064Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:04.375Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../docs/" class="main-nav-link">Hexo</a><a href="../../news/" class="main-nav-link">News</a><a href="../../api/" class="main-nav-link">MySQL8.0</a><a href="../../database/" class="main-nav-link">Database</a><a href="../../linux/" class="main-nav-link">Linux</a><a href="../../cloud/" class="main-nav-link">Cloud</a><a href="../../singapore/" class="main-nav-link">Singapore</a><a href="../../amy/" class="main-nav-link">AMY</a><a href="../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Docker 部署 2048游戏网站</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/linux/4_docker/u03_docker_2048.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p>2018-05-23</p>
+</blockquote>
+<h2 id="1-2048游戏网站的快速搭建" class="article-heading"><a href="#1-2048游戏网站的快速搭建" class="headerlink" title="1. 2048游戏网站的快速搭建"></a>1. 2048游戏网站的快速搭建<a class="article-anchor" href="#1-2048游戏网站的快速搭建" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>在线仓库寻找dao-2048镜像</td>
+<td></td>
+</tr>
+<tr>
+<td>将注册/仓库服务器上的镜像下载到本地</td>
+<td></td>
+</tr>
+<tr>
+<td>显示本地已有镜像</td>
+<td></td>
+</tr>
+<tr>
+<td>显示docker的系统信息</td>
+<td></td>
+</tr>
+<tr>
+<td>将dao-2048镜像运行在内存中，创建并运行容器 2048，放在后台运行，映射80端口</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="2-熟悉Docker容器命令" class="article-heading"><a href="#2-熟悉Docker容器命令" class="headerlink" title="2. 熟悉Docker容器命令"></a>2. 熟悉Docker容器命令<a class="article-anchor" href="#2-熟悉Docker容器命令" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>停止容器2048</td>
+<td></td>
+</tr>
+<tr>
+<td>启动容器2048</td>
+<td></td>
+</tr>
+<tr>
+<td>查看容器2048日志</td>
+<td></td>
+</tr>
+<tr>
+<td>查看当前正在运行或之前运行过的容器</td>
+<td></td>
+</tr>
+<tr>
+<td>在当前运行的容器2048里新建文档<code>/test.txt</code></td>
+<td></td>
+</tr>
+<tr>
+<td>查看容器2048运行中的存储资源变化</td>
+<td></td>
+</tr>
+<tr>
+<td>将宿主机上的文件<code>/tmp/file.out</code>拷贝到容器2048中的<code>/etc</code>目录下，并验证</td>
+<td></td>
+</tr>
+<tr>
+<td>将容器2045中的<code>/etc/hosts</code>文件拷贝到宿主机<code>/tmp</code>目录下，并验证</td>
+<td></td>
+</tr>
+<tr>
+<td>更新镜像<code>dao-2048</code>的名称标记为<code>dao-2048:0.01</code></td>
+<td></td>
+</tr>
+<tr>
+<td>从修改过的容器2048创建新的镜像<code>dao-2048:0.02</code>，也叫做容器固化</td>
+<td></td>
+</tr>
+<tr>
+<td>导出<code>容器2048</code>的文件系统到一个<code>2048.tar</code>包归档文件中</td>
+<td></td>
+</tr>
+<tr>
+<td>再次停止容器2048</td>
+<td></td>
+</tr>
+<tr>
+<td>删除容器2048</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="3-熟悉Docker镜像命令" class="article-heading"><a href="#3-熟悉Docker镜像命令" class="headerlink" title="3. 熟悉Docker镜像命令"></a>3. 熟悉Docker镜像命令<a class="article-anchor" href="#3-熟悉Docker镜像命令" aria-hidden="true"></a></h2><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>删除镜像<code>dao-2048</code></td>
+<td></td>
+</tr>
+<tr>
+<td>将<code>dao-2048:0.02</code>镜像在本地保存为<code>dao.tar</code>镜像包</td>
+<td></td>
+</tr>
+<tr>
+<td>删除镜像 <code>dao-2048:0.02</code></td>
+<td></td>
+</tr>
+<tr>
+<td>再将刚才保存的<code>dao.tar</code>镜像文件重新装载到本地系统</td>
+<td></td>
+</tr>
+<tr>
+<td>显示本地已有镜像</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="Docker-命令参考" class="article-heading"><a href="#Docker-命令参考" class="headerlink" title="Docker 命令参考"></a>Docker 命令参考<a class="article-anchor" href="#Docker-命令参考" aria-hidden="true"></a></h3><h4 id="Docker-管理命令" class="article-heading"><a href="#Docker-管理命令" class="headerlink" title="Docker 管理命令"></a>Docker 管理命令<a class="article-anchor" href="#Docker-管理命令" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dockerd</td>
+<td>启动docker守护进程</td>
+</tr>
+<tr>
+<td>info</td>
+<td>显示系统范围的信息</td>
+</tr>
+<tr>
+<td>inspect</td>
+<td>返回容器或镜像上的低级别信息</td>
+</tr>
+<tr>
+<td>version</td>
+<td>显示docker的版本信息</td>
+</tr>
+</tbody></table>
+<h4 id="Docker-镜像命令" class="article-heading"><a href="#Docker-镜像命令" class="headerlink" title="Docker 镜像命令"></a>Docker 镜像命令<a class="article-anchor" href="#Docker-镜像命令" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>build</td>
+<td>根据Dockerfile创建镜像</td>
+</tr>
+<tr>
+<td>commit</td>
+<td>从更改的容器基础上创建新镜像</td>
+</tr>
+<tr>
+<td>export</td>
+<td>导出容器的文件系统到一个tar包归档文件中</td>
+</tr>
+<tr>
+<td>history</td>
+<td>查看镜像创建的历史过程</td>
+</tr>
+<tr>
+<td>images</td>
+<td>列出本地镜像</td>
+</tr>
+<tr>
+<td>import</td>
+<td>从一个tar包归档文件导入容器的文件系统系统</td>
+</tr>
+<tr>
+<td>load</td>
+<td>通过tar文件或标准输入载入镜像</td>
+</tr>
+<tr>
+<td>rmi</td>
+<td>删除一个或多个镜像</td>
+</tr>
+<tr>
+<td>save</td>
+<td>保存镜像到一个tar包归档文件</td>
+</tr>
+<tr>
+<td>tag</td>
+<td>标记镜像</td>
+</tr>
+</tbody></table>
+<h4 id="Docker-容器命令" class="article-heading"><a href="#Docker-容器命令" class="headerlink" title="Docker 容器命令"></a>Docker 容器命令<a class="article-anchor" href="#Docker-容器命令" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>attach</td>
+<td>连接到运行的容器</td>
+</tr>
+<tr>
+<td>cp</td>
+<td>在容器和宿主机之间传输文件或文件夹</td>
+</tr>
+<tr>
+<td>create</td>
+<td>创建一个新容器，但并不马上运行</td>
+</tr>
+<tr>
+<td>diff</td>
+<td>检查容器在文件系统上的变化</td>
+</tr>
+<tr>
+<td>events</td>
+<td>从服务器获取实时事件</td>
+</tr>
+<tr>
+<td>exec</td>
+<td>在容器内运行程序</td>
+</tr>
+<tr>
+<td>kill</td>
+<td>杀掉一个正在运行的容器，如果我们停不下它</td>
+</tr>
+<tr>
+<td>logs</td>
+<td>取出容器运行时的日志</td>
+</tr>
+<tr>
+<td>pause</td>
+<td>在容器内冻结所有程序</td>
+</tr>
+<tr>
+<td>port</td>
+<td>列出端口映射或用于容器的特定映射</td>
+</tr>
+<tr>
+<td>ps</td>
+<td>列出当前系统内的容器</td>
+</tr>
+<tr>
+<td>rename</td>
+<td>为容器改名</td>
+</tr>
+<tr>
+<td>restart</td>
+<td>重启正在运行的容器</td>
+</tr>
+<tr>
+<td>rm</td>
+<td>删除一个或多个容器</td>
+</tr>
+<tr>
+<td>run</td>
+<td>运行一个新的容器</td>
+</tr>
+<tr>
+<td>start</td>
+<td>启动一个或多个后台停止的容器</td>
+</tr>
+<tr>
+<td>stats</td>
+<td>显示容器资源使用统计信息的实时流</td>
+</tr>
+<tr>
+<td>stop</td>
+<td>停止一个正在运行的容器</td>
+</tr>
+<tr>
+<td>top</td>
+<td>显示正在容器内运行的进程信息</td>
+</tr>
+<tr>
+<td>unpause</td>
+<td>解冻容器内之前冻结的进程</td>
+</tr>
+<tr>
+<td>update</td>
+<td>更新一个或多个容器的更新配置</td>
+</tr>
+<tr>
+<td>wait</td>
+<td>阻塞直到某个容器关闭</td>
+</tr>
+</tbody></table>
+<h4 id="Docker-注册-仓库操作命令" class="article-heading"><a href="#Docker-注册-仓库操作命令" class="headerlink" title="Docker 注册/仓库操作命令"></a>Docker 注册/仓库操作命令<a class="article-anchor" href="#Docker-注册-仓库操作命令" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>login</td>
+<td>注册或登录注册/仓库服务器</td>
+</tr>
+<tr>
+<td>logout</td>
+<td>从注册/仓库服务器退出</td>
+</tr>
+<tr>
+<td>pull</td>
+<td>从注册/仓库服务器下载镜像</td>
+</tr>
+<tr>
+<td>push</td>
+<td>将本地镜像上传到注册/仓库服务器</td>
+</tr>
+<tr>
+<td>search</td>
+<td>在Docker Hub上搜索镜像</td>
+</tr>
+</tbody></table>
+<h4 id="Docker-网络和连接命令" class="article-heading"><a href="#Docker-网络和连接命令" class="headerlink" title="Docker 网络和连接命令"></a>Docker 网络和连接命令<a class="article-anchor" href="#Docker-网络和连接命令" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>network connect</td>
+<td>连接容器到特定Docker网络</td>
+</tr>
+<tr>
+<td>network create</td>
+<td>创建一个新的Docker网络</td>
+</tr>
+<tr>
+<td>network disconnect</td>
+<td>断开容器到特定Docker网络的连接</td>
+</tr>
+<tr>
+<td>network inspect</td>
+<td>显示特定Docker网络的信息</td>
+</tr>
+<tr>
+<td>network ls</td>
+<td>列出当前Docker 环境下的网络</td>
+</tr>
+<tr>
+<td>network rm</td>
+<td>删除一个或多个Docker网络</td>
+</tr>
+</tbody></table>
+<h4 id="Docker-共享资源卷管理命令" class="article-heading"><a href="#Docker-共享资源卷管理命令" class="headerlink" title="Docker 共享资源卷管理命令"></a>Docker 共享资源卷管理命令<a class="article-anchor" href="#Docker-共享资源卷管理命令" aria-hidden="true"></a></h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>volume create</td>
+<td>创建一个新的卷，用来给容器存储数据</td>
+</tr>
+<tr>
+<td>volume inspect</td>
+<td>显示一个卷的信息</td>
+</tr>
+<tr>
+<td>volume ls</td>
+<td>列出现有Docker环境下的卷</td>
+</tr>
+<tr>
+<td>volume rm</td>
+<td>删除一个或多个Docker卷</td>
+</tr>
+</tbody></table>
+<h2 id="答案" class="article-heading"><a href="#答案" class="headerlink" title="答案"></a>答案<a class="article-anchor" href="#答案" aria-hidden="true"></a></h2><h3 id="1-2048游戏网站的快速搭建-1" class="article-heading"><a href="#1-2048游戏网站的快速搭建-1" class="headerlink" title="1. 2048游戏网站的快速搭建"></a>1. 2048游戏网站的快速搭建<a class="article-anchor" href="#1-2048游戏网站的快速搭建-1" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera ~]# docker search dao-2048</span><br><span class="line">NAME                          DESCRIPTION                                     STARS               OFFICIAL            AUTOMATED</span><br><span class="line">alexwhen/docker-2048          simple is better                                13                                      [OK]</span><br><span class="line">daocloud/builder-image-base                                                   1</span><br><span class="line">cpk1224/docker-2048                                                           1                                       [OK]</span><br><span class="line">blackicebird/2048             2048 with logging                               1</span><br><span class="line">jonneywu/dao-2048             wode2048                                        0                                       [OK]</span><br><span class="line">runseb/2048                   The 2048 game                                   0</span><br><span class="line">ttmass/dao-2048               sdas                                            0                                       [OK]</span><br><span class="line">gilgameshs/dao-2048           自动构建demo                                        0                                       [OK]</span><br><span class="line">ckeyer/2048                   2048                                            0                                       [OK]</span><br><span class="line">suchja/ng2-2048               Angular 2 implementation of game 2048 (sourc…   0                                       [OK]</span><br><span class="line">yankay/dao-2048               haha                                            0                                       [OK]</span><br><span class="line">daocloud/ci-python                                                            0</span><br><span class="line">ponsfrilus/2048nginx          A nginx containter wich run 2048                0                                       [OK]</span><br><span class="line">daocloud/ci-golang                                                            0</span><br><span class="line">daocloud/ci-java                                                              0</span><br><span class="line">china394337002/dao-2048       This is my first automated build.               0                                       [OK]</span><br><span class="line">jgreat/2048                   2048 game by Gabriele Cirulli                   0</span><br><span class="line">faycheng/dao-2048                                                             0</span><br><span class="line">ckeyergame/2048               2048                                            0                                       [OK]</span><br><span class="line">tobert/f7u12-2048             My clone of 2048 in Javascript with no exter…   0</span><br><span class="line">daowen/waiter-kitchen                                                         0</span><br><span class="line">boycee/docker-2048            Docker version of 2048                          0</span><br><span class="line">daocloud/ci-mysql                                                             0</span><br><span class="line">evilroot/docker-2048          A smaller docker version of 2048 Forked from…   0                                       [OK]</span><br><span class="line">daocloud/ci-node                                                              0</span><br><span class="line"></span><br><span class="line">[root@mastera ~]# docker pull alexwhen/docker-2048</span><br><span class="line">Using default tag: latest</span><br><span class="line">latest: Pulling from alexwhen/docker-2048</span><br><span class="line">c862d82a67a2: Pull complete</span><br><span class="line">a3ed95caeb02: Pull complete</span><br><span class="line">69dbbd8c451d: Pull complete</span><br><span class="line">e9b345a0f742: Pull complete</span><br><span class="line">Digest: sha256:4913452e5bd092db9c8b005523127b8f62821867021e23a9acb1ae0f7d2432e1</span><br><span class="line">Status: Downloaded newer image for alexwhen/docker-2048:latest</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@mastera ~]# docker images</span><br><span class="line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">alexwhen/docker-2048   latest              7929bcd70e47        2 years ago         8.01MB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@mastera ~]# docker images</span><br><span class="line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">alexwhen/docker-2048   latest              7929bcd70e47        2 years ago         8.01MB</span><br><span class="line">[root@mastera ~]# docker info</span><br><span class="line">Containers: 0</span><br><span class="line"> Running: 0</span><br><span class="line"> Paused: 0</span><br><span class="line"> Stopped: 0</span><br><span class="line">Images: 1</span><br><span class="line">Server Version: 18.05.0-ce</span><br><span class="line">Storage Driver: devicemapper</span><br><span class="line"> Pool Name: docker-8:3-1049277-pool</span><br><span class="line"> Pool Blocksize: 65.54kB</span><br><span class="line"> Base Device Size: 10.74GB</span><br><span class="line"> Backing Filesystem: xfs</span><br><span class="line"> Udev Sync Supported: true</span><br><span class="line"> Data file: /dev/loop0</span><br><span class="line"> Metadata file: /dev/loop1</span><br><span class="line"> Data loop file: /var/lib/docker/devicemapper/devicemapper/data</span><br><span class="line"> Metadata loop file: /var/lib/docker/devicemapper/devicemapper/metadata</span><br><span class="line"> Data Space Used: 39.98MB</span><br><span class="line"> Data Space Total: 107.4GB</span><br><span class="line"> Data Space Available: 1.235GB</span><br><span class="line"> Metadata Space Used: 643.1kB</span><br><span class="line"> Metadata Space Total: 2.147GB</span><br><span class="line"> Metadata Space Available: 1.235GB</span><br><span class="line"> Thin Pool Minimum Free Space: 10.74GB</span><br><span class="line"> Deferred Removal Enabled: true</span><br><span class="line"> Deferred Deletion Enabled: true</span><br><span class="line"> Deferred Deleted Device Count: 0</span><br><span class="line"> Library Version: 1.02.146-RHEL7 (2018-01-22)</span><br><span class="line">Logging Driver: json-file</span><br><span class="line">Cgroup Driver: cgroupfs</span><br><span class="line">Plugins:</span><br><span class="line"> Volume: local</span><br><span class="line"> Network: bridge host macvlan null overlay</span><br><span class="line"> Log: awslogs fluentd gcplogs gelf journald json-file logentries splunk syslog</span><br><span class="line">Swarm: inactive</span><br><span class="line">Runtimes: runc</span><br><span class="line">Default Runtime: runc</span><br><span class="line">Init Binary: docker-init</span><br><span class="line">containerd version: 773c489c9c1b21a6d78b5c538cd395416ec50f88</span><br><span class="line">runc version: 4fc53a81fb7c994640722ac585fa9ca548971871</span><br><span class="line">init version: 949e6fa</span><br><span class="line">Security Options:</span><br><span class="line"> seccomp</span><br><span class="line">  Profile: default</span><br><span class="line">Kernel Version: 3.10.0-327.el7.x86_64</span><br><span class="line">Operating System: Red Hat Enterprise Linux Server 7.2 (Maipo)</span><br><span class="line">OSType: linux</span><br><span class="line">Architecture: x86_64</span><br><span class="line">CPUs: 2</span><br><span class="line">Total Memory: 1.782GiB</span><br><span class="line">Name: mastera</span><br><span class="line">ID: DBLV:5WPW:PMBT:RLBI:BJDX:DYKB:Z2OB:DEMH:ORXZ:PSFY:FA2B:HEPL</span><br><span class="line">Docker Root Dir: /var/lib/docker</span><br><span class="line">Debug Mode (client): false</span><br><span class="line">Debug Mode (server): false</span><br><span class="line">Registry: https://index.docker.io/v1/</span><br><span class="line">Labels:</span><br><span class="line">Experimental: false</span><br><span class="line">Insecure Registries:</span><br><span class="line"> 127.0.0.0/8</span><br><span class="line">Live Restore Enabled: false</span><br><span class="line"></span><br><span class="line">WARNING: devicemapper: usage of loopback devices is strongly discouraged for production use.</span><br><span class="line">         Use `--storage-opt dm.thinpooldev` to specify a custom block storage device.</span><br><span class="line">WARNING: bridge-nf-call-iptables is disabled</span><br><span class="line">WARNING: bridge-nf-call-ip6tables is disabled</span><br><span class="line"></span><br><span class="line">[root@mastera ~]# docker run -d --name 2048 -p 80:80 alexwhen/docker-2048</span><br><span class="line">6bc2ec292820fe3ae23553e00f29891346f60d40a5e96f7c14004306d2fe7519</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="2-熟悉Docker容器命令-1" class="article-heading"><a href="#2-熟悉Docker容器命令-1" class="headerlink" title="2. 熟悉Docker容器命令"></a>2. 熟悉Docker容器命令<a class="article-anchor" href="#2-熟悉Docker容器命令-1" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera ~]# docker ps</span><br><span class="line">CONTAINER ID        IMAGE                  COMMAND                  CREATED              STATUS              PORTS                NAMES</span><br><span class="line">6bc2ec292820        alexwhen/docker-2048   "nginx -g 'daemon of…"   About a minute ago   Up About a minute   0.0.0.0:80-&gt;80/tcp   2048</span><br><span class="line">[root@mastera ~]# docker stop 2048</span><br><span class="line">2048</span><br><span class="line">[root@mastera ~]# docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span><br><span class="line">[root@mastera ~]# docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS                      PORTS               NAMES</span><br><span class="line">6bc2ec292820        alexwhen/docker-2048   "nginx -g 'daemon of…"   2 minutes ago       Exited (0) 12 seconds ago</span><br><span class="line">[root@mastera ~]# docker start 2048</span><br><span class="line">2048</span><br><span class="line">[root@mastera ~]# docker logs 2048</span><br><span class="line">[root@mastera ~]# docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                NAMES</span><br><span class="line">6bc2ec292820        alexwhen/docker-2048   "nginx -g 'daemon of…"   4 minutes ago       Up 38 seconds       0.0.0.0:80-&gt;80/tcp   2048</span><br><span class="line">[root@mastera ~]# docker exec 2048 touch /test.txt</span><br><span class="line">[root@mastera ~]# docker exec 2048 ls /test.txt</span><br><span class="line">/test.txt</span><br><span class="line">[root@mastera ~]# docker exec 2048 ls -l /test.txt</span><br><span class="line">-rw-r--r--    1 root     root             0 Jun  6 10:47 /test.txt</span><br><span class="line">[root@mastera ~]# docker diff 2048</span><br><span class="line">C /var</span><br><span class="line">C /var/lib</span><br><span class="line">C /var/lib/nginx</span><br><span class="line">C /var/lib/nginx/tmp</span><br><span class="line">A /var/lib/nginx/tmp/proxy</span><br><span class="line">A /var/lib/nginx/tmp/scgi</span><br><span class="line">A /var/lib/nginx/tmp/uwsgi</span><br><span class="line">A /var/lib/nginx/tmp/client_body</span><br><span class="line">A /var/lib/nginx/tmp/fastcgi</span><br><span class="line">C /var/log</span><br><span class="line">C /var/log/nginx</span><br><span class="line">A /var/log/nginx/access.log</span><br><span class="line">A /var/log/nginx/error.log</span><br><span class="line">C /var/run</span><br><span class="line">C /var/run/nginx</span><br><span class="line">A /var/run/nginx/nginx.pid</span><br><span class="line">A /test.txt</span><br><span class="line">[root@mastera ~]# touch /tmp/file.out</span><br><span class="line">[root@mastera ~]# docker cp /tmp/file.out 2048:/etc</span><br><span class="line">[root@mastera ~]# docker exec 2048 ls -l /etc/file.out</span><br><span class="line">-rw-r--r--    1 root     root             0 Jun  6 10:49 /etc/file.out</span><br><span class="line">[root@mastera ~]# docker cp 2048:/etc/hosts /tmp</span><br><span class="line">[root@mastera ~]# ll /tmp/hosts</span><br><span class="line">-rw-r--r-- 1 root root 174 Jun  6 03:46 /tmp/hosts</span><br><span class="line">[root@mastera ~]# cat /tmp/hosts</span><br><span class="line">127.0.0.1	localhost</span><br><span class="line">::1	localhost ip6-localhost ip6-loopback</span><br><span class="line">fe00::0	ip6-localnet</span><br><span class="line">ff00::0	ip6-mcastprefix</span><br><span class="line">ff02::1	ip6-allnodes</span><br><span class="line">ff02::2	ip6-allrouters</span><br><span class="line">172.17.0.2	6bc2ec292820</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">标记容器的镜像为新的版本</span></span><br><span class="line">[root@mastera ~]# docker images</span><br><span class="line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">alexwhen/docker-2048   latest              7929bcd70e47        2 years ago         8.01MB</span><br><span class="line">[root@mastera ~]# docker tag alexwhen/docker-2048 booboo-2048</span><br><span class="line">[root@mastera ~]# docker images</span><br><span class="line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">alexwhen/docker-2048   latest              7929bcd70e47        2 years ago         8.01MB</span><br><span class="line">booboo-2048            latest              7929bcd70e47        2 years ago         8.01MB</span><br><span class="line">[root@mastera ~]# docker tag alexwhen/docker-2048 dao-2048:0.01</span><br><span class="line">[root@mastera ~]# docker images</span><br><span class="line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">alexwhen/docker-2048   latest              7929bcd70e47        2 years ago         8.01MB</span><br><span class="line">booboo-2048            latest              7929bcd70e47        2 years ago         8.01MB</span><br><span class="line">dao-2048               0.01                7929bcd70e47        2 years ago         8.01MB</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">固化容器为新的image镜像</span></span><br><span class="line">[root@mastera ~]# docker commit -a booboowei 2048 dao-2048:0.02</span><br><span class="line">sha256:141c918abbbf7c272088b1b1987c9b4fd6307c846b7f7986cdecb0f11ada63c0</span><br><span class="line">[root@mastera ~]# docker images</span><br><span class="line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">dao-2048               0.02                141c918abbbf        11 seconds ago      8.01MB</span><br><span class="line">alexwhen/docker-2048   latest              7929bcd70e47        2 years ago         8.01MB</span><br><span class="line">booboo-2048            latest              7929bcd70e47        2 years ago         8.01MB</span><br><span class="line">dao-2048               0.01                7929bcd70e47        2 years ago         8.01MB</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">导出容器的文件系统</span></span><br><span class="line">[root@mastera ~]# docker export 2048 &gt; 2048.tar</span><br><span class="line"></span><br><span class="line">[root@mastera ~]# docker stop 2048</span><br><span class="line">2048</span><br><span class="line">[root@mastera ~]# docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS               NAMES</span><br><span class="line">6bc2ec292820        7929bcd70e47        "nginx -g 'daemon of…"   21 minutes ago      Exited (0) 4 minutes ago                       2048</span><br><span class="line">[root@mastera ~]# docker rm 2048</span><br><span class="line">2048</span><br><span class="line">[root@mastera ~]# docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES2048</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-熟悉Docker镜像命令-1" class="article-heading"><a href="#3-熟悉Docker镜像命令-1" class="headerlink" title="3. 熟悉Docker镜像命令"></a>3. 熟悉Docker镜像命令<a class="article-anchor" href="#3-熟悉Docker镜像命令-1" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@mastera ~]# docker rmi alexwhen/docker-2048</span><br><span class="line">Untagged: alexwhen/docker-2048:latest</span><br><span class="line">Untagged: alexwhen/docker-2048@sha256:4913452e5bd092db9c8b005523127b8f62821867021e23a9acb1ae0f7d2432e1</span><br><span class="line">[root@mastera ~]# docker save dao-2048:0.02 &gt; dao.tar</span><br><span class="line">[root@mastera ~]# docker rmi dao-2048:0.02</span><br><span class="line">Untagged: dao-2048:0.02</span><br><span class="line">Deleted: sha256:141c918abbbf7c272088b1b1987c9b4fd6307c846b7f7986cdecb0f11ada63c0</span><br><span class="line">Deleted: sha256:b8df0be97a09b39f23a9d932743eb140aba3d11726b742a6198081758535b500</span><br><span class="line">[root@mastera ~]# docker images</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">booboo-2048         latest              7929bcd70e47        2 years ago         8.01MB</span><br><span class="line">dao-2048            0.01                7929bcd70e47        2 years ago         8.01MB</span><br><span class="line">[root@mastera ~]# docker load &lt; dao.tar</span><br><span class="line">35ab183cea2a: Loading layer  11.26kB/11.26kB</span><br><span class="line">Loaded image: dao-2048:0.02</span><br><span class="line">[root@mastera ~]# docker images</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">dao-2048            0.02                141c918abbbf        7 minutes ago       8.01MB</span><br><span class="line">booboo-2048         latest              7929bcd70e47        2 years ago         8.01MB</span><br><span class="line">dao-2048            0.01                7929bcd70e47        2 years ago         8.01MB</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:04.375Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/linux/0_linux_base/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2048%E6%B8%B8%E6%88%8F%E7%BD%91%E7%AB%99%E7%9A%84%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA"><span class="toc-text">1. 2048游戏网站的快速搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%86%9F%E6%82%89Docker%E5%AE%B9%E5%99%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">2. 熟悉Docker容器命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%86%9F%E6%82%89Docker%E9%95%9C%E5%83%8F%E5%91%BD%E4%BB%A4"><span class="toc-text">3. 熟悉Docker镜像命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Docker-%E5%91%BD%E4%BB%A4%E5%8F%82%E8%80%83"><span class="toc-text">Docker 命令参考</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker-%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="toc-text">Docker 管理命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker-%E9%95%9C%E5%83%8F%E5%91%BD%E4%BB%A4"><span class="toc-text">Docker 镜像命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker-%E5%AE%B9%E5%99%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">Docker 容器命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker-%E6%B3%A8%E5%86%8C-%E4%BB%93%E5%BA%93%E6%93%8D%E4%BD%9C%E5%91%BD%E4%BB%A4"><span class="toc-text">Docker 注册&#x2F;仓库操作命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker-%E7%BD%91%E7%BB%9C%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%91%BD%E4%BB%A4"><span class="toc-text">Docker 网络和连接命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker-%E5%85%B1%E4%BA%AB%E8%B5%84%E6%BA%90%E5%8D%B7%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="toc-text">Docker 共享资源卷管理命令</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%94%E6%A1%88"><span class="toc-text">答案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2048%E6%B8%B8%E6%88%8F%E7%BD%91%E7%AB%99%E7%9A%84%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA-1"><span class="toc-text">1. 2048游戏网站的快速搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%86%9F%E6%82%89Docker%E5%AE%B9%E5%99%A8%E5%91%BD%E4%BB%A4-1"><span class="toc-text">2. 熟悉Docker容器命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%86%9F%E6%82%89Docker%E9%95%9C%E5%83%8F%E5%91%BD%E4%BB%A4-1"><span class="toc-text">3. 熟悉Docker镜像命令</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="sidebar-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="sidebar-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="sidebar-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="sidebar-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="sidebar-link">Linux 进阶</a><strong class="sidebar-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">Docker</strong><a href="/linux/4_docker/index.html" class="sidebar-link">概览</a><strong class="sidebar-title">TICK</strong><a href="/linux/5_tick/index.html" class="sidebar-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="sidebar-link">Kapacitor</a><strong class="sidebar-title">Devops</strong><a href="/linux/6_devops/index.html" class="sidebar-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="sidebar-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="sidebar-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="sidebar-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="sidebar-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="sidebar-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="sidebar-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="sidebar-link">迷你小项目</a><strong class="sidebar-title">Git</strong><a href="/linux/7_git/index.html" class="sidebar-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="sidebar-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="sidebar-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="sidebar-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="sidebar-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="sidebar-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="sidebar-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="sidebar-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="sidebar-link">GitLab 实践</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../docs/" class="mobile-nav-link">Hexo</a><a href="../../news/" class="mobile-nav-link">News</a><a href="../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../database/" class="mobile-nav-link">Database</a><a href="../../linux/" class="mobile-nav-link">Linux</a><a href="../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../amy/" class="mobile-nav-link">AMY</a><a href="../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">Linux 中级</strong><a href="/linux/0_linux_base/index.html" class="mobile-nav-link">概览</a><a href="/linux/0_linux_base/booboo_linux_base/index.html" class="mobile-nav-link">Linux 基础</a><a href="/linux/0_linux_base/booboo_easy_service/index.html" class="mobile-nav-link">Linux 简易服务</a><a href="/linux/0_linux_base/booboo_bash_shell_scripts/index.html" class="mobile-nav-link">Linux 脚本编程</a><a href="/linux/0_linux_base/booboo_middle_service/index.html" class="mobile-nav-link">Linux 进阶</a><strong class="mobile-nav-title">Linux 日常</strong><a href="/linux/1_linux_dayday/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Ex-Tools</strong><a href="/linux/2_excellent_tools/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">LAMP</strong><a href="/linux/3_lamp/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">Docker</strong><a href="/linux/4_docker/index.html" class="mobile-nav-link">概览</a><strong class="mobile-nav-title">TICK</strong><a href="/linux/5_tick/index.html" class="mobile-nav-link">概览</a><a href="/linux/5_tick/kapacitor/index.html" class="mobile-nav-link">Kapacitor</a><strong class="mobile-nav-title">Devops</strong><a href="/linux/6_devops/index.html" class="mobile-nav-link">概览</a><a href="/linux/6_devops/bootstrap/index.html" class="mobile-nav-link">Bootstrap</a><a href="/linux/6_devops/booboo_python/index.html" class="mobile-nav-link">Python 基础</a><a href="/linux/6_devops/00_python_base/index.html" class="mobile-nav-link">Python 进阶</a><a href="/linux/6_devops/01_python_net/index.html" class="mobile-nav-link">Python 网络开发</a><a href="/linux/6_devops/02_python_threads/index.html" class="mobile-nav-link">Python 并发编程</a><a href="/linux/6_devops/11_flask_admin/index.html" class="mobile-nav-link">Flask_admin</a><a href="/linux/6_devops/12_mini_project/index.html" class="mobile-nav-link">迷你小项目</a><strong class="mobile-nav-title">Git</strong><a href="/linux/7_git/index.html" class="mobile-nav-link">概览</a><a href="/linux/7_git/Chapter01/index.html" class="mobile-nav-link">Git 基础</a><a href="/linux/7_git/Chapter02/index.html" class="mobile-nav-link">Git 常见场景</a><a href="/linux/7_git/Chapter04/index.html" class="mobile-nav-link">Git 多人协作</a><a href="/linux/7_git/Chapter05/index.html" class="mobile-nav-link">Git 集成使用禁忌</a><a href="/linux/7_git/Chapter06/index.html" class="mobile-nav-link">GitHub 初识</a><a href="/linux/7_git/Chapter07/index.html" class="mobile-nav-link">GitHub 使用</a><a href="/linux/7_git/Chapter03/index.html" class="mobile-nav-link">Github 同步</a><a href="/linux/7_git/Chapter08/index.html" class="mobile-nav-link">GitLab 实践</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../js/lang_select.js"></script>
+
+
+<script src="../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

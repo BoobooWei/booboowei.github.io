@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>Oracle数据库12c-管理 实践18:管理性能 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/18-ManagingPerformance-%E7%AE%A1%E7%90%86%E6%80%A7%E8%83%BD">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/18-ManagingPerformance-%E7%AE%A1%E7%90%86%E6%80%A7%E8%83%BD" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="Practices for Lesson 18: Managing Performance 2020.01.29 BoobooWei  [toc] 实践18:概览Practices for Lesson 18: Overview Background: Users are complaining about slower-than-normal performance for operation">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oracle数据库12c-管理 实践18:管理性能">
+<meta property="og:url" content="http://www.toberoot.com/database/oracle/oracle-12c/student/1Z0-062-Oracle%E6%95%B0%E6%8D%AE%E5%BA%9312c-%E7%AE%A1%E7%90%86/18-ManagingPerformance-%E7%AE%A1%E7%90%86%E6%80%A7%E8%83%BD">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="Practices for Lesson 18: Managing Performance 2020.01.29 BoobooWei  [toc] 实践18:概览Practices for Lesson 18: Overview Background: Users are complaining about slower-than-normal performance for operation">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.731Z">
+<meta property="article:modified_time" content="2025-10-22T08:48:03.362Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../../news/" class="main-nav-link">News</a><a href="../../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../../database/" class="main-nav-link">Database</a><a href="../../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">Oracle数据库12c-管理 实践18:管理性能</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/oracle/oracle-12c/student/1Z0-062-Oracle数据库12c-管理/18-ManagingPerformance-管理性能.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><blockquote>
+<p><strong>Practices for Lesson 18: Managing Performance</strong></p>
+<p>2020.01.29 BoobooWei</p>
+</blockquote>
+<p>[toc]</p>
+<h2 id="实践18-概览" class="article-heading"><a href="#实践18-概览" class="headerlink" title="实践18:概览"></a>实践18:概览<a class="article-anchor" href="#实践18-概览" aria-hidden="true"></a></h2><p>Practices for Lesson 18: Overview</p>
+<p><strong>Background:</strong> Users are complaining about slower-than-normal performance for operations involving the human resources and order-entry applications. When you question other members of the DBA staff, you find that maintenance was recently performed on some of the tables belonging to the HR schema. You need to troubleshoot and make changes as appropriate to resolve the performance problems. SQL script files are provided for you in the $LABS/P18 directory. Other directories are individually named.</p>
+<p>背景:用户抱怨人力资源和订单输入应用程序的运行速度低于正常水平。当您询问其他DBA员工时，您会发现最近对属于HR模式的一些表进行了维护。您需要排除故障并做出适当的更改来解决性能问题。在$LABS/P18目录中为您提供了SQL脚本文件。其他目录是单独命名的。</p>
+<h2 id="实践18-1-管理性能" class="article-heading"><a href="#实践18-1-管理性能" class="headerlink" title="实践18-1:管理性能"></a>实践18-1:管理性能<a class="article-anchor" href="#实践18-1-管理性能" aria-hidden="true"></a></h2><p>Practice 18-1: Managing Performance</p>
+<h3 id="Overview" class="article-heading"><a href="#Overview" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview" aria-hidden="true"></a></h3><h3 id="Task" class="article-heading"><a href="#Task" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task" aria-hidden="true"></a></h3><ol>
+<li><p>Log in to SQL*Plus as the DBA1 user and perform maintenance on tables in the HR schema by running the <strong>lab_18_01_01.sql</strong> script.</p>
+</li>
+<li><p>You get calls from HR application users saying that a particular query is taking longer than normal to execute. The query is in the <strong>lab_18_01_02.sql</strong> script.</p>
+</li>
+<li><p>Using Cloud Control, locate the HR session in which the above statement was just executed, and view the execution plan for that statement.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Cloud Control</td>
+<td>Navigate to the <strong>orcl</strong> database target.</td>
+</tr>
+<tr>
+<td>b.</td>
+<td>orcl database home</td>
+<td>Click <strong>Performance &gt; Search Sessions.</strong></td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Database Login</td>
+<td>Connect by using Preferred SYSDBA Credentials.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Search Sessions</td>
+<td>Select “<strong>DB User</strong>” in the Filter field menu. Enter <strong>HR</strong>. Click <strong>Go.</strong></td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Search Sessions</td>
+<td>Click the <strong>SID</strong> number in the Results listing.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Session Details</td>
+<td>Click the <strong>hash value link</strong> to the right of the “Previous SQL” label in the Application section.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>SQL Details</td>
+<td>Click the Plan tab to see the execution plan for the query.<br>Select the Tabular radio button.</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>Using Cloud Control, check to see the status of the <strong>EMPLOYEE</strong> table’s index on</p>
+<p><strong>EMPLOYEE_ID</strong>. See if it is <strong>VALID</strong>.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>SQL Details</td>
+<td>Click <strong>Schema</strong> &gt; <strong>Database Objects</strong> &gt; <strong>Indexes</strong>.</td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Indexes</td>
+<td>Select <strong>Table Name</strong> in the “Search By” menu. Enter <strong>HR</strong> in the Schema field. Enter EMPLOYEES in the Object field. Click <strong>Go</strong>.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Indexes</td>
+<td>In the Index column, click the <strong>EMP_EMP_ID_PK</strong> index.</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>d.</td>
+<td>View Index: HR.EMP_EMP_ID_PK</td>
+<td>In the General section, check the status of the index. You should see a value of <strong>UNUSABLE</strong>.</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>Now that you have seen one index with a non-VALID status, you decide to check all indexes. Using SQL*Plus, as the <strong>HR</strong> user find out which HR schema indexes do not have STATUS of VALID. To do this, you can query a data dictionary view with a condition on the STATUS column.</p>
+<p>a. Go to the SQL*Plus session where you are still logged in as the HR user, and run this query:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> COL INDEX_NAME FORMAT A20</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> COL TABLE_NAME FORMAT A20</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> index_name, table_name, status</span><br><span class="line"><span class="number">2</span><span class="operator">&gt;</span> <span class="keyword">from</span> user_indexes <span class="keyword">where</span> status <span class="operator">&lt;&gt;</span> <span class="string">'VALID'</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>b. You notice that the output lists six indexes, all on the <strong>EMPLOYEES</strong> table. This is a problem you need to fix.</p>
+</li>
+<li><p>You decide to use Cloud Control to reorganize all the indexes in the HR schema that are marked as UNUSABLE.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>View Index: HR.EMP_EMP_ID_PK</td>
+<td>Select <strong>Reorganize</strong> in the Actions menu. Click <strong>Go</strong>.</td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Reorganize Objects: Objects</td>
+<td>Click <strong>Add</strong>.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Objects: Add</td>
+<td>Select <strong>Indexes</strong> in the Type menu. Enter <strong>HR</strong> in the Schema field. Enter <strong>EMP_</strong> in the Object Name field. Click <strong>Search</strong>.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Objects: Add</td>
+<td>In the Available Objects section, select all the indexes that match the UNUSABLE indexes in Step 5. Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>e.</td>
+<td>Reorganize Objects: Objects</td>
+<td>Check that the six unusable indexes are listed. Click <strong>Next</strong>.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Reorganize Objects: Options</td>
+<td>Accept the default options. Click <strong>Next</strong>.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>Processing: Generating Script</td>
+<td>Displays briefly.</td>
+</tr>
+<tr>
+<td>h.</td>
+<td>Reorganize Objects: Impact Report</td>
+<td>The Script Generation Information section should show no warnings or errors. Click <strong>Next.</strong></td>
+</tr>
+<tr>
+<td>i.</td>
+<td>Reorganize Objects: Schedule</td>
+<td>In the Host Credentials section, select <strong>New.</strong> Enter Username: <strong>oracle</strong> Enter password: **** Click <strong>Test.</strong> When return is Test Successful, click **Next.**</td>
+</tr>
+<tr>
+<td>j.</td>
+<td>Reorganize Objects: Review</td>
+<td>Click <strong>Submit Job.</strong></td>
+</tr>
+<tr>
+<td>k.</td>
+<td>Job Activity</td>
+<td>A Confirmation message appears. Click the <strong>REORGANIZE</strong> job name listed in the Confirmation Message.</td>
+</tr>
+<tr>
+<td>l.</td>
+<td>Job Run: REORGANIZE<em>ORCL</em>*</td>
+<td>Refresh the Browser until the job shows <strong>Succeeded</strong>.</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>Return to the SQL*Plus session where the HR user is logged in and run the <strong>lab_18_01_07.sql</strong> script to execute the same kind of query. Then repeat the steps to see the plan of the last SQL statement executed by this session.</p>
+<p>a. Enter the following at the SQL*Plus prompt:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="variable">@lab_18_01_07</span>.<span class="keyword">sql</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>Repeat the tasks listed in step 3 to view the execution plan for the query. Now the icon indicates the use of an index. Select the <strong>Tabular</strong> radio button. Note that the plan now uses an index unique scan.</p>
+<p>b. Exit the SQL*Plus session.</p>
+</li>
+<li><p>What is the difference in execution plans, and why?</p>
+<p><em>Answer:</em> The statement execution uses a unique index scan instead of a full table scan, because the index is usable after you reorganized the indexes.</p>
+</li>
+<li><p>Simulate a working load on your instance by running the **l**<strong>ab_18_01_09.sql</strong> script as the SYS user. **Note the SID value that is reported**.</p>
+<p>This script takes about 20 minutes to complete. So, run it in a separate terminal window and continue with this practice exercise while it runs. Remember to set your environment appropriately by using oraenv in the new terminal window before connecting to SQL*Plus.</p>
+<p><strong>Note:</strong> Because this script generates a fairly heavy load in terms of CPU and disk I/O, you may notice that response time is slower.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">$ sqlplus DBA1<span class="operator">/</span>oracle_4U<span class="variable">@orcl</span> <span class="keyword">as</span> sysdba</span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="variable">@lab_18_01_09</span>.<span class="keyword">sql</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>Go back to Cloud Control and examine the performance of your database.</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>orcl database home</td>
+<td>Click <strong>Performance &gt; Performance Home</strong> to investigate system performance.</td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Database Instance: orcl</td>
+<td>View the Average Active session Graph at the bottom of the page. <strong>Note:</strong> You may need to wait a minute or two to see the effects of the load generation script appear on the graphs.</td>
+</tr>
+</tbody></table>
+<p><em>Question 1</em>: In the <strong>Average Active Sessions</strong> graph, which are the two main categories that active sessions are waiting for?<br><em>Answer:</em> In this example, it looks like Configuration issues and User I/O are quite high. CPU is also showing high wait activity. Your results may differ from what is shown here.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>c.</td>
+<td>Database Instance: orcl</td>
+<td>Click <strong>Configuration</strong> in the legend.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Active Sessions Waiting: Configuration</td>
+<td>Examine the Active Sessions Waiting: Configuration graph.</td>
+</tr>
+</tbody></table>
+<p><em>Question 2:</em> In the Configuration category of waits, what is one of the contributors to the wait time?</p>
+<p><em>Answer:</em> Log buffer space is the highest in this example.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Active Sessions Waiting: Configuration</td>
+<td>Click the browser back button.</td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Database Instance: orcl Performance Home</td>
+<td>Click <strong>Settings</strong>.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Performance Page Settings</td>
+<td>In Detail Chart Settings, select <strong>I/O</strong> for Default View. Select <strong>I/O Function</strong> for I/O Chart Setting. Click <strong>OK</strong>.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Database Instance: orcl Performance Home</td>
+<td>Scroll down to I/O Megabytes per Second by I/O Function graph.</td>
+</tr>
+</tbody></table>
+<p><strong>Note:</strong> The graph you see may vary from the screenshot.</p>
+<p><em>Question 3: Which process is doing the most writing to the disk?</em></p>
+<p><em>Answer:</em> LGWR</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>e.</td>
+<td>Database Instance: orcl Performance Home</td>
+<td>Click <strong>Top Activity</strong> link below and right of the Average Active Sessions graph. You may need to scroll to the bottom to see the horizontal scroll bar.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Top Activity</td>
+<td>Click the <strong>SQL ID</strong> of the first DELETE statement listed in the Top SQL region.</td>
+</tr>
+<tr>
+<td>g.</td>
+<td>SQL Details: 0qqwcxx1quwuv</td>
+<td></td>
+</tr>
+</tbody></table>
+<ol start="11">
+<li>Kill the session that is generating the load. Use the session ID recorded in step 9. The session ID is listed in the <strong>SID</strong> column of the Detail for Selected 5 Minute Interval.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>SQL Details: 0qqwcxx1quwuv</td>
+<td>Click the <strong>SID</strong> number for the session ID recorded earlier. This is found under the heading <strong>Detail for Selected 5 Minute Interval</strong>.</td>
+</tr>
+<tr>
+<td>b.</td>
+<td>Session Details: <em>nn</em> (SYS)</td>
+<td>Click <strong>Kill Session</strong>.</td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Confirmation</td>
+<td>Click <strong>Yes</strong>.</td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Session Details: <em>nn</em> (SYS)</td>
+<td><strong>Note:</strong> If you remain on this Session Details page long enough for a few automatic refreshes to be done, you may see a warning, “WARNING, Session has expired.” or a SQL Error saying the session is marked for kill. This warning means that you are attempting to refresh information about a session that has already been killed. You can ignore this warning.</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>e.</td>
+<td>Session Details: <em>nn</em> (SYS)</td>
+<td>Click <strong>Top Activity</strong> in the navigation history at the top of the page.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Top Activity</td>
+<td>View the Top Activity graph. Note that the session activity in the database has declined considerably.</td>
+</tr>
+</tbody></table>
+<ol start="12">
+<li>Log out of Enterprise Manager Cloud Control.</li>
+</ol>
+<h3 id="Practice" class="article-heading"><a href="#Practice" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice" aria-hidden="true"></a></h3><h3 id="KnowledgePoint" class="article-heading"><a href="#KnowledgePoint" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint" aria-hidden="true"></a></h3><h2 id="实践18-2-使用自动内存管理" class="article-heading"><a href="#实践18-2-使用自动内存管理" class="headerlink" title="实践18-2:使用自动内存管理"></a>实践18-2:使用自动内存管理<a class="article-anchor" href="#实践18-2-使用自动内存管理" aria-hidden="true"></a></h2><p>Practice 18-2: Using Automatic Memory Management</p>
+<h3 id="Overview-1" class="article-heading"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-1" aria-hidden="true"></a></h3><p>In this practice you review memory management capabilities. Note that the values you see may differ slightly from what is shown in this activity guide.</p>
+<h3 id="Task-1" class="article-heading"><a href="#Task-1" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-1" aria-hidden="true"></a></h3><ol>
+<li><p>Log in to SQL*Plus for the orcl instance as the DBA1 user with the oracle_4U password and make a copy of your server parameter file (SPFILE).</p>
+</li>
+<li><p>Still connected as the DBA1 user in SQL*Plus, set the following parameters to the given value in your SPFILE only! Use the amm_parameters.sql file located in your</p>
+<p>$LABS/P18 directory to set the parameters.</p>
+</li>
+<li><p>Execute the amm_setup.sql script.</p>
+</li>
+<li><p>Log in as the AMM user with the oracle_4U password. Execute the amm_setup2.sql script to re-create the TABSGA table and insert rows.</p>
+<p>a. Modify the TABSGA table to “parallel 64” and create a TESTPGA procedure (which creates a workload) by pressing Enter to continue the script.</p>
+<p>b. Confirm that there are no errors and query the dynamic memory components again by pressing Enter to continue the script.</p>
+<p>c. To view the query results, press Enter to continue the script.</p>
+<p>d. Exit the script, but remain in the SQL*Plus session.</p>
+</li>
+<li><p>Connect as SYSDBA in your SQL*Plus session, and shut down and restart your database instance. Reconnect as the AMM user with the oracle_4U password:</p>
+</li>
+<li><p>As the AMM user, determine the current settings for the various memory buffers as well as the list of resized operations that were performed since you started your instance.</p>
+<p>a. You can use the <strong>amm_components.sql</strong> script for that purpose.</p>
+<p>b. To view the query result, press Enter to continue the script.</p>
+<p>c. View the memory components (ordered by descending START_TIME) by pressing Enter to continue the script.</p>
+<p>d. To view the query result, press Enter to continue the script.</p>
+</li>
+<li><p>Remain connected as the AMM user in your SQL*Plus session and execute the following query. Immediately after that, determine the component sizes and resized operations. You can use the amm_query1.sql script for that purpose. What do you observe?</p>
+<p>a. Execute the amm_query1.sql script. You can see that the large pool has a much bigger size, whereas the buffer cache is smaller. This memory transfer was automatically done by the system.</p>
+</li>
+<li><p>Repeat the query by using the amm_query2.sql script. What do you observe?</p>
+<p><em>Possible Answer:</em> The same trend continues.</p>
+</li>
+<li><p>Still connected as the AMM user in your SQL*Plus session, execute the amm_query3.sql script. Immediately afterward, determine the memory component sizes and the list of resize operations. What do you observe?</p>
+<p><em>Possible Answer:</em> The same action of growing and shrinking the memory components</p>
+<p><em>Alternative Answer:</em> The memory grows and shrinks until the memory allocation meets the needs of the database activity, and then remains nearly constant.</p>
+</li>
+<li><p>In Enterprise Manager Cloud Control, look at the memory variations that happened during this practice. What do you observe?</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Cloud Control</td>
+<td>Log in to Enterprise Manager Cloud Control and navigate to the orcl Database home page.</td>
+</tr>
+<tr>
+<td>b.</td>
+<td>orcl Database home</td>
+<td>Click <strong>Performance &gt; Advisors Home &gt; Memory Advisors.</strong></td>
+</tr>
+<tr>
+<td>c.</td>
+<td>Memory Advisors</td>
+<td>Scroll down and examine the two graphs.</td>
+</tr>
+</tbody></table>
+<p><em>Question:</em> What changes do you see to the components of the SGA?</p>
+<p><em>Answer</em>: You should see modifications of the memory components in the second graph, indicating that the large pool grew and shrank.</p>
+</li>
+<li><p>Log out of Enterprise Manager Cloud Control.</p>
+</li>
+<li><p>To clean up your environment, shut down your database instance, restore the original SPFILE, and restart your orcl database instance by executing the amm_cleanup.sh script.</p>
+</li>
+</ol>
+<h3 id="Practice-1" class="article-heading"><a href="#Practice-1" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-1" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-1" class="article-heading"><a href="#KnowledgePoint-1" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-1" aria-hidden="true"></a></h3><h2 id="实践18-3-监控服务" class="article-heading"><a href="#实践18-3-监控服务" class="headerlink" title="实践18-3:监控服务"></a>实践18-3:监控服务<a class="article-anchor" href="#实践18-3-监控服务" aria-hidden="true"></a></h2><p>Practice 18-3: Monitoring Services</p>
+<p>In this practice, you create and monitor services.</p>
+<h3 id="Overview-2" class="article-heading"><a href="#Overview-2" class="headerlink" title="Overview"></a>Overview<a class="article-anchor" href="#Overview-2" aria-hidden="true"></a></h3><p>In your database there are several running applications. You want to monitor the resources that are being used by each application. Create a service configuration for each application or application function that uses your database.</p>
+<p>In this practice, you create the following configuration in the orcl database:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Service Name</strong></th>
+<th><strong>Usage</strong></th>
+<th><strong>Response Time (sec)–</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SERV1</td>
+<td>Client service</td>
+<td><strong>Warning/Critical</strong> 0.4, 1.0</td>
+</tr>
+</tbody></table>
+<h3 id="Task-2" class="article-heading"><a href="#Task-2" class="headerlink" title="Task"></a>Task<a class="article-anchor" href="#Task-2" aria-hidden="true"></a></h3><ol>
+<li><p>Use the DBMS_SERVICE package to create a service called SERV1. Then make sure that you add the service name to your tnsnames.ora file.</p>
+<p>a. The recommended method for adding a service name to the tnsnames.ora file is to use Oracle Net Manager. For this practice, in the interest of time, execute the sv1_add.sh script to add the service name.</p>
+<p>b. Review the tnsnames.ora file in $ORACLE_HOME/network/admin to confirm that the following lines are included. The script substituted the output of the hostname command for <hostname> below. The output of the host name command is shown in step 1a.</hostname></p>
+<p>c. Use the DBMS_SERVICE.CREATE_SERVICE procedure to create a service. (The command is entered on one line.)</p>
+</li>
+<li><p>After you have created your service, try connecting to your database by using your service name.</p>
+<p><em>Question:</em> What happens? Why?</p>
+<p><em>Answer:</em> You cannot connect by using your service because, although it is defined, it is not started on your instance.</p>
+<p>a. You can verify this by looking at the DBA_SERVICES view and by looking at the services known to the listener.</p>
+<p><em>Question:</em> How would you make sure that you can connect by using your service?</p>
+<p><em>Answer:</em> You must start your service on your instance.</p>
+</li>
+<li><p>Start the service on your instance and connect to your instance by using your service.</p>
+</li>
+<li><p>Create a workload for the SERV1 service. You will create a user for this activity and start a workload.</p>
+<p>a. Execute the sv1_load.sh script as SYSDBA. This script creates a new SV_USER user.</p>
+<p>b. Connect to your instance as the SV_USER user using the SERV1 service. Create workload activity by executing the sv1_load2.sql script. If this script finishes before you completed the next step, then use the sv1_sel.sql script to execute the following query: SELECT COUNT(*) FROM DBA_OBJECTS,DBA_OBJECTS,DBA_OBJECTS</p>
+<p><strong>Note:</strong> Do not wait for the script to complete before proceeding to the next step.</p>
+</li>
+<li><p>After the execution starts, access the Top Consumers page from the Performance tabbed page in Cloud Control, and determine the amount of resources SERV1 is using. Also, check the statistics on your service with V$SERVICE_STATS from a SQL*Plus session, connected as SYSDBA.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a.</td>
+<td>Cloud Control</td>
+<td>Log in to Enterprise Manager Cloud Control and navigate to the orcl Database home page.</td>
+</tr>
+<tr>
+<td>b.</td>
+<td>orcl Database</td>
+<td>In the Performance section, view the <strong>Services</strong> tab.</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>c.</td>
+<td>orcl Database home</td>
+<td>Click <strong>Performance &gt; Performance Home.</strong></td>
+</tr>
+<tr>
+<td>d.</td>
+<td>Performance Home</td>
+<td>Scroll down to view the Active Session graph aggregated by service by clicking the <strong>Services</strong> tab.</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>e.</td>
+<td>Performance Home</td>
+<td>Scroll down to Additional Links. Click <strong>Top Consumers</strong>.</td>
+</tr>
+<tr>
+<td>f.</td>
+<td>Top Consumers: Overview tab</td>
+<td>Review the graphs.</td>
+</tr>
+</tbody></table>
+<p>The names and number of services listed in the Top Services Graph depends on the number and type of connections to the database.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Step</strong></th>
+<th><strong>Window/Page Description</strong></th>
+<th><strong>Choices or Values</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>g.</td>
+<td>Top Consumers: Overview</td>
+<td>Click the <strong>Top Services</strong> tab.</td>
+</tr>
+<tr>
+<td>h.</td>
+<td>Top Consumers:Top Services</td>
+<td>Click the <strong>SERV1</strong> link in Service column.</td>
+</tr>
+<tr>
+<td>i.</td>
+<td>Service: SERV1: Modules tab</td>
+<td>Click the <strong>Statistics</strong> tab.</td>
+</tr>
+<tr>
+<td>j.</td>
+<td>Service: SERV1: Statistics tab</td>
+<td>View detailed statistics for the SERV1 service.</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>If the sv1_load2.sql script finishes before you complete this step, then use the sv1_sel.sql script to continue creating a workload. When you have completed the tasks, make sure that you stop your running workload by pressing Ctrl + C in your terminal window.</p>
+</li>
+<li><p>Clean up from this practice by running the sv1_cleanup.sh script in the $LABS/P18 directory.</p>
+</li>
+</ol>
+<h3 id="Practice-2" class="article-heading"><a href="#Practice-2" class="headerlink" title="Practice"></a>Practice<a class="article-anchor" href="#Practice-2" aria-hidden="true"></a></h3><h3 id="KnowledgePoint-2" class="article-heading"><a href="#KnowledgePoint-2" class="headerlink" title="KnowledgePoint"></a>KnowledgePoint<a class="article-anchor" href="#KnowledgePoint-2" aria-hidden="true"></a></h3></body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:48:03.362Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B518-%E6%A6%82%E8%A7%88"><span class="toc-text">实践18:概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B518-1-%E7%AE%A1%E7%90%86%E6%80%A7%E8%83%BD"><span class="toc-text">实践18-1:管理性能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B518-2-%E4%BD%BF%E7%94%A8%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-text">实践18-2:使用自动内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-1"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-1"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-1"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-1"><span class="toc-text">KnowledgePoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B518-3-%E7%9B%91%E6%8E%A7%E6%9C%8D%E5%8A%A1"><span class="toc-text">实践18-3:监控服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-2"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-2"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Practice-2"><span class="toc-text">Practice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KnowledgePoint-2"><span class="toc-text">KnowledgePoint</span></a></li></ol></li></ol>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../../news/" class="mobile-nav-link">News</a><a href="../../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>

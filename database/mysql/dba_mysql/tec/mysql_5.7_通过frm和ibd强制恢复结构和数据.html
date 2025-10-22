@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <title>MySQL_通过frm和ibd强制恢复结构和数据 | BoobooWei</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.7_%E9%80%9A%E8%BF%87frm%E5%92%8Cibd%E5%BC%BA%E5%88%B6%E6%81%A2%E5%A4%8D%E7%BB%93%E6%9E%84%E5%92%8C%E6%95%B0%E6%8D%AE">
+  <!-- Alternate links -->
+  
+    
+      
+    
+    <link rel="alternate" hreflang="x-default" href="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.7_%E9%80%9A%E8%BF%87frm%E5%92%8Cibd%E5%BC%BA%E5%88%B6%E6%81%A2%E5%A4%8D%E7%BB%93%E6%9E%84%E5%92%8C%E6%95%B0%E6%8D%AE" />
+  
+  <!-- Icon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../../icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../../icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../../icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../../icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../../icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../../icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../../icon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../../../icon/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2f83cd">
+  <meta name="msapplication-TileImage" content="../../../../icon/mstile-144x144.png">
+  <!-- CSS -->
+  <!-- build:css build/css/navy.css -->
+  
+<link rel="stylesheet" href="../../../../css/navy.css">
+
+  <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-lato@0.0.75/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+  <!-- RSS -->
+  <link rel="alternate" href="../../../../atom.xml" title="BoobooWei" type="application/atom+xml">
+  <!-- Open Graph -->
+  <meta name="description" content="写在前面Crash恢复的正确方式是：备份文件（逻辑或物理）+ binlog进行恢复；然而并不是所有的运维人员都知道怎么进行正确的备份，甚至连逻辑备份和物理备份的区别是什么都不知道？更不知道备份过程中需要考虑数据的一致性与服务可用性的问题？或者连备份工具都不会使用，所以当你问：有备份吗？回答：没有或者无效 在本次案例中，某客户只对单个cy库所属的目录进行了文件层面的备份，MySQL使用5.7.17版">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MySQL_通过frm和ibd强制恢复结构和数据">
+<meta property="og:url" content="http://www.toberoot.com/database/mysql/dba_mysql/tec/mysql_5.7_%E9%80%9A%E8%BF%87frm%E5%92%8Cibd%E5%BC%BA%E5%88%B6%E6%81%A2%E5%A4%8D%E7%BB%93%E6%9E%84%E5%92%8C%E6%95%B0%E6%8D%AE">
+<meta property="og:site_name" content="BoobooWei">
+<meta property="og:description" content="写在前面Crash恢复的正确方式是：备份文件（逻辑或物理）+ binlog进行恢复；然而并不是所有的运维人员都知道怎么进行正确的备份，甚至连逻辑备份和物理备份的区别是什么都不知道？更不知道备份过程中需要考虑数据的一致性与服务可用性的问题？或者连备份工具都不会使用，所以当你问：有备份吗？回答：没有或者无效 在本次案例中，某客户只对单个cy库所属的目录进行了文件层面的备份，MySQL使用5.7.17版">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.toberoot.com/icon/og-image-wide.png">
+<meta property="article:published_time" content="2025-10-22T08:53:55.804Z">
+<meta property="article:modified_time" content="2025-10-22T08:49:19.289Z">
+<meta property="article:author" content="魏亚萍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.toberoot.com/icon/twitter-summary.png">
+<meta property="fb:admins" content="100000247608790">
+  <!-- Google Analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48498357-3', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  <!-- Algolia -->
+  <link rel="preconnect" href="https://-dsn.algolia.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <header id="header" class="wrapper">
+  <div id="header-inner" class="inner">
+    <h1 id="logo-wrap">
+      <a href="../../../../" id="logo">Hexo</a>
+    </h1>
+    <nav id="main-nav">
+      <a href="../../../../docs/" class="main-nav-link">Hexo</a><a href="../../../../news/" class="main-nav-link">News</a><a href="../../../../api/" class="main-nav-link">MySQL8.0</a><a href="../../../../database/" class="main-nav-link">Database</a><a href="../../../../linux/" class="main-nav-link">Linux</a><a href="../../../../cloud/" class="main-nav-link">Cloud</a><a href="../../../../singapore/" class="main-nav-link">Singapore</a><a href="../../../../amy/" class="main-nav-link">AMY</a><a href="../../../../about/" class="main-nav-link">About</a>
+      <a target="_blank" rel="noopener" href="https://github.com/BoobooWei" class="main-nav-link"><i class="fa fa-github-alt"></i></a>
+
+      <div id="search-input-wrap">
+        <div id="search-input-icon">
+          <i class="fa fa-search"></i>
+        </div>
+        <input type="search" id="search-input" placeholder="Search...">
+      </div>
+    </nav>
+    <div id="lang-select-wrap">
+        <a href="/about/" class="main-nav-link"><label id="lang-select-label"><i class="fa fa-globe"></i><span>关于我</span></label></a>
+    </div>
+    <a id="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+      <span class="mobile-nav-toggle-bar"></span>
+    </a>
+  </div>
+</header>
+
+    <div id="content-wrap">
+  <div id="content" class="wrapper">
+    <div id="content-inner">
+      <article class="article-container" itemscope itemtype="http://schema.org/Article">
+        <div class="article-inner">
+          <div class="article">
+            <div class="inner">
+              <header class="article-header">
+                <h1 class="article-title" itemprop="name">MySQL_通过frm和ibd强制恢复结构和数据</h1>
+                <a target="_blank" rel="noopener" href="https://github.com/BoobooWei/site/edit/master/source/database/mysql/dba_mysql/tec/mysql_5.7_通过frm和ibd强制恢复结构和数据.md" class="article-edit-link" title="Improve this doc"><i class="fa fa-pencil"></i></a>
+              </header>
+              <div class="article-content" itemprop="articleBody">
+                <html><head></head><body><h2 id="写在前面" class="article-heading"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面<a class="article-anchor" href="#写在前面" aria-hidden="true"></a></h2><p>Crash恢复的正确方式是：<strong>备份文件（逻辑或物理）+ binlog</strong>进行恢复；然而并不是所有的运维人员都知道怎么进行正确的备份，甚至连逻辑备份和物理备份的区别是什么都不知道？更不知道备份过程中需要考虑数据的一致性与服务可用性的问题？或者连备份工具都不会使用，所以当你问：有备份吗？回答：没有或者无效</p>
+<p>在本次案例中，某客户只对单个<code>cy</code>库所属的目录进行了文件层面的备份，MySQL使用5.7.17版本，使用innodb存储引擎，开启了独立表空间。也就是说当前的救命稻草是：每个表的<code>.frm</code>和<code>.ibd</code>文件。</p>
+<h2 id="强制还原步骤" class="article-heading"><a href="#强制还原步骤" class="headerlink" title="强制还原步骤"></a>强制还原步骤<a class="article-anchor" href="#强制还原步骤" aria-hidden="true"></a></h2><p><font color="#avdcdet">强制恢复表结构，MySQL官方提供了一个工具直接离线获取ddl mysqlfrm，但是不推荐，实际验证导出的结构不是绝对准确，例如默认值全部变成了NULL</font></p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>描述</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>创建同版本的MySQL服务实例一枚</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>获取表的列数</strong></td>
+<td>如果有ddl备份直接导入，可惜都是没有的，哭。。。</td>
+</tr>
+<tr>
+<td>2.1</td>
+<td>创建同名表，结构无所谓</td>
+<td>数据库的世界也需要身份证，先造个人拿上身份证，至于人长得啥样几条胳膊都无所谓，名字最重要</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>停服务；使用备份的frm文件覆盖当前的frm</td>
+<td>偷梁换柱</td>
+</tr>
+<tr>
+<td>2.3</td>
+<td>配置文件添加强制恢复innodb的参数；启动服务</td>
+<td>蒙蔽她的双眼</td>
+</tr>
+<tr>
+<td>2.4</td>
+<td>查看表结构</td>
+<td>数据库会拿着身份证和面前的人（frm文件）做对比</td>
+</tr>
+<tr>
+<td>2.5</td>
+<td>查看错误日志中关于该表的报错</td>
+<td>数据库发现身份证上的人只有1条胳膊，而被检查的人有10条胳膊，明显对不上啊</td>
+</tr>
+<tr>
+<td>2.6</td>
+<td>成功获取表的真实列数；删除这些表</td>
+<td>通过警告可以知道应该造一个有10条胳膊的人</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>获取表的结构</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>3.1</td>
+<td>创建同名表，列数一致，列名无所谓</td>
+<td>这一次造人的时候，造一个有10条胳膊的，每条胳膊的名字无所谓，关键是身份证上面的人名和10条胳膊</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td>停服务；使用备份的frm文件覆盖当前的frm</td>
+<td>偷梁换柱</td>
+</tr>
+<tr>
+<td>3.3</td>
+<td>配置文件添加强制恢复innodb的参数；启动服务</td>
+<td>蒙蔽她的双眼</td>
+</tr>
+<tr>
+<td>3.4</td>
+<td>查看表结构</td>
+<td>数据库会拿着新的身份证和面前的人（frm文件）做对比</td>
+</tr>
+<tr>
+<td>3.5</td>
+<td>成功获取表结构</td>
+<td>数据库发现身份证上信息和被检查的人信息一致，名字，胳膊的数量，对上了就认可啦！（数据库只检查表名和列的个数）</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>强制恢复表数据</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>4.1</td>
+<td>丢弃当前表的数据</td>
+<td>把这个人的五脏六腑都挖出来</td>
+</tr>
+<tr>
+<td>4.2</td>
+<td>将备份的ibd放到对应路径</td>
+<td>将之前备份的吃了肉的五脏六腑放进去</td>
+</tr>
+<tr>
+<td>4.3</td>
+<td>导入新的数据，如果数据库加载成功则可以看到数据；否则加载失败。</td>
+<td>跟大脑汇报一下新的五脏六腑已经就位可以开始使用了；如果使用得没问题就成功；如果器官已经损坏那么手术失败。</td>
+</tr>
+</tbody></table>
+<h2 id="详细过程" class="article-heading"><a href="#详细过程" class="headerlink" title="详细过程"></a>详细过程<a class="article-anchor" href="#详细过程" aria-hidden="true"></a></h2><h3 id="数据量" class="article-heading"><a href="#数据量" class="headerlink" title="数据量"></a>数据量<a class="article-anchor" href="#数据量" aria-hidden="true"></a></h3><table>
+<thead>
+<tr>
+<th>明细</th>
+<th>大小</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>物理文件</td>
+<td>174M</td>
+<td></td>
+</tr>
+<tr>
+<td>数据库</td>
+<td>1个</td>
+<td>cy</td>
+</tr>
+<tr>
+<td>表</td>
+<td>57张</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="恢复结果" class="article-heading"><a href="#恢复结果" class="headerlink" title="恢复结果"></a>恢复结果<a class="article-anchor" href="#恢复结果" aria-hidden="true"></a></h3><blockquote>
+<p>在客户服务器上面结果如下：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>明细</th>
+<th>成功</th>
+<th>失败</th>
+<th>恢复率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>表结构</td>
+<td>58</td>
+<td>0</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>表数据</td>
+<td>56</td>
+<td>2</td>
+<td>96%</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>在我的服务器上面结果如下：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>明细</th>
+<th>成功</th>
+<th>失败</th>
+<th>恢复率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>表结构</td>
+<td>58</td>
+<td>0</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>表数据</td>
+<td>58</td>
+<td>0</td>
+<td>100%</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@toberoot mysql]# /alidata/mysql/bin/mysqld --initialize-insecure --datadir=/alidata/mysql/data/  --user=mysql</span><br><span class="line">[root@toberoot mysql]# service mysqld start</span><br><span class="line">Starting MySQL.                                            [  OK  ]</span><br><span class="line">[root@toberoot mysql]# mysql -V</span><br><span class="line">mysql  Ver 14.14 Distrib 5.7.17, for linux-glibc2.5 (x86_64) using  EditLine wrapper</span><br><span class="line"></span><br><span class="line">[root@toberoot mysql]# cd ~/home/cy02/</span><br><span class="line">[root@toberoot cy02]# ll</span><br><span class="line">total 178140</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9022 Aug 14  2017 base_dict.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Mar 14 15:00 base_dict.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8822 Mar  2 11:14 biz_advise.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 14 14:39 biz_advise.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8850 Mar  2 11:14 biz_bank.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Mar  2 11:14 biz_bank.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9580 Mar  2 11:14 biz.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9286 Mar  2 11:14 biz_gift.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Apr 24 14:08 biz_gift.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8890 Mar  2 11:14 biz_gprs_bind.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8745 Mar  2 11:14 biz_gprs_bind_his.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   180224 May 15 09:40 biz_gprs_bind_his.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql   180224 May 15 09:42 biz_gprs_bind.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 15 14:33 biz.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8845 Aug 14  2017 biz_msg_template.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 biz_msg_template.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8881 Aug 14  2017 biz_take_bank.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 13 19:26 biz_take_bank.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9411 Nov 24 13:22 biz_take.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   196608 May 15 15:22 biz_take.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8862 Aug 14  2017 biz_take_wwlt.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 15 15:22 biz_take_wwlt.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8854 Aug 14  2017 biz_take_wx.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 15 11:52 biz_take_wx.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8925 Aug 14  2017 biz_vip.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Mar 16 09:31 biz_vip.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8852 Aug 14  2017 biz_wlt.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 15 18:30 biz_wlt.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8926 Aug 14  2017 biz_wx_focus.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 10 16:24 biz_wx_focus.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9339 Nov 24 13:25 biz_wx.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 10 16:24 biz_wx.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8874 Aug 14  2017 biz_wx_walt.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 biz_wx_walt.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8776 Aug 14  2017 cfg_area.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   311296 Aug 14  2017 cfg_area.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8721 Aug 14  2017 cfg_id_gen.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 15 18:41 cfg_id_gen.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql       61 Aug 14  2017 db.opt</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9053 Aug 14  2017 gprs_model.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   212992 May 15 18:47 gprs_model.ibd</span><br><span class="line">-r--r--r-- 1 mysql mysql 79691776 May 16 14:04 ibdata1</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8801 Dec 19 15:00 mbr_coin_chged.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql  2097152 May 15 17:27 mbr_coin_chged.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8766 Dec 19 14:53 mbr_coin.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 15 19:12 mbr_coin.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9155 May 14 11:55 mbr.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   212992 May 15 20:58 mbr.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8876 Aug 14  2017 mbr_oauth.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   475136 May 15 19:37 mbr_oauth.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9011 Aug 14  2017 mbr_pay.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 mbr_pay.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8740 Aug 14  2017 mbr_prizen.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 mbr_prizen.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9147 Dec 19 14:56 mbr_recharge.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   294912 May 15 19:11 mbr_recharge.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8801 Aug 14  2017 mbr_wallet_chged.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql  9437184 May 15 17:27 mbr_wallet_chged.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8845 Aug 14  2017 mbr_wallet.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   262144 May 15 19:12 mbr_wallet.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql    10100 Dec 19 15:47 ord.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql 31457280 May 15 18:41 ord.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8940 Aug 14  2017 ord_item.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 ord_item.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8917 Aug 14  2017 ord_pay_ali.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 ord_pay_ali.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8924 Dec 19 15:55 ord_pay_coin.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   475136 May 15 17:27 ord_pay_coin.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8926 Aug 14  2017 ord_pay_return.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 ord_pay_return.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8966 Dec 20 16:50 ord_pay_wlt.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql  9437184 May 15 17:27 ord_pay_wlt.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9036 Aug 14  2017 ord_pay_wx.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql 32505856 May 15 18:41 ord_pay_wx.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9098 Aug 14  2017 prod_base_args.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 prod_base_args.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8790 Aug 14  2017 prod_bug_rpt.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 prod_bug_rpt.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8887 Aug 14  2017 prod_cmd.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 prod_cmd.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8984 Aug 14  2017 prod_cmd_invoke.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 prod_cmd_invoke.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9058 Aug 14  2017 prod_coin_rpt.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql  9437184 May 15 14:24 prod_coin_rpt.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8798 Aug 14  2017 prod_coin_rpt_log.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 15 14:24 prod_coin_rpt_log.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9834 Dec 13 14:12 prod.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8835 Aug 14  2017 prod_gprs_bind.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8793 Aug 14  2017 prod_gprs_bind_his.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   196608 May 15 09:42 prod_gprs_bind_his.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 prod_gprs_bind.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql   425984 May 15 09:42 prod.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8851 Aug 14  2017 prod_instl_imgs.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 prod_instl_imgs.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9388 Dec 13 14:13 prod_instl_pos.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   147456 May 15 16:25 prod_instl_pos.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9384 Dec 13 14:14 prod_instl_pos_model.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   131072 May 15 16:24 prod_instl_pos_model.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8892 Aug 14  2017 prod_mod_attr.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 prod_mod_attr.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8873 Aug 14  2017 prod_mod_attr_val.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 prod_mod_attr_val.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9642 Dec 13 14:11 prod_model.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 11 11:58 prod_model.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8815 Aug 14  2017 prod_mod_sku.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 prod_mod_sku.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9050 Aug 14  2017 prod_onl_log.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   163840 May 15 18:42 prod_onl_log.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9143 Aug 14  2017 prod_sp_args.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 prod_sp_args.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8876 Aug 14  2017 prod_sp_arg_vals.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 prod_sp_arg_vals.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9190 Dec 13 14:14 sys_acct.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 May 14 11:16 sys_acct.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     8776 Aug 14  2017 sys_acct_res.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql   229376 May 11 11:52 sys_acct_res.ibd</span><br><span class="line">-rw-r--r-- 1 mysql mysql     9106 Aug 14  2017 sys_res.frm</span><br><span class="line">-rw-r--r-- 1 mysql mysql    98304 Aug 14  2017 sys_res.ibd</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">获取待恢复表名</span></span><br><span class="line">[root@toberoot cy02]# ll *.frm |awk '{print $9}'|awk -F '.' '{print $1}' &gt; /alidata/cy_table.txt</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">python脚本自动生成建表语句</span></span><br><span class="line">[root@toberoot alidata]# cat py_createtable01.py</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">-*- coding : utf8 -*-</span></span><br><span class="line"></span><br><span class="line">def create_table_test(table_file,sql_file):</span><br><span class="line">    a_file = open(sql_file,'w')</span><br><span class="line">    b_file = open(table_file)</span><br><span class="line">    b_list = b_file.readlines()</span><br><span class="line">    for table in b_list:</span><br><span class="line">        string = "create table {} (id int);".format(table)</span><br><span class="line">        a_file.write(string)</span><br><span class="line">    a_file.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == '__main__':</span><br><span class="line">    create_table_test('/alidata/cy_table.txt'，'/alidata/cy_sql1.sql')</span><br><span class="line"></span><br><span class="line">[root@toberoot alidata]# python /alidata/py_createtable01.py</span><br><span class="line">[root@toberoot alidata]# head /alidata/cy_sql1.sql</span><br><span class="line">create table base_dict</span><br><span class="line"> (id int);create table biz_advise</span><br><span class="line"> (id int);create table biz_bank</span><br><span class="line"> (id int);create table biz</span><br><span class="line"> (id int);create table biz_gift</span><br><span class="line"> (id int);create table biz_gprs_bind</span><br><span class="line"> (id int);create table biz_gprs_bind_his</span><br><span class="line"> (id int);create table biz_msg_template</span><br><span class="line"> (id int);create table biz_take_bank</span><br><span class="line"> (id int);create table biz_take</span><br><span class="line">省略。。。</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">导入测试表结构</span></span><br><span class="line">[root@toberoot alidata]# mysql -e "show databases"</span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+--------------------+</span><br><span class="line">[root@toberoot alidata]# mysql -e "create database cy;"</span><br><span class="line">[root@toberoot alidata]# mysql cy &lt; /alidata/cy_sql1.sql</span><br><span class="line">[root@toberoot alidata]# mysql -e "desc cy.sys_res"</span><br><span class="line">+-------+---------+------+-----+---------+-------+</span><br><span class="line">| Field | Type    | Null | Key | Default | Extra |</span><br><span class="line">+-------+---------+------+-----+---------+-------+</span><br><span class="line">| id    | int(11) | YES  |     | NULL    |       |</span><br><span class="line">+-------+---------+------+-----+---------+-------+</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">开始获取表结构中列的信息</span></span><br><span class="line"></span><br><span class="line">[root@toberoot alidata]# service mysqld stop</span><br><span class="line">Shutting down MySQL..                                      [  OK  ]</span><br><span class="line">[root@toberoot alidata]# yes|cp ~/home/cy02/*.frm /alidata/mysql/data/cy/</span><br><span class="line">cp: overwrite ‘/alidata/mysql/data/cy/base_dict.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_advise.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_bank.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_gift.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_gprs_bind.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_gprs_bind_his.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_msg_template.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_take_bank.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_take.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_take_wwlt.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_take_wx.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_vip.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_wlt.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_wx_focus.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_wx.frm’? cp: overwrite ‘/alidata/mysql/data/cy/biz_wx_walt.frm’? cp: overwrite ‘/alidata/mysql/data/cy/cfg_area.frm’? cp: overwrite ‘/alidata/mysql/data/cy/cfg_id_gen.frm’? cp: overwrite ‘/alidata/mysql/data/cy/gprs_model.frm’? cp: overwrite ‘/alidata/mysql/data/cy/mbr_coin_chged.frm’? cp: overwrite ‘/alidata/mysql/data/cy/mbr_coin.frm’? cp: overwrite ‘/alidata/mysql/data/cy/mbr.frm’? cp: overwrite ‘/alidata/mysql/data/cy/mbr_oauth.frm’? cp: overwrite ‘/alidata/mysql/data/cy/mbr_pay.frm’? cp: overwrite ‘/alidata/mysql/data/cy/mbr_prizen.frm’? cp: overwrite ‘/alidata/mysql/data/cy/mbr_recharge.frm’? cp: overwrite ‘/alidata/mysql/data/cy/mbr_wallet_chged.frm’? cp: overwrite ‘/alidata/mysql/data/cy/mbr_wallet.frm’? cp: overwrite ‘/alidata/mysql/data/cy/ord.frm’? cp: overwrite ‘/alidata/mysql/data/cy/ord_item.frm’? cp: overwrite ‘/alidata/mysql/data/cy/ord_pay_ali.frm’? cp: overwrite ‘/alidata/mysql/data/cy/ord_pay_coin.frm’? cp: overwrite ‘/alidata/mysql/data/cy/ord_pay_return.frm’? cp: overwrite ‘/alidata/mysql/data/cy/ord_pay_wlt.frm’? cp: overwrite ‘/alidata/mysql/data/cy/ord_pay_wx.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_base_args.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_bug_rpt.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_cmd.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_cmd_invoke.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_coin_rpt.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_coin_rpt_log.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_gprs_bind.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_gprs_bind_his.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_instl_imgs.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_instl_pos.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_instl_pos_model.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_mod_attr.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_mod_attr_val.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_model.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_mod_sku.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_onl_log.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_sp_args.frm’? cp: overwrite ‘/alidata/mysql/data/cy/prod_sp_arg_vals.frm’? cp: overwrite ‘/alidata/mysql/data/cy/sys_acct.frm’? cp: overwrite ‘/alidata/mysql/data/cy/sys_acct_res.frm’? cp: overwrite ‘/alidata/mysql/data/cy/sys_res.frm’? [root@toberoot alidata]#</span><br><span class="line"></span><br><span class="line">[root@toberoot alidata]# cat py_createtable01.py</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">-*- coding : utf8 -*-</span></span><br><span class="line"></span><br><span class="line">def create_table_test(table_file,sql_file):</span><br><span class="line">    a_file = open(sql_file,'w')</span><br><span class="line">    b_file = open(table_file)</span><br><span class="line">    b_list = b_file.readlines()</span><br><span class="line">    for table in b_list:</span><br><span class="line">        string = "create table {} (id int);".format(table)</span><br><span class="line">        a_file.write(string)</span><br><span class="line">    a_file.close()</span><br><span class="line"></span><br><span class="line">def desc_table_test(table_file,sql_file):</span><br><span class="line">    a_file = open(sql_file,'w')</span><br><span class="line">    b_file = open(table_file)</span><br><span class="line">    b_list = b_file.readlines()</span><br><span class="line">    for table in b_list:</span><br><span class="line">        string = "desc {};".format(table)</span><br><span class="line">        a_file.write(string)</span><br><span class="line">    a_file.close()</span><br><span class="line"></span><br><span class="line">if __name__ == '__main__':</span><br><span class="line">    #create_table_test('/alidata/cy_table.txt','/alidata/cy_sql1.sql')</span><br><span class="line">    desc_table_test('/alidata/cy_table.txt','/alidata/cy_sql2.sql')</span><br><span class="line"></span><br><span class="line">[root@toberoot alidata]# python py_createtable01.py</span><br><span class="line">[root@toberoot alidata]# head cy_sql2.sql</span><br><span class="line">desc base_dict</span><br><span class="line">;desc biz_advise</span><br><span class="line">;desc biz_bank</span><br><span class="line">;desc biz</span><br><span class="line">;desc biz_gift</span><br><span class="line">;desc biz_gprs_bind</span><br><span class="line">;desc biz_gprs_bind_his</span><br><span class="line">;desc biz_msg_template</span><br><span class="line">;desc biz_take_bank</span><br><span class="line">;desc biz_take</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">截取包含列名的报错</span></span><br><span class="line">[root@toberoot alidata]# grep contains  mysql/dataerror.log &gt; cy_error1.log</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">报错格式如下：</span></span><br><span class="line">2018-05-17T07:58:32.926555Z 3 [Warning] InnoDB: Table cy/base_dict contains 1 user defined columns in InnoDB, but 11 columns in MySQL. Please check INFORMATION_SCHEMA.INNODB_SYS_COLUMNS and http://dev.mysql.com/doc/refman/5.7/en/innodb-troubleshooting.html for how to resolve the issue.</span><br><span class="line">2018-05-17T07:59:03.555492Z 4 [Warning] InnoDB: Table cy/biz_advise contains 1 user defined columns in InnoDB, but 7 columns in MySQL. Please check INFORMATION_SCHEMA.INNODB_SYS_COLUMNS and http://dev.mysql.com/doc/refman/5.7/en/innodb-troubleshooting.html for how to resolve the issue.</span><br><span class="line">2018-05-17T07:59:03.556045Z 4 [Warning] InnoDB: Table cy/biz_bank contains 1 user defined columns in InnoDB, but 7 columns in MySQL. Please check INFORMATION_SCHEMA.INNODB_SYS_COLUMNS and http://dev.mysql.com/doc/refman/5.7/en/innodb-troubleshooting.html for how to resolve the issue.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将表名和列数存放至文件中</span></span><br><span class="line">[root@toberoot alidata]# awk '{print $6,$15}' cy_error1.log | awk -F '/' '{print $2}' &gt; cy_table_col.txt</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据以上表名和列数生成新的测试表</span></span><br><span class="line">def create_table_col(table_col_file,sql_file):</span><br><span class="line">    a_file = open(sql_file,'w')</span><br><span class="line">    b_file = open(table_col_file)</span><br><span class="line">    b_list = b_file.readlines()</span><br><span class="line">    # b_list = ['t1 10','t2 20']</span><br><span class="line">    str_list = []</span><br><span class="line">    for table_col_str in b_list:</span><br><span class="line">        table_col_list = table_col_str.split()</span><br><span class="line">	table = table_col_list[0]</span><br><span class="line">	col = int(table_col_list[1])</span><br><span class="line">        string = "create table {} (".format(table)</span><br><span class="line">        str_list.append(string)</span><br><span class="line">	for i in range(1,col+1):</span><br><span class="line">            if i!=col:</span><br><span class="line">                string = 'id{} int,'.format(i)</span><br><span class="line">	    else:</span><br><span class="line">                string = 'id{} int);'.format(i)</span><br><span class="line">            str_list.append(string)</span><br><span class="line">    for line in str_list:</span><br><span class="line">        a_file.write(line)</span><br><span class="line">    a_file.close()</span><br><span class="line"></span><br><span class="line">create_table_col('/alidata/cy_table_col.txt','/alidata/cy_sql3.sql')</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除这些测试表</span></span><br><span class="line">[root@toberoot alidata]# vim py_createtable01.py</span><br><span class="line">[root@toberoot alidata]# python py_createtable01.py</span><br><span class="line">[root@toberoot alidata]# ll</span><br><span class="line">total 60</span><br><span class="line">-rw-r--r--  1 root  root  16729 May 17 16:00 cy_error1.log</span><br><span class="line">-rw-r--r--  1 root  root   2033 May 17 15:12 cy_sql1.sql</span><br><span class="line">-rw-r--r--  1 root  root   1047 May 17 15:56 cy_sql2.sql</span><br><span class="line">-rw-r--r--  1 root  root   6353 May 17 16:15 cy_sql3.sql</span><br><span class="line">-rw-r--r--  1 root  root   1395 May 17 16:17 cy_sql4.sql</span><br><span class="line">-rw-r--r--  1 root  root    837 May 17 16:03 cy_table_col.txt</span><br><span class="line">-rw-r--r--  1 root  root    699 May 17 15:56 cy_table.txt</span><br><span class="line">drwxr-xr-x  3 root  root   4096 May 17 12:12 install</span><br><span class="line">drwxr-xr-x 11 mysql mysql  4096 May 17 15:44 mysql</span><br><span class="line">-rw-r--r--  1 root  root   1798 May 17 16:17 py_createtable01.py</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">python代码如下：</span></span><br><span class="line">def drop_table_test(table_file,sql_file):</span><br><span class="line">    a_file = open(sql_file,'w')</span><br><span class="line">    b_file = open(table_file)</span><br><span class="line">    b_list = b_file.readlines()</span><br><span class="line">    for table in b_list:</span><br><span class="line">        string = "drop table {};".format(table)</span><br><span class="line">        a_file.write(string)</span><br><span class="line">    a_file.close()</span><br><span class="line"></span><br><span class="line">drop_table_test('/alidata/cy_table.txt','/alidata/cy_sql4.sql')</span><br><span class="line"></span><br><span class="line">[root@toberoot alidata]# head /alidata/cy_sql4.sql</span><br><span class="line">drop table base_dict</span><br><span class="line">;drop table biz_advise</span><br><span class="line">;drop table biz_bank</span><br><span class="line">;drop table biz</span><br><span class="line">;drop table biz_gift</span><br><span class="line">;drop table biz_gprs_bind</span><br><span class="line">;drop table biz_gprs_bind_his</span><br><span class="line">;drop table biz_msg_template</span><br><span class="line">;drop table biz_take_bank</span><br><span class="line">;drop table biz_take</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">删除数据库的时候直接卡死了，原因未知。也没有报错。</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">清数据启动服务</span></span><br><span class="line"></span><br><span class="line">ln: failed to create symbolic link ‘/usr/local/mysql/bin/mysqld’: File exists</span><br><span class="line">Starting MySQL.                                            [  OK  ]</span><br><span class="line">[root@toberoot ~]# mysql -e 'create database cy'</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">开始尝试获取表的结构</span></span><br><span class="line">[root@toberoot alidata]# mysql cy &lt; cy_sql3.sql</span><br><span class="line">[root@toberoot alidata]# service mysqld stop</span><br><span class="line">Shutting down MySQL..                                      [  OK  ]</span><br><span class="line">[root@toberoot alidata]# cp ~/home/cy02/*.frm /alidata/mysql/data/cy/ -p</span><br><span class="line">cp: overwrite ‘/alidata/mysql/data/cy/base_dict.frm’? ^C</span><br><span class="line">[root@toberoot alidata]# yes | cp ~/home/cy02/*.frm /alidata/mysql/data/cy/ -p</span><br><span class="line">[root@toberoot alidata]# ll /alidata/mysql/data/cy/sys_res*</span><br><span class="line">-rw-r--r-- 1 mysql mysql  9106 Aug 14  2017 /alidata/mysql/data/cy/sys_res.frm</span><br><span class="line">-rw-r----- 1 mysql mysql 98304 May 17 16:44 /alidata/mysql/data/cy/sys_res.ibd</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置文件</span></span><br><span class="line">[mysqld]</span><br><span class="line">innodb_force_recovery=6</span><br><span class="line">[root@toberoot alidata]# vim /etc/my.cnf</span><br><span class="line">[root@toberoot alidata]# service mysqld start</span><br><span class="line">Starting MySQL.                                            [  OK  ]</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">表结构成功获取</span></span><br><span class="line">[root@toberoot alidata]# mysql cy -e 'desc sys_res'</span><br><span class="line">+--------+--------------+------+-----+---------+-------+</span><br><span class="line">| Field  | Type         | Null | Key | Default | Extra |</span><br><span class="line">+--------+--------------+------+-----+---------+-------+</span><br><span class="line">| ID     | varchar(64)  | NO   | PRI | NULL    |       |</span><br><span class="line">| NAME   | varchar(32)  | NO   |     | NULL    |       |</span><br><span class="line">| CODE   | varchar(128) | NO   |     | NULL    |       |</span><br><span class="line">| URI    | varchar(128) | NO   |     | NULL    |       |</span><br><span class="line">| LOGO   | varchar(64)  | YES  |     | NULL    |       |</span><br><span class="line">| TYPE   | int(11)      | NO   |     | NULL    |       |</span><br><span class="line">| PCODE  | varchar(64)  | YES  |     | NULL    |       |</span><br><span class="line">| SORT   | int(11)      | YES  |     | 0       |       |</span><br><span class="line">| STATE  | int(11)      | NO   |     | NULL    |       |</span><br><span class="line">| ADMIN  | int(11)      | YES  |     | 0       |       |</span><br><span class="line">| REMARK | varchar(64)  | YES  |     | NULL    |       |</span><br><span class="line">| CRTIME | datetime     | NO   |     | NULL    |       |</span><br><span class="line">| UPTIME | datetime     | NO   |     | NULL    |       |</span><br><span class="line">+--------+--------------+------+-----+---------+-------+</span><br><span class="line">root@MySQL-01 16:49:  [(none)]&gt; select table_name,table_schema from information_schema.tables where table_schema='cy';</span><br><span class="line">+----------------------+--------------+</span><br><span class="line">| table_name           | table_schema |</span><br><span class="line">+----------------------+--------------+</span><br><span class="line">| base_dict            | cy           |</span><br><span class="line">| biz                  | cy           |</span><br><span class="line">| biz_advise           | cy           |</span><br><span class="line">| biz_bank             | cy           |</span><br><span class="line">| biz_gift             | cy           |</span><br><span class="line">| biz_gprs_bind        | cy           |</span><br><span class="line">| biz_gprs_bind_his    | cy           |</span><br><span class="line">| biz_msg_template     | cy           |</span><br><span class="line">| biz_take             | cy           |</span><br><span class="line">| biz_take_bank        | cy           |</span><br><span class="line">| biz_take_wwlt        | cy           |</span><br><span class="line">| biz_take_wx          | cy           |</span><br><span class="line">| biz_vip              | cy           |</span><br><span class="line">| biz_wlt              | cy           |</span><br><span class="line">| biz_wx               | cy           |</span><br><span class="line">| biz_wx_focus         | cy           |</span><br><span class="line">| biz_wx_walt          | cy           |</span><br><span class="line">| cfg_area             | cy           |</span><br><span class="line">| cfg_id_gen           | cy           |</span><br><span class="line">| gprs_model           | cy           |</span><br><span class="line">| mbr                  | cy           |</span><br><span class="line">| mbr_coin             | cy           |</span><br><span class="line">| mbr_coin_chged       | cy           |</span><br><span class="line">| mbr_oauth            | cy           |</span><br><span class="line">| mbr_pay              | cy           |</span><br><span class="line">| mbr_prizen           | cy           |</span><br><span class="line">| mbr_recharge         | cy           |</span><br><span class="line">| mbr_wallet           | cy           |</span><br><span class="line">| mbr_wallet_chged     | cy           |</span><br><span class="line">| ord                  | cy           |</span><br><span class="line">| ord_item             | cy           |</span><br><span class="line">| ord_pay_ali          | cy           |</span><br><span class="line">| ord_pay_coin         | cy           |</span><br><span class="line">| ord_pay_return       | cy           |</span><br><span class="line">| ord_pay_wlt          | cy           |</span><br><span class="line">| ord_pay_wx           | cy           |</span><br><span class="line">| prod                 | cy           |</span><br><span class="line">| prod_base_args       | cy           |</span><br><span class="line">| prod_bug_rpt         | cy           |</span><br><span class="line">| prod_cmd             | cy           |</span><br><span class="line">| prod_cmd_invoke      | cy           |</span><br><span class="line">| prod_coin_rpt        | cy           |</span><br><span class="line">| prod_coin_rpt_log    | cy           |</span><br><span class="line">| prod_gprs_bind       | cy           |</span><br><span class="line">| prod_gprs_bind_his   | cy           |</span><br><span class="line">| prod_instl_imgs      | cy           |</span><br><span class="line">| prod_instl_pos       | cy           |</span><br><span class="line">| prod_instl_pos_model | cy           |</span><br><span class="line">| prod_mod_attr        | cy           |</span><br><span class="line">| prod_mod_attr_val    | cy           |</span><br><span class="line">| prod_mod_sku         | cy           |</span><br><span class="line">| prod_model           | cy           |</span><br><span class="line">| prod_onl_log         | cy           |</span><br><span class="line">| prod_sp_arg_vals     | cy           |</span><br><span class="line">| prod_sp_args         | cy           |</span><br><span class="line">| sys_acct             | cy           |</span><br><span class="line">| sys_acct_res         | cy           |</span><br><span class="line">| sys_res              | cy           |</span><br><span class="line">+----------------------+--------------+</span><br><span class="line">58 rows in set (0.00 sec)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">58张表dump备份出来</span></span><br><span class="line">[root@toberoot alidata]# mysqldump -B cy -d &gt; /alidata/new_yc_ddl.sql</span><br><span class="line">[root@toberoot alidata]# tail -n 30 /alidata/new_yc_ddl.sql</span><br><span class="line">/*!40101 SET @saved_cs_client     = @@character_set_client */;</span><br><span class="line">/*!40101 SET character_set_client = utf8 */;</span><br><span class="line">CREATE TABLE `sys_res` (</span><br><span class="line">  `ID` varchar(64) NOT NULL COMMENT 'ID',</span><br><span class="line">  `NAME` varchar(32) NOT NULL COMMENT '菜单名称',</span><br><span class="line">  `CODE` varchar(128) NOT NULL COMMENT '菜单编码',</span><br><span class="line">  `URI` varchar(128) NOT NULL COMMENT 'URI',</span><br><span class="line">  `LOGO` varchar(64) DEFAULT NULL COMMENT '图标',</span><br><span class="line">  `TYPE` int(11) NOT NULL COMMENT '@菜单类型（1菜单；2按钮）',</span><br><span class="line">  `PCODE` varchar(64) DEFAULT NULL COMMENT '父菜单',</span><br><span class="line">  `SORT` int(11) DEFAULT '0' COMMENT '排序',</span><br><span class="line">  `STATE` int(11) NOT NULL COMMENT '@@状态（0 无效；1 正常）',</span><br><span class="line">  `ADMIN` int(11) DEFAULT '0' COMMENT '是否管理员菜单（默认0否）',</span><br><span class="line">  `REMARK` varchar(64) DEFAULT NULL COMMENT '备注',</span><br><span class="line">  `CRTIME` datetime NOT NULL COMMENT 'CRTIME',</span><br><span class="line">  `UPTIME` datetime NOT NULL COMMENT 'UPTIME',</span><br><span class="line">  PRIMARY KEY (`ID`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限_系统资源';</span><br><span class="line">/*!40101 SET character_set_client = @saved_cs_client */;</span><br><span class="line">/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;</span><br><span class="line"></span><br><span class="line">/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;</span><br><span class="line">/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;</span><br><span class="line">/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;</span><br><span class="line">/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;</span><br><span class="line">/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;</span><br><span class="line">/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;</span><br><span class="line">/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;</span><br><span class="line"></span><br><span class="line">-- Dump completed on 2018-05-17 16:52:28</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">discard和import命令</span></span><br><span class="line">def discard_table_test(table_file,sql_file):</span><br><span class="line">    a_file = open(sql_file,'w')</span><br><span class="line">    b_file = open(table_file)</span><br><span class="line">    b_list = b_file.readlines()</span><br><span class="line">    for table in b_list:</span><br><span class="line">        string = "alter table {} discard tablespace;".format(table)</span><br><span class="line">        a_file.write(string)</span><br><span class="line">    a_file.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def import_table_test(table_file,sql_file):</span><br><span class="line">    a_file = open(sql_file,'w')</span><br><span class="line">    b_file = open(table_file)</span><br><span class="line">    b_list = b_file.readlines()</span><br><span class="line">    for table in b_list:</span><br><span class="line">        string = "alter table {} import tablespace;".format(table)</span><br><span class="line">        a_file.write(string)</span><br><span class="line">    a_file.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">discard_table_test('/alidata/cy_table.txt','/alidata/cy_sql5.sql')</span><br><span class="line">import_table_test('/alidata/cy_table.txt','/alidata/cy_sql6.sql')</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">生成sql</span></span><br><span class="line">[root@toberoot alidata]# python py_createtable01.py</span><br><span class="line">[root@toberoot alidata]# ll</span><br><span class="line">total 124</span><br><span class="line">-rw-r--r--  1 root  root  16729 May 17 16:00 cy_error1.log</span><br><span class="line">-rw-r--r--  1 root  root   2033 May 17 15:12 cy_sql1.sql</span><br><span class="line">-rw-r--r--  1 root  root   1047 May 17 15:56 cy_sql2.sql</span><br><span class="line">-rw-r--r--  1 root  root   6353 May 17 16:15 cy_sql3.sql</span><br><span class="line">-rw-r--r--  1 root  root   1395 May 17 16:17 cy_sql4.sql</span><br><span class="line">-rw-r--r--  1 root  root   2033 May 17 16:55 cy_sql5.sql</span><br><span class="line">-rw-r--r--  1 root  root   2033 May 17 16:55 cy_sql6.sql</span><br><span class="line">-rw-r--r--  1 root  root    837 May 17 16:03 cy_table_col.txt</span><br><span class="line">-rw-r--r--  1 root  root    699 May 17 15:56 cy_table.txt</span><br><span class="line">drwxr-xr-x  3 root  root   4096 May 17 16:41 install</span><br><span class="line">drwxr-xr-x 11 mysql mysql  4096 May 17 16:47 mysql</span><br><span class="line">-rw-r--r--  1 root  root  57068 May 17 16:52 new_yc_ddl.sql</span><br><span class="line">-rw-r--r--  1 root  root   2489 May 17 16:55 py_createtable01.py</span><br><span class="line"></span><br><span class="line">[root@toberoot alidata]# head /alidata/cy_sql5.sql</span><br><span class="line">alter table base_dict</span><br><span class="line"> discard tablespace;alter table biz_advise</span><br><span class="line"> discard tablespace;alter table biz_bank</span><br><span class="line"> discard tablespace;alter table biz</span><br><span class="line"> discard tablespace;alter table biz_gift</span><br><span class="line"> discard tablespace;alter table biz_gprs_bind</span><br><span class="line"> discard tablespace;alter table biz_gprs_bind_his</span><br><span class="line"> discard tablespace;alter table biz_msg_template</span><br><span class="line"> discard tablespace;alter table biz_take_bank</span><br><span class="line"> discard tablespace;alter table biz_take</span><br><span class="line">[root@toberoot alidata]# head /alidata/cy_sql6.sql</span><br><span class="line">alter table base_dict</span><br><span class="line"> import tablespace;alter table biz_advise</span><br><span class="line"> import tablespace;alter table biz_bank</span><br><span class="line"> import tablespace;alter table biz</span><br><span class="line"> import tablespace;alter table biz_gift</span><br><span class="line"> import tablespace;alter table biz_gprs_bind</span><br><span class="line"> import tablespace;alter table biz_gprs_bind_his</span><br><span class="line"> import tablespace;alter table biz_msg_template</span><br><span class="line"> import tablespace;alter table biz_take_bank</span><br><span class="line"> import tablespace;alter table biz_take</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@toberoot alidata]# mysql cy &lt; cy_sql5.sql</span><br><span class="line">ERROR 1036 (HY000) at line 1: Table 'base_dict' is read only</span><br><span class="line">[root@toberoot alidata]# vim /etc/my.cnf</span><br><span class="line">[root@toberoot alidata]# service mysqld restart</span><br><span class="line">Shutting down MySQL..                                      [  OK  ]</span><br><span class="line">Starting MySQL.                                            [  OK  ]</span><br><span class="line">[root@toberoot alidata]# vim /etc/my.cnf</span><br><span class="line">[root@toberoot alidata]# mysql cy &lt; cy_sql5.sql</span><br><span class="line"></span><br><span class="line">[root@toberoot alidata]# cp /root/home/cy02/*.ibd /alidata/mysql/data/cy/ -rp</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@toberoot alidata]# mysql cy &lt; cy_sql6.sql</span><br><span class="line">ERROR 2013 (HY000) at line 1: Lost connection to MySQL server during query</span><br><span class="line">[root@toberoot alidata]# vim /etc/my.cnf</span><br><span class="line">[root@toberoot alidata]# service mysqld restart</span><br><span class="line">Shutting down MySQL..                                      [  OK  ]</span><br><span class="line">Starting MySQL.                                            [  OK  ]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@toberoot alidata]# mysql cy &lt; cy_sql6.sql</span><br><span class="line">ERROR 1036 (HY000) at line 1: Table 'base_dict' is read only</span><br><span class="line">[root@toberoot alidata]# service mysqld stop</span><br><span class="line">Shutting down MySQL..                                      [  OK  ]</span><br><span class="line">[root@toberoot alidata]# rm -rf /alidata/mysql/data/*</span><br><span class="line"></span><br><span class="line">[root@toberoot alidata]# service mysqld start</span><br><span class="line">Starting MySQL.                                            [  OK  ]</span><br><span class="line">[root@toberoot alidata]# mysql &lt; new_yc_ddl.sql</span><br><span class="line">[root@toberoot alidata]# mysql -e 'use cy;select * from sys_res'</span><br><span class="line"></span><br><span class="line">开启强制恢复参数</span><br><span class="line">[root@toberoot alidata]# vim /etc/my.cnf</span><br><span class="line">[root@toberoot alidata]# mysql cy &lt; cy_sql</span><br><span class="line">cy_sql1.sql  cy_sql2.sql  cy_sql3.sql  cy_sql4.sql  cy_sql5.sql  cy_sql6.sql</span><br><span class="line">[root@toberoot alidata]# mysql cy &lt; cy_sql5.sql</span><br><span class="line">[root@toberoot alidata]# cp /root/home/cy02/*.ibd /alidata/mysql/data/cy/ -rp</span><br><span class="line">[root@toberoot alidata]# mysql cy &lt; cy_sql6.sql</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">全备份数据</span></span><br><span class="line">[root@toberoot alidata]# mysqldump -B cy &gt; new_cy_all.sql</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看备份的数据量</span></span><br><span class="line">-rw-r--r--  1 root  root   26M May 17 17:13 new_cy_all.sql</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="报错汇总" class="article-heading"><a href="#报错汇总" class="headerlink" title="报错汇总"></a>报错汇总<a class="article-anchor" href="#报错汇总" aria-hidden="true"></a></h2><h3 id="ERROR-1036-（HY00）" class="article-heading"><a href="#ERROR-1036-（HY00）" class="headerlink" title="ERROR 1036 （HY00）"></a>ERROR 1036 （HY00）<a class="article-anchor" href="#ERROR-1036-（HY00）" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@toberoot alidata]# mysql cy &lt; cy_sql5.sql</span><br><span class="line">ERROR 1036 (HY000) at line 1: Table 'base_dict' is read only</span><br></pre></td></tr></tbody></table></figure>
+
+<p>解决方法：</p>
+<ol>
+<li>检查是否配置文件中存在innodb_force_recovery参数</li>
+<li>如果存在去除或注释掉，重启服务即可</li>
+<li>还不行就清空数据库导入结构后再继续</li>
+</ol>
+<h3 id="ERROR-2013-HY000" class="article-heading"><a href="#ERROR-2013-HY000" class="headerlink" title="ERROR 2013 (HY000)"></a>ERROR 2013 (HY000)<a class="article-anchor" href="#ERROR-2013-HY000" aria-hidden="true"></a></h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@toberoot alidata]# mysql cy &lt; cy_sql6.sql</span><br><span class="line">ERROR 2013 (HY000) at line 1: Lost connection to MySQL server during query</span><br></pre></td></tr></tbody></table></figure>
+
+<p>解决方法：</p>
+<ol>
+<li><p>sql脚本中执行import tablespace的操作需要开启recovery的参数</p>
+</li>
+<li><p>重启服务</p>
+<p>在客户服务上，执行以上操作还是报错无法连接，尝试多次都不行。</p>
+</li>
+</ol>
+<p><img src="pic/04.jpg"></p>
+<h2 id="总结" class="article-heading"><a href="#总结" class="headerlink" title="总结"></a>总结<a class="article-anchor" href="#总结" aria-hidden="true"></a></h2><p>这次case的教训就是，备份！一定要有周期性的有效备份！</p>
+<p>欺骗MySQL进程蒙混过关只能是没办法的办法，而且不能保证成功率。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">-*- coding : utf8 -*-</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">py_createtable01.py</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">auth： booboowei</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class mysql_tools():</span><br><span class="line">    def __init__(self, in_file):</span><br><span class="line">        self.b_list = open(in_file).readlines()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    def create_table_test(self, sql_file):</span><br><span class="line">        a_file = open(sql_file, 'w')</span><br><span class="line">        for table in self.b_list:</span><br><span class="line">            string = "create table {} (id int);".format(table)</span><br><span class="line">            a_file.write(string)</span><br><span class="line">        a_file.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    def desc_table_test(self, sql_file):</span><br><span class="line">        a_file = open(sql_file, 'w')</span><br><span class="line">        for table in self.b_list:</span><br><span class="line">            string = "desc {};".format(table)</span><br><span class="line">            a_file.write(string)</span><br><span class="line">        a_file.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    def create_table_col(self, sql_file):</span><br><span class="line">        a_file = open(sql_file, 'w')</span><br><span class="line">        str_list = []</span><br><span class="line">        for table_col_str in self.b_list:</span><br><span class="line">            table_col_list = table_col_str.split()</span><br><span class="line">            table = table_col_list[0]</span><br><span class="line">            col = int(table_col_list[1])</span><br><span class="line">            string = "create table {} (".format(table)</span><br><span class="line">            str_list.append(string)</span><br><span class="line">            for i in range(1, col + 1):</span><br><span class="line">                if i != col:</span><br><span class="line">                    string = 'id{} int,'.format(i)</span><br><span class="line">                else:</span><br><span class="line">                    string = 'id{} int);'.format(i)</span><br><span class="line">                str_list.append(string)</span><br><span class="line">        for line in str_list:</span><br><span class="line">            a_file.write(line)</span><br><span class="line">        a_file.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    def drop_table_test(self,  sql_file):</span><br><span class="line">        a_file = open(sql_file, 'w')</span><br><span class="line">        for table in self.b_list:</span><br><span class="line">            string = "drop table {};".format(table)</span><br><span class="line">            a_file.write(string)</span><br><span class="line">        a_file.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    def discard_table_test(self, sql_file):</span><br><span class="line">        a_file = open(sql_file, 'w')</span><br><span class="line">        for table in self.b_list:</span><br><span class="line">            string = "alter table {} discard tablespace;".format(table)</span><br><span class="line">            a_file.write(string)</span><br><span class="line">        a_file.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    def import_table_test(self, sql_file):</span><br><span class="line">        a_file = open(sql_file, 'w')</span><br><span class="line">        for table in self.b_list:</span><br><span class="line">            string = "alter table {} import tablespace;".format(table)</span><br><span class="line">            a_file.write(string)</span><br><span class="line">        a_file.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == '__main__':</span><br><span class="line">    mysql_tools('/alidata/cy_table.txt').create_table_test('/alidata/cy_sql1.sql')</span><br><span class="line">    mysql_tools('/alidata/cy_table.txt').desc_table_test('/alidata/cy_sql2.sql')</span><br><span class="line">    # 根据以上表名和列数生成新的测试表</span><br><span class="line">    mysql_tools('/alidata/cy_table_col.txt').create_table_col('/alidata/cy_sql3.sql')</span><br><span class="line">    mysql_tools('/alidata/cy_table.txt').drop_table_test('/alidata/cy_sql4.sql')</span><br><span class="line">    mysql_tools('/alidata/cy_table.txt').discard_table_test('/alidata/cy_sql5.sql')</span><br><span class="line">    mysql_tools('/alidata/cy_table.txt').import_table_test('/alidata/cy_sql6.sql')</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="mysqlfrm-测试使用" class="article-heading"><a href="#mysqlfrm-测试使用" class="headerlink" title="mysqlfrm 测试使用"></a>mysqlfrm 测试使用<a class="article-anchor" href="#mysqlfrm-测试使用" aria-hidden="true"></a></h2><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E17952_01/mysql-utilities-1.4-en/mysqlfrm.html">mysqlfrm官方文档</a></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[root<span class="variable">@build</span><span class="operator">-</span>center alidata]# <span class="operator">/</span>etc<span class="operator">/</span>init.d<span class="operator">/</span>mysqld stop</span><br><span class="line">Shutting down MySQL..                                      [  OK  ]</span><br><span class="line">[root<span class="variable">@build</span><span class="operator">-</span>center alidata]# mysqlfrm <span class="comment">--diagnostic /alidata/mysql/data/booboo/</span></span><br><span class="line"># WARNING: Cannot generate <span class="keyword">character set</span> <span class="keyword">or</span> <span class="keyword">collation</span> names <span class="keyword">without</span> the <span class="comment">--server option.</span></span><br><span class="line"># CAUTION: The diagnostic mode <span class="keyword">is</span> a best<span class="operator">-</span>effort parse <span class="keyword">of</span> the .frm file. <span class="keyword">As</span> such, it may <span class="keyword">not</span> identify <span class="keyword">all</span> <span class="keyword">of</span> the components <span class="keyword">of</span> the <span class="keyword">table</span> correctly. This <span class="keyword">is</span> especially <span class="literal">true</span> <span class="keyword">for</span> damaged files. It will also <span class="keyword">not</span> read the <span class="keyword">default</span> <span class="keyword">values</span> <span class="keyword">for</span> the columns <span class="keyword">and</span> the resulting statement may <span class="keyword">not</span> be syntactically correct.</span><br><span class="line"># Reading .frm file <span class="keyword">for</span> <span class="operator">/</span>alidata<span class="operator">/</span>mysql<span class="operator">/</span>data<span class="operator">/</span>booboo<span class="operator">/</span>qinxi.frm:</span><br><span class="line"># The .frm file <span class="keyword">is</span> a TABLE.</span><br><span class="line"># <span class="keyword">CREATE TABLE</span> Statement:</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE TABLE</span> `booboo`.`qinxi` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `name` <span class="type">varchar</span>(<span class="number">200</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span></span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB;</span><br><span class="line"></span><br><span class="line"># Reading .frm file <span class="keyword">for</span> <span class="operator">/</span>alidata<span class="operator">/</span>mysql<span class="operator">/</span>data<span class="operator">/</span>booboo<span class="operator">/</span>qinxi1.frm:</span><br><span class="line"># The .frm file <span class="keyword">is</span> a TABLE.</span><br><span class="line"># <span class="keyword">CREATE TABLE</span> Statement:</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE TABLE</span> `booboo`.`qinxi1` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT NULL</span>,</span><br><span class="line">  `col` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT NULL</span>,</span><br><span class="line"><span class="keyword">PRIMARY KEY</span> `<span class="keyword">PRIMARY</span>` (`id`,`col`)</span><br><span class="line">) ENGINE<span class="operator">=</span>INNODB  <span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (col) (<span class="keyword">PARTITION</span> p1 <span class="keyword">VALUES</span> LESS THAN (<span class="number">10</span>) ENGINE <span class="operator">=</span> InnoDB,  <span class="keyword">PARTITION</span> p2 <span class="keyword">VALUES</span> LESS THAN (<span class="number">20</span>) ENGINE <span class="operator">=</span> InnoDB);</span><br><span class="line"></span><br><span class="line">#...done.</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="5-7下分区表的恢复" class="article-heading"><a href="#5-7下分区表的恢复" class="headerlink" title="5.7下分区表的恢复"></a>5.7下分区表的恢复<a class="article-anchor" href="#5-7下分区表的恢复" aria-hidden="true"></a></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">--模拟生产环境数据</span></span><br><span class="line">root<span class="variable">@MySQL</span><span class="number">-01</span> <span class="number">21</span>:<span class="number">04</span>:  [(<span class="keyword">none</span>)]<span class="operator">&gt;</span> use booboo</span><br><span class="line">Database changed</span><br><span class="line">root<span class="variable">@MySQL</span><span class="number">-01</span> <span class="number">21</span>:<span class="number">04</span>:  [booboo]<span class="operator">&gt;</span> <span class="keyword">show</span> tables;</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="operator">|</span> Tables_in_booboo <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="operator">|</span> t1               <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">root<span class="variable">@MySQL</span><span class="number">-01</span> <span class="number">21</span>:<span class="number">04</span>:  [booboo]<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">create table</span> t1\G;</span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">       <span class="keyword">Table</span>: t1</span><br><span class="line"><span class="keyword">Create Table</span>: <span class="keyword">CREATE TABLE</span> `t1` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT NULL</span>,</span><br><span class="line">  `col1` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY KEY</span> (`id`,`col1`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8mb4</span><br><span class="line"><span class="comment">/*!50100 PARTITION BY RANGE (col1)</span></span><br><span class="line"><span class="comment">(PARTITION p100 VALUES LESS THAN (100) ENGINE = InnoDB,</span></span><br><span class="line"><span class="comment"> PARTITION p101 VALUES LESS THAN (200) ENGINE = InnoDB) */</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br><span class="line"></span><br><span class="line">ERROR:</span><br><span class="line"><span class="keyword">No</span> query specified</span><br><span class="line"></span><br><span class="line">root<span class="variable">@MySQL</span><span class="number">-01</span> <span class="number">21</span>:<span class="number">04</span>:  [booboo]<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1;</span><br><span class="line"><span class="operator">+</span><span class="comment">----+------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> col1 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+------+</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">1</span> <span class="operator">|</span>   <span class="number">99</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">2</span> <span class="operator">|</span>  <span class="number">199</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+------+</span></span><br><span class="line"><span class="number">2</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">--模拟恢复</span></span><br><span class="line">root<span class="variable">@MySQL</span><span class="number">-01</span> <span class="number">21</span>:<span class="number">11</span>:  [booboo]<span class="operator">&gt;</span> <span class="keyword">show</span> tables;</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="operator">|</span> Tables_in_booboo <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="operator">|</span> t1               <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">root<span class="variable">@MySQL</span><span class="number">-01</span> <span class="number">21</span>:<span class="number">11</span>:  [booboo]<span class="operator">&gt;</span> <span class="keyword">alter table</span> t1 discard tablespace;</span><br><span class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">0.02</span> sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root<span class="variable">@tick</span>:<span class="operator">/</span>alidata<span class="operator">/</span>mysql<span class="operator">/</span>data_booboo<span class="operator">/</span>booboo]# cp <span class="operator">/</span>alidata<span class="operator">/</span>mysql<span class="operator">/</span>data<span class="operator">/</span>booboo<span class="operator">/</span>t1<span class="operator">*</span>.ibd .<span class="operator">/</span> <span class="operator">-</span>rp</span><br><span class="line">[root<span class="variable">@tick</span>:<span class="operator">/</span>alidata<span class="operator">/</span>mysql<span class="operator">/</span>data_booboo<span class="operator">/</span>booboo]# ll</span><br><span class="line">total <span class="number">208</span></span><br><span class="line"><span class="operator">-</span>rw<span class="operator">-</span>r<span class="comment">----- 1 mysql mysql    67 Nov  8 00:35 db.opt</span></span><br><span class="line"><span class="operator">-</span>rw<span class="operator">-</span>r<span class="comment">----- 1 mysql mysql  8586 Nov  9 21:10 t1.frm</span></span><br><span class="line"><span class="operator">-</span>rw<span class="operator">-</span>r<span class="comment">----- 1 mysql mysql 98304 Nov  8 00:29 t1#P#p100.ibd</span></span><br><span class="line"><span class="operator">-</span>rw<span class="operator">-</span>r<span class="comment">----- 1 mysql mysql 98304 Nov  8 00:29 t1#P#p101.ibd</span></span><br><span class="line"></span><br><span class="line">root<span class="variable">@MySQL</span><span class="number">-01</span> <span class="number">21</span>:<span class="number">19</span>:  [booboo]<span class="operator">&gt;</span> <span class="keyword">show</span> tables;</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="operator">|</span> Tables_in_booboo <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="operator">|</span> t1               <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">root<span class="variable">@MySQL</span><span class="number">-01</span> <span class="number">21</span>:<span class="number">19</span>:  [booboo]<span class="operator">&gt;</span> <span class="keyword">alter table</span> t1 import tablespace;</span><br><span class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected, <span class="number">3</span> warnings (<span class="number">0.09</span> sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root<span class="variable">@MySQL</span><span class="number">-01</span> <span class="number">21</span>:<span class="number">20</span>:  [booboo]<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1;</span><br><span class="line"><span class="operator">+</span><span class="comment">----+------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> col1 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+------+</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">1</span> <span class="operator">|</span>   <span class="number">99</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">2</span> <span class="operator">|</span>  <span class="number">199</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+------+</span></span><br><span class="line"><span class="number">2</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+              </div>
+              <footer class="article-footer">
+                <time class="article-footer-updated" datetime="2025-10-22T08:49:19.289Z" itemprop="dateModified">Last updated: 2025-10-22</time>
+                <a href="/database/mysql/index.html" class="article-footer-next" title="概览"><span>Next</span><i class="fa fa-chevron-right"></i></a>
+              </footer>
+              
+            </div>
+          </div>
+          <aside id="article-toc" role="navigation">
+            <div id="article-toc-inner">
+              <div id="carbonads" class="carbonads" style="text-align:center;font-family:'Noto Sans SC',sans-serif;">
+  <span class="carbon-wrap">
+    <a href="https://github.com/booboowei"
+       class="carbon-img"
+       target="_blank"
+       rel="noopener sponsored">
+      <img
+        src="https://avatars2.githubusercontent.com/u/21328020?s=460&u=88cf6127c32932188f936d05636b7b0d36783ee1&v=4"
+        alt="ads via Carbon"
+        border="0"
+        style="width:80px;height:80px;border-radius:50%;max-width:130px;"
+      />
+    </a>
+    <a href="/about/"
+       class="carbon-text"
+       target="_blank"
+       rel="noopener sponsored"
+       style="display:block;margin-top:4px;">
+      欢迎光临
+    </a>
+  </span>
+
+  <!-- 日期显示 -->
+  <div id="today-date" style="margin-top:12px;background:#f5f5f5;border-radius:12px;padding:10px 0;">
+    <div id="weekday" style="font-size:14px;color:#555;"></div>
+    <div id="day" style="font-size:36px;font-weight:bold;color:#000;"></div>
+    <div id="ym" style="font-size:14px;color:#555;"></div>
+    <div id="lunar" style="font-size:13px;color:#888;margin-top:4px;"></div>
+  </div>
+
+<script>
+(function(){
+  const now = new Date();
+  const weekdays = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+
+  function toChineseNumber(num) {
+    const map = {0:'〇',1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九'};
+    return String(num).split('').map(n=>map[n]).join('');
+  }
+
+  // 优先使用 Intl (现代浏览器支持农历/中国传统历)
+  function getLunarByIntl(date) {
+    try {
+      // 获取农历的月（长格式，如 "九月" 或 "闰八月"），和日（数字）
+      const monthFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long' });
+      const dayFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+      const lunarMonthText = monthFormatter.format(date); // 例如 "九月" 或 "闰八月"
+      const lunarDayText = dayFormatter.format(date);     // 例如 "三十" 或 "初一"
+      // 有的浏览器返回的 month 会包含 "闰" 字样，也可能返回汉字月份，需要适配
+      return `农历${lunarMonthText}${lunarDayText}`;
+    } catch (e) {
+      return null; // 表示不支持 Intl 农历
+    }
+  }
+
+  // 回退：简易本地农历算法（仅作兼容，适用于1900-2049范围）
+  const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+                     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+                     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+                     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+                     0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+                     0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+                     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+                     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+                     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+                     0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0];
+
+  function lYearDays(y){let i,sum=348;for(i=0x8000;i>0x8;i>>=1)sum+=(lunarInfo[y-1900]&i)?1:0;return sum+leapDays(y);}
+  function leapDays(y){if(leapMonth(y))return(lunarInfo[y-1900]&0x10000)?30:29;else return 0;}
+  function leapMonth(y){return lunarInfo[y-1900]&0xf;}
+  function monthDays(y,m){return(lunarInfo[y-1900]&(0x10000>>m))?30:29;}
+
+  function LunarFallback(objDate){
+    let i, leap=0, temp=0;
+    const baseDate = new Date(1900,0,31);
+    let offset = Math.floor((objDate - baseDate) / 86400000);
+    let year = 1900;
+    // 年循环
+    for (i = 1900; i < 2050 && offset > 0; i++) {
+      temp = lYearDays(i);
+      offset -= temp;
+      year = i;
+    }
+    if (offset < 0) { offset += temp; year--; }
+    leap = leapMonth(year);
+    let isLeap = false;
+    let month = 1;
+    // 月循环
+    for (i = 1; i <= 12 && offset > 0; i++) {
+      if (leap > 0 && i === (leap + 1) && !isLeap) {
+        // 进入闰月
+        temp = leapDays(year);
+        isLeap = true;
+        i--; // stay on same month number but mark leap
+      } else {
+        temp = monthDays(year, i);
+      }
+      offset -= temp;
+      if (isLeap && i === leap) { isLeap = false; }
+      if (!isLeap) month++; // 非闰月时才推进月份计数
+    }
+    if (offset === 0 && leap > 0 && month === leap + 1) {
+      // 特殊：当正好落在闰月第一天
+      // month 保持，isLeap = true
+    }
+    if (offset < 0) { offset += temp; month--; }
+    const day = offset + 1;
+    // 修正 month 边界
+    if (month <= 0) month = 1;
+    return { year, month, day, isLeap: !!isLeap };
+  }
+
+  function getLunarDateStringFallback(y,m,d){
+    const cDay=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+                "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+                "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+    const cMon=["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+    const lunar = LunarFallback(new Date(y, m-1, d));
+    return `农历${lunar.isLeap ? '闰' : ''}${cMon[lunar.month]}${cDay[lunar.day]}`;
+  }
+
+  // 先尝试 Intl 方法
+  let lunarText = getLunarByIntl(now);
+  if (!lunarText) {
+    // 回退本地算法
+    lunarText = getLunarDateStringFallback(year, month, day);
+  }
+
+  // 输出到页面（公历 + 农历）
+  document.getElementById("weekday").textContent = weekdays[now.getDay()];
+  document.getElementById("day").textContent = day;
+  document.getElementById("ym").textContent = `${toChineseNumber(year)}年${toChineseNumber(month)}月`;
+  document.getElementById("lunar").textContent = lunarText;
+})();
+</script>
+
+
+              <strong class="sidebar-title">Contents</strong>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%BA%E5%88%B6%E8%BF%98%E5%8E%9F%E6%AD%A5%E9%AA%A4"><span class="toc-text">强制还原步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B"><span class="toc-text">详细过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%87%8F"><span class="toc-text">数据量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%81%A2%E5%A4%8D%E7%BB%93%E6%9E%9C"><span class="toc-text">恢复结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"><span class="toc-text">报错汇总</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ERROR-1036-%EF%BC%88HY00%EF%BC%89"><span class="toc-text">ERROR 1036 （HY00）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ERROR-2013-HY000"><span class="toc-text">ERROR 2013 (HY000)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mysqlfrm-%E6%B5%8B%E8%AF%95%E4%BD%BF%E7%94%A8"><span class="toc-text">mysqlfrm 测试使用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-7%E4%B8%8B%E5%88%86%E5%8C%BA%E8%A1%A8%E7%9A%84%E6%81%A2%E5%A4%8D"><span class="toc-text">5.7下分区表的恢复</span></a>
+              <a href="#" id="article-toc-top">Back to Top</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+      <aside id="sidebar" role="navigation">
+  <div class="inner">
+    <strong class="sidebar-title">MySQL</strong><a href="/database/mysql/index.html" class="sidebar-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="sidebar-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="sidebar-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="sidebar-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="sidebar-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="sidebar-link">工具篇</a><strong class="sidebar-title">Oracle</strong><a href="/database/oracle/index.html" class="sidebar-link">概览</a><a href="/database/oracle/ocp/index.html" class="sidebar-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="sidebar-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="sidebar-link">Oracle 11g 学习笔记</a><strong class="sidebar-title">NoSQL</strong><a href="/database/nosql/index.html" class="sidebar-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="sidebar-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="sidebar-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="sidebar-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="sidebar-link">Hadoop 基础</a><strong class="sidebar-title">TiDB</strong><a href="/database/tidb/index.html" class="sidebar-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="sidebar-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="sidebar-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="sidebar-link">TiDB 21天课程</a>
+  </div>
+</aside>
+    </div>
+  </div>
+</div>
+
+    <footer id="footer" class="wrapper">
+  <div class="inner">
+    <div id="footer-copyright">
+      &copy; 2025 <a href="https://github.com/BoobooWei" target="_blank">魏亚萍</a><br>
+      Documentation licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>.<br>
+      备案号：沪ICP备2020026043号
+    </div>
+    <div id="footer-links">
+      <a href="https://www.youtube.com/@amyreading2023" class="footer-link" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" 
+            alt="YouTube"
+            style="height:24px; margin-bottom:-6px;">
+      </a>
+      <a href="https://github.com/BoobooWei" class="footer-link" target="_blank"><i class="fa fa-github-alt"></i></a>
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <div id="mobile-nav-dimmer"></div>
+  <nav id="mobile-nav">
+  <div id="mobile-nav-inner">
+    <ul id="mobile-nav-list">
+      <a href="../../../../docs/" class="mobile-nav-link">Hexo</a><a href="../../../../news/" class="mobile-nav-link">News</a><a href="../../../../api/" class="mobile-nav-link">MySQL8.0</a><a href="../../../../database/" class="mobile-nav-link">Database</a><a href="../../../../linux/" class="mobile-nav-link">Linux</a><a href="../../../../cloud/" class="mobile-nav-link">Cloud</a><a href="../../../../singapore/" class="mobile-nav-link">Singapore</a><a href="../../../../amy/" class="mobile-nav-link">AMY</a><a href="../../../../about/" class="mobile-nav-link">About</a>
+      <li class="mobile-nav-item">
+        <a href="https://github.com/BoobooWei" class="mobile-nav-link" rel="external" target="_blank">GitHub</a>
+      </li>
+    </ul>
+    
+      <strong class="mobile-nav-title">MySQL</strong><a href="/database/mysql/index.html" class="mobile-nav-link">概览</a><a href="/database/mysql/booboo_mysql/index.html" class="mobile-nav-link">MySQL 基础</a><a href="/database/mysql/dba_mysql/index.html" class="mobile-nav-link">MySQL 运维实践</a><a href="/database/mysql/rds_mysql/index.html" class="mobile-nav-link">RDS 性能调优</a><a href="/database/mysql/security/index.html" class="mobile-nav-link">安全篇</a><a href="/database/mysql/awesome-tools/index.html" class="mobile-nav-link">工具篇</a><strong class="mobile-nav-title">Oracle</strong><a href="/database/oracle/index.html" class="mobile-nav-link">概览</a><a href="/database/oracle/ocp/index.html" class="mobile-nav-link">Oracle12C OCP</a><a href="/database/oracle/oracle-12c/index.html" class="mobile-nav-link">Oracle 12c 学习笔记</a><a href="/database/oracle/oracle-11g/index.html" class="mobile-nav-link">Oracle 11g 学习笔记</a><strong class="mobile-nav-title">NoSQL</strong><a href="/database/nosql/index.html" class="mobile-nav-link">概览</a><a href="/database/nosql/booboo_redis/index.html" class="mobile-nav-link">Redis 基础</a><a href="/database/nosql/dba_redis/index.html" class="mobile-nav-link">Redis 进阶</a><a href="/database/nosql/booboo_mongodb/index.html" class="mobile-nav-link">MongoDB 基础</a><a href="/database/nosql/hadoop/index.html" class="mobile-nav-link">Hadoop 基础</a><strong class="mobile-nav-title">TiDB</strong><a href="/database/tidb/index.html" class="mobile-nav-link">概览</a><a href="/database/tidb/00_tidb入门指南.html" class="mobile-nav-link">TiDB 入门指南</a><a href="/database/tidb/01_raft协议理解.html" class="mobile-nav-link">Raft协议理解</a><a href="/database/tidb/tidb_courses/index.html" class="mobile-nav-link">TiDB 21天课程</a>
+    
+  </div>
+  <div id="mobile-lang-select-wrap">
+    <span id="mobile-lang-select-label"><i class="fa fa-globe"></i><span>English</span></span>
+    <select id="mobile-lang-select" data-canonical="">
+      
+        <option value="en" selected>English</option>
+      
+    </select>
+  </div>
+</nav>
+  <!-- Scripts -->
+<!-- Cookie -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- build:js build/js/main.js -->
+
+<script src="../../../../js/lang_select.js"></script>
+
+
+<script src="../../../../js/mobile_nav.js"></script>
+
+<!-- endbuild -->
+
+<!-- Algolia -->
+<!--   backup
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script type="text/javascript">
+docsearch({
+  appId: '',
+  apiKey: '',
+  indexName: '',
+  insights: true,
+  container: '#docsearch',
+  debug: false,
+  searchParameters: {
+    facetFilters: ['lang:en']
+  }
+});
+</script>
+-->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script type="text/javascript">
+document.getElementById('search-input-wrap').classList.add('on');
+docsearch({
+    apiKey: '',
+    indexName: '',
+    inputSelector: '#search-input'
+});
+</script>
+</body>
+</html>
